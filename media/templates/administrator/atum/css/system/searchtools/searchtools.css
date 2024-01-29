@@ -1,0 +1,54 @@
+.js-stools {
+  flex-wrap: wrap;
+  display: flex;
+}
+
+.js-stools-container-bar, .js-stools-container-filters {
+  margin-bottom: 10px;
+}
+
+.js-stools-container-bar {
+  margin-inline-start: auto;
+}
+
+.js-stools-container-bar .btn-toolbar {
+  justify-content: flex-end;
+}
+
+.js-stools-container-bar .btn-toolbar > * {
+  margin: 5px 0;
+}
+
+.js-stools-container-bar .btn-toolbar > * + * {
+  margin-inline-start: 8px;
+}
+
+.js-stools-container-bar .btn-toolbar .js-stools-btn-clear {
+  background-color: var(--template-bg-dark);
+}
+
+.js-stools-container-bar .ordering-select {
+  display: flex;
+}
+
+.js-stools-container-filters {
+  width: 100%;
+  display: none;
+}
+
+.js-stools-container-filters-visible {
+  grid-gap: 8px;
+  background-color: var(--body-bg);
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  padding: 10px;
+  display: grid;
+}
+
+.js-stools-field-list + .js-stools-field-list {
+  margin-inline-start: 8px;
+}
+
+.js-stools-container-selector {
+  margin: 5px 0;
+  margin-inline-end: 8px;
+}
