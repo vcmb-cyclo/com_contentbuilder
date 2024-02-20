@@ -11,6 +11,7 @@
 defined( '_JEXEC' ) or die( 'Direct Access to this location is not allowed.' );
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filesystem\Folder;
 
 if(!function_exists('cb_b64enc')){
     
@@ -95,14 +96,14 @@ class plgContentContentbuilder_rating extends JPlugin {
             $article->cbrecord->record_id = $item->colRecord;
         }
         
-        if(!JFolder::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')) {
-            JFolder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
+        if(!Folder::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')) {
+            Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
         }
         
         if(!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html')) JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
         
-        if(!JFolder::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins')) {
-            JFolder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins');
+        if(!Folder::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins')) {
+            Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins');
         }
         
         if(!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html')) JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html', $def = '');
