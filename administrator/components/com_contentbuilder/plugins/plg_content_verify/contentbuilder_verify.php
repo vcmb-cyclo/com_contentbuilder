@@ -85,7 +85,7 @@ class plgContentContentbuilder_verify extends JPlugin
         jimport('joomla.filesystem.file');
         jimport('joomla.filesystem.folder');
 
-        if (!$article || !isset($article->text) || !JFile::exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
+        if (!$article || !isset($article->text) || !file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
             return true;
         }
 

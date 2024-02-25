@@ -14,10 +14,10 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
+use Joomla\Filesystem\File;
 
 JHTML::_('behavior.keepalive');
 
-jimport('joomla.filesystem.file');
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
@@ -227,12 +227,12 @@ class ContentbuilderModelStorage extends CBModel
         }
 
         $dest = JPATH_SITE . DS . 'tmp' . DS . md5(mt_rand(0, mt_getrandmax())) . '_' . $file['name'];
-        $uploaded = JFile::upload($file['tmp_name'], $dest, false, true);
+        $uploaded = File::upload($file['tmp_name'], $dest, false, true);
 
         if ($uploaded) {
             @ini_set('auto_detect_line_endings', TRUE);
             $retval = $this->csv_file_to_table($dest, $data);
-            JFile::delete($dest);
+            File::delete($dest);
             return $retval;
         }
 

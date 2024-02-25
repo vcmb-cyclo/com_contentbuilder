@@ -13,6 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
+use Joomla\Filesystem\File;
 
 require_once(JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_contentbuilder'.DS.'classes'.DS.'joomla_compat.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
@@ -230,12 +231,12 @@ class ContentbuilderModelElementoptions extends CBModel
                     
                     if(!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')){
                         Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
-                        JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
+                        File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
                     }
                     
                     if(!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload')){
                         Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload');
-                        JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . 'index.html', $def = '');
+                        File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . 'index.html', $def = '');
                     }
                     
                     $upload_directory = JPATH_SITE . DS . 'media'.DS.'contentbuilder'.DS.'upload';
@@ -256,7 +257,7 @@ class ContentbuilderModelElementoptions extends CBModel
                     $upload_directory = contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
                     
                     Folder::create($upload_directory);
-                    JFile::write($upload_directory . DS . 'index.html', $def = '');
+                    File::write($upload_directory . DS . 'index.html', $def = '');
                         
                     if($is_opt_relative){
                         $is_relative = 1;
@@ -290,11 +291,11 @@ class ContentbuilderModelElementoptions extends CBModel
                 
                 if($protect && is_dir($upload_directory)){
                     
-                    JFile::write(contentbuilder::makeSafeFolder($upload_directory) . DS . '.htaccess', $def = 'deny from all');
+                    File::write(contentbuilder::makeSafeFolder($upload_directory) . DS . '.htaccess', $def = 'deny from all');
                 
                 } else if(!$protect && is_dir($upload_directory)){
-                    if(JFile::exists(contentbuilder::makeSafeFolder($upload_directory) . DS . '.htaccess')){
-                        JFile::delete(contentbuilder::makeSafeFolder($upload_directory) . DS . '.htaccess');
+                    if(file_exists(contentbuilder::makeSafeFolder($upload_directory) . DS . '.htaccess')){
+                        File::delete(contentbuilder::makeSafeFolder($upload_directory) . DS . '.htaccess');
                     }
                 
                 }

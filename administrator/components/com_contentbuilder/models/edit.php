@@ -19,6 +19,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Uri\Uri;
+use Joomla\Filesystem\File;
 
 require_once(JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_contentbuilder'.DS.'classes'.DS.'joomla_compat.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
@@ -906,8 +907,8 @@ var contentbuilder = new function(){
                                                         if(strpos(strtolower($_file), '{cbsite}') === 0){
                                                             $_file = str_replace(array('{cbsite}','{CBSite}'), array(JPATH_SITE, JPATH_SITE), $_file);
                                                         }
-                                                        if(JFile::exists($_file)){
-                                                            JFile::delete($_file);
+                                                        if(file_exists($_file)){
+                                                            File::delete($_file);
                                                         }
                                                         $values[$id] = '';
                                                     }
@@ -918,9 +919,9 @@ var contentbuilder = new function(){
 
                                     $file = CBRequest::getVar('cb_' . $id, null, 'files', 'array');
 
-                                    if( trim(JFile::makeSafe($file['name'])) != '' && $file['size'] > 0){
+                                    if( trim(File::makeSafe($file['name'])) != '' && $file['size'] > 0){
 
-                                        $filename = trim( JFile::makeSafe($file['name']) );
+                                        $filename = trim( File::makeSafe($file['name']) );
                                         $infile = $filename;
 
                                         $src = $file['tmp_name'];
@@ -978,7 +979,7 @@ var contentbuilder = new function(){
                                         if($dest != '' && isset($the_upload_fields[$id]['options']) && isset($the_upload_fields[$id]['options']->allowed_file_extensions) && $the_upload_fields[$id]['options']->allowed_file_extensions != ''){
 
                                             $allowed = explode(',',str_replace(' ','',strtolower($the_upload_fields[$id]['options']->allowed_file_extensions)));
-                                            $ext = strtolower(JFile::getExt($filename));
+                                            $ext = strtolower(File::getExt($filename));
 
                                             if(!in_array($ext, $allowed)){
                                                 $msg = Text::_('COM_CONTENTBUILDER_FILE_EXTENSION_NOT_ALLOWED');
@@ -990,8 +991,8 @@ var contentbuilder = new function(){
                                         if($dest != '' && $msg == ''){
 
                                             // limit file's name size
-                                            $ext = strtolower(JFile::getExt($filename));
-                                            $stripped = JFile::stripExt($filename);
+                                            $ext = strtolower(File::getExt($filename));
+                                            $stripped = File::stripExt($filename);
                                             // in some apache configurations unknown file extensions could lead to security risks
                                             // because it will try to find an executable extensions within the chain of dots. So we simply remove them.
                                             $filename = str_replace(array(' ','.'),'_',$stripped).'.'.$ext;
@@ -1008,13 +1009,13 @@ var contentbuilder = new function(){
                                             }
 
                                             // take care of existing filenames
-                                            if(JFile::exists($dest . DS . $filename)){
+                                            if(file_exists($dest . DS . $filename)){
                                                 $filename = md5(mt_rand(0, mt_getrandmax()) . time()) . '_' . $filename;
                                             }
 
                                             // create pseudo security index.html
-                                            if(!JFile::exists($dest.DS.'index.html')){
-                                                JFile::write($dest.DS.'index.html', $buffer = '');
+                                            if(!file_exists($dest.DS.'index.html')){
+                                                File::write($dest.DS.'index.html', $buffer = '');
                                             }
 
                                             if(count($_items)){
@@ -1034,14 +1035,14 @@ var contentbuilder = new function(){
                                                     }
                                                 }
                                                 foreach( $files_to_delete As $file_to_delete ){
-                                                    if(JFile::exists($file_to_delete)){
-                                                        JFile::delete($file_to_delete);
+                                                    if(file_exists($file_to_delete)){
+                                                        File::delete($file_to_delete);
                                                     }
                                                 }
                                             }
 
                                             // final upload file moving
-                                            $uploaded = JFile::upload($src, $dest . DS . $filename, false, true);
+                                            $uploaded = File::upload($src, $dest . DS . $filename, false, true);
 
                                             if(!$uploaded){
                                                 $msg = Text::_('COM_CONTENTBUILDER_UPLOAD_FAILED');
@@ -1062,7 +1063,7 @@ var contentbuilder = new function(){
                                             $the_upload_fields[$id]['value'] = $values[$id];
                                         }
 
-                                        $the_upload_fields[$id]['orig_value'] = JFile::makeSafe($file['name']);
+                                        $the_upload_fields[$id]['orig_value'] = File::makeSafe($file['name']);
                                     }
 
                                     if(trim($the_upload_fields[$id]['custom_validation_script'])){
@@ -1085,8 +1086,8 @@ var contentbuilder = new function(){
 
                                     $all_errors = implode('',$results);
                                     if(!empty($all_errors)){
-                                        if(isset($values[$id]) && JFile::exists($values[$id])){
-                                            JFile::delete($values[$id]);
+                                        if(isset($values[$id]) && file_exists($values[$id])){
+                                            File::delete($values[$id]);
                                         }
                                         CBRequest::setVar('cb_submission_failed', 1);
                                         foreach($results As $result){
@@ -1605,7 +1606,7 @@ var contentbuilder = new function(){
                                     if(strpos(strtolower($att_admin), '{cbsite}') === 0){
                                         $att_admin = str_replace(array('{cbsite}','{CBSite}'), array(JPATH_SITE, JPATH_SITE), $att_admin);
                                     }
-                                    if(JFile::exists(trim($att_admin))){
+                                    if(file_exists(trim($att_admin))){
                                         $attached_admin[] = trim($att_admin);
                                     }
                                 }
@@ -1717,7 +1718,7 @@ var contentbuilder = new function(){
                                     if(strpos(strtolower($att), '{cbsite}') === 0){
                                         $att = str_replace(array('{cbsite}','{CBSite}'), array(JPATH_SITE, JPATH_SITE), $att);
                                     }
-                                    if(JFile::exists(trim($att))){
+                                    if(file_exists(trim($att))){
                                         $attached[] = trim($att);
                                     }
                                 }

@@ -13,7 +13,7 @@ use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
 use Joomla\CMS\Uri\Uri;
-
+use Joomla\Filesystem\File;
 
 if (!function_exists('cb_b64enc')) {
 
@@ -111,7 +111,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 		jimport('joomla.filesystem.file');
 		jimport('joomla.filesystem.folder');
 
-		if (!JFile::exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
+		if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
 			return true;
 		}
 
@@ -147,15 +147,15 @@ class plgContentContentbuilder_image_scale extends JPlugin
 			Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
 		}
 
-		if (!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html'))
-			JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
+		if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html'))
+			File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
 
 		if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins')) {
 			Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins');
 		}
 
-		if (!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html'))
-			JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html', $def = '');
+		if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html'))
+			File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html', $def = '');
 
 		if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale')) {
 			Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale');
@@ -222,30 +222,30 @@ class plgContentContentbuilder_image_scale extends JPlugin
 					$ref_own_only = $article->cbrecord->own_only;
 				}
 
-				if (!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'index.html'))
-					JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'index.html', $def = '');
+				if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'index.html'))
+					File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'index.html', $def = '');
 
 				if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache')) {
 					Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache');
 				}
 
-				if (!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . 'index.html'))
-					JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . 'index.html', $def = '');
+				if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . 'index.html'))
+					File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . 'index.html', $def = '');
 
 				if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id)) {
 					Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id);
 				}
 
-				if (!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . 'index.html'))
-					JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . 'index.html', $def = '');
+				if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . 'index.html'))
+					File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . 'index.html', $def = '');
 
 
 				if ($protect) {
-					if (!JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess'))
-						JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess', $def = 'deny from all');
+					if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess'))
+						File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess', $def = 'deny from all');
 				} else {
-					if (JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess')) {
-						JFile::delete(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess');
+					if (file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess')) {
+						File::delete(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess');
 					}
 				}
 
@@ -521,11 +521,11 @@ class plgContentContentbuilder_image_scale extends JPlugin
 																	$parts = explode('_', $file);
 																	$exparts = explode('.', isset($parts[count($parts) - 1]) ? $parts[count($parts) - 1] : array());
 																	if (isset($exparts[0]) && $exparts[0] == 'cbresized') {
-																		if (@JFile::exists($sourcePath . $file) && @is_readable($sourcePath . $file)) {
+																		if (@file_exists($sourcePath . $file) && @is_readable($sourcePath . $file)) {
 																			$fileCreationTime = @filectime($sourcePath . $file);
 																			$fileAge = time() - $fileCreationTime;
 																			if ($fileAge >= $limit) {
-																				JFile::delete($sourcePath . $file);
+																				File::delete($sourcePath . $file);
 																			}
 																		}
 																	}
@@ -551,12 +551,12 @@ class plgContentContentbuilder_image_scale extends JPlugin
 															$create = true;
 															break;
 														default:
-															if (is_numeric($cache) && JFile::exists($filename)) {
+															if (is_numeric($cache) && file_exists($filename)) {
 																$limit = intval($cache);
 																$fileCreationTime = @filectime($filename);
 																$fileAge = time() - $fileCreationTime;
 																if ($fileAge >= $limit) {
-																	JFile::delete($filename);
+																	File::delete($filename);
 																	$create = true;
 																}
 															}
@@ -786,7 +786,7 @@ class plgContentContentbuilder_image_scale extends JPlugin
 						}
 					}
 
-					if (trim($out) == '' && JFile::exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . basename($default_image))) {
+					if (trim($out) == '' && file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . basename($default_image))) {
 						$out = '<img width="' . $default_image_width . '" height="' . $default_image_height . '" alt="" src="' . Uri::root(true) . '/media/contentbuilder/plugins/image_scale/' . basename($default_image) . '"/>';
 					}
 

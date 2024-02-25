@@ -316,7 +316,7 @@ class CBPagination
 		$itemOverride = false;
 		$listOverride = false;
 
-		if( JFile::exists(JPATH_SITE.DS.'media'.DS.'contentbuilder'.DS.'misc'.DS.'pagination.php') ){
+		if( file_exists(JPATH_SITE.DS.'media'.DS.'contentbuilder'.DS.'misc'.DS.'pagination.php') ){
                     $chromePath = JPATH_SITE.DS.'media'.DS.'contentbuilder'.DS.'misc'.DS.'pagination.php';
                 }else{
                     $chromePath = JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_contentbuilder'.DS.'classes'.DS.'pagination_chrome.php';
@@ -434,7 +434,7 @@ class CBPagination
 		$list['pagescounter'] = $this->getPagesCounter();
 		$list['pageslinks'] = $this->getPagesLinks();
 
-		if( JFile::exists(JPATH_SITE.DS.'media'.DS.'contentbuilder'.DS.'misc'.DS.'pagination.php') ){
+		if( file_exists(JPATH_SITE.DS.'media'.DS.'contentbuilder'.DS.'misc'.DS.'pagination.php') ){
                     $chromePath = JPATH_SITE.DS.'media'.DS.'contentbuilder'.DS.'misc'.DS.'pagination.php';
                 }else{
                     $chromePath = JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_contentbuilder'.DS.'classes'.DS.'pagination_chrome.php';

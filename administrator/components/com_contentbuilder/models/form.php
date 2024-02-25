@@ -15,6 +15,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
+use Joomla\Filesystem\File;
 
 JHTML::_('behavior.keepalive');
 
@@ -591,15 +592,15 @@ class ContentbuilderModelForm extends CBModel
                     
             if(!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')){
                 Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
-                JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
+                File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
             }
 
             if(!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload')){
                 Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload');
-                JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . 'index.html', $def = '');
+                File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . 'index.html', $def = '');
 
                 if($protect){
-                    JFile::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . '.htaccess', $def = 'deny from all');
+                    File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . '.htaccess', $def = 'deny from all');
                 }
             }
             
@@ -617,16 +618,16 @@ class ContentbuilderModelForm extends CBModel
         }
         
         if($data['protect_upload_directory'] && is_dir(contentbuilder::makeSafeFolder($data['upload_directory']))){
-            if(!JFile::exists(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . 'index.html')) JFile::write(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . 'index.html', $def = '');
+            if(!file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . 'index.html')) File::write(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . 'index.html', $def = '');
         }
         
         if($data['protect_upload_directory'] && is_dir(contentbuilder::makeSafeFolder($data['upload_directory']))){
             
-            if(!JFile::exists(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess')) JFile::write(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess', $def = 'deny from all');
+            if(!file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess')) File::write(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess', $def = 'deny from all');
         
         }else {
         
-            if(JFile::exists(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess')) JFile::delete(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess');
+            if(file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess')) File::delete(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess');
         
         }
         

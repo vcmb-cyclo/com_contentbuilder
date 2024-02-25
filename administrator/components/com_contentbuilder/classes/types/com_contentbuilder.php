@@ -11,6 +11,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
+use Joomla\Filesystem\File;
 
 class contentbuilder_com_contentbuilder{
 
@@ -880,8 +881,8 @@ class contentbuilder_com_contentbuilder{
                                 if(strpos(strtolower($_value), '{cbsite}') === 0){
                                     $_value = str_replace(array('{cbsite}','{CBSite}'), array(JPATH_SITE, JPATH_SITE), $_value);
                                 }
-                                if(JFile::exists($_value)){
-                                    JFile::delete($_value);
+                                if(file_exists($_value)){
+                                    File::delete($_value);
                                 }
                             }
                         }

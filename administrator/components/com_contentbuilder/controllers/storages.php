@@ -9,7 +9,9 @@
 // no direct access
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
+
 use Joomla\CMS\Language\Text;
+use Joomla\Filesystem\File;
 
 require_once(JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_contentbuilder'.DS.'classes'.DS.'joomla_compat.php');
 
@@ -186,7 +188,7 @@ class ContentbuilderControllerStorages extends CBController
         
         $file = CBRequest::getVar('csv_file', null, 'files', 'array');
         
-        if( trim(JFile::makeSafe($file['name'])) == '' || $file['size'] <= 0 ){
+        if( trim(File::makeSafe($file['name'])) == '' || $file['size'] <= 0 ){
             $id = $model->store();
         }else{
             $id = $model->storeCsv($file);
