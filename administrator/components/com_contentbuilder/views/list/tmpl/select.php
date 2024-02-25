@@ -11,6 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Router\Route;
 
 require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder_helpers.php');
 
@@ -32,49 +33,49 @@ JFactory::getDocument()->addScript(Uri::root(true) . '/components/com_contentbui
     function tableOrdering( order, dir, task ) {
         var form = document.adminForm;
             form.limitstart.value = <?php echo CBRequest::getInt('limitstart', 0) ?>;
-        form.filter_order.value 	= order;
-        form.filter_order_Dir.value	= dir;
-        document.adminForm.submit( task );
+    form.filter_order.value = order;
+    form.filter_order_Dir.value = dir;
+    document.adminForm.submit(task);
     }
-    function contentbuilder_selectAll(checker){
-        for(var i = 0; i < document.adminForm.elements.length; i++){
-            if(  document.adminForm.elements[i].name == 'cid[]' ){
-                if(checker.checked){
+    function contentbuilder_selectAll(checker) {
+        for (var i = 0; i < document.adminForm.elements.length; i++) {
+            if (document.adminForm.elements[i].name == 'cid[]') {
+                if (checker.checked) {
                     document.adminForm.elements[i].checked = true;
-                }else{
+                } else {
                     document.adminForm.elements[i].checked = false;
                 }
             }
         }
     }
-    function contentbuilder_state(){
-        document.getElementById('controller').value='edit';
-        document.getElementById('view').value='edit';
-        document.getElementById('task').value='state';
+    function contentbuilder_state() {
+        document.getElementById('controller').value = 'edit';
+        document.getElementById('view').value = 'edit';
+        document.getElementById('task').value = 'state';
         document.adminForm.submit();
     }
-    function contentbuilder_publish(){
-        document.getElementById('controller').value='edit';
-        document.getElementById('view').value='edit';
-        document.getElementById('task').value='publish';
+    function contentbuilder_publish() {
+        document.getElementById('controller').value = 'edit';
+        document.getElementById('view').value = 'edit';
+        document.getElementById('task').value = 'publish';
         document.adminForm.submit();
     }
-    function contentbuilder_language(){
-        document.getElementById('controller').value='edit';
-        document.getElementById('view').value='edit';
-        document.getElementById('task').value='language';
+    function contentbuilder_language() {
+        document.getElementById('controller').value = 'edit';
+        document.getElementById('view').value = 'edit';
+        document.getElementById('task').value = 'language';
         document.adminForm.submit();
     }
-    function contentbuilder_delete(){
+    function contentbuilder_delete() {
         var confirmed = confirm('<?php echo Text::_('COM_CONTENTBUILDER_CONFIRM_DELETE_MESSAGE'); ?>');
-        if(confirmed){
-            document.getElementById('controller').value='edit';
-            document.getElementById('view').value='edit';
-            document.getElementById('task').value='delete';
+        if (confirmed) {
+            document.getElementById('controller').value = 'edit';
+            document.getElementById('view').value = 'edit';
+            document.getElementById('task').value = 'delete';
             document.adminForm.submit();
         }
     }
-    function contentbuilder_related_item(record_id){
+    function contentbuilder_related_item(record_id) {
         window.parent.contentbuilder_related_item(record_id);
     }
     //-->
@@ -88,10 +89,12 @@ SELECT
             if ($this->export_xls):
                 ?>
                 <span style="float: right; text-align: right;"><a
-                        href="<?php echo JRoute::_('index.php?option=com_contentbuilder&controller=export&id=' . CBRequest::getInt('id', 0) . '&type=xls&format=raw&tmpl=component'); ?>"><div class="
+                        href="<?php echo Route::_('index.php?option=com_contentbuilder&controller=export&id=' . CBRequest::getInt('id', 0) . '&type=xls&format=raw&tmpl=component'); ?>">
+                        <div class="
                 cbXlsExportButton"
-                        style="background-image: url(../components/com_contentbuilder/images/xls.png); background-repeat: no-repeat; width: 16px; height: 16px;"
-                        alt="Export"></div></a></span>
+                            style="background-image: url(../components/com_contentbuilder/images/xls.png); background-repeat: no-repeat; width: 16px; height: 16px;"
+                            alt="Export"></div>
+                    </a></span>
                 <?php
             endif;
             ?>
@@ -108,20 +111,24 @@ SELECT
                     <?php
                     if ($new_allowed) {
                         ?>
-                        <a class="button cbButton cbNewButton" href="<?php echo JRoute::_('index.php?option=com_contentbuilder&controller=edit&backtolist=1&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order')); ?>"><?php echo Text::_('COM_CONTENTBUILDER_NEW'); ?></a>
-                    <?php
+                        <a class="button cbButton cbNewButton"
+                            href="<?php echo Route::_('index.php?option=com_contentbuilder&controller=edit&backtolist=1&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order')); ?>">
+                            <?php echo Text::_('COM_CONTENTBUILDER_NEW'); ?>
+                        </a>
+                        <?php
                     }
                     ?>
-                <?php if ($new_allowed && $delete_allowed) { ?>|<?php } ?>
-                <?php
-                if ($delete_allowed) {
-                    ?>
-                    <a class=" button cbButton cbDeleteButton" href="javascript:contentbuilder_delete();">
+                    <?php if ($new_allowed && $delete_allowed) { ?>|
+                    <?php } ?>
+                    <?php
+                    if ($delete_allowed) {
+                        ?>
+                        <a class=" button cbButton cbDeleteButton" href="javascript:contentbuilder_delete();">
                             <?php echo Text::_('COM_CONTENTBUILDER_DELETE'); ?>
                         </a>
                         <?php
-                }
-                ?>
+                    }
+                    ?>
                     <?php if (($new_allowed || $delete_allowed) && $state_allowed) { ?>|
                     <?php } ?>
                     <?php
@@ -134,77 +141,83 @@ SELECT
                             <?php
                             foreach ($this->states as $state) {
                                 ?>
-                                <option value="<?php echo $state['id'] ?>"><?php echo $state['title'] ?></option>
-                        <?php
+                                <option value="<?php echo $state['id'] ?>">
+                                    <?php echo $state['title'] ?>
+                                </option>
+                                <?php
                             }
                             ?>
-                    </select>
-                    <a class=" button cbButton cbSetButton" href="javascript:contentbuilder_state();">
-                                <?php echo Text::_('COM_CONTENTBUILDER_SET'); ?></a>
-                            <?php
+                        </select>
+                        <a class=" button cbButton cbSetButton" href="javascript:contentbuilder_state();">
+                            <?php echo Text::_('COM_CONTENTBUILDER_SET'); ?>
+                        </a>
+                        <?php
                     }
                     ?>
-                            <?php if (($new_allowed || $delete_allowed || $state_allowed) && $publish_allowed) { ?>|
-                            <?php } ?>
+                    <?php if (($new_allowed || $delete_allowed || $state_allowed) && $publish_allowed) { ?>|
+                    <?php } ?>
+                    <?php
+                    if ($publish_allowed) {
+                        ?>
+                        <select style="max-width: 100px;" name="list_publish">
+                            <option value="-1"> -
+                                <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED_UNPUBLISHED'); ?> -
+                            </option>
+                            <option value="1">
+                                <?php echo Text::_('PUBLISH') ?>
+                            </option>
+                            <option value="0">
+                                <?php echo Text::_('UNPUBLISH') ?>
+                            </option>
+                        </select>
+                        <a class="button cbButton cbSetButton" href="javascript:contentbuilder_publish();">
+                            <?php echo Text::_('COM_CONTENTBUILDER_SET'); ?>
+                        </a>
+                        <?php
+                    }
+                    ?>
+                    <?php if (($new_allowed || $delete_allowed || $state_allowed || $publish_allowed) && $language_allowed) { ?>|
+                    <?php } ?>
+                    <?php
+                    if ($language_allowed) {
+                        ?>
+                        <select style="max-width: 100px;" name="list_language">
+                            <option value="*"> -
+                                <?php echo Text::_('COM_CONTENTBUILDER_LANGUAGE'); ?> -
+                            </option>
+                            <option value="*">
+                                <?php echo Text::_('COM_CONTENTBUILDER_ANY'); ?>
+                            </option>
                             <?php
-                            if ($publish_allowed) {
+                            foreach ($this->languages as $filter_language) {
                                 ?>
-                                <select style="max-width: 100px;" name="list_publish">
-                                    <option value="-1"> -
-                                        <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED_UNPUBLISHED'); ?> -
-                                    </option>
-                                    <option value="1">
-                                        <?php echo Text::_('PUBLISH') ?>
-                                    </option>
-                                    <option value="0">
-                                        <?php echo Text::_('UNPUBLISH') ?>
-                                    </option>
-                                </select>
-                                <a class="button cbButton cbSetButton" href="javascript:contentbuilder_publish();">
-                                    <?php echo Text::_('COM_CONTENTBUILDER_SET'); ?>
-                                </a>
-                            <?php
+                                <option value="<?php echo $filter_language; ?>">
+                                    <?php echo $filter_language; ?>
+                                </option>
+                                <?php
                             }
                             ?>
-                            <?php if (($new_allowed || $delete_allowed || $state_allowed || $publish_allowed) && $language_allowed) { ?>|
-                            <?php } ?>
-                            <?php
-                            if ($language_allowed) {
-                                ?>
-                                <select style="max-width: 100px;" name="list_language">
-                                    <option value="*"> -
-                                        <?php echo Text::_('COM_CONTENTBUILDER_LANGUAGE'); ?> -
-                                    </option>
-                                    <option value="*">
-                                        <?php echo Text::_('COM_CONTENTBUILDER_ANY'); ?>
-                                    </option>
-                                    <?php
-                                    foreach ($this->languages as $filter_language) {
-                                        ?>
-                                        <option value="<?php echo $filter_language; ?>"><?php echo $filter_language; ?></option>
-                            <?php
-                                    }
-                                    ?>
-                    </select>
-                    <a class=" button cbButton cbSetButton" href="javascript:contentbuilder_language();">
-                                        <?php echo Text::_('COM_CONTENTBUILDER_SET'); ?></a>
-                                        <?php
-                            }
+                        </select>
+                        <a class=" button cbButton cbSetButton" href="javascript:contentbuilder_language();">
+                            <?php echo Text::_('COM_CONTENTBUILDER_SET'); ?>
+                        </a>
+                        <?php
+                    }
 
-                            if ($this->show_records_per_page) {
-                                ?>
+                    if ($this->show_records_per_page) {
+                        ?>
 
-                                        <?php echo $this->pagination->getPagesCounter(); ?>
-                                        <?php
-                                        echo '&nbsp;&nbsp;&nbsp;' . Text::_('COM_CONTENTBUILDER_DISPLAY_NUM') . '&nbsp;';
-                                        echo $this->pagination->getLimitBox();
-                                        ?>
-                                        <?php echo Text::_('COM_CONTENTBUILDER_OF'); ?>
-                                        <?php echo $this->total; ?>
+                        <?php echo $this->pagination->getPagesCounter(); ?>
+                        <?php
+                        echo '&nbsp;&nbsp;&nbsp;' . Text::_('COM_CONTENTBUILDER_DISPLAY_NUM') . '&nbsp;';
+                        echo $this->pagination->getLimitBox();
+                        ?>
+                        <?php echo Text::_('COM_CONTENTBUILDER_OF'); ?>
+                        <?php echo $this->total; ?>
 
-                                        <?php
-                            }
-                            ?>
+                        <?php
+                    }
+                    ?>
                 </td>
             </tr>
             <tr>
@@ -227,24 +240,30 @@ SELECT
                                 <?php
                                 foreach ($this->states as $state) {
                                     ?>
-                                    <option value="<?php echo $state['id'] ?>"<?php echo $this->lists['filter_state'] == $state['id'] ? ' selected="selected"' : ''; ?>><?php echo $state['title'] ?></option>
-                            <?php
+                                    <option value="<?php echo $state['id'] ?>" <?php echo $this->lists['filter_state'] == $state['id'] ? ' selected="selected"' : ''; ?>>
+                                        <?php echo $state['title'] ?>
+                                    </option>
+                                    <?php
                                 }
                                 ?>
-                        </select>
-                        <?php
+                            </select>
+                            <?php
                         }
 
                         if ($this->list_publish && $publish_allowed) {
                             ?>
-                
-                        <select style=" max-width: 100px;" name="list_publish_filter" id="list_publish_filter"
-                                    onchange="document.adminForm.submit();">
+
+                            <select style=" max-width: 100px;" name="list_publish_filter" id="list_publish_filter"
+                                onchange="document.adminForm.submit();">
                                 <option value="-1"> -
                                     <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED_UNPUBLISHED'); ?> -
                                 </option>
-                                <option value="1" <?php echo $this->lists['filter_publish'] == 1 ? ' selected="selected"' : ''; ?>><?php echo Text::_('PUBLISHED') ?></option>
-                                <option value="0" <?php echo $this->lists['filter_publish'] == 0 ? ' selected="selected"' : ''; ?>><?php echo Text::_('UNPUBLISHED') ?></option>
+                                <option value="1" <?php echo $this->lists['filter_publish'] == 1 ? ' selected="selected"' : ''; ?>>
+                                    <?php echo Text::_('PUBLISHED') ?>
+                                </option>
+                                <option value="0" <?php echo $this->lists['filter_publish'] == 0 ? ' selected="selected"' : ''; ?>>
+                                    <?php echo Text::_('UNPUBLISHED') ?>
+                                </option>
                             </select>
                             <?php
                         }
@@ -259,20 +278,23 @@ SELECT
                                 <?php
                                 foreach ($this->languages as $filter_language) {
                                     ?>
-                                    <option value="<?php echo $filter_language; ?>"<?php echo $this->lists['filter_language'] == $filter_language ? ' selected="selected"' : ''; ?>><?php echo $filter_language; ?></option>
-                                <?php
+                                    <option value="<?php echo $filter_language; ?>" <?php echo $this->lists['filter_language'] == $filter_language ? ' selected="selected"' : ''; ?>>
+                                        <?php echo $filter_language; ?>
+                                    </option>
+                                    <?php
                                 }
                                 ?>
-                        </select>
-                        <?php
+                            </select>
+                            <?php
                         }
                         ?>
-                    <button class=" button cbButton cbSearchButton" onclick="document.adminForm.submit();">
-                                <?php echo Text::_('COM_CONTENTBUILDER_SEARCH') ?></button>
-                                <button class="button cbButton cbResetButton"
-                                    onclick="document.getElementById('contentbuilder_filter').value='';<?php echo $this->list_state && count($this->states) ? "if(document.getElementById('list_state_filter')) document.getElementById('list_state_filter').selectedIndex=0;" : ""; ?><?php echo $this->list_publish ? "if(document.getElementById('list_publish_filter')) document.getElementById('list_publish_filter').selectedIndex=0;" : ""; ?>document.adminForm.submit();">
-                                    <?php echo Text::_('COM_CONTENTBUILDER_RESET') ?>
-                                </button>
+                        <button class=" button cbButton cbSearchButton" onclick="document.adminForm.submit();">
+                            <?php echo Text::_('COM_CONTENTBUILDER_SEARCH') ?>
+                        </button>
+                        <button class="button cbButton cbResetButton"
+                            onclick="document.getElementById('contentbuilder_filter').value='';<?php echo $this->list_state && count($this->states) ? "if(document.getElementById('list_state_filter')) document.getElementById('list_state_filter').selectedIndex=0;" : ""; ?><?php echo $this->list_publish ? "if(document.getElementById('list_publish_filter')) document.getElementById('list_publish_filter').selectedIndex=0;" : ""; ?>document.adminForm.submit();">
+                            <?php echo Text::_('COM_CONTENTBUILDER_RESET') ?>
+                        </button>
                     </td>
                     <?php
                 }
@@ -380,33 +402,34 @@ SELECT
             $n = count($this->items);
             for ($i = 0; $i < $n; $i++) {
                 $row = $this->items[$i];
-                $link = JRoute::_('index.php?option=com_contentbuilder&layout=select&&controller=details&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
-                $edit_link = JRoute::_('index.php?option=com_contentbuilder&layout=select&controller=edit&backtolist=1&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
-                $publish_link = JRoute::_('index.php?option=com_contentbuilder&layout=select&controller=edit&task=publish&backtolist=1&id=' . $this->form_id . '&list_publish=1&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
-                $unpublish_link = JRoute::_('index.php?option=com_contentbuilder&layout=select&controller=edit&task=publish&backtolist=1&id=' . $this->form_id . '&list_publish=0&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
+                $link = Route::_('index.php?option=com_contentbuilder&layout=select&&controller=details&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
+                $edit_link = Route::_('index.php?option=com_contentbuilder&layout=select&controller=edit&backtolist=1&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
+                $publish_link = Route::_('index.php?option=com_contentbuilder&layout=select&controller=edit&task=publish&backtolist=1&id=' . $this->form_id . '&list_publish=1&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
+                $unpublish_link = Route::_('index.php?option=com_contentbuilder&layout=select&controller=edit&task=publish&backtolist=1&id=' . $this->form_id . '&list_publish=0&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
                 $select = '<input type="checkbox" name="cid[]" value="' . $row->colRecord . '"/>';
                 ?>
                 <tr class="<?php echo "row$k"; ?>">
-                <?php
-                if ($this->show_id_column) {
-                    ?>
-                    <td>
-                        <?php
-                        if (($view_allowed || $this->own_only)) {
-                            ?>
-                            <a href=" <?php echo $link; ?>">
-                            <?php echo $row->colRecord; ?></a>
-                            <?php
-                        } else {
-                            ?>
-                            <?php echo $row->colRecord; ?>
-                            <?php
-                        }
+                    <?php
+                    if ($this->show_id_column) {
                         ?>
+                        <td>
+                            <?php
+                            if (($view_allowed || $this->own_only)) {
+                                ?>
+                                <a href=" <?php echo $link; ?>">
+                                    <?php echo $row->colRecord; ?>
+                                </a>
+                                <?php
+                            } else {
+                                ?>
+                                <?php echo $row->colRecord; ?>
+                                <?php
+                            }
+                            ?>
                         </td>
                         <?php
-                }
-                ?>
+                    }
+                    ?>
                     <?php
                     if ($this->select_column && ($delete_allowed || $state_allowed || $publish_allowed)) {
                         ?>
@@ -429,7 +452,7 @@ SELECT
                         ?>
                         <td>
                             <a href="<?php echo $edit_link; ?>"><img src=" ../components/com_contentbuilder/images/edit.png"
-                                border="0" width="18" height="18" /></a>
+                                    border="0" width="18" height="18" /></a>
                         </td>
                         <?php
                     }
@@ -469,39 +492,41 @@ SELECT
                             <?php
                             if (($view_allowed || $this->own_only)) {
                                 ?>
-                                <a href="<?php echo $link; ?>"><?php echo $row->colArticleId; ?></a>
-                            <?php
+                                <a href="<?php echo $link; ?>">
+                                    <?php echo $row->colArticleId; ?>
+                                </a>
+                                <?php
                             } else {
                                 ?>
-                            <?php echo $row->colArticleId; ?>
-                            <?php
+                                <?php echo $row->colArticleId; ?>
+                                <?php
                             }
                             ?>
-                    </td>
-                    <?php
+                        </td>
+                        <?php
                     }
                     ?>
-                <?php
-                if ($this->list_author) {
-                    ?>
-                    <td>
-                        <?php
-                        if (($view_allowed || $this->own_only)) {
-                            ?>
-                            <a href=" <?php echo $link; ?>">
+                    <?php
+                    if ($this->list_author) {
+                        ?>
+                        <td>
+                            <?php
+                            if (($view_allowed || $this->own_only)) {
+                                ?>
+                                <a href=" <?php echo $link; ?>">
                                     <?php echo htmlentities($row->colAuthor, ENT_QUOTES, 'UTF-8'); ?>
                                 </a>
                                 <?php
-                        } else {
-                            ?>
+                            } else {
+                                ?>
                                 <?php echo htmlentities($row->colAuthor, ENT_QUOTES, 'UTF-8'); ?>
                                 <?php
-                        }
-                        ?>
+                            }
+                            ?>
                         </td>
                         <?php
-                }
-                ?>
+                    }
+                    ?>
                     <?php
                     if ($this->list_rating) {
                         ?>
