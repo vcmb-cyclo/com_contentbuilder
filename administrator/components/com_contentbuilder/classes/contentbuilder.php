@@ -4,6 +4,7 @@
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
  * @license     GNU/GPL
+ * @copyright Copyright (C) 2024 by XDA+GIL
  */
 
 
@@ -1431,10 +1432,9 @@ class contentbuilder
                                         }
                 }
 
-                if (!$element['default_value'] && !$hasRecords) {
+                if (!isset($element['default_value']) && !$hasRecords) {
                     $element['default_value'] = $item['value'];
-                } else if ($element['default_value'] && !$hasRecords) {
-
+                } else if (isset($element['default_value']) && !$hasRecords) {
                     $element['default_value'] = self::execPhp($element['default_value']);
                 }
 
@@ -1442,7 +1442,7 @@ class contentbuilder
 
                 if (is_array($element)) {
 
-                    if ($element['type'] == 'captcha' || trim($element['validations']) != '' || trim($element['custom_validation_script']) != '') {
+                    if ($element['type'] == 'captcha' || trim($element['validations'] ?? '') != '' || trim($element['custom_validation_script'] ?? '') != '') {
                         $asterisk = ' <span class="cbRequired" style="color:red;">*</span>';
                     }
 
