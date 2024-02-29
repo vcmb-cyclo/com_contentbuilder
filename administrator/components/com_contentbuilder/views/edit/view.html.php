@@ -4,6 +4,7 @@
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
  * @license     GNU/GPL
+ * @copyright Copyright (C) 2024 by XDA+GIL
  */
 
 // no direct access
@@ -21,6 +22,13 @@ require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuild
 
 class ContentbuilderViewEdit extends CBView
 {
+
+	protected $sectioncategories;
+	protected $lists;
+	protected $row;
+	protected $article_settings;
+	protected $article_options;
+
 	function display($tpl = null)
 	{
 		//JHTML::_('bootstrap.tooltip');
