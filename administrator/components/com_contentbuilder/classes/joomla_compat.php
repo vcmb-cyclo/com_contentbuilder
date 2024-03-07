@@ -15,6 +15,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Registry\Registry;
+use Joomla\CMS\Date\Date;
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'CBFile.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'CBFactory.php');
@@ -107,7 +108,7 @@ class CBCompat
         return Factory::getConfig()->get(preg_replace("/^config./", '', $key, 1), $value);
     }
 
-    public static function toSql(JDate $dateObj)
+    public static function toSql(Date $dateObj)
     {
         return $dateObj->toSql();
     }

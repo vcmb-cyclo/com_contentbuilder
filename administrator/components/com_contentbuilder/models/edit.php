@@ -23,6 +23,7 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Date\Date;
 
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
@@ -1929,15 +1930,15 @@ var contentbuilder = new function(){
             $sendEmail = $db->loadColumn();
 
             if (count($sendEmail) > 0) {
-                $jdate = new JDate();
+                $Date = new Date();
                 // Build the query to add the messages
                 $q = "INSERT INTO `#__messages` (`user_id_from`, `user_id_to`, `date_time`, `subject`, `message`)
                                 VALUES ";
                 $messages = array();
-                $___jdate = $jdate->toSql();
+                $___Date = $Date->toSql();
 
                 foreach ($sendEmail as $userid) {
-                    $messages[] = "(" . $userid . ", " . $userid . ", '" . $___jdate . "', '" . Text::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT') . "', '" . Text::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username']) . "')";
+                    $messages[] = "(" . $userid . ", " . $userid . ", '" . $___Date . "', '" . Text::_('COM_USERS_MAIL_SEND_FAILURE_SUBJECT') . "', '" . Text::sprintf('COM_USERS_MAIL_SEND_FAILURE_BODY', $return, $data['username']) . "')";
                 }
                 $q .= implode(',', $messages);
                 $db->setQuery($q);

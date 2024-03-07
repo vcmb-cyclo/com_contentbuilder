@@ -16,6 +16,8 @@ use Joomla\CMS\Factory;
 use Joomla\Component\Scheduler\Administrator\Task\Task;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Date\Date;
+
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -117,7 +119,7 @@ class ExecRuleHelper
 
     /**
      * Returns a sql-formatted string for a DateTime object.
-     * Only needed for DateTime objects returned by CronExpression, JDate supports this as class method.
+     * Only needed for DateTime objects returned by CronExpression, Date supports this as class method.
      *
      * @param   \DateTime  $dateTime  A DateTime object to format
      *
