@@ -4,12 +4,14 @@
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
  * @license     GNU/GPL
+ * @copyright   Copyright (C) 2024 by XDA+GIL 
 */
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Filesystem\File;
+use Joomla\CMS\Environment\Browser;
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
@@ -919,8 +921,8 @@ class contentbuilder_com_breezingforms{
                 ".$db->Quote($this->properties->title).",
                 ".$db->Quote($this->properties->name).",
                 ".$db->Quote($_SERVER['REMOTE_ADDR']).",
-                ".$db->Quote(JBrowser::getInstance()->getAgentString()).",
-                ".$db->Quote(JBrowser::getInstance()->getPlatform()).",
+                ".$db->Quote(Browser::getInstance()->getAgentString()).",
+                ".$db->Quote(Browser::getInstance()->getPlatform()).",
                 ".$db->Quote(Factory::getApplication()->getIdentity()->get('id',0)).",
                 ".$db->Quote($username).",
                 ".$db->Quote($user_full_name)."
