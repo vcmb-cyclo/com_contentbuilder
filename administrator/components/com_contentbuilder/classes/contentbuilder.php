@@ -1701,7 +1701,7 @@ class contentbuilder
     public static function createArticle($contentbuilder_form_id, $record_id, array $record, array $elements_allowed, $title_field = '', $metadata = null, $config = array(), $full = false, $limited_options = true, $menu_cat_id = null)
     {
 
-        $tz = new DateTimeZone(Factory::getApplication()->getCfg('offset'));
+        $tz = new DateTimeZone(Factory::getApplication()->get('offset'));
 
         if (isset($config['publish_up']) && $config['publish_up'] && $config['publish_up'] != '0000-00-00 00:00:00') {
             $config['publish_up'] = Factory::getDate($config['publish_up'], $tz);
