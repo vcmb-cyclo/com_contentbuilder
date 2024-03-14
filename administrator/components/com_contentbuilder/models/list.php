@@ -16,6 +16,7 @@ use Joomla\Registry\Registry;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Table\Table;
 
 require_once(JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_contentbuilder'.DS.'classes'.DS.'joomla_compat.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
@@ -549,7 +550,7 @@ class ContentbuilderModelList extends CBModel
                     // plugin call
                     $limitstart = CBRequest::getVar('limitstart', 0, '', 'int');
                     $start      = CBRequest::getVar('start', 0, '', 'int');
-                    $table = JTable::getInstance('content');
+                    $table = Table::getInstance('content');
                     $registry = new Registry;
 	                $registry->loadString($table->attribs);
                     PluginHelper::importPlugin('content');
