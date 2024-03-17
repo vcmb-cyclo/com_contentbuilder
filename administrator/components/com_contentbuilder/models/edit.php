@@ -1812,7 +1812,7 @@ var contentbuilder = new function(){
         $data['fromname'] = $config->get('fromname');
         $data['mailfrom'] = $config->get('mailfrom');
         $data['sitename'] = $config->get('sitename');
-        $data['siteurl'] = JUri::root();
+        $data['siteurl'] = Uri::root();
 
         // Handle account activation/confirmation emails.
         if ($useractivation == 2) {
