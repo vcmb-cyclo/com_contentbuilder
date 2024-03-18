@@ -377,7 +377,7 @@ class ContentbuilderModelVerify extends CBModel
 
         $config = Factory::getConfig();
         $userParams = ComponentHelper::getParams('com_users');
-        $db = $this->getDbo();
+        $db = $this->getDatabase();
 
         // Get the user id based on the token.
         $db->setQuery(
@@ -456,11 +456,11 @@ class ContentbuilderModelVerify extends CBModel
 
     public function activate($token)
     {
-        Factory::getLanguage()->load('com_users', JPATH_SITE);
+        Factory::getApplication()->getLanguage()->load('com_users', JPATH_SITE);
 
         $config = Factory::getConfig();
         $userParams = ComponentHelper::getParams('com_users');
-        $db = $this->getDbo();
+        $db = $this->getDatabase();
 
         // Get the user id based on the token.
         $db->setQuery(

@@ -161,7 +161,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
         if ($app->isClient('site')) {
 
             // loading the required themes, if any
-            $body = Factory::getDocument()->getBuffer('component');
+            $body = Factory::getApplication()->getDocument()->getBuffer('component');
             preg_match_all("/<!--\(cbArticleId:(\d{1,})\)-->/si", $body, $matched_ids);
 
             $ids = array();
@@ -175,7 +175,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
             $the_ids = implode(',', $ids);
 
             if ($the_ids) {
-                Factory::getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
+                Factory::getApplication()->getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
                 $db->setQuery("Select Distinct forms.theme_plugin From #__contentbuilder_forms As forms, #__contentbuilder_articles As articles, #__content As content Where forms.id = articles.form_id And articles.article_id In (" . $the_ids . ") And content.id = articles.article_id And (content.state = 1 Or content.state = 0)");
                 $themes = $db->loadColumn();
                 foreach ($themes as $theme) {
@@ -187,8 +187,8 @@ class plgSystemContentbuilder_system extends CMSPlugin
                         $results_css = $eventresults_css->getArgument('result');
                         $results_js = $eventresults_js->getArgument('result');
 
-                        Factory::getDocument()->addStyleDeclaration(implode('', $results_css));
-                        Factory::getDocument()->addScriptDeclaration(implode('', $results_js));
+                        Factory::getApplication()->getDocument()->addStyleDeclaration(implode('', $results_css));
+                        Factory::getApplication()->getDocument()->addScriptDeclaration(implode('', $results_js));
                     }
                 }
             }

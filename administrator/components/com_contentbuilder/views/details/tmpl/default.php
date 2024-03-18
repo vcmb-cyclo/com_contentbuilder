@@ -18,24 +18,24 @@ use Joomla\CMS\HTML\HTMLHelper;
 $edit_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('edit') : contentbuilder::authorize('edit');
 $delete_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('delete') : contentbuilder::authorize('delete');
 $view_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('view') : contentbuilder::authorize('view');
-Factory::getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
+Factory::getApplication()->getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
 ?>
 
 <?php if ($this->author)
-    Factory::getDocument()->setMetaData('author', $this->author); ?>
+    Factory::getApplication()->getDocument()->setMetaData('author', $this->author); ?>
 <?php if ($this->robots)
-    Factory::getDocument()->setMetaData('robots', $this->robots); ?>
+    Factory::getApplication()->getDocument()->setMetaData('robots', $this->robots); ?>
 <?php if ($this->rights)
-    Factory::getDocument()->setMetaData('rights', $this->rights); ?>
+    Factory::getApplication()->getDocument()->setMetaData('rights', $this->rights); ?>
 <?php if ($this->metakey)
-    Factory::getDocument()->setMetaData('keywords', $this->metakey); ?>
+    Factory::getApplication()->getDocument()->setMetaData('keywords', $this->metakey); ?>
 <?php if ($this->metadesc)
-    Factory::getDocument()->setMetaData('description', $this->metadesc); ?>
+    Factory::getApplication()->getDocument()->setMetaData('description', $this->metadesc); ?>
 <?php if ($this->xreference)
-    Factory::getDocument()->setMetaData('xreference', $this->xreference); ?>
+    Factory::getApplication()->getDocument()->setMetaData('xreference', $this->xreference); ?>
 
-<?php Factory::getDocument()->addStyleDeclaration($this->theme_css); ?>
-<?php Factory::getDocument()->addScriptDeclaration($this->theme_js); ?>
+<?php Factory::getApplication()->getDocument()->addStyleDeclaration($this->theme_css); ?>
+<?php Factory::getApplication()->getDocument()->addScriptDeclaration($this->theme_js); ?>
 <script type="text/javascript">
 <!--
 function contentbuilder_delete(){

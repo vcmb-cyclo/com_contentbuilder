@@ -30,7 +30,7 @@ class ContentbuilderViewStorage extends HtmlView
     {
 	    Factory::getApplication()->input->set('hidemainmenu', true);
 
-        $document = Factory::getDocument();
+        $document = Factory::getApplication()->getDocument();
         $document->addScript( Uri::root(true) . '/administrator/components/com_contentbuilder/assets/js/jscolor/jscolor.js' );
 
         echo '

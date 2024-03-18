@@ -26,10 +26,10 @@ $state_allowed = contentbuilder::authorize('state');
 $publish_allowed = contentbuilder::authorize('publish');
 $rating_allowed = contentbuilder::authorize('rating');
 
-Factory::getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
+Factory::getApplication()->getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
 ?>
-<?php Factory::getDocument()->addStyleDeclaration($this->theme_css); ?>
-<?php Factory::getDocument()->addScriptDeclaration($this->theme_js); ?>
+<?php Factory::getApplication()->getDocument()->addStyleDeclaration($this->theme_css); ?>
+<?php Factory::getApplication()->getDocument()->addScriptDeclaration($this->theme_js); ?>
 <script language="javascript" type="text/javascript">
     <!--
     function tableOrdering( order, dir, task ) {

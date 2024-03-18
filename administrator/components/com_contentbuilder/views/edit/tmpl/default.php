@@ -19,8 +19,8 @@ $delete_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('dele
 $view_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('view') : contentbuilder::authorize('view');
 $fullarticle_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('fullarticle') : contentbuilder::authorize('fullarticle');
 ?>
-<?php Factory::getDocument()->addStyleDeclaration($this->theme_css);?>
-<?php Factory::getDocument()->addScriptDeclaration($this->theme_js);?>
+<?php Factory::getApplication()->getDocument()->addStyleDeclaration($this->theme_css);?>
+<?php Factory::getApplication()->getDocument()->addScriptDeclaration($this->theme_js);?>
 <a name="article_up"></a>
 <script type="text/javascript">
 <!--

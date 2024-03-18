@@ -19,7 +19,7 @@ $th = 'th';
 if ($this->page_heading) {
     ?>
     <h1 class="contentheading">
-        <?php echo Factory::getDocument()->getTitle(); ?>
+        <?php echo Factory::getApplication()->getDocument()->getTitle(); ?>
     </h1>
     <?php
 }

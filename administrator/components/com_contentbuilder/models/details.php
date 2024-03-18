@@ -219,11 +219,11 @@ class ContentbuilderModelDetails extends CBModel
                         if (!$this->_menu_item) {
                             $data->page_title = $data->use_view_name_as_title ? $data->name : $data->form->getPageTitle();
                         } else {
-                            $data->page_title = $data->use_view_name_as_title ? $data->name : Factory::getDocument()->getTitle();
+                            $data->page_title = $data->use_view_name_as_title ? $data->name : Factory::getApplication()->getDocument()->getTitle();
                         }
                     }
                     if ($this->frontend) {
-                        $document = Factory::getDocument();
+                        $document = Factory::getApplication()->getDocument();
                         $document->setTitle($data->page_title);
                     }
                     $data->show_back_button = $this->_show_back_button;
@@ -342,7 +342,7 @@ class ContentbuilderModelDetails extends CBModel
                         }
 
                         if ($this->frontend) {
-                            $document = Factory::getDocument();
+                            $document = Factory::getApplication()->getDocument();
                             $document->setTitle(html_entity_decode($data->page_title, ENT_QUOTES, 'UTF-8'));
                         }
 

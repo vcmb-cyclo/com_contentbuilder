@@ -165,7 +165,7 @@ class contentbuilder
 
         if (!$cssLoaded) {
 
-            Factory::getDocument()->addStyleDeclaration('.cbVotingDisplay, .cbVotingStarButtonWrapper {
+            Factory::getApplication()->getDocument()->addStyleDeclaration('.cbVotingDisplay, .cbVotingStarButtonWrapper {
 	height: 20px;
 	width: 100px;
 }

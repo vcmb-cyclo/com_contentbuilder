@@ -64,7 +64,7 @@ class ContentbuilderModelList extends CBModel
         $this->frontend = class_exists('cbFeMarker');
 
         if($this->frontend){
-            Factory::getDocument()->addStyleSheet(Uri::root(true).'/components/com_contentbuilder/assets/css/system.css');
+            Factory::getApplication()->getDocument()->addStyleSheet(Uri::root(true).'/components/com_contentbuilder/assets/css/system.css');
         }
         
         if(CBRequest::getInt('Itemid',0)){
@@ -253,7 +253,7 @@ class ContentbuilderModelList extends CBModel
                         if(!$this->_menu_item){
                             $data->page_title = $data->use_view_name_as_title ? $data->name : $data->form->getPageTitle();
                         }else{
-                            $data->page_title = $data->use_view_name_as_title ? $data->name : Factory::getDocument()->getTitle();
+                            $data->page_title = $data->use_view_name_as_title ? $data->name : Factory::getApplication()->getDocument()->getTitle();
                         }
                     }
                     
