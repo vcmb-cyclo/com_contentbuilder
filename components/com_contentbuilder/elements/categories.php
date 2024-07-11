@@ -11,9 +11,10 @@ defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
+use Joomla\CMS\Form\FormField;
 use Joomla\Database\DatabaseInterface;
 
-class JFormFieldCategories extends JFormField
+class JFormFieldCategories extends FormField
 {
 
     protected $type = 'Forms';
