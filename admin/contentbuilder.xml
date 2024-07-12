@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="4.03 patch j5" method="upgrade">
+<extension type="component" version="4.0" method="upgrade">
  <name>Contentbuilder</name>
- <creationDate>2024-01-06</creationDate>
- <author>Markus Bopp (patched gil/xda)</author>
- <authorEmail>markus.bopp@crosstec.org</authorEmail>
- <authorUrl>https://crosstec.org</authorUrl>
- <copyright>Copyright 2011 - 2023 by Markus Bopp (+ patch gil/xda)</copyright>
+ <creationDate>2024-07-11</creationDate>
+ <author>XDA+GIL</author>
+ <authorEmail>noreply@vcmb.fr</authorEmail>
+ <authorUrl>https://breezingforms.vcmb.fr</authorUrl>
+ <copyright>Copyright 2011 - 2024 by XDA+GIL</copyright>
  <license>GNU/GPL v2.0</license>
- <version>0.10 B303 + patch Joomla 5.01</version>
- <description>
- A content construction kit and application framework extension for Joomla!  
- Included cumulative bug fixes patch for Joomla! 5.01, 4.41 - PHP 8.3, 8.2     
- Search for _ORIGINAL files to retreive fixes.  
- Installation instructions and patch info from gil/xda.  
- See README_CB_patch_info_j4_j5.pdf  
- </description>
+ <version>5.0.0-RC1 (build 1)</version>
+ <description>A content construction kit and application framework extension for Joomla!</description>
 
  <scriptfile>script.php</scriptfile>
 
