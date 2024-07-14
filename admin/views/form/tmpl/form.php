@@ -1175,7 +1175,6 @@ $cbcompat = new CBCompat();
             </tr>
         </table>
 
-
         <?php
         $editor = Editor::getInstance(Factory::getApplication()->get('editor'));
         echo $editor->display("details_template", $this->form->details_template, '100%', '550', '75', '20');
@@ -1193,7 +1192,6 @@ $cbcompat = new CBCompat();
         $params = array('syntax' => 'php');
         $editor = Editor::getInstance('codemirror');
         echo $editor->display("details_prepare", $this->form->details_prepare, '100%', '550', '75', '20', false, null, null, null, $params);
-
 
         //echo '<textarea name="details_prepare" style="width:100%;height: 500px;">'.htmlentities($this->form->details_prepare, ENT_QUOTES, 'UTF-8').'</textarea>';
         ?>
@@ -1492,7 +1490,7 @@ $cbcompat = new CBCompat();
         $title = Text::_('COM_CONTENTBUILDER_PERMISSIONS');
         echo $cbcompat->startPanel($title, "tab8");
 
-        $sliders = CBTabs::getInstance('sliders', array('startOffset' => Factory::getApplication()->getSession()->get('slideStartOffset', 1), 'startTransition' => 0));
+        $sliders = CBTabs::getInstance('perm-pane', array('startOffset' => Factory::getApplication()->getSession()->get('slideStartOffset', 1), 'startTransition' => 0));
 
         echo $sliders->startPane("perm-pane");
 
