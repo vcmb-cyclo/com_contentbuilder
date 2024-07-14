@@ -452,6 +452,7 @@
 		<targetplatform name="joomla" version="3.9"/>
 	</update>
 
+
 	<update>
 		<name>ContentBuilder</name>
 		<description>ContentBuilder Update</description>
@@ -470,5 +471,4 @@
 		<maintainerurl>https://breezingforms.vcmb.fr</maintainerurl>
 		<targetplatform name="joomla" version="5.1"/>
 	</update>
-
 </updates>
