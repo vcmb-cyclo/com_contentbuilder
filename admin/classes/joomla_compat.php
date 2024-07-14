@@ -30,7 +30,7 @@ if (!function_exists('cb_b64enc')) {
     {
         $base = 'base';
         $sixty_four = '64_encode';
-        return call_user_func($base . $sixty_four, $str);
+        return call_user_func($base . $sixty_four, $str ?? '');
     }
 
 }
@@ -40,7 +40,7 @@ if (!function_exists('cb_b64dec')) {
     {
         $base = 'base';
         $sixty_four = '64_decode';
-        return call_user_func($base . $sixty_four, $str);
+        return call_user_func($base . $sixty_four, $str ?? '');
     }
 }
 
