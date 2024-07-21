@@ -19,22 +19,18 @@ use Joomla\CMS\Session\Session;
  */
 
 if (!defined('CBREQUEST_NOTRIM')) {
-
 	define('CBREQUEST_NOTRIM', 1);
 }
 
 if (!defined('CBREQUEST_ALLOWRAW')) {
-
 	define('CBREQUEST_ALLOWRAW', 2);
 }
 
 if (!defined('CBREQUEST_ALLOWHTML')) {
-
 	define('CBREQUEST_ALLOWHTML', 4);
 }
 
 if (!class_exists('CBRequest')) {
-
 
 	/**
 	 * Create the request global object
@@ -64,7 +60,6 @@ if (!class_exists('CBRequest')) {
 		public static function getUri()
 		{
 			$uri = Uri::getInstance();
-
 			return $uri->toString(array('path', 'query'));
 		}
 
@@ -470,7 +465,6 @@ if (!class_exists('CBRequest')) {
 		 */
 		public static function set($array, $hash = 'default', $overwrite = true)
 		{
-
 			foreach ($array as $key => $value) {
 				Factory::getApplication()->input->set($key, $value);
 				self::setVar($key, $value, $hash, $overwrite);

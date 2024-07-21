@@ -240,6 +240,7 @@ $cbcompat = new CBCompat();
                                     </b>
                                 </label>
                                 <?php
+
                                 if (!$this->form->reference_id) {
                                     ?>
                                     <select class="form-select-sm" name="reference_id" style="max-width: 200px;">
@@ -1182,7 +1183,7 @@ $cbcompat = new CBCompat();
         $title = Text::_('COM_CONTENTBUILDER_DETAILS_PREPARE');
         echo HTMLHelper::_('uitab.endTab');
         echo $cbcompat->startPanel($title, "tab4");
-        if (trim($this->form->details_prepare) == '') {
+        if (trim($this->form->details_prepare ?? '') == '') {
             $this->form->details_prepare = '// Here you may alter labels and values for each item before it gets rendered through your details template.' . "\n";
             $this->form->details_prepare .= '// For example:' . "\n";
             $this->form->details_prepare .= '// $items["ITEMNAME"]["value"] = "<b>".$items["ITEMNAME"]["value"]."</b>";' . "\n";
