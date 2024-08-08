@@ -248,7 +248,7 @@ $cbcompat = new CBCompat();
                                         foreach ($this->form->forms as $reference_id => $title) {
                                             ?>
                                             <option value="<?php echo $reference_id ?>">
-                                                <?php echo htmlentities($title, ENT_QUOTES, 'UTF-8'); ?>
+                                                <?php echo htmlentities($title ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                             </option>
                                             <?php
                                         }
@@ -257,7 +257,7 @@ $cbcompat = new CBCompat();
                                     <?php
                                 } else {
                                     ?>
-                                    <?php echo htmlentities($this->form->form->getTitle(), ENT_QUOTES, 'UTF-8'); ?>
+                                    <?php echo htmlentities($this->form->form->getTitle() ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     <input type="hidden" name="reference_id"
                                         value="<?php echo $this->form->form->getReferenceId(); ?>" />
                                     <?php
@@ -513,7 +513,7 @@ $cbcompat = new CBCompat();
                                         foreach ($this->elements as $sortable) {
                                             ?>
                                             <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->initial_sort_order == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
-                                                <?php echo htmlentities($sortable->label, ENT_QUOTES, 'UTF-8'); ?>
+                                                <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 </value>
                                                 <?php
                                         }
@@ -536,7 +536,7 @@ $cbcompat = new CBCompat();
                                         foreach ($this->elements as $sortable) {
                                             ?>
                                             <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->initial_sort_order2 == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
-                                                <?php echo htmlentities($sortable->label, ENT_QUOTES, 'UTF-8'); ?>
+                                                <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 </value>
                                                 <?php
                                         }
@@ -551,7 +551,7 @@ $cbcompat = new CBCompat();
                                         foreach ($this->elements as $sortable) {
                                             ?>
                                             <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->initial_sort_order3 == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
-                                                <?php echo htmlentities($sortable->label, ENT_QUOTES, 'UTF-8'); ?>
+                                                <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 </value>
                                                 <?php
                                         }
@@ -588,7 +588,7 @@ $cbcompat = new CBCompat();
                                     </label>
                                     <input class="form-control form-control-sm" type="text" id="save_button_title"
                                         name="save_button_title"
-                                        value="<?php echo htmlentities($this->form->save_button_title, ENT_QUOTES, 'UTF-8'); ?>" />
+                                        value="<?php echo htmlentities($this->form->save_button_title ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
 
                                     <label for="apply_button_title">
                                         <span class="editlinktip hasTip"
@@ -598,7 +598,7 @@ $cbcompat = new CBCompat();
                                     </label>
                                     <input class="form-control form-control-sm" type="text" id="apply_button_title"
                                         name="apply_button_title"
-                                        value="<?php echo htmlentities($this->form->apply_button_title, ENT_QUOTES, 'UTF-8'); ?>" />
+                                        value="<?php echo htmlentities($this->form->apply_button_title ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                                 </div>
                             </fieldset>
 
@@ -746,14 +746,14 @@ $cbcompat = new CBCompat();
                                     id="itemLabels_<?php echo $row->id ?>"
                                     onclick="document.getElementById('itemLabels<?php echo $row->id ?>').style.display='block';this.style.display='none';document.getElementById('itemLabels<?php echo $row->id ?>').focus();">
                                     <b>
-                                        <?php echo htmlentities($row->label, ENT_QUOTES, 'UTF-8'); ?>
+                                        <?php echo htmlentities($row->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </b>
                                 </div>
                                 <input class="form-control form-control-sm"
                                     onblur="if(this.value=='') {this.value = 'Unnamed';} this.style.display='none';document.getElementById('itemLabels_<?php echo $row->id ?>').innerHTML='<b>'+this.value+'<b/>';document.getElementById('itemLabels_<?php echo $row->id ?>').style.display='block';"
                                     id="itemLabels<?php echo $row->id ?>" type="text" style="display:none; width: 100%;"
                                     name="itemLabels[<?php echo $row->id ?>]"
-                                    value="<?php echo htmlentities($row->label, ENT_QUOTES, 'UTF-8') ?>" />
+                                    value="<?php echo htmlentities($row->label ?? '', ENT_QUOTES, 'UTF-8') ?>" />
 
                                 <br />
 
@@ -803,12 +803,12 @@ $cbcompat = new CBCompat();
                             <td valign="top">
                                 <input class="form-control form-control-sm w-100" type="text" style="width: 20px;"
                                     name="itemWordwrap[<?php echo $row->id ?>]"
-                                    value="<?php echo htmlentities($row->wordwrap, ENT_QUOTES, 'UTF-8') ?>" />
+                                    value="<?php echo htmlentities($row->wordwrap ?? '', ENT_QUOTES, 'UTF-8') ?>" />
                             </td>
                             <td valign="top">
                                 <input class="form-control form-control-sm w-100" style="width: 150px;" type="text"
                                     name="itemWrapper[<?php echo $row->id ?>]"
-                                    value="<?php echo htmlentities($row->item_wrapper, ENT_QUOTES, 'UTF-8') ?>" />
+                                    value="<?php echo htmlentities($row->item_wrapper ?? '', ENT_QUOTES, 'UTF-8') ?>" />
                             </td>
                             <td valign="top">
                                 <?php echo $published; ?>
@@ -896,7 +896,7 @@ $cbcompat = new CBCompat();
                     <td>
                         <input class="form-control form-control-sm w-100" type="text"
                             name="list_states[<?php echo $state['id']; ?>][title]"
-                            value="<?php echo htmlentities($state['title'], ENT_QUOTES, 'UTF-8'); ?>" />
+                            value="<?php echo htmlentities($state['title'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     </td>
                     <td>
                         <input class="form-control form-control-sm w-100 color" type="text"
@@ -978,7 +978,7 @@ $cbcompat = new CBCompat();
                         foreach ($this->all_elements as $sortable) {
                             ?>
                             <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->title_field == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
-                                <?php echo htmlentities($sortable->label, ENT_QUOTES, 'UTF-8'); ?>
+                                <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                 </value>
                                 <?php
                         }
@@ -999,7 +999,7 @@ $cbcompat = new CBCompat();
                         foreach ($this->form->sectioncategories as $category) {
                             ?>
                             <option <?php echo $this->form->default_category == $category->value ? ' selected="selected"' : '' ?>value="<?php echo $category->value; ?>">
-                                <?php echo htmlentities($category->text, ENT_QUOTES, 'UTF-8'); ?>
+                                <?php echo htmlentities($category->text ?? '', ENT_QUOTES, 'UTF-8'); ?>
                             </option>
                             <?php
                         }
@@ -1242,7 +1242,7 @@ $cbcompat = new CBCompat();
         echo $cbcompat->startPanel($title, "tab6");
         if ($this->form->edit_by_type) {
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
-            echo '<input type="hidden" name="editable_prepare" value="' . htmlentities($this->form->editable_prepare, ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="editable_prepare" value="' . htmlentities($this->form->editable_prepare ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
         } else {
             if (trim($this->form->editable_prepare) == '') {
                 $this->form->editable_prepare = '// Here you may alter labels and values for each item before it gets rendered through your editable template.' . "\n";
@@ -1263,20 +1263,20 @@ $cbcompat = new CBCompat();
         if ($this->form->edit_by_type) {
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
             echo '<input type="hidden" name="email_admin_template" value="' . htmlentities($this->form->email_admin_template, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_template" value="' . htmlentities($this->form->email_template, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_subject" value="' . htmlentities($this->form->email_admin_subject, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_alternative_from" value="' . htmlentities($this->form->email_admin_alternative_from, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_alternative_fromname" value="' . htmlentities($this->form->email_admin_alternative_fromname, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_recipients" value="' . htmlentities($this->form->email_admin_recipients, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_recipients_attach_uploads" value="' . htmlentities($this->form->email_admin_recipients_attach_uploads, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_html" value="' . htmlentities($this->form->email_admin_html, ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_template" value="' . htmlentities($this->form->email_template ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_admin_subject" value="' . htmlentities($this->form->email_admin_subject ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_admin_alternative_from" value="' . htmlentities($this->form->email_admin_alternative_from ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_admin_alternative_fromname" value="' . htmlentities($this->form->email_admin_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_admin_recipients" value="' . htmlentities($this->form->email_admin_recipients ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_admin_recipients_attach_uploads" value="' . htmlentities($this->form->email_admin_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_admin_html" value="' . htmlentities($this->form->email_admin_html ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
 
-            echo '<input type="hidden" name="email_subject" value="' . htmlentities($this->form->email_subject, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_alternative_from" value="' . htmlentities($this->form->email_alternative_from, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_alternative_fromname" value="' . htmlentities($this->form->email_alternative_fromname, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_recipients" value="' . htmlentities($this->form->email_recipients, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_recipients_attach_uploads" value="' . htmlentities($this->form->email_recipients_attach_uploads, ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_html" value="' . htmlentities($this->form->email_html, ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_subject" value="' . htmlentities($this->form->email_subject ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_alternative_from" value="' . htmlentities($this->form->email_alternative_from ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_alternative_fromname" value="' . htmlentities($this->form->email_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_recipients" value="' . htmlentities($this->form->email_recipients ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_recipients_attach_uploads" value="' . htmlentities($this->form->email_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="email_html" value="' . htmlentities($this->form->email_html ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
 
 
         } else {
@@ -1303,7 +1303,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_subject" type="text"
                                 name="email_admin_subject"
-                                value="<?php echo htmlentities($this->form->email_admin_subject, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_admin_subject ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_admin_alternative_from">
@@ -1313,7 +1313,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_alternative_from" type="text"
                                 name="email_admin_alternative_from"
-                                value="<?php echo htmlentities($this->form->email_admin_alternative_from, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_admin_alternative_from ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                     </tr>
                     <tr>
@@ -1325,7 +1325,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_alternative_fromname"
                                 type="text" name="email_admin_alternative_fromname"
-                                value="<?php echo htmlentities($this->form->email_admin_alternative_fromname, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_admin_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_admin_recipients"><span class="editlinktip hasTip"
@@ -1336,7 +1336,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_recipients" type="text"
                                 name="email_admin_recipients"
-                                value="<?php echo htmlentities($this->form->email_admin_recipients, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_admin_recipients ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                     </tr>
                     <tr>
@@ -1349,7 +1349,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_recipients_attach_uploads"
                                 type="text" name="email_admin_recipients_attach_uploads"
-                                value="<?php echo htmlentities($this->form->email_admin_recipients_attach_uploads, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_admin_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_admin_html">
@@ -1405,7 +1405,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_subject" type="text"
                                 name="email_subject"
-                                value="<?php echo htmlentities($this->form->email_subject, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_subject ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_alternative_from">
@@ -1415,7 +1415,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_alternative_from" type="text"
                                 name="email_alternative_from"
-                                value="<?php echo htmlentities($this->form->email_alternative_from, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_alternative_from ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                     </tr>
                     <tr>
@@ -1427,7 +1427,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_alternative_fromname" type="text"
                                 name="email_alternative_fromname"
-                                value="<?php echo htmlentities($this->form->email_alternative_fromname, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_recipients">
@@ -1437,7 +1437,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_recipients" type="text"
                                 name="email_recipients"
-                                value="<?php echo htmlentities($this->form->email_recipients, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_recipients ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                     </tr>
                     <tr>
@@ -1449,7 +1449,7 @@ $cbcompat = new CBCompat();
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_recipients_attach_uploads"
                                 type="text" name="email_recipients_attach_uploads"
-                                value="<?php echo htmlentities($this->form->email_recipients_attach_uploads, ENT_QUOTES, 'UTF-8'); ?>" />
+                                value="<?php echo htmlentities($this->form->email_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_html">
@@ -1613,7 +1613,7 @@ $cbcompat = new CBCompat();
                     </td>
                     <td>
                         <input style="width: 100%;" id="force_url" name="force_url" type="text"
-                            value="<?php echo htmlentities($this->form->force_url, ENT_QUOTES, 'UTF-8'); ?>" />
+                            value="<?php echo htmlentities($this->form->force_url ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     </td>
                 </tr>
                 <?php
@@ -1962,7 +1962,7 @@ $cbcompat = new CBCompat();
                     </label>
                     <input class="form-control form-control-sm" style="width: 300px;" id="verification_url_view"
                         name="verification_url_view" type="text"
-                        value="<?php echo htmlentities($this->form->verification_url_view, ENT_QUOTES, 'UTF-8'); ?>" />
+                        value="<?php echo htmlentities($this->form->verification_url_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     <label for="verification_url_view">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_URL'); ?>
                     </label>
@@ -1986,7 +1986,7 @@ $cbcompat = new CBCompat();
                     </label>
                     <input class="form-control form-control-sm" style="width: 300px;" id="verification_url_new"
                         name="verification_url_new" type="text"
-                        value="<?php echo htmlentities($this->form->verification_url_new, ENT_QUOTES, 'UTF-8'); ?>" />
+                        value="<?php echo htmlentities($this->form->verification_url_new ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     <label for="verification_url_new">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_URL'); ?>
                     </label>
@@ -2011,7 +2011,7 @@ $cbcompat = new CBCompat();
                     </label>
                     <input class="form-control form-control-sm" style="width: 300px;" id="verification_url_new"
                         name="verification_url_edit" type="text"
-                        value="<?php echo htmlentities($this->form->verification_url_edit, ENT_QUOTES, 'UTF-8'); ?>" />
+                        value="<?php echo htmlentities($this->form->verification_url_edit ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     <label for="verification_url_edit">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_URL'); ?>
                     </label>
@@ -2051,7 +2051,7 @@ $cbcompat = new CBCompat();
                             foreach ($this->elements as $the_element) {
                                 ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_name_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
-                                    <?php echo htmlentities($the_element->label, ENT_QUOTES, 'UTF-8'); ?>
+                                    <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                     <?php
                             }
@@ -2068,7 +2068,7 @@ $cbcompat = new CBCompat();
                             foreach ($this->elements as $the_element) {
                                 ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_username_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
-                                    <?php echo htmlentities($the_element->label, ENT_QUOTES, 'UTF-8'); ?>
+                                    <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                     <?php
                             }
@@ -2085,7 +2085,7 @@ $cbcompat = new CBCompat();
                             foreach ($this->elements as $the_element) {
                                 ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_email_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
-                                    <?php echo htmlentities($the_element->label, ENT_QUOTES, 'UTF-8'); ?>
+                                    <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                     <?php
                             }
@@ -2102,7 +2102,7 @@ $cbcompat = new CBCompat();
                             foreach ($this->elements as $the_element) {
                                 ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_email_repeat_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
-                                    <?php echo htmlentities($the_element->label, ENT_QUOTES, 'UTF-8'); ?>
+                                    <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                     <?php
                             }
@@ -2119,7 +2119,7 @@ $cbcompat = new CBCompat();
                             foreach ($this->elements as $the_element) {
                                 ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_password_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
-                                    <?php echo htmlentities($the_element->label, ENT_QUOTES, 'UTF-8'); ?>
+                                    <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                     <?php
                             }
@@ -2137,7 +2137,7 @@ $cbcompat = new CBCompat();
                             foreach ($this->elements as $the_element) {
                                 ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_password_repeat_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
-                                    <?php echo htmlentities($the_element->label, ENT_QUOTES, 'UTF-8'); ?>
+                                    <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                     <?php
                             }
@@ -2157,7 +2157,7 @@ $cbcompat = new CBCompat();
                         </label>
                         <br />
                         <input class="form-control form-control-sm" id="force_url" name="force_url" type="text"
-                            value="<?php echo htmlentities($this->form->force_url, ENT_QUOTES, 'UTF-8'); ?>" />
+                            value="<?php echo htmlentities($this->form->force_url ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         <br />
                         <br />
                         <label for="registration_bypass_plugin">
@@ -2186,7 +2186,7 @@ $cbcompat = new CBCompat();
                         <br />
                         <input class="form-control form-control-sm" type="text" name="registration_bypass_verification_name"
                             id="registration_bypass_verification_name"
-                            value="<?php echo htmlentities($this->form->registration_bypass_verification_name, ENT_QUOTES, 'UTF-8'); ?>" />
+                            value="<?php echo htmlentities($this->form->registration_bypass_verification_name ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         <br />
                         <br />
                         <label for="registration_bypass_verify_view">
@@ -2195,7 +2195,7 @@ $cbcompat = new CBCompat();
                         <br />
                         <input class="form-control form-control-sm" type="text" name="registration_bypass_verify_view"
                             id="registration_bypass_verify_view"
-                            value="<?php echo htmlentities($this->form->registration_bypass_verify_view, ENT_QUOTES, 'UTF-8'); ?>" />
+                            value="<?php echo htmlentities($this->form->registration_bypass_verify_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
 
                         <br />
                         <br />
@@ -2205,34 +2205,34 @@ $cbcompat = new CBCompat();
                         <br />
                         <textarea class="form-control form-control-sm" style="width: 100%;height: 80px;"
                             name="registration_bypass_plugin_params"
-                            id="registration_bypass_plugin_params"><?php echo htmlentities($this->form->registration_bypass_plugin_params, ENT_QUOTES, 'UTF-8'); ?></textarea>
+                            id="registration_bypass_plugin_params"><?php echo htmlentities($this->form->registration_bypass_plugin_params ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
                     </td>
                 </tr>
                 <?php
             } else {
                 ?>
                 <input type="hidden" name="act_as_registration"
-                    value="<?php echo htmlentities($this->form->act_as_registration, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->act_as_registration ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_name_field"
-                    value="<?php echo htmlentities($this->form->registration_name_field, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_name_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_username_field"
-                    value="<?php echo htmlentities($this->form->registration_username_field, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_username_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_email_field"
-                    value="<?php echo htmlentities($this->form->registration_email_field, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_email_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_email_repeat_field"
-                    value="<?php echo htmlentities($this->form->registration_email_repeat_field, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_email_repeat_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_password_field"
-                    value="<?php echo htmlentities($this->form->registration_password_field, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_password_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_password_repeat_field"
-                    value="<?php echo htmlentities($this->form->registration_password_repeat_field, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_password_repeat_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_bypass_plugin"
-                    value="<?php echo htmlentities($this->form->registration_bypass_plugin, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_bypass_plugin ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_bypass_verification_name"
-                    value="<?php echo htmlentities($this->form->registration_bypass_verification_name, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_bypass_verification_name ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_bypass_verify_view"
-                    value="<?php echo htmlentities($this->form->registration_bypass_verify_view, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_bypass_verify_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_bypass_plugin_params"
-                    value="<?php echo htmlentities($this->form->registration_bypass_plugin_params, ENT_QUOTES, 'UTF-8'); ?>" />
+                    value="<?php echo htmlentities($this->form->registration_bypass_plugin_params ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <?php
             }
             ?>
