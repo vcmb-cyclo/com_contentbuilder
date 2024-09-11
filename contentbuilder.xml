@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="5.1" method="upgrade">
  <name>Contentbuilder</name>
- <creationDate>2024-08-25</creationDate>
+ <creationDate>2024-09-10</creationDate>
  <author>XDA+GIL</author>
  <authorEmail>noreply@vcmb.fr</authorEmail>
  <authorUrl>https://breezingforms.vcmb.fr</authorUrl>
