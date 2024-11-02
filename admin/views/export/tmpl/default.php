@@ -21,6 +21,10 @@ use Joomla\CMS\Factory;
 $spreadsheet = new Spreadsheet();
 $spreadsheet->getProperties()->setCreator("ContentBuilder")->setLastModifiedBy("ContentBuilder");
 
+
+// LETTER -> A4.
+$spreadsheet->getActiveSheet()->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+
 // Freeze first line.
 $spreadsheet->getActiveSheet()->freezePane('A2');
 
