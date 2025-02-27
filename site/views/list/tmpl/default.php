@@ -122,17 +122,16 @@ endif;
 <?php endif; ?>
 <?php echo $this->intro_text; ?>
 <div style="float: right; text-align: right;">
-	/** XDA+GN / BEGIN Hide NEW button
 	<?php
+	/** XDA+GN / BEGIN remove, Hide NEW button
 	if ($new_allowed) {
 		?>
 		<button class="button btn btn-sm btn-primary cbButton cbNewButton"
 			onclick="location.href='<?php echo Route::_('index.php?option=com_contentbuilder&controller=edit&backtolist=1&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=0&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order')); ?>'"><?php echo Text::_('COM_CONTENTBUILDER_NEW'); ?></button>
 		<?php
 	}
+	-- END of BEGIN - NEW BUTTON */
 	?>
-	*/
-
 	<?php
 	if ($delete_allowed) {
 		?>
