@@ -74,55 +74,47 @@ foreach ($labels as $label) {
 }
 
 // 2 -- Data.
-$raw = 2;
+$row = 2; // Correction de 'raw' en 'row' pour clarté
 foreach ($this->data->items as $item) {
-    $i = 1;
+    $i = 1; // Colonne de départ
     if ($col_id > 0) {
-        $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $raw], $item->colRecord);
+        $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $row], $item->colRecord);
     }
 
     if ($col_state > 0) {
-        $database = Factory::getDBO();
-        // Select data from DB
-        $sql = "SELECT title, color FROM `#__contentbuilder_list_states` WHERE id = (SELECT state_id FROM `#__contentbuilder_list_records` WHERE record_id = $item->colRecord)";
+        $database = Factory::getDbo();
+        // Sécuriser la requête
+        $recordId = $database->quote($item->colRecord);
+        $sql = "SELECT title, color 
+                FROM `#__contentbuilder_list_states` 
+                WHERE id = (SELECT state_id 
+                            FROM `#__contentbuilder_list_records` 
+                            WHERE record_id = $recordId)";
         $database->setQuery($sql);
         $result = $database->loadRow();
 
-        /*
-        if ($result[1] < 1)
-            $result[1] = 'FFFFFF';
-        if ($result[1] != 'FFFFFF') {
-            $sharedStyle1 = new PHPExcel_Style();
-            $sharedStyle1->applyFromArray(
-                array(
-                    'fill' => array(
-                        'type' => PHPExcel_Style_Fill::FILL_SOLID,
-                        'color' => array('rgb' => $result[1])
-                    )
-                )
-            );
-            $objPHPExcel->getActiveSheet()->setSharedStyle($sharedStyle1, "$ch" . "$i");
-        }*/
+        if ($result !== null) {
+            if (empty($result[1]) || !preg_match('/^[0-9A-F]{6}$/i', $result[1])) {
+                $result[1] = 'FFFFFF'; // Blanc par défaut
+            }
 
-        $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $raw], $result[0]);
-    }
+            // Convertir $i en lettre de colonne
+            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($i);
+            $cell = $columnLetter . $row; // Ex. 'B2'
 
-    // Published
-    if ($col_publish > 0) {
-        $database = Factory::getDBO();
-        // Select data from DB
-        $sql = "SELECT `state` FROM `#__content` WHERE id = (SELECT article_id FROM `#__contentbuilder_articles` WHERE id = $item->colRecord)";
-        $database->setQuery($sql);
-        $result = $database->loadRow();
-        $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $raw], ($result == 1) ? 'Yes' : 'No');
-    }
+            if ($result[1] !== 'FFFFFF') { // !== pour cohérence avec chaînes
+                $spreadsheet->getActiveSheet()->getStyle($cell)->applyFromArray([
+                    'fill' => [
+                        'fillType' => Fill::FILL_SOLID,
+                        'startColor' => ['rgb' => $result[1]]
+                    ]
+                ]);
+            }
 
-    foreach ($item as $key => $value) {
-        if ($key != 'colRecord' && in_array(str_replace('col', '', $key), $this->data->visible_cols)) {
-            $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $raw], $value);
+            $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $row], $result[0]);
         }
     }
-    $raw++;
+    $row++; // Passer à la ligne suivante pour chaque item
 }
 
 $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(true);
