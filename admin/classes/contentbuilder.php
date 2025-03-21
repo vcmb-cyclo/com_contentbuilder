@@ -468,7 +468,7 @@ class contentbuilder
                     if ($key == 'col' . $wrapper['reference_id']) {
                         $new_value = '';
 
-                        if (strpos(trim($wrapper['item_wrapper']), '$') === 0) {
+                        if (strpos(trim($wrapper['item_wrapper'] ?? ''), '$') === 0) {
 
                             $article->id = 0;
 
@@ -524,9 +524,9 @@ class contentbuilder
                             $new_value = $allow_html ? self::cleanString(cbinternal($value)) : self::allhtmlentities(cbinternal($value));
                         }
 
-                        if (strpos(trim($wrapper['item_wrapper']), '<?php') === 0) {
+                        if (strpos(trim($wrapper['item_wrapper'] ?? ''), '<?php') === 0) {
                             $value = $new_value;
-                            $code = trim($wrapper['item_wrapper']);
+                            $code = trim($wrapper['item_wrapper'] ?? '');
                             if (function_exists('mb_strlen')) {
                                 $p1 = 0;
                                 $l = mb_strlen($code);
@@ -571,8 +571,8 @@ class contentbuilder
                                 } // while
                             }
                             $item->$key = $value;
-                        } else if (trim($wrapper['item_wrapper']) != '') {
-                            $item->$key = str_replace('{value}', $new_value, trim($wrapper['item_wrapper']));
+                        } else if (trim($wrapper['item_wrapper'] ?? '') != '') {
+                            $item->$key = str_replace('{value}', $new_value, trim($wrapper['item_wrapper'] ?? ''));
                             $item->$key = str_replace('{webpath}', str_replace(array('{CBSite}', '{cbsite}', JPATH_SITE), Uri::getInstance()->getScheme() . '://' . Uri::getInstance()->getHost() . (Uri::getInstance()->getPort() == 80 ? '' : ':' . Uri::getInstance()->getPort()) . Uri::root(true), $value ?? ''), $item->$key);
                         } else {
                             $item->$key = $new_value;
