@@ -1129,7 +1129,7 @@ var contentbuilder = new function(){
 
                                 if ($f !== null) {
 
-                                    if (trim($f['custom_validation_script'])) {
+                                    if (trim($f['custom_validation_script'] ?? '')) {
                                         $msg = self::customValidate(trim($f['custom_validation_script']), $f, array_merge($the_upload_fields, $the_fields, $the_html_fields), CBRequest::getCmd('record_id', 0), $data->form, $value);
                                         $msg = trim($msg);
                                         if (!empty($msg)) {
@@ -1138,7 +1138,7 @@ var contentbuilder = new function(){
                                         }
                                     }
 
-                                    $validations = explode(',', $f['validations']);
+                                    $validations = explode(',', $f['validations'] ?? '');
 
                                     foreach ($validations as $validation) {
                                         \Joomla\CMS\Plugin\PluginHelper4::importPlugin('contentbuilder_validation', $validation);
@@ -1393,7 +1393,7 @@ var contentbuilder = new function(){
                             $this->_db->setQuery("Insert Into #__contentbuilder_records (session_id,`type`,last_update,is_future,lang_code, sef, published, record_id, reference_id, publish_up, publish_down) Values ('" . Factory::getApplication()->getSession()->getId() . "'," . $this->_db->Quote($data->type) . "," . $this->_db->Quote($last_update) . ",$is_future," . $this->_db->Quote($language) . "," . $this->_db->Quote(trim($sef)) . "," . $this->_db->Quote($data->auto_publish && !$is_future ? 1 : 0) . ", " . $this->_db->Quote($record_return) . ", " . $this->_db->Quote($data->form->getReferenceId()) . ", " . $this->_db->Quote($created_up) . ", " . $this->_db->Quote($created_down) . ")");
                             $this->_db->execute();
                         } else {
-                            $this->_db->setQuery("Update #__contentbuilder_records Set last_update = " . $this->_db->Quote($last_update) . ",lang_code = " . $this->_db->Quote($language) . ", sef = " . $this->_db->Quote(trim($sef)) . ", edited = edited + 1 Where `type` = " . $this->_db->Quote($data->type) . " And  `reference_id` = " . $this->_db->Quote($data->form->getReferenceId()) . " And record_id = " . $this->_db->Quote($record_return));
+                            $this->_db->setQuery("Update #__contentbuilder_records Set last_update = " . $this->_db->Quote($last_update) . ",lang_code = " . $this->_db->Quote($language) . ", sef = " . $this->_db->Quote(trim($sef ?? '')) . ", edited = edited + 1 Where `type` = " . $this->_db->Quote($data->type) . " And  `reference_id` = " . $this->_db->Quote($data->form->getReferenceId()) . " And record_id = " . $this->_db->Quote($record_return));
                             $this->_db->execute();
                         }
                     }
@@ -1482,7 +1482,7 @@ var contentbuilder = new function(){
                     $submit_after_result = $dispatcher->dispatch('onAfterSubmit', new Joomla\Event\Event('onAfterSubmit', array($record_return, $article_id, $data->form, $cleanedValues)));
 
                     foreach ($fields as $actionField) {
-                        if (trim($actionField['custom_action_script'])) {
+                        if (trim($actionField['custom_action_script'] ?? '')) {
                             self::customAction(trim($actionField['custom_action_script']), $record_return, $article_id, $data->form, $actionField, $fields, $cleanedValues);
                         }
                     }
