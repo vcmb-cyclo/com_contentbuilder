@@ -21,16 +21,20 @@ use Joomla\CMS\Factory;
 $spreadsheet = new Spreadsheet();
 $spreadsheet->getProperties()->setCreator("ContentBuilder")->setLastModifiedBy("ContentBuilder");
 
+// Create "Sheet 1" tab as the first worksheet.
+// https://phpspreadsheet.readthedocs.io/en/latest/topics/worksheets/adding-a-new-worksheet
+$spreadsheet->removeSheetByIndex(0);
+$worksheet1 = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $this->data->title ?? 'default');
+$spreadsheet->addSheet($worksheet1, 0);
 
 // LETTER -> A4.
-$spreadsheet->getActiveSheet()->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+$worksheet1->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
 
 // Freeze first line.
-$spreadsheet->getActiveSheet()->freezePane('A2');
+$worksheet1->freezePane('A2');
 
 // First row in grey.
-$spreadsheet
-    ->getActiveSheet()
+$worksheet1
     ->getStyle('1:1')
     ->getFill()
     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
@@ -69,16 +73,16 @@ $labels = array_merge($reserved_labels, $labels);
 $col = 1;
 foreach ($labels as $label) {
     $cell = [$col++, 1];
-    $spreadsheet->setActiveSheetIndex(0)->setCellValue($cell, $label);
-    $spreadsheet->getActiveSheet()->getStyle($cell)->getFont()->setBold(true);
+    $worksheet1->setCellValue($cell, $label);
+    $worksheet1->getStyle($cell)->getFont()->setBold(true);
 }
 
 // 2 -- Data.
-$row = 2; // Correction de 'raw' en 'row' pour clarté
+$row = 2;
 foreach ($this->data->items as $item) {
     $i = 1; // Colonne de départ
     if ($col_id > 0) {
-        $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $row], $item->colRecord);
+        $worksheet1->setCellValue([$i++, $row], $item->colRecord);
     }
 
     if ($col_state > 0) {
@@ -103,22 +107,22 @@ foreach ($this->data->items as $item) {
             $cell = $columnLetter . $row; // Ex. 'B2'
 
             if ($result[1] !== 'FFFFFF') { // !== pour cohérence avec chaînes
-                $spreadsheet->getActiveSheet()->getStyle($cell)->applyFromArray([
+                $worksheet1->getStyle($cell)->applyFromArray([
                     'fill' => [
-                        'fillType' => Fill::FILL_SOLID,
+                        'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                         'startColor' => ['rgb' => $result[1]]
                     ]
                 ]);
             }
 
-            $spreadsheet->setActiveSheetIndex(0)->setCellValue([$i++, $row], $result[0]);
+            $worksheet1->setCellValue([$i++, $row], $result[0]);
         }
     }
     $row++; // Passer à la ligne suivante pour chaque item
 }
 
 $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(true);
-$spreadsheet->getActiveSheet()->setTitle("export-" . date('Y-m-d_Hi') . ".xlsx");
+//$worksheet1->setTitle("export-" . date('Y-m-d_Hi') . ".xlsx");
 
 // Name file.
 $filename = "export-" . date('Y-m-d_Hi', null) . ".xlsx";
