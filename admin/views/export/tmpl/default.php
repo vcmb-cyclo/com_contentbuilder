@@ -81,10 +81,14 @@ foreach ($labels as $label) {
 $row = 2;
 foreach ($this->data->items as $item) {
     $i = 1; // Colonne de départ
+    
+    // Si on veut mettre l'ID
     if ($col_id > 0) {
         $worksheet1->setCellValue([$i++, $row], $item->colRecord);
     }
 
+
+    // Si on veut mettre la colonne d'état.
     if ($col_state > 0) {
         $database = Factory::getDbo();
         // Sécuriser la requête
@@ -114,10 +118,15 @@ foreach ($this->data->items as $item) {
                     ]
                 ]);
             }
-
             $worksheet1->setCellValue([$i++, $row], $result[0]);
         }
     }
+
+    // Les autres colonnes.
+    foreach($this->data->visible_cols as $id) {
+        $worksheet1->setCellValue([$i++, $row], $item->{"col$id"});          
+    }
+
     $row++; // Passer à la ligne suivante pour chaque item
 }
 
@@ -125,7 +134,20 @@ $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(true);
 //$worksheet1->setTitle("export-" . date('Y-m-d_Hi') . ".xlsx");
 
 // Name file.
-$filename = "export-" . date('Y-m-d_Hi', null) . ".xlsx";
+// Récupérer le fuseau horaire du client (via POST, GET, ou autre)
+$input = Factory::getApplication()->input;
+$userTimezone = $input->get('user_timezone', null, 'string');
+
+// Si aucun fuseau horaire client n'est fourni, utiliser celui de Joomla
+if (!$userTimezone) {
+    $config = Factory::getConfig();
+    $userTimezone = $config->get('offset', 'UTC');
+}
+
+// Créer la date avec le fuseau horaire
+$date = Factory::getDate('now', $userTimezone);
+
+$filename = "export-" . $this->data->form->name .'-' .$date->format('Y-m-d_Hi', true) . ".xlsx";
 $spreadsheet->setActiveSheetIndex(0);
 
 // Auto size columns for each worksheet
