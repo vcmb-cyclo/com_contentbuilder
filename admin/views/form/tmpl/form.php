@@ -25,8 +25,17 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 </style>
 <script type="text/javascript">
     function saveorder(n, task) {
-
+        console.log('saveorder called with n=', n, 'task=', task);
         Joomla.checkAll(n, 'listsaveorder');
+
+        var form = document.adminForm;
+        
+        // Ensure the task is set correctly
+        // form.task.value = task || 'saveorder';
+        
+
+        // Submit the form using Joomla's submitform
+        // Joomla.submitform(form.task.value);
     }
 
     <?php echo $___tableOrdering; ?>(order, dir, task) {
@@ -719,7 +728,9 @@ $cbcompat = new CBCompat();
                             <th width="120">
                                 <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'ordering', 'desc', @$this->lists['order'], 'edit'); ?>
                                 <?php //TODO: dragndrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->elements );   ?>
+                                <?php if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->elements ); ?>
                             </th>
+                           
                         </tr>
                     </thead>
                     <?php
@@ -821,7 +832,7 @@ $cbcompat = new CBCompat();
                                     <?php echo $this->pagination->orderDownIcon($i, $n, true, 'orderdown', 'Move Down', $this->ordering); ?>
                                 </span>
                                 <?php $disabled = $this->ordering ? '' : 'disabled="disabled"'; ?>
-                                <input type="hidden" name="order[]" size="5" style="width: 20px;"
+                                <input type="text" name="order[]" size="5" style="width: 20px;"
                                     value="<?php echo $row->ordering; ?>" <?php echo $disabled ?> class="text_area"
                                     style="text-align: center" />
                             </td>
