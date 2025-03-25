@@ -36,13 +36,19 @@ $worksheet1->getPageSetup()->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\Pa
 $worksheet1->freezePane('A2');
 
 // First row in grey.
-$worksheet1
-    ->getStyle('1:1')
-    ->getFill()
+// Appliquer le style à la première ligne
+$style = $worksheet1->getStyle('1:1');
+
+// Fond gris
+$style->getFill()
     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
     ->getStartColor()
     ->setARGB('c0c0c0');
 
+// Centrage horizontal et vertical
+$style->getAlignment()
+    ->setHorizontal(PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+    ->setVertical(PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
 // 1 -- Labels.
 $labels = $this->data->visible_labels;
