@@ -14,7 +14,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
 use Joomla\Filter\OutputFilter;
-use Joomla\CMS\Uri\Uri;
+use Joomla\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;

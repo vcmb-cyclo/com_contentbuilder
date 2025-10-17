@@ -40,7 +40,7 @@ class ContentbuilderModelUsers extends CBModel
 
         parent::__construct($config);
 
-        $mainframe = Factory::getApplication();
+        $mainframe = Factory::getContainer()->get(ApplicationInterface::class);
         $option = 'com_contentbuilder';
 
         // Get pagination request variables
@@ -74,7 +74,7 @@ class ContentbuilderModelUsers extends CBModel
 
     private function buildOrderBy()
     {
-        $mainframe = Factory::getApplication();
+        $mainframe = Factory::getContainer()->get(ApplicationInterface::class);
         $option = 'com_contentbuilder';
 
         $orderby = '';

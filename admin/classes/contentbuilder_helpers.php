@@ -9,7 +9,7 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
+use Joomla\Uri\Uri;
 
 function contentbuilder_is_valid_date($value, $format = 'YYYY-mm-dd'){
     

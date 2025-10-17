@@ -16,6 +16,7 @@
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Version;
+use Joomla\Application\ApplicationInterface;
 
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
@@ -257,7 +258,7 @@ class CBPluginHelper
 		}
 
 		$db		=& Factory::getContainer()->get(DatabaseInterface::class);
-		$user	=& Factory::getApplication()->getIdentity();
+		$user	=& Factory::getContainer()->get(ApplicationInterface::class)->getIdentity();
 
 		if (isset($user))
 		{
@@ -280,7 +281,7 @@ class CBPluginHelper
 		$db->setQuery( $query );
 
 		if (!($plugins = $db->loadObjectList())) {
-			Factory::getApplication()->enqueueMessage("Error loading Plugins: " . $db->getErrorMsg(), 'error');
+			Factory::getContainer()->get(ApplicationInterface::class)->enqueueMessage("Error loading Plugins: " . $db->getErrorMsg(), 'error');
 			return false;
 		}
 
@@ -290,7 +291,7 @@ class CBPluginHelper
         function _load16(){
             static $plugins;
 
-		$user	= Factory::getApplication()->getIdentity();
+		$user	= Factory::getContainer()->get(ApplicationInterface::class)->getIdentity();
 		$cache 	= Factory::getCache('com_plugins', '');
 
 		$levels = implode(',', $user->getAuthorisedViewLevels());
@@ -312,7 +313,7 @@ class CBPluginHelper
 				->loadObjectList();
 
 			if ($error = $db->getErrorMsg()) {
-				Factory::getApplication()->enqueueMessage($error, 'error');
+				Factory::getContainer()->get(ApplicationInterface::class)->enqueueMessage($error, 'error');
 				return false;
 			}
 

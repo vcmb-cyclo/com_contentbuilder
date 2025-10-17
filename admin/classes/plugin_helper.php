@@ -10,6 +10,7 @@
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
+use Joomla\Application\ApplicationInterface;
 
 defined('JPATH_PLATFORM') or die;
 
@@ -143,7 +144,7 @@ abstract class CBPluginHelper
 					// Makes sure we have an event dispatcher
 
 					if (!is_object($dispatcher)) {
-						$dispatcher = Factory::getApplication()->getDispatcher();
+						$dispatcher = Factory::getContainer()->get(ApplicationInterface::class)->getDispatcher();
 					}
 
 					$className = 'plg'.$plugin->type.$plugin->name;
@@ -178,7 +179,7 @@ abstract class CBPluginHelper
 			return $plugins;
 		}
 
-		$user	= Factory::getApplication()->getIdentity();
+		$user	= Factory::getContainer()->get(ApplicationInterface::class)->getIdentity();
 		$cache 	= Factory::getCache('com_plugins', '');
 
 		$levels = implode(',', $user->getAuthorisedViewLevels());
@@ -200,7 +201,7 @@ abstract class CBPluginHelper
 			$plugins = $db->loadObjectList();
 
 			if ($error = $db->getErrorMsg()) {
-				Factory::getApplication()->enqueueMessage($error, 'error');
+				Factory::getContainer()->get(ApplicationInterface::class)->enqueueMessage($error, 'error');
 				return false;
 			}
 

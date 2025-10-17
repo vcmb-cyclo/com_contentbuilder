@@ -18,6 +18,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Event\Content\ContentPrepareEvent;
+use Joomla\Application\ApplicationInterface;
 
 require_once(JPATH_SITE.DS.'administrator'.DS.'components'.DS.'com_contentbuilder'.DS.'classes'.DS.'joomla_compat.php');
 require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
@@ -58,13 +59,13 @@ class ContentbuilderModelList extends CBModel
     function  __construct($config) {
         parent::__construct($config);
 
-        $mainframe = Factory::getApplication();
+        $mainframe = Factory::getContainer()->get(ApplicationInterface::class);
         $option = 'com_contentbuilder';
 
         $this->frontend = class_exists('cbFeMarker');
 
         if($this->frontend){
-            Factory::getApplication()->getDocument()->addStyleSheet(Uri::root(true).'/components/com_contentbuilder/assets/css/system.css');
+            Factory::getContainer()->get(ApplicationInterface::class)->getDocument()->addStyleSheet(Uri::root(true).'/components/com_contentbuilder/assets/css/system.css');
         }
         
         if(CBRequest::getInt('Itemid',0)){
@@ -83,7 +84,7 @@ class ContentbuilderModelList extends CBModel
         $this->setState('limit', $limit);
         $this->setState('limitstart', $limitstart);
 
-        if (Factory::getApplication()->getSession()->get($option.'formsd_id', 0) == 0 || Factory::getApplication()->getSession()->get($option.'formsd_id', 0) == $this->_id ){
+        if (Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get($option.'formsd_id', 0) == 0 || Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get($option.'formsd_id', 0) == $this->_id ){
             $filter_order     = $mainframe->getUserStateFromRequest(  $option.'formsd_filter_order', 'filter_order', '', 'cmd' );
             $filter_order_Dir = $mainframe->getUserStateFromRequest( $option.'formsd_filter_order_Dir', 'filter_order_Dir', '', 'cmd' );
             $filter           = $mainframe->getUserStateFromRequest(  $option.'formsd_filter', 'filter', '', 'string' );
@@ -115,7 +116,7 @@ class ContentbuilderModelList extends CBModel
         if($this->frontend && CBRequest::getInt('Itemid',0)){
             
             // try menu item
-	        $menu = Factory::getApplication()->getMenu();
+	        $menu = Factory::getContainer()->get(ApplicationInterface::class)->getMenu();
 	        $item = $menu->getActive();
 	        if (is_object($item)) {
 		        if($item->getParams()->get('show_page_heading', null) !== null){
@@ -166,7 +167,7 @@ class ContentbuilderModelList extends CBModel
         
         @natsort($this->_menu_filter_order);
         
-        Factory::getApplication()->getSession()->set($option.'formsd_id', $this->_id);
+        Factory::getContainer()->get(ApplicationInterface::class)->getSession()->set($option.'formsd_id', $this->_id);
     }
 
     function setId($id) {
@@ -182,7 +183,7 @@ class ContentbuilderModelList extends CBModel
      */
 
     private function buildOrderBy() {
-        $mainframe = Factory::getApplication();
+        $mainframe = Factory::getContainer()->get(ApplicationInterface::class);
         $option = 'com_contentbuilder';
 
         $orderby = '';
@@ -211,7 +212,7 @@ class ContentbuilderModelList extends CBModel
     */
     function getData()
     {
-        $mainframe = Factory::getApplication();
+        $mainframe = Factory::getContainer()->get(ApplicationInterface::class);
         $option = 'com_contentbuilder';
         
         // Lets load the data if it doesn't already exist
@@ -253,7 +254,7 @@ class ContentbuilderModelList extends CBModel
                         if(!$this->_menu_item){
                             $data->page_title = $data->use_view_name_as_title ? $data->name : $data->form->getPageTitle();
                         }else{
-                            $data->page_title = $data->use_view_name_as_title ? $data->name : Factory::getApplication()->getDocument()->getTitle();
+                            $data->page_title = $data->use_view_name_as_title ? $data->name : Factory::getContainer()->get(ApplicationInterface::class)->getDocument()->getTitle();
                         }
                     }
                     
@@ -276,18 +277,18 @@ class ContentbuilderModelList extends CBModel
                     
                     if( CBRequest::getBool('filter_reset', false)  ){
                         
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.filter_signal.'.$this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.filter.'.$this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.calendar_filter_from.'.$this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.calendar_filter_to.'.$this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.calendar_formats.'.$this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.filter_keywords.'.$this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.filter_article_categories.'.$this->_id);
+                        Factory::getContainer()->get(ApplicationInterface::class)->getSession()->clear('com_contentbuilder.filter_signal.'.$this->_id);
+                        Factory::getContainer()->get(ApplicationInterface::class)->getSession()->clear('com_contentbuilder.filter.'.$this->_id);
+                        Factory::getContainer()->get(ApplicationInterface::class)->getSession()->clear('com_contentbuilder.calendar_filter_from.'.$this->_id);
+                        Factory::getContainer()->get(ApplicationInterface::class)->getSession()->clear('com_contentbuilder.calendar_filter_to.'.$this->_id);
+                        Factory::getContainer()->get(ApplicationInterface::class)->getSession()->clear('com_contentbuilder.calendar_formats.'.$this->_id);
+                        Factory::getContainer()->get(ApplicationInterface::class)->getSession()->clear('com_contentbuilder.filter_keywords.'.$this->_id);
+                        Factory::getContainer()->get(ApplicationInterface::class)->getSession()->clear('com_contentbuilder.filter_article_categories.'.$this->_id);
                             
                     }
                     else if(
                             ( 
-                                Factory::getApplication()->getSession()->get('com_contentbuilder.filter_signal.'.$this->_id, false) 
+                                Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get('com_contentbuilder.filter_signal.'.$this->_id, false) 
                                 || 
                                 CBRequest::getBool('contentbuilder_filter_signal', false) 
                             )
@@ -315,23 +316,23 @@ class ContentbuilderModelList extends CBModel
                             $filters_to = CBRequest::getVar( 'cbListFilterCalendarTo', array(), 'POST', 'array' );
                             $calendar_formats = CBRequest::getVar( 'cb_filter_calendar_format', array(), 'POST', 'array' );
                         
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.filter_signal.'.$this->_id, true);
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.filter.'.$this->_id, $filters);
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.filter_keywords.'.$this->_id, CBRequest::getVar('cbListFilterKeywords',''));
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.filter_article_categories.'.$this->_id, CBRequest::getInt('cbListFilterArticleCategories',-1));
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.calendar_filter_from.'.$this->_id, $filters_from);
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.calendar_filter_to.'.$this->_id, $filters_to);
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.calendar_formats.'.$this->_id, $calendar_formats);
+                            Factory::getContainer()->get(ApplicationInterface::class)->getSession()->set('com_contentbuilder.filter_signal.'.$this->_id, true);
+                            Factory::getContainer()->get(ApplicationInterface::class)->getSession()->set('com_contentbuilder.filter.'.$this->_id, $filters);
+                            Factory::getContainer()->get(ApplicationInterface::class)->getSession()->set('com_contentbuilder.filter_keywords.'.$this->_id, CBRequest::getVar('cbListFilterKeywords',''));
+                            Factory::getContainer()->get(ApplicationInterface::class)->getSession()->set('com_contentbuilder.filter_article_categories.'.$this->_id, CBRequest::getInt('cbListFilterArticleCategories',-1));
+                            Factory::getContainer()->get(ApplicationInterface::class)->getSession()->set('com_contentbuilder.calendar_filter_from.'.$this->_id, $filters_from);
+                            Factory::getContainer()->get(ApplicationInterface::class)->getSession()->set('com_contentbuilder.calendar_filter_to.'.$this->_id, $filters_to);
+                            Factory::getContainer()->get(ApplicationInterface::class)->getSession()->set('com_contentbuilder.calendar_formats.'.$this->_id, $calendar_formats);
                         
                         // else pick from session
-                        } else if(Factory::getApplication()->getSession()->get('com_contentbuilder.filter_signal.'.$this->_id, false)){
+                        } else if(Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get('com_contentbuilder.filter_signal.'.$this->_id, false)){
                             
-                            $filters = Factory::getApplication()->getSession()->get('com_contentbuilder.filter.'.$this->_id, array());
-                            $filters_from = Factory::getApplication()->getSession()->get('com_contentbuilder.calendar_filter_from.'.$this->_id, array());
-                            $filters_to = Factory::getApplication()->getSession()->get('com_contentbuilder.calendar_filter_to.'.$this->_id, array());
-                            $calendar_formats = Factory::getApplication()->getSession()->get('com_contentbuilder.calendar_formats.'.$this->_id, array());
-                            $filter_keywords = Factory::getApplication()->getSession()->get('com_contentbuilder.filter_keywords.'.$this->_id, '');
-                            $filter_cats = Factory::getApplication()->getSession()->get('com_contentbuilder.filter_article_categories.'.$this->_id, -1);
+                            $filters = Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get('com_contentbuilder.filter.'.$this->_id, array());
+                            $filters_from = Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get('com_contentbuilder.calendar_filter_from.'.$this->_id, array());
+                            $filters_to = Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get('com_contentbuilder.calendar_filter_to.'.$this->_id, array());
+                            $calendar_formats = Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get('com_contentbuilder.calendar_formats.'.$this->_id, array());
+                            $filter_keywords = Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get('com_contentbuilder.filter_keywords.'.$this->_id, '');
+                            $filter_cats = Factory::getContainer()->get(ApplicationInterface::class)->getSession()->get('com_contentbuilder.filter_article_categories.'.$this->_id, -1);
                             
                             if($filter_keywords != ''){
                                 $this->setState('formsd_filter', $filter_keywords);
@@ -453,7 +454,7 @@ class ContentbuilderModelList extends CBModel
 
 	                $custom_page_heading = '';
 
-	                if(!Factory::getApplication()->isClient('administrator')) {
+	                if(!Factory::getContainer()->get(ApplicationInterface::class)->isClient('administrator')) {
 
 		                if ( $this->_show_page_heading && $this->_page_heading != '' ) {
 			                $data->page_title = $this->_page_heading;
@@ -558,12 +559,12 @@ class ContentbuilderModelList extends CBModel
                     $table->text = $data->intro_text;
                     $table->text .= "<!-- workaround for J! pagebreak bug: class=\"system-pagebreak\" -->\n";
                     
-                    $dispatcher = Factory::getApplication()->getDispatcher();
+                    $dispatcher = Factory::getContainer()->get(ApplicationInterface::class)->getDispatcher();
                     $dispatcher->dispatch('onContentPrepare', new ContentPrepareEvent('onContentPrepare', array ('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
 
                     $data->intro_text = $table->text;
 
-                    if(Factory::getApplication()->isClient('administrator')
+                    if(Factory::getContainer()->get(ApplicationInterface::class)->isClient('administrator')
                         && strpos($data->intro_text , '[[hide-admin-title]]') !== false){
 
                         $data->page_title = '';

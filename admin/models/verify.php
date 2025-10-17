@@ -35,7 +35,7 @@ class ContentbuilderModelVerify extends CBModel
     {
         parent::__construct($config);
 
-        $this->mainframe = Factory::getApplication();
+        $this->mainframe = Factory::getContainer()->get(ApplicationInterface::class);
         $this->frontend = $this->mainframe->isClient('site');
 
         $option = 'com_contentbuilder';
@@ -375,7 +375,7 @@ class ContentbuilderModelVerify extends CBModel
             throw new Exception('You are not allowed to perform this action.', 500);
         }
 
-        Factory::getApplication()->getLanguage()->load('com_users', JPATH_SITE);
+        Factory::getContainer()->get(ApplicationInterface::class)->getLanguage()->load('com_users', JPATH_SITE);
 
         $config = Factory::getConfig();
         $userParams = ComponentHelper::getParams('com_users');

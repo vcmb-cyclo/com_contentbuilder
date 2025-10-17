@@ -48,7 +48,7 @@ class PluginHelper4
 	 */
 	public static function getLayoutPath($type, $name, $layout = 'default')
 	{
-		$templateObj   = Factory::getApplication()->getTemplate(true);
+		$templateObj   = Factory::getContainer()->get(ApplicationInterface::class)->getTemplate(true);
 		$defaultLayout = $layout;
 		$template      = $templateObj->template;
 
@@ -161,7 +161,7 @@ class PluginHelper4
 		}
 
 		// Ensure we have a dispatcher now so we can correctly track the loaded plugins
-		$dispatcher = $dispatcher ?: Factory::getApplication()->getDispatcher();
+		$dispatcher = $dispatcher ?: Factory::getContainer()->get(ApplicationInterface::class)->getDispatcher();
 
 		// Get the dispatcher's hash to allow plugins to be registered to unique dispatchers
 		$dispatcherHash = spl_object_hash($dispatcher);
@@ -217,7 +217,7 @@ class PluginHelper4
 
 		$plugins[$hash] = true;
 
-		$plugin = Factory::getApplication()->bootPlugin($plugin->name, $plugin->type);
+		$plugin = Factory::getContainer()->get(ApplicationInterface::class)->bootPlugin($plugin->name, $plugin->type);
 
 		if ($dispatcher && $plugin instanceof DispatcherAwareInterface) {
 			$plugin->setDispatcher($dispatcher);
@@ -243,7 +243,7 @@ class PluginHelper4
 			return static::$plugins;
 		}
 
-		$levels = Factory::getApplication()->getIdentity()->getAuthorisedViewLevels();
+		$levels = Factory::getContainer()->get(ApplicationInterface::class)->getIdentity()->getAuthorisedViewLevels();
 
 		/** @var \Joomla\CMS\Cache\Controller\CallbackController $cache */
 		$cache = Factory::getCache('com_plugins', 'callback');

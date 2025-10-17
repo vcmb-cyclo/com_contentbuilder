@@ -37,7 +37,7 @@ class ContentbuilderModelStorage extends CBModel
 
         $this->_db = Factory::getContainer()->get(DatabaseInterface::class);
 
-        $mainframe = Factory::getApplication();
+        $mainframe = Factory::getContainer()->get(ApplicationInterface::class);
         $option = 'com_contentbuilder';
 
         $array = CBRequest::getVar('cid', 0, '', 'array');
@@ -173,7 +173,7 @@ class ContentbuilderModelStorage extends CBModel
 
     private function buildOrderBy()
     {
-        $mainframe = Factory::getApplication();
+        $mainframe = Factory::getContainer()->get(ApplicationInterface::class);
         $option = 'com_contentbuilder';
 
         $orderby = '';
@@ -827,7 +827,7 @@ class ContentbuilderModelStorage extends CBModel
     {
 
         $db = Factory::getContainer()->get(DatabaseInterface::class);
-        $mainframe = Factory::getApplication();
+        $mainframe = Factory::getContainer()->get(ApplicationInterface::class);
 
         $row = $this->getTable('storage');
 
@@ -846,7 +846,7 @@ class ContentbuilderModelStorage extends CBModel
 
     function listMove($direction)
     {
-        $mainframe = Factory::getApplication();
+        $mainframe = Factory::getContainer()->get(ApplicationInterface::class);
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
 
