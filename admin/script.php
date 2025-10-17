@@ -9,7 +9,7 @@
 defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
-use \Joomla\CMS\Filesystem\File;
+use Joomla\Filesystem\File;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
 use Joomla\CMS\Installer\Installer;

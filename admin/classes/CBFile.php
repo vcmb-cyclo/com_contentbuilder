@@ -7,7 +7,7 @@
 
 defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
-use Joomla\CMS\Filesystem\File;
+use Joomla\Filesystem\File ;
 
 if (!class_exists('CBFile'))
 {
