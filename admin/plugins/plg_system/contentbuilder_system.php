@@ -55,7 +55,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
     function onAfterDispatch()
     {
-        if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
+        if (!file_exists(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php')) {
             return;
         }
 
@@ -77,7 +77,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
                 // KUNENA SUPPORT, REMOVES THE KUNENA SESSION IF EXISTING ON GROUP UPDATES
                 $kill_kunena_session = false;
-                if (is_dir(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_kunena' . DS)) {
+                if (is_dir(JPATH_SITE .'/administrator/components/com_kunena/')) {
                     $kill_kunena_session = true;
                 }
 
@@ -225,13 +225,13 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
     function onAfterRoute()
     {
-        if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
+        if (!file_exists(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php')) {
             return;
         }
 
         // register non-existent records
         if (in_array(CBRequest::getVar('option', ''), array('com_contentbuilder', 'com_content'))) {
-            require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
+            require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php');
             $this->db->setQuery("Select `type`, `reference_id` From #__contentbuilder_forms Where published = 1");
             $views = $this->db->loadAssocList();
             $typeview = array();
@@ -362,7 +362,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
     function onAfterInitialize()
     {
-        if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
+        if (!file_exists(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php')) {
             return;
         }
 
@@ -443,7 +443,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
             $pluginParams = CBCompat::getPluginParams($this, 'system', 'contentbuilder_system');
 
-            require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
+            require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php');
 
             $this->db->setQuery("
                 Select 

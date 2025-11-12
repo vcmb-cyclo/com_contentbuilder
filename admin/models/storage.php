@@ -22,10 +22,10 @@ use Joomla\CMS\Pagination\Pagination;
 HTMLHelper::_('behavior.keepalive');
 
 
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
+require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
 
 class ContentbuilderModelStorage extends CBModel
 {
@@ -225,7 +225,7 @@ class ContentbuilderModelStorage extends CBModel
             unset($data['bytable']);
         }
 
-        $dest = JPATH_SITE . DS . 'tmp' . DS . md5(mt_rand(0, mt_getrandmax())) . '_' . $file['name'];
+        $dest = JPATH_SITE .'/tmp/' . md5(mt_rand(0, mt_getrandmax())) . '_' . $file['name'];
         $uploaded = File::upload($file['tmp_name'], $dest, false, true);
 
         if ($uploaded) {

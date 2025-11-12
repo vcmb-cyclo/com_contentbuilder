@@ -16,10 +16,10 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\Application\ApplicationInterface;
 
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
-require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder.php');
-require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder_helpers.php');
+require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder_helpers.php');
 
 class ContentbuilderModelDetails extends CBModel
 {

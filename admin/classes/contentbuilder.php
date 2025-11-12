@@ -26,16 +26,15 @@ use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\Access\Access;
 use Joomla\Application\ApplicationInterface;
 
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder_helpers.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'plugin_helper.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'plugin_helper4.php');
+require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/contentbuilder_helpers.php');
+require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/plugin_helper.php');
+require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/plugin_helper4.php');
 class contentbuilder
 {
 
     public static function makeSafeFolder($path)
     {
-        //$ds = (DS == '\\') ? '\\/' : DS;
         $regex = array('#[^A-Za-z0-9\.:_\\\/-]#');
         return preg_replace($regex, '_', $path);
     }
@@ -449,7 +448,7 @@ class contentbuilder
     public static function applyItemWrappers($contentbuilder_form_id, array $items, $form)
     {
 
-        require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'plugin_helper.php');
+        require_once(JPATH_COMPONENT_ADMINISTRATOR . '/classes/plugin_helper.php');
         $article = Table::getInstance('content');
         $registry = null;
         $onContentPrepare = '';
@@ -936,29 +935,29 @@ class contentbuilder
         $types = array();
 
         // built-in types
-        if (file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_breezingforms' . DS . 'breezingforms.xml')) {
+        if (file_exists(JPATH_SITE . '/administrator/components/com_breezingforms/breezingforms.xml')) {
             $types[] = 'com_breezingforms';
         }
 
         $types[] = 'com_contentbuilder';
 
         // Custom types
-        if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')) {
-            Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
+        if (!is_dir(JPATH_SITE . '/media/contentbuilder')) {
+            Folder::create(JPATH_SITE . '/media/contentbuilder');
         }
 
         $def = '';
 
-        if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html'))
-            File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def);
-        if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types')) {
-            Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types');
+        if (!file_exists(JPATH_SITE . '/media/contentbuilder/index.html'))
+            File::write(JPATH_SITE . '/media/contentbuilder/index.html', $def);
+        if (!is_dir(JPATH_SITE . '/media/contentbuilder/types')) {
+            Folder::create(JPATH_SITE . '/media/contentbuilder/types');
         }
 
-        if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types' . DS . 'index.html'))
-            File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types' . DS . 'index.html', $def);
+        if (!file_exists(JPATH_SITE . '/media/contentbuilder/types/index.html'))
+            File::write(JPATH_SITE . '/media/contentbuilder/types/index.html', $def);
 
-        $sourcePath = JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types' . DS;
+        $sourcePath = JPATH_SITE . '/media/contentbuilder/types/';
         if (is_dir($sourcePath) && @is_readable($sourcePath) && @is_dir($sourcePath) && $handle = @opendir($sourcePath)) {
             while (false !== ($file = @readdir($handle))) {
                 if ($file != "." && $file != ".." && strtolower($file) != 'index.html' && strtolower($file) != '.cvs' && strtolower($file) != '.svn') {
@@ -974,14 +973,14 @@ class contentbuilder
 
     public static function getForms($type)
     {
-        if (file_exists(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'types' . DS . $type . '.php')) {
-            require_once(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'types' . DS . $type . '.php');
+        if (file_exists(JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes/types/' . $type . '.php')) {
+            require_once(JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes/types/' . $type . '.php');
             $class = 'contentbuilder_' . $type;
             if (class_exists($class)) {
                 return call_user_func(array($class, "getFormsList"));
             }
-        } else if (file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types' . DS . $type . '.php')) {
-            require_once(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types' . DS . $type . '.php');
+        } else if (file_exists(JPATH_SITE . '/media/contentbuilder/types/' . $type . '.php')) {
+            require_once(JPATH_SITE . '/media/contentbuilder/types/' . $type . '.php');
             $class = 'contentbuilder_' . $type;
             if (class_exists($class)) {
                 return call_user_func(array($class, "getFormsList"));
@@ -996,8 +995,8 @@ class contentbuilder
 
         static $forms;
 
-        if (file_exists(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'types' . DS . $type . '.php')) {
-            require_once(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'types' . DS . $type . '.php');
+        if (file_exists(JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes/types/' . $type . '.php')) {
+            require_once(JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes/types/' . $type . '.php');
             if (isset($forms[$type][$reference_id])) {
                 return $forms[$type][$reference_id];
             }
@@ -1008,8 +1007,8 @@ class contentbuilder
                 $forms[$type][$reference_id] = $form;
                 return $form;
             }
-        } else if (file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types' . DS . $type . '.php')) {
-            require_once(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types' . DS . $type . '.php');
+        } else if (file_exists(JPATH_SITE . '/media/contentbuilder/types/' . $type . '.php')) {
+            require_once(JPATH_SITE . '/media/contentbuilder/types/' . $type . '.php');
             if (isset($forms[$type][$reference_id])) {
                 return $forms[$type][$reference_id];
             }
@@ -2227,7 +2226,7 @@ class contentbuilder
         $conf = Factory::getConfig();
         $options = array(
             'defaultgroup' => 'com_content',
-            'cachebase' => $conf->get('cache_path', JPATH_SITE . DS . 'cache')
+            'cachebase' => $conf->get('cache_path', JPATH_SITE . '/cache')
         );
         $cache = Factory::getCache('com_content');
         $cache->clean();
@@ -2277,15 +2276,15 @@ class contentbuilder
             $reference_id = $type['reference_id'];
             $type = $type['type'];
             $_type = $type;
-            if (file_exists(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'types' . DS . $type . '.php')) {
-                require_once(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'types' . DS . $type . '.php');
+            if (file_exists(JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes/types/' . $type . '.php')) {
+                require_once(JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes/types/' . $type . '.php');
                 $type = 'contentbuilder_' . $type;
                 if (class_exists($type)) {
                     $num_records_query = call_user_func(array($type, 'getNumRecordsQuery'), $reference_id, Factory::getApplication()->getIdentity()->get('id', 0));
                     //$num_records_query = $type::getNumRecordsQuery($reference_id, Factory::getApplication()->getIdentity()->get('id', 0));
                 }
-            } else if (file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types' . DS . $type . '.php')) {
-                require_once(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'types' . DS . $type . '.php');
+            } else if (file_exists(JPATH_SITE . '/media/contentbuilder/types/' . $type . '.php')) {
+                require_once(JPATH_SITE . '/media/contentbuilder/types/' . $type . '.php');
                 $type = 'contentbuilder_' . $type;
                 if (class_exists($type)) {
                     $num_records_query = call_user_func(array($type, 'getNumRecordsQuery'), $reference_id, Factory::getApplication()->getIdentity()->get('id', 0));

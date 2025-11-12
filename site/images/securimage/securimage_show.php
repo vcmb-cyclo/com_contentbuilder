@@ -13,7 +13,7 @@ define('DS', DIRECTORY_SEPARATOR);
 require_once dirname(__FILE__) . '/../../../../includes/app.php';
 /* To use Joomla's Database Class */
 
-require_once( JPATH_SITE . DS . 'libraries' . DS . 'src' . DS . 'Factory.php' );
+require_once( JPATH_SITE .'/libraries/src/Factory.php' );
 
 // Instantiate the application.
 $app = Factory::getApplication('site');
@@ -44,4 +44,4 @@ $img->use_wordlist = true;
 
 http_response_code(200);
 
-$img->show(JPATH_SITE . DS . 'components' . DS . 'com_contentbuilder' . DS . 'images' . DS . 'securimage' . DS . 'backgrounds' . DS . 'bg6.jpg');
+$img->show(JPATH_SITE .'/components/com_contentbuilder/images/securimage/backgrounds/bg6.jpg');

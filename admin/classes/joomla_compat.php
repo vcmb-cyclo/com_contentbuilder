@@ -20,12 +20,9 @@ use Joomla\CMS\Date\Date;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Version;
 
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'CBFile.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'CBFactory.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'CBRequest.php');
-
-
-
+require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/CBFile.php');
+require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/CBFactory.php');
+require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/CBRequest.php');
 
 if (!function_exists('cb_b64enc')) {
 
@@ -134,16 +131,16 @@ class CBCompat
 
     public static function requireController()
     {
-        require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'controllerlegacy.php');
+        require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/controllerlegacy.php');
     }
 
     public static function requireView()
     {
-        require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'viewlegacy.php');
+        require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/viewlegacy.php');
     }
 
     public static function requireModel()
     {
-        require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
+        require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/modellegacy.php');
     }
 }

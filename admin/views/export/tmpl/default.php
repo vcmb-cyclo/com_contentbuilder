@@ -11,7 +11,7 @@ use Joomla\CMS\Language\Text;
 
 @ob_end_clean();
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder_helpers.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder_helpers.php');
 //require_once __DIR__ .'/../../../classes/PhpSpreadsheet/Spreadsheet.php';
 require __DIR__ . '/../../../librairies/PhpSpreadsheet/vendor/autoload.php';
 

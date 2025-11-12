@@ -299,10 +299,10 @@ class CBPagination
 		$itemOverride = false;
 		$listOverride = false;
 
-		if (file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'misc' . DS . 'pagination.php')) {
-			$chromePath = JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'misc' . DS . 'pagination.php';
+		if (file_exists(JPATH_SITE .'/media/contentbuilder/misc/pagination.php')) {
+			$chromePath = JPATH_SITE .'/media/contentbuilder/misc/pagination.php';
 		} else {
-			$chromePath = JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'pagination_chrome.php';
+			$chromePath = JPATH_SITE .'/administrator/components/com_contentbuilder/classes/pagination_chrome.php';
 		}
 
 		if (file_exists($chromePath)) {
@@ -392,10 +392,10 @@ class CBPagination
 		$list['pagescounter'] = $this->getPagesCounter();
 		$list['pageslinks'] = $this->getPagesLinks();
 
-		if (file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'misc' . DS . 'pagination.php')) {
-			$chromePath = JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'misc' . DS . 'pagination.php';
+		if (file_exists(JPATH_SITE .'/media/contentbuilder/misc/pagination.php')) {
+			$chromePath = JPATH_SITE .'/media/contentbuilder/misc/pagination.php';
 		} else {
-			$chromePath = JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'pagination_chrome.php';
+			$chromePath = JPATH_SITE .'/administrator/components/com_contentbuilder/classes/pagination_chrome.php';
 		}
 
 		if (file_exists($chromePath)) {

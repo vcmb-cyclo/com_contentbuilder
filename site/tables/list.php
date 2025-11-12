@@ -9,4 +9,4 @@
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'tables' . DS . 'list.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR'/tables/list.php');

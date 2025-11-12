@@ -43,7 +43,7 @@ if (!function_exists('cb_b64dec')) {
     }
 }
 
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
+require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 
 class plgContentContentbuilder_download extends CMSPlugin
 {
@@ -157,7 +157,7 @@ class plgContentContentbuilder_download extends CMSPlugin
         $plugin = PluginHelper::getPlugin('content', 'contentbuilder_download');
         $pluginParams = CBCompat::getParams($plugin->params);
 
-        if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
+        if (!file_exists(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php')) {
             return true;
         }
 
@@ -190,26 +190,26 @@ class plgContentContentbuilder_download extends CMSPlugin
 
         }
 
-        if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')) {
-            Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
+        if (!is_dir(JPATH_SITE .'/media/contentbuilder')) {
+            Folder::create(JPATH_SITE .'/media/contentbuilder');
         }
 
-        if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html'))
-            File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
+        if (!file_exists(JPATH_SITE .'/media/contentbuilder/index.html'))
+            File::write(JPATH_SITE .'/media/contentbuilder/index.html', $def = '');
 
-        if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins')) {
-            Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins');
+        if (!is_dir(JPATH_SITE .'/media/contentbuilder/plugins')) {
+            Folder::create(JPATH_SITE .'/media/contentbuilder/plugins');
         }
 
-        if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html'))
-            File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html', $def = '');
+        if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/index.html'))
+            File::write(JPATH_SITE .'/media/contentbuilder/plugins/index.html', $def = '');
 
-        if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'download')) {
-            Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'download');
+        if (!is_dir(JPATH_SITE .'/media/contentbuilder/plugins/download')) {
+            Folder::create(JPATH_SITE .'/media/contentbuilder/plugins/download');
         }
 
-        if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'download' . DS . 'index.html'))
-            File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'index.html', $def = '');
+        if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/download/index.html'))
+            File::write(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/index.html', $def = '');
 
         if (isset($article->id) || isset($article->cbrecord)) {
 
@@ -237,7 +237,7 @@ class plgContentContentbuilder_download extends CMSPlugin
                     $this->db->setQuery("Select form.`title_field`,form.`protect_upload_directory`,form.`reference_id`,article.`record_id`,article.`form_id`,form.`type`,form.`published_only`,form.`own_only`,form.`own_only_fe` From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.`published` = 1 And form.id = article.`form_id` And article.`article_id` = " . $this->db->quote($article->id));
                     $data = $this->db->loadAssoc();
 
-                    require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
+                    require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php');
                     $form = contentbuilder::getForm($data['type'], $data['reference_id']);
                     if (!$form || !$form->exists) {
                         return true;

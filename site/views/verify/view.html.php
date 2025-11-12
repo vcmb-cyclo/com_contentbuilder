@@ -10,4 +10,4 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'views' . DS . 'verify' . DS . 'view.html.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR'/views/verify/view.html.php');

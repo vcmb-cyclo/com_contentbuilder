@@ -31,15 +31,15 @@ use Joomla\CMS\User\UserHelper;
 use Joomla\Application\ApplicationInterface;
 use Joomla\CMS\Mail\MailerFactoryInterface;
 
-require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
-require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
+require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder_helpers.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder_helpers.php');
 
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'plugin_helper.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'plugin_helper4.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper4.php');
 
 $pluginHelper4 = new \Joomla\CMS\Plugin\PluginHelper4();
 
@@ -208,8 +208,8 @@ class ContentbuilderModelEdit extends CBModel
         if (!$this->frontend) {
             Factory::getApplication()->getLanguage()->load('com_content');
         } else {
-            Factory::getApplication()->getLanguage()->load('com_content', JPATH_SITE . DS . 'administrator');
-            Factory::getApplication()->getLanguage()->load('joomla', JPATH_SITE . DS . 'administrator');
+            Factory::getApplication()->getLanguage()->load('com_content', JPATH_SITE .'/administrator');
+            Factory::getApplication()->getLanguage()->load('joomla', JPATH_SITE .'/administrator');
         }
     }
 
@@ -691,7 +691,7 @@ var contentbuilder = new function(){
                     if ($the_captcha_field !== null && !in_array($the_captcha_field['reference_id'], $noneditable_fields)) {
 
                         if (!class_exists('Securimage')) {
-                            require_once (JPATH_SITE . DS . 'components' . DS . 'com_contentbuilder' . DS . 'images' . DS . 'securimage' . DS . 'securimage.php');
+                            require_once (JPATH_SITE .'/components/com_contentbuilder/images/securimage/securimage.php');
                         }
 
                         $securimage = new Securimage();
@@ -992,13 +992,13 @@ var contentbuilder = new function(){
                                             }
 
                                             // take care of existing filenames
-                                            if (file_exists($dest . DS . $filename)) {
+                                            if (file_exists($dest . '/' .$filename)) {
                                                 $filename = md5(mt_rand(0, mt_getrandmax()) . time()) . '_' . $filename;
                                             }
 
                                             // create pseudo security index.html
-                                            if (!file_exists($dest . DS . 'index.html')) {
-                                                File::write($dest . DS . 'index.html', $buffer = '');
+                                            if (!file_exists($dest'/index.html')) {
+                                                File::write($dest'/index.html', $buffer = '');
                                             }
 
                                             if (count($_items)) {
@@ -1025,7 +1025,7 @@ var contentbuilder = new function(){
                                             }
 
                                             // final upload file moving
-                                            $uploaded = File::upload($src, $dest . DS . $filename, false, true);
+                                            $uploaded = File::upload($src, $dest . '/' .$filename, false, true);
 
                                             if (!$uploaded) {
                                                 $msg = Text::_('COM_CONTENTBUILDER_UPLOAD_FAILED');
@@ -1040,7 +1040,7 @@ var contentbuilder = new function(){
                                             if (strpos(strtolower($tmp_dest), '{cbsite}') === 0) {
                                                 $dest = str_replace(array(JPATH_SITE, JPATH_SITE), array('{cbsite}', '{CBSite}'), $dest);
                                             }
-                                            $values[$id] = $dest . DS . $filename;
+                                            $values[$id] = $dest . '/' .$filename;
                                             $the_upload_fields[$id]['value'] = $values[$id];
                                         }
 

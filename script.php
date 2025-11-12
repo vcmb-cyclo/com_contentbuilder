@@ -364,16 +364,11 @@ if (!class_exists('CBFactory')) {
     }
 }
 
-
-if (!defined('DS')) {
-    define('DS', DIRECTORY_SEPARATOR);
-}
-
 if (!function_exists('contentbuilder_install_db')) {
     function contentbuilder_install_db()
     {
 
-        require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
+        require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 
         $db = CBFactory::getDBO();
 
@@ -729,13 +724,13 @@ class com_contentbuilderInstallerScript
 
     function installAndUpdate()
     {
-        require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
+        require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 
         $db = CBFactory::getDBO();
         $version = new Version();
         $plugins = $this->getPlugins();
 
-        $base_path = JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'plugins';
+        $base_path = JPATH_SITE .'/administrator/components/com_contentbuilder/plugins';
 
         $folders = Folder::folders($base_path);
 
@@ -744,7 +739,7 @@ class com_contentbuilderInstallerScript
 
         foreach ($folders as $folder) {
             echo 'Installing plugin <b>' . $folder . '</b><br/>';
-            $success = $installer->install($base_path . DS . $folder);
+            $success = $installer->install($base_path . '/' .$folder);
             if (!$success) {
                 echo 'Install failed for plugin <b>' . $folder . '</b><br/>';
             }
@@ -772,7 +767,7 @@ class com_contentbuilderInstallerScript
             echo '<b style="color:red">WARNING: YOU ARE RUNNING PHP VERSION "' . PHP_VERSION . '". ContentBuilder WON\'T WORK WITH THIS VERSION. PLEASE UPGRADE TO AT LEAST PHP 5.2.0, SORRY BUT YOU BETTER UNINSTALL THIS COMPONENT NOW!</b>';
         }
 
-        require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
+        require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 
         //contentbuilder_install_db();
 

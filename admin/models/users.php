@@ -16,8 +16,8 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Pagination\Pagination;
 
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
+require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
 class ContentbuilderModelUsers extends CBModel
 {

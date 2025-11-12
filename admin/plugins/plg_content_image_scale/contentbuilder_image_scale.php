@@ -54,8 +54,8 @@ function fatalErrorShutdownHandler()
 	}
 }
 
-require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
-require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder_helpers.php');
+require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder_helpers.php');
 
 // some hosting providers think it is a good idea not to compile in exif with php...
 if (!function_exists('exif_imagetype')) {
@@ -127,7 +127,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 		$max_filesize = (8 * 8 * 8 * 1024 * 2) * intval($pluginParams->def('max_filesize', 4)); // 4M default
 
 		
-		if (!file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
+		if (!file_exists(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php')) {
 			return true;
 		}
 
@@ -159,22 +159,22 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 
 		}
 
-		if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')) {
-			Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
+		if (!is_dir(JPATH_SITE .'/media/contentbuilder')) {
+			Folder::create(JPATH_SITE .'/media/contentbuilder');
 		}
 
-		if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html'))
-			File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
+		if (!file_exists(JPATH_SITE .'/media/contentbuilder/index.html'))
+			File::write(JPATH_SITE .'/media/contentbuilder/index.html', $def = '');
 
-		if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins')) {
-			Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins');
+		if (!is_dir(JPATH_SITE .'/media/contentbuilder/plugins')) {
+			Folder::create(JPATH_SITE .'/media/contentbuilder/plugins');
 		}
 
-		if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html'))
-			File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'index.html', $def = '');
+		if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/index.html'))
+			File::write(JPATH_SITE .'/media/contentbuilder/plugins/index.html', $def = '');
 
-		if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale')) {
-			Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale');
+		if (!is_dir(JPATH_SITE .'/media/contentbuilder/plugins/image_scale')) {
+			Folder::create(JPATH_SITE .'/media/contentbuilder/plugins/image_scale');
 		}
 
 		if (isset ($article->id) || isset ($article->cbrecord)) {
@@ -201,7 +201,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 					$this->db->setQuery("Select form.`title_field`,form.`protect_upload_directory`,form.`reference_id`,article.`record_id`,article.`form_id`,form.`type`,form.`published_only`,form.`own_only`,form.`own_only_fe` From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.`published` = 1 And form.id = article.`form_id` And article.`article_id` = " . $this->db->quote($article->id));
 					$data = $this->db->loadAssoc();
 
-					require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
+					require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php');
 					$form = contentbuilder::getForm($data['type'], $data['reference_id']);
 					if (!$form || !$form->exists) {
 						return true;
@@ -235,34 +235,34 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 					$ref_own_only = $article->cbrecord->own_only;
 				}
 
-				if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'index.html'))
-					File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'index.html', $def = '');
+				if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/index.html'))
+					File::write(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/index.html', $def = '');
 
-				if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache')) {
-					Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache');
+				if (!is_dir(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache')) {
+					Folder::create(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache');
 				}
 
-				if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . 'index.html'))
-					File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . 'index.html', $def = '');
+				if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/index.html'))
+					File::write(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/index.html', $def = '');
 
-				if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id)) {
-					Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id);
+				if (!is_dir(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id)) {
+					Folder::create(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id);
 				}
 
-				if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . 'index.html'))
-					File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . 'index.html', $def = '');
+				if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/index.html'))
+					File::write(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/index.html', $def = '');
 
 
 				if ($protect) {
-					if (!file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess'))
-						File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess', $def = 'deny from all');
+					if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/.htaccess'))
+						File::write(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/.htaccess', $def = 'deny from all');
 				} else {
-					if (file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess')) {
-						File::delete(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id . DS . '.htaccess');
+					if (file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/.htaccess')) {
+						File::delete(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/.htaccess');
 					}
 				}
 
-				$default_folder = JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . 'cache' . DS . $form_id;
+				$default_folder = JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id;
 
 				// if it is a list, permissions will be handled by the list
 				if (!$is_list) {
@@ -382,7 +382,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 
 						if (!$use_form) {
 
-							require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php');
+							require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php');
 							$use_form = contentbuilder::getForm($ref_type, $ref_id);
 						}
 
@@ -519,15 +519,15 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 													$basename = basename($the_value, '.' . $pathinfo['extension']) . '_' . $width . 'x' . $height . '_cbresized';
 
 													if ($folder && is_dir($folder)) {
-														$filename = $folder . DS . $basename . image_type_to_extension($exif_type);
+														$filename = $folder . '/' .$basename . image_type_to_extension($exif_type);
 													} else {
-														$filename = $pathinfo['dirname'] . DS . $basename . image_type_to_extension($exif_type);
+														$filename = $pathinfo['dirname'] . '/' .$basename . image_type_to_extension($exif_type);
 														$folder = $pathinfo['dirname'];
 													}
 
 													if (is_numeric($global_cache)) {
 														$limit = intval($global_cache);
-														$sourcePath = $folder . DS;
+														$sourcePath = $folder . '/';
 														if (@file_exists($sourcePath) && @is_readable($sourcePath) && @is_dir($sourcePath) && $handle = @opendir($sourcePath)) {
 															while (false !== ($file = @readdir($handle))) {
 																if ($file != "." && $file != "..") {
@@ -760,7 +760,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 																	if ($protect) {
 																		$open_ = Route::_($url . (strstr($url, '?') !== false ? '&' : '?') . 'contentbuilder_display_detail=1&contentbuilder_detail_file=' . sha1($field . $the_value));
 																	} else {
-																		$ex = explode(JPATH_SITE . DS, Path::clean($the_value), 2);
+																		$ex = explode(JPATH_SITE . '/', Path::clean($the_value), 2);
 																		$open_ = Uri::root(true) . '/' . str_replace("\\", "/", $ex[count($ex) - 1]);
 																	}
 																}
@@ -773,7 +773,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 																if ($protect) {
 																	$src = Route::_($url . (strstr($url, '?') !== false ? '&' : '?') . 'contentbuilder_display=1&contentbuilder_field=' . sha1($field . $filename));
 																} else {
-																	$ex = explode(JPATH_SITE . DS, $filename, 2);
+																	$ex = explode(JPATH_SITE . '/', $filename, 2);
 																	$src = Uri::root(true) . '/' . str_replace("\\", "/", $ex[count($ex) - 1]);
 																}
 
@@ -799,7 +799,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 						}
 					}
 
-					if (trim($out) == '' && file_exists(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'plugins' . DS . 'image_scale' . DS . basename($default_image))) {
+					if (trim($out) == '' && file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/' . basename($default_image))) {
 						$out = '<img width="' . $default_image_width . '" height="' . $default_image_height . '" alt="" src="' . Uri::root(true) . '/media/contentbuilder/plugins/image_scale/' . basename($default_image) . '"/>';
 					}
 

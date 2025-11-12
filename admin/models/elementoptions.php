@@ -16,12 +16,12 @@ use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
 
-require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
-require_once (JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
+require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'plugin_helper.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'plugin_helper4.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper4.php');
 
 class ContentbuilderModelElementoptions extends CBModel
 {
@@ -231,35 +231,35 @@ class ContentbuilderModelElementoptions extends CBModel
 
                 if (!trim(CBRequest::getVar('upload_directory', '')) && !is_dir($upload_directory)) {
 
-                    if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')) {
-                        Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
-                        File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
+                    if (!is_dir(JPATH_SITE .'/media/contentbuilder')) {
+                        Folder::create(JPATH_SITE .'/media/contentbuilder');
+                        File::write(JPATH_SITE .'/media/contentbuilder/index.html', $def = '');
                     }
 
-                    if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload')) {
-                        Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload');
-                        File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . 'index.html', $def = '');
+                    if (!is_dir(JPATH_SITE .'/media/contentbuilder/upload')) {
+                        Folder::create(JPATH_SITE .'/media/contentbuilder/upload');
+                        File::write(JPATH_SITE .'/media/contentbuilder/upload/index.html', $def = '');
                     }
 
-                    $upload_directory = JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload';
+                    $upload_directory = JPATH_SITE .'/media/contentbuilder/upload';
 
                     if ($is_opt_relative) {
                         $is_relative = 1;
-                        $tmp_upload_directory = '{CBSite}' . DS . 'media' . DS . 'contentbuilder' . DS . 'upload';
+                        $tmp_upload_directory = '{CBSite}/media/contentbuilder/upload';
                     }
 
                     if (isset($upl_ex[1])) {
                         $tokens = '|' . $upl_ex[1];
                     }
 
-                    Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' (' . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . ')', 'warning');
+                    Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' (/media/contentbuilder/upload' . ')', 'warning');
 
                 } else if (trim(CBRequest::getVar('upload_directory', '')) != '' && !is_dir(contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', '')))) {
 
                     $upload_directory = contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
 
                     Folder::create($upload_directory);
-                    File::write($upload_directory . DS . 'index.html', $def = '');
+                    File::write($upload_directory'/index.html', $def = '');
 
                     if ($is_opt_relative) {
                         $is_relative = 1;
@@ -293,11 +293,11 @@ class ContentbuilderModelElementoptions extends CBModel
 
                 if ($protect && is_dir($upload_directory)) {
 
-                    File::write(contentbuilder::makeSafeFolder($upload_directory) . DS . '.htaccess', $def = 'deny from all');
+                    File::write(contentbuilder::makeSafeFolder($upload_directory)'/.htaccess', $def = 'deny from all');
 
                 } else if (!$protect && is_dir($upload_directory)) {
-                    if (file_exists(contentbuilder::makeSafeFolder($upload_directory) . DS . '.htaccess')) {
-                        File::delete(contentbuilder::makeSafeFolder($upload_directory) . DS . '.htaccess');
+                    if (file_exists(contentbuilder::makeSafeFolder($upload_directory)'/.htaccess')) {
+                        File::delete(contentbuilder::makeSafeFolder($upload_directory)'/.htaccess');
                     }
 
                 }

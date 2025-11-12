@@ -15,7 +15,7 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder_helpers.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder_helpers.php');
 
 $language_allowed = contentbuilder::authorize('language');
 $edit_allowed = contentbuilder::authorize('edit');

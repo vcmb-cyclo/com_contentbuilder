@@ -8,4 +8,4 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'views' . DS . 'verify' . DS . 'tmpl' . DS . 'default.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR'/views/verify/tmpl/default.php');

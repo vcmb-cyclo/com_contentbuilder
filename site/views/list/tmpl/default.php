@@ -17,7 +17,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\Application\ApplicationInterface;
 
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder_helpers.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder_helpers.php');
 
 $language_allowed = contentbuilder::authorizeFe('language');
 $edit_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('edit') : contentbuilder::authorize('edit');

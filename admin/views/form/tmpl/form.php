@@ -1215,7 +1215,7 @@ $cbcompat = new CBCompat();
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
             echo '<input type="hidden" name="editable_template" value="{BreezingForms: ' . (isset($this->form->type_name) ? $this->form->type_name : '') . '}"/>';
             //echo '<input type="hidden" name="protect_upload_directory" value="'.(trim($this->form->protect_upload_directory) ? 1 : 0).'"/>'; 
-            echo '<input type="hidden" name="upload_directory" value="' . (trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload') . '"/>';
+            echo '<input type="hidden" name="upload_directory" value="' . (trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE .'/media/contentbuilder/upload') . '"/>';
         } else {
             ?>
 
@@ -1225,7 +1225,7 @@ $cbcompat = new CBCompat();
                 </span></label>
             <br />
             <input class="form-control form-control-sm" style="width: 50%;" type="text"
-                value="<?php echo trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload'; ?>"
+                value="<?php echo trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE .'/media/contentbuilder/upload'; ?>"
                 name="upload_directory" id="upload_directory" />
             <br />
             <br />

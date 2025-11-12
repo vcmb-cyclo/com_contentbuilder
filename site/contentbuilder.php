@@ -46,7 +46,7 @@ class cbFeMarker
 
 // Require the base controller
 
-require_once(JPATH_COMPONENT . DS . 'controller.php');
+require_once(JPATH_COMPONENT'/controller.php');
 
 CBRequest::setVar('cb_controller', null);
 CBRequest::setVar('cb_category_id', null);
@@ -144,7 +144,7 @@ if (!$controller) {
 
 }
 
-$path = JPATH_COMPONENT . DS . 'controllers' . DS . $controller . '.php';
+$path = JPATH_COMPONENT'/controllers/' . $controller . '.php';
 if (file_exists($path)) {
 	require_once $path;
 } else {

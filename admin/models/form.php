@@ -23,10 +23,10 @@ use Joomla\CMS\Pagination\Pagination;
 
 HTMLHelper::_('behavior.keepalive');
 
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'joomla_compat.php');
-require_once(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'modellegacy.php');
+require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR . DS . 'classes' . DS . 'contentbuilder.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
 
 class ContentbuilderModelForm extends CBModel
 {
@@ -315,7 +315,7 @@ class ContentbuilderModelForm extends CBModel
             $data->email_update_notifications = 0;
             $data->limited_article_options = 1;
             $data->limited_article_options_fe = 1;
-            $data->upload_directory = JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload';
+            $data->upload_directory = JPATH_SITE .'/media/contentbuilder/upload';
             $data->protect_upload_directory = 1;
             $data->limit_add = 0;
             $data->limit_edit = 0;
@@ -570,7 +570,7 @@ class ContentbuilderModelForm extends CBModel
 
         $data['protect_upload_directory'] = CBRequest::getInt('protect_upload_directory', 0);
 
-        //$data['upload_directory'] = JPATH_SITE . DS . 'media/contentbuilder/upload';
+        //$data['upload_directory'] = JPATH_SITE .'/media/contentbuilder/upload';
         //$data['protect_upload_directory'] = 1;
 
         // determine if it contains a replacement
@@ -590,27 +590,27 @@ class ContentbuilderModelForm extends CBModel
         // if not exissting, we create the fallback directory
         if (!is_dir($upload_directory)) {
 
-            if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder')) {
-                Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder');
-                File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'index.html', $def = '');
+            if (!is_dir(JPATH_SITE .'/media/contentbuilder')) {
+                Folder::create(JPATH_SITE .'/media/contentbuilder');
+                File::write(JPATH_SITE .'/media/contentbuilder/index.html', $def = '');
             }
 
-            if (!is_dir(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload')) {
-                Folder::create(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload');
-                File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . 'index.html', $def = '');
+            if (!is_dir(JPATH_SITE .'/media/contentbuilder/upload')) {
+                Folder::create(JPATH_SITE .'/media/contentbuilder/upload');
+                File::write(JPATH_SITE .'/media/contentbuilder/upload/index.html', $def = '');
 
                 if ($protect) {
-                    File::write(JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . DS . '.htaccess', $def = 'deny from all');
+                    File::write(JPATH_SITE .'/media/contentbuilder/upload/.htaccess', $def = 'deny from all');
                 }
             }
 
-            $data['upload_directory'] = JPATH_SITE . DS . 'media' . DS . 'contentbuilder' . DS . 'upload';
+            $data['upload_directory'] = JPATH_SITE .'/media/contentbuilder/upload';
 
             if ($is_relative) {
-                $tmp_upload_directory = '{CBSite}' . DS . 'media' . DS . 'contentbuilder' . DS . 'upload';
+                $tmp_upload_directory = '{CBSite}/media/contentbuilder/upload';
             }
 
-            Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' (' . DS . 'media' . DS . 'contentbuilder' . DS . 'upload' . ')', 'warning');
+            Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' (/media/contentbuilder/upload' . ')', 'warning');
         }
 
         if (isset($upl_ex[1])) {
@@ -618,19 +618,19 @@ class ContentbuilderModelForm extends CBModel
         }
 
         if ($data['protect_upload_directory'] && is_dir(contentbuilder::makeSafeFolder($data['upload_directory']))) {
-            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . 'index.html'))
-                File::write(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . 'index.html', $def = '');
+            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory'])'/index.html'))
+                File::write(contentbuilder::makeSafeFolder($data['upload_directory'])'/index.html', $def = '');
         }
 
         if ($data['protect_upload_directory'] && is_dir(contentbuilder::makeSafeFolder($data['upload_directory']))) {
 
-            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess'))
-                File::write(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess', $def = 'deny from all');
+            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory'])'/.htaccess'))
+                File::write(contentbuilder::makeSafeFolder($data['upload_directory'])'/.htaccess', $def = 'deny from all');
 
         } else {
 
-            if (file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess'))
-                File::delete(contentbuilder::makeSafeFolder($data['upload_directory']) . DS . '.htaccess');
+            if (file_exists(contentbuilder::makeSafeFolder($data['upload_directory'])'/.htaccess'))
+                File::delete(contentbuilder::makeSafeFolder($data['upload_directory'])'/.htaccess');
 
         }
 

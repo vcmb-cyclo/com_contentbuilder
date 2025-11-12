@@ -98,7 +98,7 @@ class plgContentContentbuilder_verify extends CMSPlugin
     function onContentPrepare($context, &$article, &$params, $limitstart = 0)
     {
 
-        if (!$article || !isset ($article->text) || !file_exists(JPATH_SITE . DS . 'administrator' . DS . 'components' . DS . 'com_contentbuilder' . DS . 'classes' . DS . 'contentbuilder.php')) {
+        if (!$article || !isset ($article->text) || !file_exists(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/contentbuilder.php')) {
             return true;
         }
 
