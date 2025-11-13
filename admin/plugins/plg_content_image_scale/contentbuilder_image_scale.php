@@ -249,16 +249,16 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 					Folder::create(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id);
 				}
 
-				if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/index.html'))
-					File::write(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/index.html', $def = '');
-
+				if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id .'/index.html')){
+					File::write(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id .'/index.html', $def = '');
+				}
 
 				if ($protect) {
-					if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/.htaccess'))
-						File::write(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/.htaccess', $def = 'deny from all');
+					if (!file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id .'/.htaccess'))
+						File::write(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id .'/.htaccess', $def = 'deny from all');
 				} else {
-					if (file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/.htaccess')) {
-						File::delete(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id'/.htaccess');
+					if (file_exists(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id .'/.htaccess')) {
+						File::delete(JPATH_SITE .'/media/contentbuilder/plugins/image_scale/cache/' . $form_id .'/.htaccess');
 					}
 				}
 
@@ -266,7 +266,6 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 
 				// if it is a list, permissions will be handled by the list
 				if (!$is_list) {
-
 					contentbuilder::setPermissions($form_id, $record_id, $frontend ? '_fe' : '');
 
 					if ($frontend) {
@@ -390,7 +389,8 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 
 							if (!is_array($use_title) || !isset ($use_title[intval($default_title)])) {
 
-								$use_record = $use_form->getRecord($record_id, $ref_published_only, $frontend ? ($ref_own_only_fe ? $this->app->getIdentity()->get('id', 0) : -1) : ($ref_own_only ? $this->app->getIdentity()->get('id', 0) : -1), true);
+								$use_record = $use_form->getRecord($record_id, $ref_published_only, $frontend ? ($ref_own_only_fe ? $this->app->getIdentity()->get('id', 0) : -1) : ($ref_own_only ?
+								 $this->app->getIdentity()->get('id', 0) : -1), true);
 
 								foreach ($use_record as $use_item) {
 									if ($default_title == $use_item->recElementId) {

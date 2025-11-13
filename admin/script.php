@@ -398,10 +398,6 @@ if (!class_exists('CBFactory')) {
 }
 
 
-if (!defined('DS')) {
-  define('DS', DIRECTORY_SEPARATOR);
-}
-
 if (!function_exists('contentbuilder_install_db')) {
   function contentbuilder_install_db()
   {

@@ -10,4 +10,4 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/controllers/ajax.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/controllers/ajax.php');

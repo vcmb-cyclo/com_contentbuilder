@@ -15,8 +15,6 @@ use Joomla\CMS\Factory;
 
 ob_start();
 
-define('DS', DIRECTORY_SEPARATOR);
-
 require_once dirname(__FILE__) . '/../../../../includes/app.php';
 /* To use Joomla's Database Class */
 

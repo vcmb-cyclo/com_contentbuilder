@@ -34,12 +34,12 @@ use Joomla\CMS\Mail\MailerFactoryInterface;
 require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder_helpers.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder_helpers.php');
 
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper4.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/plugin_helper.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/plugin_helper4.php');
 
 $pluginHelper4 = new \Joomla\CMS\Plugin\PluginHelper4();
 
@@ -78,7 +78,7 @@ class ContentbuilderModelEdit extends CBModel
             return $path;
         }
 
-        $path = str_replace('|', DS, $path);
+        $path = str_replace('|', '/', $path);
 
         foreach ($names as $id => $name) {
             $is_array = 'STRING';
@@ -93,7 +93,7 @@ class ContentbuilderModelEdit extends CBModel
                         $arrvals[] = $val;
                     }
                 }
-                $value = implode(DS, $arrvals);
+                $value = implode('/', $arrvals);
             }
             if (trim($value) == '') {
                 $value = '_empty_';
@@ -113,11 +113,11 @@ class ContentbuilderModelEdit extends CBModel
         $path = str_replace('{datetime}', $_now->format('Y-m-d H:i:s'), $path);
 
         $endpath = contentbuilder::makeSafeFolder($path);
-        $parts = explode(DS, $endpath);
+        $parts = explode('/', $endpath);
         $inner_path = '';
         foreach ($parts as $part) {
             if (!is_dir($inner_path . $part)) {
-                $inner_path .= DS;
+                $inner_path .= '/';
             }
             Folder::create($inner_path . $part);
             $inner_path .= $part;
@@ -997,8 +997,8 @@ var contentbuilder = new function(){
                                             }
 
                                             // create pseudo security index.html
-                                            if (!file_exists($dest'/index.html')) {
-                                                File::write($dest'/index.html', $buffer = '');
+                                            if (!file_exists($dest .'/index.html')) {
+                                                File::write($dest .'/index.html', $buffer = '');
                                             }
 
                                             if (count($_items)) {

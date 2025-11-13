@@ -25,7 +25,7 @@ HTMLHelper::_('behavior.keepalive');
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder.php');
 
 class ContentbuilderModelStorage extends CBModel
 {

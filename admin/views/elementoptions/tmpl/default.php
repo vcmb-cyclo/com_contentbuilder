@@ -15,8 +15,8 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper.php');
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper4.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/classes/plugin_helper.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/classes/plugin_helper4.php');
 
 $plugins = contentbuilder::getFormElementsPlugins();
 

@@ -214,7 +214,7 @@ function contentbuilder_is_internal_path($path)
         return false;
     }
 
-    if (trim($path) && (@realpath($path) !== false || strpos(strtolower($path), strtolower(JPATH_SITE)) === 0) && strpos($path, DS) !== false) {
+    if (trim($path) && (@realpath($path) !== false || strpos(strtolower($path), strtolower(JPATH_SITE)) === 0) && strpos($path, '/') !== false) {
         return true;
     }
 

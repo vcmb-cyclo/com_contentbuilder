@@ -7,18 +7,12 @@
  * @license     GNU/GPL
  */
 
+// Fichier d’entrée du composant
+
 // No direct access
 defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
-
-if (!defined('DS')) {
-	define('DS', DIRECTORY_SEPARATOR);
-}
-
-if (!defined('DS')) {
-	define('DS', DIRECTORY_SEPARATOR);
-}
 
 if (!function_exists('cb_b64enc')) {
 
@@ -46,7 +40,7 @@ class cbFeMarker
 
 // Require the base controller
 
-require_once(JPATH_COMPONENT'/controller.php');
+require_once(JPATH_COMPONENT .'/controller.php');
 
 CBRequest::setVar('cb_controller', null);
 CBRequest::setVar('cb_category_id', null);
@@ -144,7 +138,7 @@ if (!$controller) {
 
 }
 
-$path = JPATH_COMPONENT'/controllers/' . $controller . '.php';
+$path = JPATH_COMPONENT .'/controllers/' . $controller . '.php';
 if (file_exists($path)) {
 	require_once $path;
 } else {

@@ -21,8 +21,8 @@ require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/j
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/pane/CBTabs.php');
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/viewlegacy.php');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder_helpers.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder_helpers.php');
 
 class ContentbuilderViewForm extends HtmlView
 {

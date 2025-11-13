@@ -14,7 +14,7 @@ require_once(JPATH_SITE.'/administrator/' .'components/' .'com_contentbuilder/' 
 
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/controllerlegacy.php');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder.php');
 
 class ContentbuilderControllerList extends CBController
 {

@@ -26,7 +26,7 @@ HTMLHelper::_('behavior.keepalive');
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder.php');
 
 class ContentbuilderModelForm extends CBModel
 {
@@ -618,19 +618,19 @@ class ContentbuilderModelForm extends CBModel
         }
 
         if ($data['protect_upload_directory'] && is_dir(contentbuilder::makeSafeFolder($data['upload_directory']))) {
-            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory'])'/index.html'))
-                File::write(contentbuilder::makeSafeFolder($data['upload_directory'])'/index.html', $def = '');
+            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) .'/index.html'))
+                File::write(contentbuilder::makeSafeFolder($data['upload_directory']) .'/index.html', $def = '');
         }
 
         if ($data['protect_upload_directory'] && is_dir(contentbuilder::makeSafeFolder($data['upload_directory']))) {
 
-            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory'])'/.htaccess'))
-                File::write(contentbuilder::makeSafeFolder($data['upload_directory'])'/.htaccess', $def = 'deny from all');
+            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) .'/.htaccess'))
+                File::write(contentbuilder::makeSafeFolder($data['upload_directory']) .'/.htaccess', $def = 'deny from all');
 
         } else {
 
-            if (file_exists(contentbuilder::makeSafeFolder($data['upload_directory'])'/.htaccess'))
-                File::delete(contentbuilder::makeSafeFolder($data['upload_directory'])'/.htaccess');
+            if (file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) .'/.htaccess'))
+                File::delete(contentbuilder::makeSafeFolder($data['upload_directory']) .'/.htaccess');
 
         }
 

@@ -18,7 +18,7 @@ use Joomla\CMS\Router\Route;
 
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/controllerlegacy.php');
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder.php');
 
 class ContentbuilderControllerEdit extends CBController
 {

@@ -19,9 +19,9 @@ use Joomla\Filesystem\File;
 require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/contentbuilder.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR'/classes/plugin_helper4.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/plugin_helper.php');
+require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/plugin_helper4.php');
 
 class ContentbuilderModelElementoptions extends CBModel
 {
@@ -259,7 +259,7 @@ class ContentbuilderModelElementoptions extends CBModel
                     $upload_directory = contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
 
                     Folder::create($upload_directory);
-                    File::write($upload_directory'/index.html', $def = '');
+                    File::write($upload_directory .'/index.html', $def = '');
 
                     if ($is_opt_relative) {
                         $is_relative = 1;
@@ -293,11 +293,11 @@ class ContentbuilderModelElementoptions extends CBModel
 
                 if ($protect && is_dir($upload_directory)) {
 
-                    File::write(contentbuilder::makeSafeFolder($upload_directory)'/.htaccess', $def = 'deny from all');
+                    File::write(contentbuilder::makeSafeFolder($upload_directory) .'/.htaccess', $def = 'deny from all');
 
                 } else if (!$protect && is_dir($upload_directory)) {
-                    if (file_exists(contentbuilder::makeSafeFolder($upload_directory)'/.htaccess')) {
-                        File::delete(contentbuilder::makeSafeFolder($upload_directory)'/.htaccess');
+                    if (file_exists(contentbuilder::makeSafeFolder($upload_directory) .'/.htaccess')) {
+                        File::delete(contentbuilder::makeSafeFolder($upload_directory) .'/.htaccess');
                     }
 
                 }

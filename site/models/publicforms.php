@@ -10,4 +10,4 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR'/models/publicforms.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR .'/models/publicforms.php');
