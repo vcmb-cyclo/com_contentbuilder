@@ -10,4 +10,4 @@ defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Language\Text;
 
 ?>
-<?php echo Text::_('COM_CONTENTBUILDER_ABOUT_DESC'); ?> <a href="https://www.crosstec.org">Crosstec Solutions</a>
+<?php echo Text::_('COM_CONTENTBUILDER_ABOUT_DESC'); ?> <a href="https://breezingforms.vcmb.fr">VCMB migration</a>

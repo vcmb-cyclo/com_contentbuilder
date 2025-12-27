@@ -3,6 +3,7 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
+ * @copyright   (C) 2025 by XDA+GIL
  * @license     GNU/GPL
 */
 
@@ -26,7 +27,7 @@ class ContentbuilderController extends CBController
         parent::display();
 
 	    if(CBRequest::getVar('market','') == 'true'){
-            Factory::getApplication()->redirect('https://crosstec.org/joomla-forms-download.html');
+            Factory::getApplication()->redirect('https://breezingforms.vcmb.fr');
         }
     }
 

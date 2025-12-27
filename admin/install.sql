@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `#__contentbuilder_articles`
     `reference_id` int NOT NULL DEFAULT '0',
     `record_id` bigint NOT NULL DEFAULT '0',
     `form_id` int NOT NULL DEFAULT '0',
-    `last_update` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `last_update` datetime NULL DEFAULT NULL,
     PRIMARY KEY
 (
     `id`
@@ -159,8 +159,8 @@ CREATE TABLE IF NOT EXISTS `#__contentbuilder_forms`
     `details_prepare` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     `editable_template` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     `editable_prepare` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-    `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-    `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `created` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified` datetime NULL DEFAULT NULL,
     `created_by` varchar
 (
     255
@@ -300,7 +300,7 @@ CREATE TABLE IF NOT EXISTS `#__contentbuilder_forms`
 (
     1
 ) NOT NULL DEFAULT '1',
-    `last_update` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `last_update` datetime NULL DEFAULT NULL,
     `limit_add` int NOT NULL DEFAULT '0',
     `limit_edit` int NOT NULL DEFAULT '0',
     `verification_required_view` tinyint
@@ -432,7 +432,7 @@ CREATE TABLE IF NOT EXISTS `#__contentbuilder_forms`
 (
     1
 ) NOT NULL DEFAULT '5',
-    `rand_date_update` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `rand_date_update` datetime NULL DEFAULT NULL,
     `rand_update` int NOT NULL DEFAULT '86400',
     `article_record_impact_publish` tinyint
 (
@@ -589,7 +589,7 @@ CREATE TABLE IF NOT EXISTS `#__contentbuilder_rating_cache`
 (
     50
 ) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-    `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `date` datetime NULL DEFAULT NULL,
     KEY `record_id`
 (
     `record_id`,
@@ -626,9 +626,9 @@ CREATE TABLE IF NOT EXISTS `#__contentbuilder_records`
 (
     7
 ) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '*',
-    `publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-    `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-    `last_update` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `publish_up` datetime NULL DEFAULT NULL,
+    `publish_down` datetime NULL DEFAULT NULL,
+    `last_update` datetime NULL DEFAULT NULL,
     `is_future` tinyint
 (
     1
@@ -647,7 +647,7 @@ CREATE TABLE IF NOT EXISTS `#__contentbuilder_records`
 (
     1
 ) NOT NULL DEFAULT '0',
-    `rand_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `rand_date` datetime NULL DEFAULT NULL,
     `metakey` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     `metadesc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     `robots` varchar
@@ -861,17 +861,17 @@ CREATE TABLE IF NOT EXISTS `#__contentbuilder_users`
 (
     1
 ) NOT NULL DEFAULT '0',
-    `verification_date_view` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `verification_date_view` datetime NULL DEFAULT NULL,
     `verified_new` tinyint
 (
     1
 ) NOT NULL DEFAULT '0',
-    `verification_date_new` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `verification_date_new` datetime NULL DEFAULT NULL,
     `verified_edit` tinyint
 (
     1
 ) NOT NULL DEFAULT '0',
-    `verification_date_edit` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `verification_date_edit` datetime NULL DEFAULT NULL,
     `limit_add` int NOT NULL DEFAULT '0',
     `limit_edit` int NOT NULL DEFAULT '0',
     `published` tinyint
@@ -902,8 +902,8 @@ CREATE TABLE IF NOT EXISTS `#__contentbuilder_verifications`
 (
     255
 ) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
-    `start_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-    `verification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+    `start_date` datetime NULL DEFAULT NULL,
+    `verification_date` datetime NULL DEFAULT NULL,
     `verification_data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
     `create_invoice` tinyint
 (

@@ -16,6 +16,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\Application\ApplicationInterface;
 
+
 if (!function_exists('cb_b64enc')) {
 
     function cb_b64enc($str)
@@ -58,8 +59,49 @@ foreach($forms As $form){
 // Require the base controller
 require_once(JPATH_COMPONENT_ADMINISTRATOR . '/controller.php');
 
+if (CBRequest::getWord('task') === 'test') {
+
+    // Charger les classes modernes
+    require_once JPATH_COMPONENT_ADMINISTRATOR . '/src/Controller/TestController.php';
+    require_once JPATH_COMPONENT_ADMINISTRATOR . '/src/View/Test/HtmlView.php';
+
+    // Créer un controller temporaire pour task=test
+    $container = \Joomla\CMS\Factory::getContainer();
+
+    $db = $container->get(\Joomla\Database\DatabaseInterface::class);
+    $factory = $container->get(\Joomla\CMS\MVC\Factory\MVCFactoryInterface::class);
+
+    $controller = new \CB\Component\Contentbuilder\Administrator\Controller\TestController([], $db, $factory);
+    $controller->display();
+
+    // Stoppe le reste du legacy dispatcher
+    return;
+}
+
 // Require specific controller if requested
 $controller = trim(CBRequest::getWord('controller'));
+
+// Vérifier si c'est la task "test" pour le MVC moderne
+if (CBRequest::getWord('task') === 'test') {
+
+    // Charger les classes nécessaires si besoin
+    require_once JPATH_COMPONENT_ADMINISTRATOR . '/src/Controller/TestController.php';
+    require_once JPATH_COMPONENT_ADMINISTRATOR . '/src/View/Test/HtmlView.php';
+
+    // Récupérer les services Joomla
+    $factory = Factory::getContainer()->get(\Joomla\CMS\MVC\Factory\MVCFactoryInterface::class);
+    $db      = Factory::getContainer()->get(\Joomla\Database\DatabaseInterface::class);
+
+    // Instancier le contrôleur moderne
+    $controller = new \CB\Component\Contentbuilder\Administrator\Controller\TestController([], $db, $factory);
+
+    // Exécuter la display() du TestController
+    $controller->display();
+
+    // Stopper l’exécution pour éviter que le reste du Legacy Dispatcher s’exécute
+    return;
+}
+
 
 if ($controller) {
     $path = JPATH_COMPONENT_ADMINISTRATOR . '/controllers/' . $controller . '.php';

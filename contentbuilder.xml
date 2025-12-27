@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="5.1" method="upgrade">
+<extension type="component" version="5.4.1" method="upgrade">
  <name>Contentbuilder</name>
- <creationDate>2025-10-17</creationDate>
+ <creationDate>2025-12-27</creationDate>
  <author>XDA+GIL</author>
  <authorEmail>noreply@vcmb.fr</authorEmail>
  <authorUrl>https://breezingforms.vcmb.fr</authorUrl>
- <copyright>Copyright 2011 - 2025 by XDA+GIL</copyright>
+ <copyright>Copyright 2011 - 2026 by XDA+GIL</copyright>
  <license>GNU/GPL v2.0</license>
- <version>5.0.0-RC12</version>
+ <version>5.4.1-RC1</version>
  <description>A content construction kit and application framework extension for Joomla!</description>
 
  <scriptfile>script.php</scriptfile>
@@ -49,43 +49,68 @@
  </languages>
 
  <administration>
-  <menu img="components/com_contentbuilder/views/logo_icon_cb.png">ContentBuilder</menu>
-  <submenu>
-      <menu controller="storages" img="components/com_contentbuilder/views/logo_icon_cb.png">COM_CONTENTBUILDER_STORAGES</menu>
-      <menu controller="forms" img="components/com_contentbuilder/views/logo_icon_cb.png">COM_CONTENTBUILDER_LIST</menu>
-      <menu link="option=com_contentbuilder&amp;view=contentbuilder&amp;market=true">Try BreezingForms!</menu>
-      <menu view="contentbuilder">COM_CONTENTBUILDER_ABOUT</menu>
-  </submenu>
+    <menu img="components/com_contentbuilder/views/logo_icon_cb.png">ContentBuilder</menu>
+    <submenu>
+        <menu controller="storages" img="components/com_contentbuilder/views/logo_icon_cb.png">COM_CONTENTBUILDER_STORAGES</menu>
+        <menu controller="forms" img="components/com_contentbuilder/views/logo_icon_cb.png">COM_CONTENTBUILDER_LIST</menu>
+        <menu link="option=com_contentbuilder&amp;view=contentbuilder&amp;market=true">Try BreezingForms!</menu>
+        <menu view="contentbuilder">COM_CONTENTBUILDER_ABOUT</menu>
+    </submenu>
 
-  <files folder="admin">
-    <filename>controller.php</filename>
-    <filename>contentbuilder.php</filename>
-    <filename>access.xml</filename>
-    <filename>config.xml</filename>
-    <filename>install.sql</filename>
-    <filename>uninstall.sql</filename>
-    <filename>index.html</filename>
-    <folder>controllers</folder>
-    <folder>models</folder>
-    <folder>tables</folder>
-    <folder>views</folder>
-    <folder>classes</folder>
-    <folder>languages</folder>
-    <folder>assets</folder>
-    <folder>plugins</folder>
-  </files>
+    <files folder="admin">
+        <filename>controller.php</filename>
+        <filename>contentbuilder.php</filename>
+        <filename>access.xml</filename>
+        <filename>config.xml</filename>
+        <filename>install.sql</filename>
+        <filename>uninstall.sql</filename>
+        <filename>index.html</filename>
+        <folder>controllers</folder>
+        <folder>models</folder>
+        <folder>tables</folder>
+        <folder>views</folder>
+        <folder>classes</folder>
+        <folder>languages</folder>
+        <folder>assets</folder>
+        <folder>plugins</folder>
+        <folder>librairies</folder>
+        <folder>services</folder>
+        <folder>tmpl</folder>
+        <folder>src</folder>
+    </files>
 
- <languages folder="admin">
-    <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.ini</language>
-    <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.menu.ini</language>
-    <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.sys.ini</language>
-    <language tag="de-DE">languages/de-DE/admin/de-DE.com_contentbuilder.ini</language>
-    <language tag="de-DE">languages/de-DE/admin/de-DE.com_contentbuilder.menu.ini</language>
-    <language tag="de-DE">languages/de-DE/admin/de-DE.com_contentbuilder.sys.ini</language>
-    <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_contentbuilder.ini</language>
-    <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_contentbuilder.menu.ini</language>
-    <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_contentbuilder.sys.ini</language>
- </languages>
+    <languages folder="admin">
+        <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.ini</language>
+        <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.menu.ini</language>
+        <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.sys.ini</language>
+        <language tag="de-DE">languages/de-DE/admin/de-DE.com_contentbuilder.ini</language>
+        <language tag="de-DE">languages/de-DE/admin/de-DE.com_contentbuilder.menu.ini</language>
+        <language tag="de-DE">languages/de-DE/admin/de-DE.com_contentbuilder.sys.ini</language>
+        <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_contentbuilder.ini</language>
+        <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_contentbuilder.menu.ini</language>
+        <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_contentbuilder.sys.ini</language>
+    </languages>
 
- </administration>
+    <!-- NAMESPACE ET SERVICES -->
+   <namespace path="src">CB\Component\Contentbuilder</namespace>
+
+   <files folder="admin/services">
+      <filename>provider.php</filename>
+   </files>
+
+   <files folder="admin/src">
+      <folder>Extension</folder>
+      <folder>Service</folder>
+      <folder>Controller</folder>
+      <folder>View</folder>
+   </files>
+
+ 
+   <!-- Puis dans une sous-section si besoin -->
+   <files folder="admin/tmpl/test">
+      <filename>default.php</filename>
+      <filename>index.html</filename>
+   </files>
+
+</administration>
 </extension>

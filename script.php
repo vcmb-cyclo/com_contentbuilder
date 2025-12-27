@@ -4,7 +4,7 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
- * @copyright   (C) 2024 by XDA+GIL
+ * @copyright   (C) 2025 by XDA+GIL
  * @license     GNU/GPL
  */
 defined('_JEXEC') or die('Direct Access to this location is not allowed.');
@@ -14,6 +14,18 @@ use Joomla\Filesystem\File;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
 use Joomla\CMS\Installer\Installer;
+
+// === LOG POUR DÉBOGAGE ===
+$logFile = JPATH_SITE . '/administrator/logs/contentbuilder_install.log';
+$logMessage = '[' . date('Y-m-d H:i:s') . '] postflight appelé - Type: ' . $type . PHP_EOL;
+$logMessage .= 'User Agent: ' . ($_SERVER['HTTP_USER_AGENT'] ?? 'CLI') . PHP_EOL;
+$logMessage .= '--------------------------------------------------' . PHP_EOL;
+
+if (!Folder::exists(dirname($logFile))) {
+    Folder::create(dirname($logFile));
+}
+file_put_contents($logFile, $logMessage. PHP_EOL, FILE_APPEND);
+
 
 if (!class_exists('CBFactory')) {
 
@@ -402,7 +414,7 @@ if (!function_exists('contentbuilder_install_db')) {
   function contentbuilder_install_db()
   {
 
-    require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+    require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 
     $db = Factory::getContainer()->get(DatabaseInterface::class);
 
@@ -420,7 +432,7 @@ CREATE TABLE `#__contentbuilder_articles` (
   `article_id` int(11) NOT NULL DEFAULT '0',
   `record_id` varchar(255) NOT NULL DEFAULT '0',
   `form_id` int(11) NOT NULL DEFAULT '0',
-  `last_update` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_update` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `record_id` (`record_id`,`form_id`),
   KEY `article_id` (`article_id`,`record_id`),
@@ -469,8 +481,8 @@ CREATE TABLE `#__contentbuilder_forms` (
   `details_prepare` longtext NOT NULL,
   `editable_template` longtext NOT NULL,
   `editable_prepare` longtext NOT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` datetime DEFAULT CURRENT_TIMESTAMP,
+  `modified` datetime NULL DEFAULT NULL,
   `created_by` varchar(255) NOT NULL DEFAULT '',
   `modified_by` varchar(255) NOT NULL DEFAULT '',
   `metadata` tinyint(1) NOT NULL DEFAULT '1',
@@ -508,7 +520,7 @@ CREATE TABLE `#__contentbuilder_forms` (
   `limited_article_options_fe` tinyint(1) NOT NULL DEFAULT '1',
   `upload_directory` text NOT NULL,
   `protect_upload_directory` tinyint(1) NOT NULL DEFAULT '1',
-  `last_update` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_update` datetime NULL DEFAULT NULL,
   `limit_add` int(11) NOT NULL DEFAULT '0',
   `limit_edit` int(11) NOT NULL DEFAULT '0',
   `verification_required_view` tinyint(1) NOT NULL DEFAULT '0',
@@ -592,9 +604,9 @@ CREATE TABLE `#__contentbuilder_records` (
   `edited` int(11) NOT NULL DEFAULT '0',
   `sef` varchar(50) NOT NULL DEFAULT '',
   `lang_code` varchar(7) NOT NULL DEFAULT '*',
-  `publish_up` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_update` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `publish_up` datetime NULL DEFAULT NULL,
+  `publish_down` datetime NULL DEFAULT NULL,
+  `last_update` datetime NULL DEFAULT NULL,
   `is_future` tinyint(1) NOT NULL DEFAULT '0',
   `published` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -656,11 +668,11 @@ CREATE TABLE `#__contentbuilder_users` (
   `form_id` int(11) NOT NULL DEFAULT '0',
   `records` int(11) NOT NULL DEFAULT '0',
   `verified_view` tinyint(1) NOT NULL DEFAULT '0',
-  `verification_date_view` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `verification_date_view` datetime NULL DEFAULT NULL,
   `verified_new` tinyint(1) NOT NULL DEFAULT '0',
-  `verification_date_new` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `verification_date_new` datetime NULL DEFAULT NULL,
   `verified_edit` tinyint(1) NOT NULL DEFAULT '0',
-  `verification_date_edit` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `verification_date_edit` datetime NULL DEFAULT NULL,
   `limit_add` int(11) NOT NULL DEFAULT '0',
   `limit_edit` int(11) NOT NULL DEFAULT '0',
   `published` tinyint(1) NOT NULL DEFAULT '1',
@@ -673,8 +685,8 @@ CREATE TABLE `#__contentbuilder_users` (
 CREATE TABLE `#__contentbuilder_verifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `verification_hash` varchar(255) NOT NULL DEFAULT '',
-  `start_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `verification_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `start_date` datetime NULL DEFAULT NULL,
+  `verification_date` datetime NULL DEFAULT NULL,
   `verification_data` text NOT NULL,
   `user_id` int(11) NOT NULL DEFAULT '0',
   `plugin` varchar(255) NOT NULL DEFAULT '',
@@ -716,9 +728,8 @@ CREATE TABLE `#__contentbuilder_verifications` (
     } catch (Exception $e) {
     }
 
-    echo $db->getErrorMsg();
-
-    exit;
+    Factory::getApplication()->enqueueMessage($db->getErrorMsg(), 'error');
+    // exit;
   }
 }
 
@@ -757,28 +768,44 @@ class com_contentbuilderInstallerScript
     return $plugins;
   }
 
+  private function getCurrentInstalledVersion()
+  {
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
+    $query = $db->getQuery(true)
+      ->select($db->quoteName('manifest_cache'))
+      ->from($db->quoteName('#__extensions'))
+      ->where($db->quoteName('element') . ' = ' . $db->quote('com_contentbuilder'));
+
+    $db->setQuery($query);
+    $manifest = $db->loadResult();
+
+    if ($manifest) {
+      $manifest = json_decode($manifest, true);
+      return $manifest['version'] ?? '0.0.0';
+    }
+
+    return '0.0.0';
+  }
+
   function installAndUpdate()
   {
-    require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+    require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 
     $db = CBFactory::getDBO();
     $plugins = $this->getPlugins();
 
-    $base_path = JPATH_SITE .'/administrator/components/com_contentbuilder/plugins';
+    $base_path = JPATH_SITE . '/administrator/components/com_contentbuilder/plugins';
 
     $folders = Folder::folders($base_path);
 
     $installer = new Installer();
-    // CORRECT : Utilise directement le driver Joomla
-    $installer->setDatabase(\Joomla\CMS\Factory::getContainer()->get('DatabaseDriver'));
-    
+
     foreach ($folders as $folder) {
-      echo 'Installing plugin <b>' . $folder . '</b><br/>';
-      $success = $installer->install($base_path . '/' .$folder);
+      Factory::getApplication()->enqueueMessage('Installing plugin <b>' . $folder . '</b>', 'message');
+      $success = $installer->install($base_path . '/' . $folder);
       if (!$success) {
-        echo 'Install failed for plugin <b>' . $folder . '</b><br/>';
+        Factory::getApplication()->enqueueMessage('Install failed for plugin <b>' . $folder . '</b>', 'error');
       }
-      echo '<hr/>';
     }
 
     foreach ($plugins as $folder => $subplugs) {
@@ -786,7 +813,7 @@ class com_contentbuilderInstallerScript
         $query = 'UPDATE #__extensions SET `enabled` = 1 WHERE `type` = "plugin" AND `element` = ' . $db->quote($plugin) . ' AND `folder` = ' . $db->quote($folder);
         $db->setQuery($query);
         $db->execute();
-        echo 'Published plugin ' . htmlspecialchars($plugin) . '<hr/>';
+        Factory::getApplication()->enqueueMessage('Published plugin <b>' . $plugin . '</b>', 'message');
       }
     }
   }
@@ -799,10 +826,10 @@ class com_contentbuilderInstallerScript
   function install($parent)
   {
     if (!version_compare(PHP_VERSION, '5.2.0', '>=')) {
-      echo '<b style="color:red">WARNING: YOU ARE RUNNING PHP VERSION "' . PHP_VERSION . '". ContentBuilder WON\'T WORK WITH THIS VERSION. PLEASE UPGRADE TO AT LEAST PHP 5.2.0, SORRY BUT YOU BETTER UNINSTALL THIS COMPONENT NOW!</b>';
+      Factory::getApplication()->enqueueMessage('"WARNING: YOU ARE RUNNING PHP VERSION "' . PHP_VERSION . '". ContentBuilder WON\'T WORK WITH THIS VERSION. PLEASE UPGRADE TO AT LEAST PHP 5.2.0, SORRY BUT YOU BETTER UNINSTALL THIS COMPONENT NOW!"', 'error');
     }
 
-    require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+    require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 
     //contentbuilder_install_db();
 
@@ -818,7 +845,7 @@ class com_contentbuilderInstallerScript
   function update($parent)
   {
     if (!version_compare(PHP_VERSION, '5.2.0', '>=')) {
-      echo '<b style="color:red">WARNING: YOU ARE RUNNING PHP VERSION "' . PHP_VERSION . '". ContentBuilder WON\'T WORK WITH THIS VERSION. PLEASE UPGRADE TO AT LEAST PHP 5.2.0, SORRY BUT YOU BETTER UNINSTALL THIS COMPONENT NOW!</b>';
+      Factory::getApplication()->enqueueMessage('"WARNING: YOU ARE RUNNING PHP VERSION "' . PHP_VERSION . '". ContentBuilder WON\'T WORK WITH THIS VERSION. PLEASE UPGRADE TO AT LEAST PHP 5.2.0, SORRY BUT YOU BETTER UNINSTALL THIS COMPONENT NOW!"', 'error');
     }
 
     $this->installAndUpdate();
@@ -831,32 +858,32 @@ class com_contentbuilderInstallerScript
    */
   function uninstall($parent)
   {
-      $db = CBFactory::getDBO();
+    $db = CBFactory::getDBO();
 
-      $db->setQuery("DELETE FROM #__menu WHERE `link` LIKE 'index.php?option=com_contentbuilder%'");
+    $db->setQuery("DELETE FROM #__menu WHERE `link` LIKE 'index.php?option=com_contentbuilder%'");
+    $db->execute();
+
+    $plugins = $this->getPlugins();
+    $installer = new Installer();
+    $installer->setDatabase(\Joomla\CMS\Factory::getContainer()->get('DatabaseDriver'));
+
+    foreach ($plugins as $folder => $subplugs) {
+      foreach ($subplugs as $plugin) {
+        $query = 'SELECT `extension_id` FROM #__extensions WHERE `type` = "plugin" AND `element` = ' . $db->quote($plugin) . ' AND `folder` = ' . $db->quote($folder);
+        $db->setQuery($query);
+        $id = $db->loadResult();
+
+        if ($id) {
+          $installer->uninstall('plugin', $id, 1);
+        }
+      }
+    }
+
+    $db->setQuery("SELECT id FROM `#__menu` WHERE `alias` = 'root'");
+    if (!$db->loadResult()) {
+      $db->setQuery("INSERT INTO `#__menu` VALUES(1, '', 'Menu_Item_Root', 'root', '', '', '', '', 1, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', 0, 0, '', 0, '', 0, (SELECT MAX(mlft.rgt)+1 FROM #__menu AS mlft), 0, '*', 0)");
       $db->execute();
-
-      $plugins = $this->getPlugins();
-      $installer = new Installer();
-      $installer->setDatabase(\Joomla\CMS\Factory::getContainer()->get('DatabaseDriver'));
-
-      foreach ($plugins as $folder => $subplugs) {
-          foreach ($subplugs as $plugin) {
-              $query = 'SELECT `extension_id` FROM #__extensions WHERE `type` = "plugin" AND `element` = ' . $db->quote($plugin) . ' AND `folder` = ' . $db->quote($folder);
-              $db->setQuery($query);
-              $id = $db->loadResult();
-
-              if ($id) {
-                  $installer->uninstall('plugin', $id, 1);
-              }
-          }
-      }
-
-      $db->setQuery("SELECT id FROM `#__menu` WHERE `alias` = 'root'");
-      if (!$db->loadResult()) {
-          $db->setQuery("INSERT INTO `#__menu` VALUES(1, '', 'Menu_Item_Root', 'root', '', '', '', '', 1, 0, 0, 0, 0, 0, '0000-00-00 00:00:00', 0, 0, '', 0, '', 0, (SELECT MAX(mlft.rgt)+1 FROM #__menu AS mlft), 0, '*', 0)");
-          $db->execute();
-      }
+    }
   }
   /**
    * method to run before an install/update/uninstall method
@@ -880,7 +907,13 @@ class com_contentbuilderInstallerScript
    */
   function postflight($type, $parent)
   {
+    $logFile = JPATH_SITE . '/administrator/logs/contentbuilder_install.log';
+    $app = Factory::getApplication();
     $db = Factory::getContainer()->get(DatabaseInterface::class);
+
+    // === LOG POUR DÉBOGAGE ===
+    $logMessage = 'Version actuelle dans manifest_cache : ' . $this->getCurrentInstalledVersion() . PHP_EOL;
+    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
 
     /*
              $db->setQuery("Select id From `#__menu` Where `alias` = 'root'");
@@ -891,6 +924,67 @@ class com_contentbuilderInstallerScript
 
     $db->setQuery("Update #__menu Set `title` = 'COM_CONTENTBUILDER' Where `alias`='contentbuilder'");
     $db->execute();
+
+    // Suppression propre de l'ancienne librairie PHPExcel
+    $classesPath    = JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes';
+    $phpexcelFolder = $classesPath . '/PHPExcel';
+    $phpexcelFile   = $classesPath . '/PHPExcel.php';
+
+    if (Folder::exists($phpexcelFolder)) {
+      if (Folder::delete($phpexcelFolder)) {
+        file_put_contents($logFile, 'Ancien dossier PHPExcel supprimé avec succès'. FILE_APPEND);
+        $app->enqueueMessage('Ancien dossier PHPExcel supprimé avec succès.', 'message');
+      } else {
+        file_put_contents($logFile, 'Echec de suppression du dossier PHPExcel'. FILE_APPEND);
+        $app->enqueueMessage('Échec de suppression du dossier PHPExcel.', 'warning');
+      }
+    }
+
+    if (File::exists($phpexcelFile)) {
+      if (File::delete($phpexcelFile)) {
+        file_put_contents($logFile, 'Ancien fichier PHPExcel.php supprimé avec succès.'. FILE_APPEND);
+        $app->enqueueMessage('Ancien fichier PHPExcel.php supprimé avec succès.', 'message');
+      } else {
+        file_put_contents($logFile, 'Echec de suppression du fichier PHPExcel.php'. FILE_APPEND);
+        $app->enqueueMessage('Échec de suppression du fichier PHPExcel.php.', 'warning');
+      }
+    }
+
+
+    $alterQueries = [
+      // Table #__contentbuilder_forms
+      "ALTER TABLE `#__contentbuilder_forms` MODIFY `modified` DATETIME NULL DEFAULT NULL",
+      "ALTER TABLE `#__contentbuilder_forms` MODIFY `last_update` DATETIME NULL DEFAULT NULL",
+
+      // Table #__contentbuilder_records
+      "ALTER TABLE `#__contentbuilder_records` MODIFY `publish_up` DATETIME NULL DEFAULT NULL",
+      "ALTER TABLE `#__contentbuilder_records` MODIFY `publish_down` DATETIME NULL DEFAULT NULL",
+      "ALTER TABLE `#__contentbuilder_records` MODIFY `last_update` DATETIME NULL DEFAULT NULL",
+
+      // Table #__contentbuilder_articles (si présent)
+      "ALTER TABLE `#__contentbuilder_articles` MODIFY `last_update` DATETIME NULL DEFAULT NULL",
+
+      // Table #__contentbuilder_users (dates de vérification)
+      "ALTER TABLE `#__contentbuilder_users` MODIFY `verification_date_view` DATETIME NULL DEFAULT NULL",
+      "ALTER TABLE `#__contentbuilder_users` MODIFY `verification_date_new` DATETIME NULL DEFAULT NULL",
+      "ALTER TABLE `#__contentbuilder_users` MODIFY `verification_date_edit` DATETIME NULL DEFAULT NULL",
+
+      // Table #__contentbuilder_verifications
+      "ALTER TABLE `#__contentbuilder_verifications` MODIFY `start_date` DATETIME NULL DEFAULT NULL",
+      "ALTER TABLE `#__contentbuilder_verifications` MODIFY `verification_date` DATETIME NULL DEFAULT NULL",
+    ];
+
+    foreach ($alterQueries as $query) {
+      try {
+        $db->setQuery($query)->execute();
+      } catch (Exception $e) {
+        // Silencieux si la colonne est déjà correcte ou table inexistante
+        Factory::getApplication()->enqueueMessage('Warning: Could not alter date column: ' . $e->getMessage(), 'warning');
+      }
+    }
+
+    Factory::getApplication()->enqueueMessage('Champs date mis à jour pour supporter NULL correctement.', 'message');
+
 
     // try to restore the main menu items if they got lost
     /*
