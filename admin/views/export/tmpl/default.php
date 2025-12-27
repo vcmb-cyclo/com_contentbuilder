@@ -3,11 +3,14 @@
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://www.crosstec.org
- * @copyright   Copyright (C) 2024 by XDA+GIL
+ * @copyright   Copyright (C) 2025 by XDA+GIL
  * @license     GNU/GPL
  */
 defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Language\Text;
+use PhpOffice\PhpSpreadsheet\Shared\Font;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+
 
 @ob_end_clean();
 
@@ -17,6 +20,8 @@ require __DIR__ . '/../../../librairies/PhpSpreadsheet/vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Joomla\CMS\Factory;
+
+//Font::setAutoSizeMethod(Font::AUTOSIZE_METHOD_EXACT);
 
 $database = Factory::getDbo();
 
@@ -178,33 +183,24 @@ $filename = "CB_export_" . $name. '_' .$date->format('Y-m-d_Hi', true) . ".xlsx"
 
 $spreadsheet->setActiveSheetIndex(0);
 
-// Auto size columns for each worksheet
 foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
-    $spreadsheet->setActiveSheetIndex($spreadsheet->getIndex($worksheet));
-
-    $sheet = $spreadsheet->getActiveSheet();
-    $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
-    $cellIterator->setIterateOnlyExistingCells(true);
-    /** @var PHPExcel_Cell $cell */
-    foreach ($cellIterator as $cell) {
-        $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+    // Active l'auto-size pour toutes les colonnes qui contiennent des données
+    foreach ($worksheet->getColumnIterator() as $column) {
+        $worksheet->getColumnDimension($column->getColumnIndex())->setAutoSize(true);
     }
 
-    // IMPORTANT : forcer le calcul des largeurs
-    $sheet->calculateColumnWidths();
+    // Force le calcul des largeurs basées sur le contenu réel
+    $worksheet->calculateColumnWidths();
 
-    foreach ($cellIterator as $cell) {
-        $column = $cell->getColumn();
-        $dimension = $sheet->getColumnDimension($column);
+    // Applique un plafond de 70 caractères de largeur
+    foreach ($worksheet->getColumnIterator() as $column) {
+        $dimension = $worksheet->getColumnDimension($column->getColumnIndex());
 
-        $width = $dimension->getWidth();
-
-        if ($width > 70) {
+        if ($dimension->getWidth() > 70) {
             $dimension->setAutoSize(false);
             $dimension->setWidth(70);
         }
     }
-
 }
 
 
