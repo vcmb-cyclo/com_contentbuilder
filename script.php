@@ -953,28 +953,48 @@ class com_contentbuilderInstallerScript
 
     $alterQueries = [
       // Table #__contentbuilder_forms
-      "ALTER TABLE `#__contentbuilder_forms` MODIFY `created` DATETIME NULL DEFAULT NULL",
+      "ALTER TABLE `#__contentbuilder_forms` MODIFY `created` DATETIME NULL DEFAULT CURRENT_TIMESTAMP",
+      "UPDATE `#__contentbuilder_forms` SET `created` = NULL WHERE `created` = '0000-00-00'",
+
       "ALTER TABLE `#__contentbuilder_forms` MODIFY `modified` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_forms` SET `modified` = NULL WHERE `modified` = '0000-00-00'",
+
       "ALTER TABLE `#__contentbuilder_forms` MODIFY `last_update` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_forms` SET `last_update` = NULL WHERE `last_update` = '0000-00-00'",
+
       "ALTER TABLE `#__contentbuilder_forms` MODIFY `rand_date_update` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_forms` SET `rand_date_update` = NULL WHERE `rand_date_update` = '0000-00-00'",
 
       // Table #__contentbuilder_records
       "ALTER TABLE `#__contentbuilder_records` MODIFY `publish_up` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_records` SET `publish_up` = NULL WHERE `publish_up` = '0000-00-00'",
       "ALTER TABLE `#__contentbuilder_records` MODIFY `publish_down` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_records` SET `publish_down` = NULL WHERE `publish_down` = '0000-00-00'",
       "ALTER TABLE `#__contentbuilder_records` MODIFY `last_update` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_records` SET `last_update` = NULL WHERE `last_update` = '0000-00-00'",
       "ALTER TABLE `#__contentbuilder_records` MODIFY `rand_date` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_records` SET `rand_date` = NULL WHERE `rand_date` = '0000-00-00'",
 
       // Table #__contentbuilder_articles (si présent)
       "ALTER TABLE `#__contentbuilder_articles` MODIFY `last_update` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_articles` SET `last_update` = NULL WHERE `last_update` = '0000-00-00'",
 
       // Table #__contentbuilder_users (dates de vérification)
       "ALTER TABLE `#__contentbuilder_users` MODIFY `verification_date_view` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_users` SET `verification_date_view` = NULL WHERE `verification_date_view` = '0000-00-00'",
       "ALTER TABLE `#__contentbuilder_users` MODIFY `verification_date_new` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_users` SET `verification_date_new` = NULL WHERE `verification_date_new` = '0000-00-00'",
       "ALTER TABLE `#__contentbuilder_users` MODIFY `verification_date_edit` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_users` SET `verification_date_edit` = NULL WHERE `verification_date_edit` = '0000-00-00'",
+
+      "ALTER TABLE `#__contentbuilder_rating_cache` MODIFY COLUMN `date` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_rating_cache` SET `date` = NULL WHERE `date` = '0000-00-00'",
 
       // Table #__contentbuilder_verifications
       "ALTER TABLE `#__contentbuilder_verifications` MODIFY `start_date` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_verifications` SET `start_date` = NULL WHERE `start_date` = '0000-00-00'",
       "ALTER TABLE `#__contentbuilder_verifications` MODIFY `verification_date` DATETIME NULL DEFAULT NULL",
+      "UPDATE `#__contentbuilder_verifications` SET `verification_date` = NULL WHERE `verification_date` = '0000-00-00'"
     ];
 
     foreach ($alterQueries as $query) {
