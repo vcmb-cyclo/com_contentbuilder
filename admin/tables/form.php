@@ -19,8 +19,8 @@ class TableForm extends Table
     public $name = '';
     public $title = '';
     public $tag = '';
-    public $created = '0000-00-00 00:00:00';
-    public $modified = '0000-00-00 00:00:00';
+    public $created = null;
+    public $modified = null;
     public $created_by = '';
     public $details_template = '';
     public $details_prepare = '';
@@ -78,7 +78,7 @@ class TableForm extends Table
     public $limited_article_options_fe = 1;
     public $upload_directory = 'media/contentbuilder/upload';
     public $protect_upload_directory = 1;
-    public $last_update = '0000-00-00 00:00:00';
+    public $last_update = null;
     public $limit_add = 0;
     public $limit_edit = 0;
     public $verification_required_view = 0;
@@ -123,7 +123,7 @@ class TableForm extends Table
 
     public $rating_slots = 5;
 
-    public $rand_date_update = '0000-00-00 00:00:00';
+    public $rand_date_update = null;
     public $rand_update = '86400';
 
     public $article_record_impact_publish = 0;

@@ -90,7 +90,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
                         )
                         Left Join #__user_usergroup_map As groups On ( groups.user_id = cv.userid And groups.group_id In (" . implode(',', $pluginParams->get('auto_groups', array())) . ") )
                             Where 
-                        cv.verification_date_view <> '0000-00-00 00:00:00' 
+                        cv.verification_date_view IS NOT NULL  
                             And 
                         cv.verified_view = 1
                             And
@@ -250,10 +250,10 @@ class plgSystemContentbuilder_system extends CMSPlugin
             // managing published states
             $date = Factory::getDate()->toSql();
 
-            $this->db->setQuery("Update #__contentbuilder_records Set published = 1 Where is_future = 1 And publish_up <> '0000-00-00 00:00:00' And publish_up <= '" . $date . "'");
+            $this->db->setQuery("Update #__contentbuilder_records Set published = 1 Where is_future = 1 And publish_up IS NOT NULL And publish_up <= '" . $date . "'");
             $this->db->execute();
 
-            $this->db->setQuery("Update #__contentbuilder_records Set published = 0 Where publish_down <> '0000-00-00 00:00:00' And publish_down <= '" . $date . "'");
+            $this->db->setQuery("Update #__contentbuilder_records Set published = 0 Where publish_down IS NOT NULL And publish_down <= '" . $date . "'");
             $this->db->execute();
 
             // published states END

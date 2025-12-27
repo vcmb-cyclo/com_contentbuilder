@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     ContentBuilder
  * @author      Markus Bopp
@@ -31,15 +32,15 @@ use Joomla\CMS\User\UserHelper;
 use Joomla\Application\ApplicationInterface;
 use Joomla\CMS\Mail\MailerFactoryInterface;
 
-require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/joomla_compat.php');
-require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/modellegacy.php');
+require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/joomla_compat.php');
+require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/modellegacy.php');
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder_helpers.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR . '/classes/contentbuilder.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR . '/classes/contentbuilder_helpers.php');
 
 
-require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/plugin_helper.php');
-require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/plugin_helper4.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR . '/classes/plugin_helper.php');
+require_once(JPATH_COMPONENT_ADMINISTRATOR . '/classes/plugin_helper4.php');
 
 $pluginHelper4 = new \Joomla\CMS\Plugin\PluginHelper4();
 
@@ -208,8 +209,8 @@ class ContentbuilderModelEdit extends CBModel
         if (!$this->frontend) {
             Factory::getApplication()->getLanguage()->load('com_content');
         } else {
-            Factory::getApplication()->getLanguage()->load('com_content', JPATH_SITE .'/administrator');
-            Factory::getApplication()->getLanguage()->load('joomla', JPATH_SITE .'/administrator');
+            Factory::getApplication()->getLanguage()->load('com_content', JPATH_SITE . '/administrator');
+            Factory::getApplication()->getLanguage()->load('joomla', JPATH_SITE . '/administrator');
         }
     }
 
@@ -336,7 +337,6 @@ class ContentbuilderModelEdit extends CBModel
                             $data->article_settings->version = $article['version'];
                             $data->article_settings->hits = $article['hits'];
                             $data->article_settings->catid = $article['catid'];
-
                         } else {
                             $data->article_settings = new stdClass();
                             $data->article_settings->modified_by = 0;
@@ -403,14 +403,14 @@ class ContentbuilderModelEdit extends CBModel
                                         $rec->recValue = $user->name;
                                     } else
                                         if ($data->registration_username_field == $rec->recElementId) {
-                                            $item->recValue = $user->username;
-                                        } else
+                                        $item->recValue = $user->username;
+                                    } else
                                             if ($data->registration_email_field == $item->recElementId) {
-                                                $rec->recValue = $user->email;
-                                            } else
+                                        $rec->recValue = $user->email;
+                                    } else
                                                 if ($data->registration_email_repeat_field == $rec->recElementId) {
-                                                    $rec->recValue = $user->email;
-                                                }
+                                        $rec->recValue = $user->email;
+                                    }
                                 }
                                 $label = cbinternal($rec->recValue);
                                 break;
@@ -434,7 +434,6 @@ class ContentbuilderModelEdit extends CBModel
                             $document = Factory::getApplication()->getDocument();
                             $document->setTitle(html_entity_decode($data->page_title, ENT_QUOTES, 'UTF-8'));
                         }
-
                     }
 
                     //if(!$data->edit_by_type){
@@ -576,14 +575,14 @@ var contentbuilder = new function(){
     public static function customValidate($code, $field, $fields, $record_id, $form, $value)
     {
         $msg = '';
-        eval ($code);
+        eval($code);
         return $msg;
     }
 
     public static function customAction($code, $record_id, $article_id, $form, $field, $fields, array $values)
     {
         $msg = '';
-        eval ($code);
+        eval($code);
         return $msg;
     }
 
@@ -691,7 +690,7 @@ var contentbuilder = new function(){
                     if ($the_captcha_field !== null && !in_array($the_captcha_field['reference_id'], $noneditable_fields)) {
 
                         if (!class_exists('Securimage')) {
-                            require_once (JPATH_SITE .'/components/com_contentbuilder/images/securimage/securimage.php');
+                            require_once(JPATH_SITE . '/components/com_contentbuilder/images/securimage/securimage.php');
                         }
 
                         $securimage = new Securimage();
@@ -761,7 +760,6 @@ var contentbuilder = new function(){
 
                                     CBRequest::setVar('cb_' . $the_password_field['reference_id'], '');
                                     CBRequest::setVar('cb_' . $the_password_repeat_field['reference_id'], '');
-
                                 } else if (!trim($pw1)) {
                                     CBRequest::setVar('cb_submission_failed', 1);
                                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_PASSWORD_EMPTY'), 'error');
@@ -924,7 +922,6 @@ var contentbuilder = new function(){
                                         if (isset($the_upload_fields[$id]['options']) && isset($the_upload_fields[$id]['options']->upload_directory) && $the_upload_fields[$id]['options']->upload_directory != '') {
 
                                             $dest = str_replace(array('{CBSite}', '{cbsite}'), JPATH_SITE, $the_upload_fields[$id]['options']->upload_directory);
-
                                         } else if ($data->upload_directory != '') {
 
                                             $dest = str_replace(array('{CBSite}', '{cbsite}'), JPATH_SITE, $data->upload_directory);
@@ -992,13 +989,13 @@ var contentbuilder = new function(){
                                             }
 
                                             // take care of existing filenames
-                                            if (file_exists($dest . '/' .$filename)) {
+                                            if (file_exists($dest . '/' . $filename)) {
                                                 $filename = md5(mt_rand(0, mt_getrandmax()) . time()) . '_' . $filename;
                                             }
 
                                             // create pseudo security index.html
-                                            if (!file_exists($dest .'/index.html')) {
-                                                File::write($dest .'/index.html', $buffer = '');
+                                            if (!file_exists($dest . '/index.html')) {
+                                                File::write($dest . '/index.html', $buffer = '');
                                             }
 
                                             if (count($_items)) {
@@ -1025,7 +1022,7 @@ var contentbuilder = new function(){
                                             }
 
                                             // final upload file moving
-                                            $uploaded = File::upload($src, $dest . '/' .$filename, false, true);
+                                            $uploaded = File::upload($src, $dest . '/' . $filename, false, true);
 
                                             if (!$uploaded) {
                                                 $msg = Text::_('COM_CONTENTBUILDER_UPLOAD_FAILED');
@@ -1040,7 +1037,7 @@ var contentbuilder = new function(){
                                             if (strpos(strtolower($tmp_dest), '{cbsite}') === 0) {
                                                 $dest = str_replace(array(JPATH_SITE, JPATH_SITE), array('{cbsite}', '{CBSite}'), $dest);
                                             }
-                                            $values[$id] = $dest . '/' .$filename;
+                                            $values[$id] = $dest . '/' . $filename;
                                             $the_upload_fields[$id]['value'] = $values[$id];
                                         }
 
@@ -1081,7 +1078,6 @@ var contentbuilder = new function(){
                                         }
                                     }
                                 }
-
                             } else if (isset($the_fields[$id])) {
                                 $the_fields[$id]['name'] = $name;
                                 $the_fields[$id]['value'] = $value;
@@ -1235,7 +1231,6 @@ var contentbuilder = new function(){
 
                                 throw new Exception('Failed attempt to register user');
                             }
-
                         } else {
 
                             if (!$meta->created_id) {
@@ -1333,7 +1328,6 @@ var contentbuilder = new function(){
                                 } else {
                                     CBRequest::setVar('return', cb_b64enc(Route::_('index.php?option=com_user&view=login&Itemid=' . CBRequest::getInt('Itemid', 0), false)));
                                 }
-
                             } else {
 
                                 if (!$this->is15) {
@@ -1363,7 +1357,6 @@ var contentbuilder = new function(){
                             if ($ignore_lang_code == '*') {
                                 $sef = '';
                             }
-
                         } else {
                             $this->_db->setQuery("Select sef From #__languages Where published = 1 And lang_code = " . $this->_db->Quote($data->default_lang_code));
                             $sef = $this->_db->loadResult();
@@ -1387,7 +1380,7 @@ var contentbuilder = new function(){
                                 $date = Factory::getDate(strtotime('now +' . intval($data->default_publish_up_days) . ' days'));
                                 $created_up = $date->toSql();
                             }
-                            $created_down = '0000-00-00 00:00:00';
+                            $created_down = null;
                             if (intval($data->default_publish_down_days) != 0) {
                                 $date = Factory::getDate(strtotime($created_up . ' +' . intval($data->default_publish_down_days) . ' days'));
                                 $created_down = $date->toSql();
@@ -1399,11 +1392,9 @@ var contentbuilder = new function(){
                             $this->_db->execute();
                         }
                     }
-
                 } else {
 
                     $record_return = CBRequest::getCmd('record_id', 0);
-
                 }
 
                 $data->items = $data->form->getRecord($record_return, $data->published_only, $this->frontend ? ($data->own_only_fe ? Factory::getApplication()->getIdentity()->get('id', 0) : -1) : ($data->own_only ? Factory::getApplication()->getIdentity()->get('id', 0) : -1), true);
@@ -1567,7 +1558,6 @@ var contentbuilder = new function(){
                                 $subject_admin = str_replace(array('{VIEW_NAME}', '{view_name}'), $data->name, $subject_admin);
                                 $subject_admin = str_replace(array('{VIEW_ID}', '{view_id}'), $this->_id, $subject_admin);
                                 $subject_admin = str_replace(array('{IP}', '{ip}'), $_SERVER['REMOTE_ADDR'], $subject_admin);
-
                             }
 
                             $mailer->setSubject($subject_admin);
@@ -1679,7 +1669,6 @@ var contentbuilder = new function(){
                                 $subject = str_replace(array('{VIEW_NAME}', '{view_name}'), $data->name, $subject);
                                 $subject = str_replace(array('{VIEW_ID}', '{view_id}'), $this->_id, $subject);
                                 $subject = str_replace(array('{IP}', '{ip}'), $_SERVER['REMOTE_ADDR'], $subject);
-
                             }
 
                             $mailer->setSubject($subject);
@@ -1702,7 +1691,6 @@ var contentbuilder = new function(){
                                         $attached[] = trim($att);
                                     }
                                 }
-
                             }
 
                             $mailer->addAttachment($attached);
@@ -1856,7 +1844,6 @@ var contentbuilder = new function(){
             $emailBody = str_replace('{SITEURL}', $data['siteurl'], $emailBody);
             $emailBody = str_replace('{USERNAME}', $data['username'], $emailBody);
             $emailBody = str_replace('{PASSWORD_CLEAR}', $data['password_clear'], $emailBody);
-
         } else {
 
             $emailSubject = Text::_('COM_USERS_EMAIL_ACCOUNT_DETAILS');
@@ -1875,7 +1862,6 @@ var contentbuilder = new function(){
         try {
             $return = Factory::getContainer()->get(MailerFactoryInterface::class)->createMailer()->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
         } catch (Exception $e) {
-
         }
 
         // Send Notification mail to administrators
@@ -2091,7 +2077,6 @@ var contentbuilder = new function(){
                                 $this->_db->execute();
 
                                 echo "Delete From #__workflow_associations Where item_id In (" . implode(',', $article_ids) . ")";
-
                             }
                         }
 
@@ -2107,7 +2092,6 @@ var contentbuilder = new function(){
             $cache->clean();
             $cache = Factory::getCache('com_contentbuilder');
             $cache->clean();
-
         } else {
             $cache = Factory::getCache('com_content');
             $cache->clean();
@@ -2233,11 +2217,39 @@ var contentbuilder = new function(){
                 $this->_db->setQuery("Insert Into #__contentbuilder_records (`type`,published, record_id, reference_id) Values (" . $this->_db->Quote($type) . "," . (CBRequest::getInt('list_publish', 0) ? 1 : 0) . ", " . $this->_db->Quote($item) . ", " . $this->_db->Quote($reference_id) . ")");
                 $this->_db->execute();
             } else {
-                $this->_db->setQuery("Update #__contentbuilder_records Set is_future = 0, " . (CBRequest::getInt('list_publish', 0) ? "publish_up = '" . $created_up . "',publish_down = '0000-00-00 00:00:00'," : "publish_up = '0000-00-00 00:00:00',publish_down = '0000-00-00 00:00:00',") . " published = " . (CBRequest::getInt('list_publish', 0) ? 1 : 0) . " Where `type` = " . $this->_db->Quote($type) . " And `reference_id` = " . $this->_db->Quote($reference_id) . " And record_id = " . $this->_db->Quote($item));
+                $publish = CBRequest::getInt('list_publish', 0);
+
+                $this->_db->setQuery(
+                    "UPDATE #__contentbuilder_records 
+                    SET 
+                        is_future = 0, 
+                        publish_up = " . ($publish ? $this->_db->Quote($created_up) : 'NULL') . ", 
+                        publish_down = NULL, 
+                        published = " . ($publish ? 1 : 0) . " 
+                    WHERE `type` = " . $this->_db->Quote($type) . " 
+                    AND `reference_id` = " . $this->_db->Quote($reference_id) . " 
+                    AND record_id = " . $this->_db->Quote($item)
+                );
                 $this->_db->execute();
             }
 
-            $this->_db->setQuery("Update #__contentbuilder_articles As articles, #__content As content Set " . (CBRequest::getInt('list_publish', 0) ? "content.publish_up = '" . $created_up . "',publish_down = '0000-00-00 00:00:00'," : "content.publish_up = '" . (is_array($res) ? $res['publish_up'] : $created_up) . "',publish_down = '0000-00-00 00:00:00',") . " content.state = " . (CBRequest::getInt('list_publish', 0) ? 1 : 0) . " Where ( SELECT @ids := CONCAT_WS(',', content.id, @ids) ) And ( content.state = 1 Or content.state = 0 ) And content.id = articles.article_id And articles.`type` = " . $this->_db->quote($type) . " And articles.reference_id = " . $this->_db->Quote($reference_id) . " And articles.record_id = " . $this->_db->Quote($item));
+            $publish = CBRequest::getInt('list_publish', 0);
+            $publishUpValue = $publish
+                ? $this->_db->Quote($created_up)
+                : $this->_db->Quote(is_array($res) ? $res['publish_up'] : $created_up);
+
+            $this->_db->setQuery(
+                "UPDATE #__contentbuilder_articles AS articles
+                INNER JOIN #__content AS content ON content.id = articles.article_id
+                SET 
+                    content.publish_up = " . $publishUpValue . ",
+                    content.publish_down = NULL,
+                    content.state = " . ($publish ? 1 : 0) . "
+                WHERE articles.`type` = " . $this->_db->quote($type) . " 
+                AND articles.reference_id = " . $this->_db->Quote($reference_id) . " 
+                AND articles.record_id = " . $this->_db->Quote($item) . "
+                AND (content.state = 0 OR content.state = 1)"
+            );
             $this->_db->execute();
         }
         $this->_db->setQuery("SELECT @ids");

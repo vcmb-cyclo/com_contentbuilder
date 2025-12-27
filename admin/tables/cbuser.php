@@ -19,11 +19,11 @@ class TableCbuser extends Table
     public $records = 0;
     public $published = 1;
     public $verified_view = 0;
-    public $verification_date_view = '0000-00-00 00:00:00';
+    public $verification_date_view = null;
     public $verified_new = 0;
-    public $verification_date_new = '0000-00-00 00:00:00';
+    public $verification_date_new = null;
     public $verified_edit = 0;
-    public $verification_date_edit = '0000-00-00 00:00:00';
+    public $verification_date_edit = null;
     public $limit_add = 0;
     public $limit_edit = 0;
     

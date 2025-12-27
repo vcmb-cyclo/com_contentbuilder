@@ -561,7 +561,7 @@ class ContentbuilderModelStorage extends CBModel
                     `created` DATETIME NOT NULL DEFAULT "' . $last_update . '",
                     `created_by` VARCHAR( 255 ) NOT NULL DEFAULT "",
                     `modified_user_id` INT NOT NULL DEFAULT "0",
-                    `modified` DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00",
+                    `modified` DATETIME NOT NULL DEFAULT NULL,
                     `modified_by` VARCHAR( 255 ) NOT NULL DEFAULT ""
                     ) ;
                     ');
@@ -631,7 +631,7 @@ class ContentbuilderModelStorage extends CBModel
                                     $this->_db->execute();
                                     break;
                                 case 'modified':
-                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ADD INDEX ( `modified` ) ");
+                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `modified` DATETIME NOT NULL DEFAULT NULL, ADD INDEX ( `modified` ) ");
                                     $this->_db->execute();
                                     break;
                                 case 'modified_by':

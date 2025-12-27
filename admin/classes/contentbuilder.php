@@ -1709,25 +1709,26 @@ class contentbuilder
         $tz = new DateTimeZone(Factory::getApplication()->get('offset'));
         $tz = new DateTimeZone(Factory::getApplication()->get('offset'));
 
-        if (isset($config['publish_up']) && $config['publish_up'] && $config['publish_up'] != '0000-00-00 00:00:00') {
+        if (isset($config['publish_up']) && $config['publish_up']) {
             $config['publish_up'] = Factory::getDate($config['publish_up'], $tz);
             $config['publish_up'] = $config['publish_up']->format('Y-m-d H:i:s');
         } else {
-            $config['publish_up'] = '0000-00-00 00:00:00';
+            $config['publish_up'] = null;
         }
 
-        if (isset($config['created']) && $config['created'] && $config['created'] != '0000-00-00 00:00:00') {
+
+        if (isset($config['created']) && $config['created']) {
             $config['created'] = Factory::getDate($config['created'], $tz);
             $config['created'] = $config['created']->format('Y-m-d H:i:s');
         } else {
-            $config['created'] = '0000-00-00 00:00:00';
+            $config['created'] = null;
         }
 
-        if (isset($config['publish_down']) && $config['publish_down'] && $config['publish_down'] != '0000-00-00 00:00:00') {
+        if (isset($config['publish_down']) && $config['publish_down']) {
             $config['publish_down'] = Factory::getDate($config['publish_down'], $tz);
             $config['publish_down'] = $config['publish_down']->format('Y-m-d H:i:s');
         } else {
-            $config['publish_down'] = '0000-00-00 00:00:00';
+            $config['publish_down'] = null;
         }
 
         $is15 = false;
@@ -1854,7 +1855,7 @@ class contentbuilder
             // $date = Factory::getDate(strtotime('now +'.intval($form['default_publish_up_days']).' days'));
             // fix as of forum post http://crosstec.de/forums/37-contentbuilder-general-forum-english/62084-64-bit-strtotime-bug.html#62084
             // thanks to user Fremmedkar
-            $date = Factory::getDate(strtotime(((($created_up !== null) && ($created_up != '0000-00-00 00:00:00')) ? $created_up : $_now) . ' +' . intval($form['default_publish_down_days']) . ' days'));
+            $date = Factory::getDate(strtotime(((($created_up !== null)) ? $created_up : $_now) . ' +' . intval($form['default_publish_down_days']) . ' days'));
             $created_up = $date->toSql();
         }
 
@@ -1862,7 +1863,7 @@ class contentbuilder
 
         if (is_array($article) && isset($article['article_id']) && intval($form['default_publish_down_days']) != 0) {
             //$date = Factory::getDate(strtotime( ($created_up !== null ? $created_up : $_now).' +'.intval($form['default_publish_down_days']).' days'));
-            $date = Factory::getDate(strtotime(($created_up !== null && $created_up != '0000-00-00 00:00:00' ? $created_up : $_now) . ' +' . intval($form['default_publish_down_days']) . ' days'));
+            $date = Factory::getDate(strtotime(($created_up !== null ? $created_up : $_now) . ' +' . intval($form['default_publish_down_days']) . ' days'));
             $created_down = $date->toSql();
         }
 
@@ -1920,7 +1921,21 @@ class contentbuilder
             if ($form['article_record_impact_publish'] && isset($config['publish_up']) && $config['publish_up'] != $publish_up) {
                 // check in strtotime due to php's different behavior on 64bit machines
                 $___now = $_now->toSql();
-                $db->setQuery("Update #__contentbuilder_records Set " . (strtotime($config['publish_up'] == '0000-00-00 00:00:00' ? '1976-03-07 22:10:00' : $config['publish_up']) >= strtotime($___now) ? 'published = 0, is_future = 1, ' : '') . " publish_up = " . $db->Quote($config['publish_up']) . " Where `type` = " . $db->Quote($form['type']) . " And reference_id = " . $db->Quote($form['reference_id']) . " And record_id = " . $db->Quote($record_id));
+
+                $publishUp = $config['publish_up'] ?? null;
+
+                $setPart = '';
+                if ($publishUp && strtotime($publishUp) >= strtotime($___now)) {
+                    $setPart = 'published = 0, is_future = 1, ';
+                }
+
+                $db->setQuery(
+                    "UPDATE #__contentbuilder_records 
+                    SET " . $setPart . " publish_up = " . ($publishUp ? $db->Quote($publishUp) : 'NULL') . " 
+                    WHERE `type` = " . $db->Quote($form['type']) . " 
+                    AND reference_id = " . $db->Quote($form['reference_id']) . " 
+                    AND record_id = " . $db->Quote($record_id)
+                );
                 $db->execute();
             }
 
@@ -1929,7 +1944,22 @@ class contentbuilder
 
             if ($form['article_record_impact_publish'] && isset($config['publish_down']) && $config['publish_down'] != $publish_down) {
                 $___now = $_now->toSql();
-                $db->setQuery("Update #__contentbuilder_records Set " . (strtotime($config['publish_down'] == '0000-00-00 00:00:00' ? '1976-03-07 22:10:00' : $config['publish_down']) <= strtotime($___now) ? 'published = 0,' : '') . "  publish_down = " . $db->Quote($config['publish_down']) . " Where `type` = " . $db->Quote($form['type']) . " And reference_id = " . $db->Quote($form['reference_id']) . " And record_id = " . $db->Quote($record_id));
+
+                $publishDown = $config['publish_down'] ?? null;
+
+                $setPart = '';
+                if ($publishDown && strtotime($publishDown) <= strtotime($___now)) {
+                    $setPart = 'published = 0, ';
+                }
+
+                $db->setQuery(
+                    "UPDATE #__contentbuilder_records 
+                    SET " . $setPart . " publish_down = " . ($publishDown ? $db->Quote($publishDown) : 'NULL') . " 
+                    WHERE `type` = " . $db->Quote($form['type']) . " 
+                    AND reference_id = " . $db->Quote($form['reference_id']) . " 
+                    AND record_id = " . $db->Quote($record_id)
+                );
+
                 $db->execute();
             }
 
@@ -2008,18 +2038,18 @@ class contentbuilder
         $created_by = $created_by ? $created_by : $metadata->created_id;
         $created = Factory::getDate()->toSql();
 
-        $created = $created_article && $created_article != '0000-00-00 00:00:00' ? $created_article : ($metadata->created ? $metadata->created : $created);
+        $created = $created_article ? $created_article : ($metadata->created ? $metadata->created : $created);
 
         if ($created && strlen(trim($created)) <= 10) {
             $created .= ' 00:00:00';
         }
 
-        if (!$publish_up || $publish_up == '0000-00-00 00:00:00') {
+        if (!$publish_up) {
             $publish_up = $created;
         }
 
         if (!$publish_down && !$article) {
-            $publish_down = '0000-00-00 00:00:00';
+            $publish_down = NULL;
         }
 
         $alias = $alias ? self::stringURLUnicodeSlug($alias) : self::stringURLUnicodeSlug($label);
@@ -2079,8 +2109,8 @@ class contentbuilder
                           " . $db->Quote($created_by ? $created_by : Factory::getApplication()->getIdentity()->get('id', 0)) . ",
                           NULL,
                           NULL,
-                          " . ($publish_up != '' && $publish_up != '0000-00-00 00:00:00' ? $db->Quote($publish_up) : 'NULL') . ",
-                          " . ($publish_down != '' && $publish_down != '0000-00-00 00:00:00' ? $db->Quote($publish_down) : 'NULL') . ",
+                          " . ($publish_up ? $db->Quote($publish_up) : 'NULL') . ",
+                          " . ($publish_down ? $db->Quote($publish_down) : 'NULL') . ",
                           " . $db->Quote($attribs != '' ? $attribs : '{"article_layout":"","show_title":"","link_titles":"","show_tags":"","show_intro":"","info_block_position":"","info_block_show_title":"","show_category":"","link_category":"","show_parent_category":"","link_parent_category":"","show_author":"","link_author":"","show_create_date":"","show_modify_date":"","show_publish_date":"","show_item_navigation":"","show_hits":"","show_noauth":"","urls_position":"","alternative_readmore":"","article_page_title":"","show_publishing_options":"","show_article_options":"","show_urls_images_backend":"","show_urls_images_frontend":""}') . ",
                           '1',
                           " . $db->Quote($metakey) . ",
@@ -2155,8 +2185,8 @@ class contentbuilder
                              `created` = " . $db->Quote($created) . ",
                              `created_by` = " . $db->Quote($created_by) . ",
                              `created_by_alias` = " . $db->Quote($created_by_alias) . ",
-                             `publish_up` = " . ($publish_up != '' && $publish_up != '0000-00-00 00:00:00' ? $db->Quote($publish_up) : 'NULL') . ",
-                             `publish_down` = " . ($publish_down != '' && $publish_down != '0000-00-00 00:00:00' ? $db->Quote($publish_down) : 'NULL') . ",
+                             `publish_up` = " . ($publish_up != '' ? $db->Quote($publish_up) : 'NULL') . ",
+                             `publish_down` = " . ($publish_down != '' ? $db->Quote($publish_down) : 'NULL') . ",
                              `access` = " . $db->Quote($access) . ",
                              `ordering` = " . $db->Quote($ordering) . ",
                              featured = " . $db->Quote($featured) . ",
@@ -2397,7 +2427,8 @@ class contentbuilder
         $permissions['verify_view'] = true;
         if ($result['verification_required_view']) {
             $days = floatval($result['verification_days_view']) * 86400;
-            $date = $result['verification_date_view'] !== null ? strtotime($result['verification_date_view'] == '0000-00-00 00:00:00' ? '1976-03-07 22:10:00' : $result['verification_date_view']) : 0;
+
+            $date = !empty($result['verification_date_view']) ? strtotime($result['verification_date_view']) : 0;
             $valid_until = $date + $days;
             $now = strtotime($jdate->toSql());
 
@@ -2415,7 +2446,9 @@ class contentbuilder
         $permissions['verify_new'] = true;
         if ($result['verification_required_new']) {
             $days = floatval($result['verification_days_new']) * 86400;
-            $date = $result['verification_date_new'] !== null ? strtotime($result['verification_date_new'] == '0000-00-00 00:00:00' ? '1976-03-07 22:10:00' : $result['verification_date_new']) : 0;
+
+            $date = !empty($result['verification_date_new']) ? strtotime($result['verification_date_new']) : 0;
+
             $valid_until = $date + $days;
             $now = strtotime($jdate->toSql());
 
@@ -2430,11 +2463,11 @@ class contentbuilder
             }
         }
 
-
         $permissions['verify_edit'] = true;
         if ($result['verification_required_edit']) {
             $days = floatval($result['verification_days_edit']) * 86400;
-            $date = $result['verification_date_edit'] !== null ? strtotime($result['verification_date_edit'] == '0000-00-00 00:00:00' ? '1976-03-07 22:10:00' : $result['verification_date_edit']) : 0;
+
+            $date = !empty($result['verification_date_edit']) ? strtotime($result['verification_date_edit']) : 0;
             $valid_until = $date + $days;
             $now = strtotime($jdate->toSql());
 

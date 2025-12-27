@@ -377,7 +377,7 @@ class ContentbuilderModelForm extends CBModel
 
             $data->rating_slots = 5;
 
-            $data->rand_date_update = '0000-00-00 00:00:00';
+            $data->rand_date_update = null;
 
             $data->rand_update = '86400';
 

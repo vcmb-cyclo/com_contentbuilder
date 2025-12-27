@@ -95,12 +95,12 @@ class ContentbuilderModelVerify extends CBModel
         //$ver = $this->_db->loadResult();
 
         //if($ver >= 5){
-        //    $this->_db->setQuery("Delete From #__contentbuilder_verifications Where `verification_date` = '0000-00-00 00:00:00' And ip = " . $this->_db->Quote($_SERVER['REMOTE_ADDR']));
+        //    $this->_db->setQuery("Delete From #__contentbuilder_verifications Where `verification_date` IS NULL And ip = " . $this->_db->Quote($_SERVER['REMOTE_ADDR']));
         //    $this->_db->execute();
         //    JError::raiseError(500, 'Penetration Denied');
         //}
 
-        //$this->_db->setQuery("Delete From #__contentbuilder_verifications Where Timestampdiff(Second, `start_date`, '".strtotime($_now->toSQL())."') > 86400 And `verification_date` = '0000-00-00 00:00:00'");
+        //$this->_db->setQuery("Delete From #__contentbuilder_verifications Where Timestampdiff(Second, `start_date`, '".strtotime($_now->toSQL())."') > 86400 And `verification_date` IS NULL");
         //$this->_db->execute();
 
         $rec = null;
@@ -326,7 +326,7 @@ class ContentbuilderModelVerify extends CBModel
                                 And
                                 verification_hash <> ''
                                 And
-                                `verification_date` = '0000-00-00 00:00:00'
+                                `verification_date` IS NULL
                                 
                             ");
                             $this->_db->execute();
