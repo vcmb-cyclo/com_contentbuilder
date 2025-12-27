@@ -189,6 +189,22 @@ foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
     foreach ($cellIterator as $cell) {
         $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
     }
+
+    // IMPORTANT : forcer le calcul des largeurs
+    $sheet->calculateColumnWidths();
+
+    foreach ($cellIterator as $cell) {
+        $column = $cell->getColumn();
+        $dimension = $sheet->getColumnDimension($column);
+
+        $width = $dimension->getWidth();
+
+        if ($width > 70) {
+            $dimension->setAutoSize(false);
+            $dimension->setWidth(70);
+        }
+    }
+
 }
 
 
