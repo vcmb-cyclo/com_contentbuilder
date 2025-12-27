@@ -953,13 +953,16 @@ class com_contentbuilderInstallerScript
 
     $alterQueries = [
       // Table #__contentbuilder_forms
+      "ALTER TABLE `#__contentbuilder_forms` MODIFY `created` DATETIME NULL DEFAULT NULL",
       "ALTER TABLE `#__contentbuilder_forms` MODIFY `modified` DATETIME NULL DEFAULT NULL",
       "ALTER TABLE `#__contentbuilder_forms` MODIFY `last_update` DATETIME NULL DEFAULT NULL",
+      "ALTER TABLE `#__contentbuilder_forms` MODIFY `rand_date_update` DATETIME NULL DEFAULT NULL",
 
       // Table #__contentbuilder_records
       "ALTER TABLE `#__contentbuilder_records` MODIFY `publish_up` DATETIME NULL DEFAULT NULL",
       "ALTER TABLE `#__contentbuilder_records` MODIFY `publish_down` DATETIME NULL DEFAULT NULL",
       "ALTER TABLE `#__contentbuilder_records` MODIFY `last_update` DATETIME NULL DEFAULT NULL",
+      "ALTER TABLE `#__contentbuilder_records` MODIFY `rand_date` DATETIME NULL DEFAULT NULL",
 
       // Table #__contentbuilder_articles (si présent)
       "ALTER TABLE `#__contentbuilder_articles` MODIFY `last_update` DATETIME NULL DEFAULT NULL",
