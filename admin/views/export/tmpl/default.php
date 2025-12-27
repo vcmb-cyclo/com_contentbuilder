@@ -15,8 +15,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 @ob_end_clean();
 
 require_once (JPATH_COMPONENT_ADMINISTRATOR .'/classes/contentbuilder_helpers.php');
-//require_once __DIR__ .'/../../../classes/PhpSpreadsheet/Spreadsheet.php';
-require __DIR__ . '/../../../librairies/PhpSpreadsheet/vendor/autoload.php';
+require __DIR__ . '/../../../librairies/PhpSpreadsheet-5.3.0/vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Joomla\CMS\Factory;
@@ -202,20 +201,6 @@ foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
         }
     }
 }
-
-
-// Redirect output to a client’s web browser (Excel5)
-//header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-//header('Content-Disposition: attachment; filename=' . $filename);
-//header('Cache-Control: max-age=0');
-/*header('Pragma: public'); // HTTP/1.0
-header("Expires: 0");
-header("Cache-Control: must-revalidate, post-check=0, pre-check=0");// HTTP/1.1
-header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-header("Content-Type: application/download");;
-header('Content-Disposition: attachment; filename=' . $filename);
-header("Content-Transfer-Encoding: binary ");*/
-
 
 
 header("Pragma: public");

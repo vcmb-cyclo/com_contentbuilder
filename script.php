@@ -950,6 +950,29 @@ class com_contentbuilderInstallerScript
       }
     }
 
+    // Suppression propre de l'ancienne librairie PhpSpreadsheet
+    $oldFolder = JPATH_ADMINISTRATOR . '/components/com_contentbuilder/librairies/PhpSpreadsheet';
+
+    if (Folder::exists($oldFolder)) {
+        if (Folder::delete($oldFolder)) {
+            $msg = 'Ancienne librairie PhpSpreadsheet supprimée avec succès : ' . $oldFolder;
+            file_put_contents($logFile, $msg . PHP_EOL, FILE_APPEND);
+            Factory::getApplication()->enqueueMessage($msg, 'message');
+        } else {
+            $msg = 'ÉCHEC de suppression de l\'ancienne librairie PhpSpreadsheet : ' . $oldFolder . ' (vérifiez les permissions/ownership du serveur)';
+            file_put_contents($logFile, $msg . PHP_EOL, FILE_APPEND);
+            Factory::getApplication()->enqueueMessage($msg, 'warning');
+            
+            // Diagnostic supplémentaire dans le log
+            $filesLeft = Folder::files($oldFolder, '.', true, true);
+            $foldersLeft = Folder::folders($oldFolder, '.', true, true);
+            file_put_contents($logFile, 'Fichiers restants : ' . print_r($filesLeft, true) . PHP_EOL, FILE_APPEND);
+            file_put_contents($logFile, 'Dossiers restants : ' . print_r($foldersLeft, true) . PHP_EOL, FILE_APPEND);
+        }
+    } else {
+        file_put_contents($logFile, 'Aucune ancienne librairie PhpSpreadsheet à supprimer.' . PHP_EOL, FILE_APPEND);
+    }
+
 
     $alterQueries = [
       // Table #__contentbuilder_forms

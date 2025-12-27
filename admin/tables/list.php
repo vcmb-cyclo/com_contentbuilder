@@ -18,8 +18,8 @@ class TableList extends Table
     public $reference_id = 0;
     public $name = '';
     public $title = '';
-    public $created = '0000-00-00 00:00:00';
-    public $modified = '0000-00-00 00:00:00';
+    public $created = null;
+    public $modified = null;
     public $created_by = '';
     public $details_template = '';
     public $modified_by = '';
