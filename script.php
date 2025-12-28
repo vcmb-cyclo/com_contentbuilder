@@ -14,17 +14,24 @@ use Joomla\Filesystem\File;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
 use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Log\Log;
 
-// === LOG POUR DÉBOGAGE ===
-$logFile = JPATH_SITE . '/administrator/logs/contentbuilder_install.log';
-$logMessage = '[' . date('Y-m-d H:i:s') . '] postflight appelé - Type: ' . $type . PHP_EOL;
-$logMessage .= 'User Agent: ' . ($_SERVER['HTTP_USER_AGENT'] ?? 'CLI') . PHP_EOL;
-$logMessage .= '--------------------------------------------------' . PHP_EOL;
+Log::addLogger(
+  [
+    'text_file' => 'contentbuilder_install.log',
+    'text_entry_format' => '{DATETIME} {PRIORITY} {MESSAGE}',
+    'text_file_path'     => JPATH_ADMINISTRATOR . '/logs'
+  ],
+  Log::ALL,
+  ['com_contentbuilder.install']
+);
 
-if (!Folder::exists(dirname($logFile))) {
-    Folder::create(dirname($logFile));
-}
-file_put_contents($logFile, $logMessage. PHP_EOL, FILE_APPEND);
+
+// Logs de démarrage
+Log::add('[OK] ContentBuilder installation/update started.', Log::INFO, 'com_contentbuilder.install');
+Log::add('PHP Version: ' . PHP_VERSION . '.', Log::INFO, 'com_contentbuilder.install');
+Log::add('Joomla Version : ' . JVERSION . '.', Log::INFO, 'com_contentbuilder.install');
+Log::add('User Agent: ' . ($_SERVER['HTTP_USER_AGENT'] ?? 'CLI') . '.', Log::INFO, 'com_contentbuilder.install');
 
 
 if (!class_exists('CBFactory')) {
@@ -768,6 +775,11 @@ class com_contentbuilderInstallerScript
     return $plugins;
   }
 
+  private function log(string $message, int $priority = Log::INFO): void
+  {
+    Log::add($message, $priority, 'com_contentbuilder.install');
+  }
+
   private function getCurrentInstalledVersion()
   {
     $db = Factory::getContainer()->get(DatabaseInterface::class);
@@ -781,27 +793,28 @@ class com_contentbuilderInstallerScript
 
     if ($manifest) {
       $manifest = json_decode($manifest, true);
-      return $manifest['version'] ?? '0.0.0';
+      $version = $manifest['version'] ?? '0.0.0';
+    } else {
+      $version = '0.0.0';
     }
 
-    return '0.0.0';
+    $this->log('Detected current version : ' . $version .'.');
+    return $version;
   }
+
 
   function installAndUpdate()
   {
     require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/joomla_compat.php');
-
     $db = CBFactory::getDBO();
     $plugins = $this->getPlugins();
-
     $base_path = JPATH_SITE . '/administrator/components/com_contentbuilder/plugins';
-
     $folders = Folder::folders($base_path);
 
-    $installer = new Installer();
-    $installer->setDatabase(\Joomla\CMS\Factory::getContainer()->get('DatabaseDriver'));
-    
     foreach ($folders as $folder) {
+      $installer = new Installer();  // <--- Déplacé ici pour nouvelle instance à chaque fois
+      $installer->setDatabase(\Joomla\CMS\Factory::getContainer()->get('DatabaseDriver'));
+
       Factory::getApplication()->enqueueMessage('Installing plugin <b>' . $folder . '</b>', 'message');
       $success = $installer->install($base_path . '/' . $folder);
       if (!$success) {
@@ -809,11 +822,13 @@ class com_contentbuilderInstallerScript
       }
     }
 
+    // Le reste inchangé (publication des plugins)
     foreach ($plugins as $folder => $subplugs) {
       foreach ($subplugs as $plugin) {
         $query = 'UPDATE #__extensions SET `enabled` = 1 WHERE `type` = "plugin" AND `element` = ' . $db->quote($plugin) . ' AND `folder` = ' . $db->quote($folder);
         $db->setQuery($query);
         $db->execute();
+        $this->log("Plugin {$plugin} in folder {$folder} enabled.");
         Factory::getApplication()->enqueueMessage('Published plugin <b>' . $plugin . '</b>', 'message');
       }
     }
@@ -859,6 +874,8 @@ class com_contentbuilderInstallerScript
    */
   function uninstall($parent)
   {
+    $this->log('Uninstall of ContentBuilder.');
+
     $db = CBFactory::getDBO();
 
     $db->setQuery("DELETE FROM #__menu WHERE `link` LIKE 'index.php?option=com_contentbuilder%'");
@@ -886,6 +903,7 @@ class com_contentbuilderInstallerScript
       $db->execute();
     }
   }
+
   /**
    * method to run before an install/update/uninstall method
    *
@@ -901,80 +919,72 @@ class com_contentbuilderInstallerScript
     }
   }
 
+
   /**
-   * method to run after an install/update/uninstall method
+   * method to remove old librairies
    *
    * @return void
    */
-  function postflight($type, $parent)
+  private function removeOldLibraries(): void
   {
-    $logFile = JPATH_SITE . '/administrator/logs/contentbuilder_install.log';
-    $app = Factory::getApplication();
-    $db = Factory::getContainer()->get(DatabaseInterface::class);
-
-    // === LOG POUR DÉBOGAGE ===
-    $logMessage = 'Version actuelle dans manifest_cache : ' . $this->getCurrentInstalledVersion() . PHP_EOL;
-    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-
-    /*
-             $db->setQuery("Select id From `#__menu` Where `alias` = 'root'");
-             if(!$db->loadResult()){
-                 $db->setQuery("INSERT INTO `#__menu` VALUES(1, '', 'Menu_Item_Root', 'root', '', '', '', '', 1, 0, 0, 0, 0, 0, NULL, 0, 0, '', 0, '', 0, ( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone ), 0, '*', 0)");
-                 $db->execute();
-             }*/
-
-    $db->setQuery("Update #__menu Set `title` = 'COM_CONTENTBUILDER' Where `alias`='contentbuilder'");
-    $db->execute();
-
     // Suppression propre de l'ancienne librairie PHPExcel
     $classesPath    = JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes';
     $phpexcelFolder = $classesPath . '/PHPExcel';
     $phpexcelFile   = $classesPath . '/PHPExcel.php';
 
+    $app = Factory::getApplication();
+
     if (Folder::exists($phpexcelFolder)) {
-        if (Folder::delete($phpexcelFolder)) {
-            file_put_contents($logFile, 'Old PHPExcel folder successfully deleted.' . PHP_EOL, FILE_APPEND);
-            $app->enqueueMessage('Old PHPExcel folder successfully deleted.', 'message');
-        } else {
-            file_put_contents($logFile, 'Failed to delete PHPExcel folder.' . PHP_EOL, FILE_APPEND);
-            $app->enqueueMessage('Failed to delete PHPExcel folder.', 'warning');
-        }
+      if (Folder::delete($phpexcelFolder)) {
+        $this->log('[OK] Old PHPExcel folder successfully deleted.');
+        $app->enqueueMessage('[OK] Old PHPExcel folder successfully deleted.', 'message');
+      } else {
+        $this->log('[ERROR] Failed to delete PHPExcel folder.', Log::ERROR);
+        $app->enqueueMessage('[ERROR] Failed to delete PHPExcel folder.', 'warning');
+      }
+    } else {
+      $this->log('[OK] No previous PHPExcel library found.');
     }
 
     if (File::exists($phpexcelFile)) {
-        if (File::delete($phpexcelFile)) {
-            file_put_contents($logFile, 'Old PHPExcel.php file successfully deleted.' . PHP_EOL, FILE_APPEND);
-            $app->enqueueMessage('Old PHPExcel.php file successfully deleted.', 'message');
-        } else {
-            file_put_contents($logFile, 'Failed to delete PHPExcel.php file.' . PHP_EOL, FILE_APPEND);
-            $app->enqueueMessage('Failed to delete PHPExcel.php file.', 'warning');
-        }
+      if (File::delete($phpexcelFile)) {
+        $this->log('[OK] Old PHPExcel.php file successfully deleted.');
+        $app->enqueueMessage('[OK] Old PHPExcel.php file successfully deleted.', 'message');
+      } else {
+        $this->log('[ERROR] Failed to delete PHPExcel.php file.', Log::ERROR);
+        $app->enqueueMessage('[ERROR] Failed to delete PHPExcel.php file.', 'warning');
+      }
+    } else {
+      $this->log('[OK] No previous PHPExcel file found.');
     }
 
     // Suppression propre de l'ancienne librairie PhpSpreadsheet
     $oldFolder = JPATH_ADMINISTRATOR . '/components/com_contentbuilder/librairies/PhpSpreadsheet';
 
     if (Folder::exists($oldFolder)) {
-        if (Folder::delete($oldFolder)) {
-            $msg = 'Ancienne librairie PhpSpreadsheet supprimée avec succès : ' . $oldFolder;
-            file_put_contents($logFile, $msg . PHP_EOL, FILE_APPEND);
-            Factory::getApplication()->enqueueMessage($msg, 'message');
-        } else {
-            $msg = 'ÉCHEC de suppression de l\'ancienne librairie PhpSpreadsheet : ' . $oldFolder . ' (vérifiez les permissions/ownership du serveur)';
-            file_put_contents($logFile, $msg . PHP_EOL, FILE_APPEND);
-            Factory::getApplication()->enqueueMessage($msg, 'warning');
-            
-            // Diagnostic supplémentaire dans le log
-            $filesLeft = Folder::files($oldFolder, '.', true, true);
-            $foldersLeft = Folder::folders($oldFolder, '.', true, true);
-            file_put_contents($logFile, 'Fichiers restants : ' . print_r($filesLeft, true) . PHP_EOL, FILE_APPEND);
-            file_put_contents($logFile, 'Dossiers restants : ' . print_r($foldersLeft, true) . PHP_EOL, FILE_APPEND);
-        }
+      if (Folder::delete($oldFolder)) {
+        $msg = '[OK] Previous PhpSpreadsheet library deleted with success : ' . $oldFolder;
+        $this->log($msg);
+        Factory::getApplication()->enqueueMessage($msg, 'message');
+      } else {
+        $msg = '[ERROR] Previous PhpSpreadsheet library cannot be deleted : ' . $oldFolder . ' (check server ownership)';
+        $this->log($msg, Log::ERROR);
+        Factory::getApplication()->enqueueMessage($msg, 'warning');
+      }
     } else {
-        file_put_contents($logFile, 'Aucune ancienne librairie PhpSpreadsheet à supprimer.' . PHP_EOL, FILE_APPEND);
+      $this->log('[OK] No previous PhpSpreadsheet library found.');
     }
+  }
 
+  /**
+   * method to change the DATE default value for strict MySQL databases.
+   *
+   * @return void
+   */
 
+  private function updateDateColumns(): void
+  {
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
     $alterQueries = [
       // Table #__contentbuilder_forms
       "ALTER TABLE `#__contentbuilder_forms` MODIFY `created` DATETIME NULL DEFAULT CURRENT_TIMESTAMP",
@@ -1026,11 +1036,42 @@ class com_contentbuilderInstallerScript
         $db->setQuery($query)->execute();
       } catch (Exception $e) {
         // Silencieux si la colonne est déjà correcte ou table inexistante
-        Factory::getApplication()->enqueueMessage('Warning: Could not alter date column: ' . $e->getMessage(), 'warning');
+        $msg = '[WARNING] Could not alter date column: ' . $e->getMessage() .'.';
+        $this->log($msg, Log::WARNING);
+        Factory::getApplication()->enqueueMessage($msg, 'warning');
       }
     }
 
-    Factory::getApplication()->enqueueMessage('Champs date mis à jour pour supporter NULL correctement.', 'message');
+    $msg = '[OK] Date fields updated to support NULL correctly, if necessary.';
+    $this->log($msg);
+    Factory::getApplication()->enqueueMessage($msg, 'message');
+  }
+
+  /**
+   * method to run after an install/update/uninstall method
+   *
+   * @return void
+   */
+  function postflight($type, $parent)
+  {
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
+
+    // === LOG POUR DÉBOGAGE ===
+    $this->log('Postflight installation method call, parameter : ' . $type . '.');
+    $this->log('Current version in manifest_cache : ' . $this->getCurrentInstalledVersion() . '.');
+
+    /*
+             $db->setQuery("Select id From `#__menu` Where `alias` = 'root'");
+             if(!$db->loadResult()){
+                 $db->setQuery("INSERT INTO `#__menu` VALUES(1, '', 'Menu_Item_Root', 'root', '', '', '', '', 1, 0, 0, 0, 0, 0, NULL, 0, 0, '', 0, '', 0, ( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone ), 0, '*', 0)");
+                 $db->execute();
+             }*/
+
+    $db->setQuery("Update #__menu Set `title` = 'COM_CONTENTBUILDER' Where `alias`='contentbuilder'");
+    $db->execute();
+
+    $this->removeOldLibraries();
+    $this->updateDateColumns();
 
 
     // try to restore the main menu items if they got lost
@@ -1069,5 +1110,7 @@ class com_contentbuilderInstallerScript
             $db->execute();
         }
     }*/
+
+    $this->log('[OK] Contentbuilder installation finished.');
   }
 }

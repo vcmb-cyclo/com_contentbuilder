@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="plugin" group="content" version="2.5" method="upgrade">
-	<name>ContentBuilder - Verify</name>
-	<creationDate>August 2011</creationDate>
+<extension type="plugin" group="contentbuilder_submit" version="6.0" method="upgrade">
+	<name>ContentBuilder - Submit - Sample</name>
+	<creationDate>December 2025</creationDate>
 	<author>Markus Bopp - Crosstec GmbH &amp; CO. KG</author>
         <license>GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<copyright>This Joomla! component is released under the GNU/GPL license</copyright>
-	<authorEmail>markus.bopp@crosstec.de</authorEmail>
-	<authorUrl>www.crosstec.de</authorUrl>
-	<version>1.0</version>
+	<authorEmail>noreply@vcmb.fr</authorEmail>
+	<authorUrl>breezingforms.vcmb.fr</authorUrl>
+	<version>2.0</version>
 	<administration></administration>
 	<description>
 	<![CDATA[
-        Content Plugin to passthru verification plugins
+        Sample on how to use submit plugins
         ]]>
     </description>
     <files>
-        <filename plugin="contentbuilder_verify">contentbuilder_verify.php</filename>
+        <filename plugin="submit_sample">submit_sample.php</filename>
     </files>
+    <languages>
+    </languages>
+
     <config>
     </config>
+    
     <!--  J! 1.5 compatibility -->
     <params>
     </params>

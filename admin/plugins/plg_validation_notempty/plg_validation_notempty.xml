@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="plugin" group="contentbuilder_validation" version="2.5" method="upgrade">
+<extension type="plugin" group="contentbuilder_validation" version="6.0" method="upgrade">
 	<name>ContentBuilder - Validation - Not Empty</name>
-	<creationDate>August 2011</creationDate>
+	<creationDate>December 2025</creationDate>
 	<author>Markus Bopp - Crosstec GmbH &amp; CO. KG</author>
         <license>GNU/GPLv2 http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<copyright>This Joomla! component is released under the GNU/GPL license</copyright>
-	<authorEmail>markus.bopp@crosstec.de</authorEmail>
-	<authorUrl>www.crosstec.de</authorUrl>
-	<version>1.0</version>
+	<authorEmail>noreply@vcmb.fr</authorEmail>
+	<authorUrl>breezingforms.vcmb.fr</authorUrl>
+	<version>2.0</version>
 	<administration></administration>
 	<description>
 	<![CDATA[
