@@ -280,11 +280,9 @@ if (!class_exists('CBDbo')) {
 			try {
 				return $this->dbo->getTableColumns($table, $typeOnly);
 			} catch (Exception $e) {
-
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {
-
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			}
@@ -300,11 +298,9 @@ if (!class_exists('CBDbo')) {
 			try {
 				return $this->dbo->getTableList();
 			} catch (Exception $e) {
-
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {
-
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			}
@@ -322,7 +318,6 @@ if (!class_exists('CBDbo')) {
 			try {
 				return $this->dbo->loadResult();
 			} catch (Exception $e) {
-
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {

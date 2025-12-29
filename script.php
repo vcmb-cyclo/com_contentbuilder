@@ -10,6 +10,8 @@
 defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Installer\InstallerScript;
+use Joomla\CMS\Installer\InstallerAdapter;
 use Joomla\Filesystem\File;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
@@ -33,8 +35,10 @@ Log::add('PHP Version: ' . PHP_VERSION . '.', Log::INFO, 'com_contentbuilder.ins
 Log::add('Joomla Version : ' . JVERSION . '.', Log::INFO, 'com_contentbuilder.install');
 Log::add('User Agent: ' . ($_SERVER['HTTP_USER_AGENT'] ?? 'CLI') . '.', Log::INFO, 'com_contentbuilder.install');
 
-class com_contentbuilderInstallerScript
+class com_contentbuilderInstallerScript extends InstallerScript
 {
+  protected $minimumPhp = '8.1';
+  protected $minimumJoomla = '5.0';
 
   function getPlugins()
   {
@@ -73,7 +77,7 @@ class com_contentbuilderInstallerScript
     Log::add($message, $priority, 'com_contentbuilder.install');
   }
 
-  private function getCurrentInstalledVersion()
+  private function getCurrentInstalledVersion(): string
   {
     $db = Factory::getContainer()->get(DatabaseInterface::class);
     $query = $db->getQuery(true)
@@ -91,12 +95,12 @@ class com_contentbuilderInstallerScript
       $version = '0.0.0';
     }
 
-    $this->log('Detected current version : ' . $version .'.');
+    $this->log('Detected current version : ' . $version . '.');
     return $version;
   }
 
 
-  function installAndUpdate()
+  function installAndUpdate(): bool
   {
     require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/joomla_compat.php');
     $db = Factory::getContainer()->get(DatabaseInterface::class);
@@ -105,7 +109,7 @@ class com_contentbuilderInstallerScript
     $folders = Folder::folders($base_path);
 
     foreach ($folders as $folder) {
-      $installer = new Installer();  // <--- Déplacé ici pour nouvelle instance à chaque fois
+      $installer = new Installer();
       $installer->setDatabase(\Joomla\CMS\Factory::getContainer()->get('DatabaseDriver'));
 
       Factory::getApplication()->enqueueMessage('Installing plugin <b>' . $folder . '</b>', 'message');
@@ -115,7 +119,7 @@ class com_contentbuilderInstallerScript
       }
     }
 
-    // Le reste inchangé (publication des plugins)
+    // Publication des plugins.
     foreach ($plugins as $folder => $subplugs) {
       foreach ($subplugs as $plugin) {
         $query = 'UPDATE #__extensions SET `enabled` = 1 WHERE `type` = "plugin" AND `element` = ' . $db->quote($plugin) . ' AND `folder` = ' . $db->quote($folder);
@@ -125,44 +129,46 @@ class com_contentbuilderInstallerScript
         Factory::getApplication()->enqueueMessage('Published plugin <b>' . $plugin . '</b>', 'message');
       }
     }
+
+    return true;
   }
 
   /**
    * method to install the component
    *
-   * @return void
+   * @return bool
    */
-  function install($parent)
+  public function install(InstallerAdapter $parent): bool
   {
-    if (!version_compare(PHP_VERSION, '5.2.0', '>=')) {
-      Factory::getApplication()->enqueueMessage('"WARNING: YOU ARE RUNNING PHP VERSION "' . PHP_VERSION . '". ContentBuilder WON\'T WORK WITH THIS VERSION. PLEASE UPGRADE TO AT LEAST PHP 5.2.0, SORRY BUT YOU BETTER UNINSTALL THIS COMPONENT NOW!"', 'error');
+    if (!version_compare(PHP_VERSION, '8.1', '>=')) {
+      Factory::getApplication()->enqueueMessage('"WARNING: YOU ARE RUNNING PHP VERSION "' . PHP_VERSION . '". ContentBuilder WON\'T WORK WITH THIS VERSION. PLEASE UPGRADE TO AT LEAST PHP 8.1, SORRY BUT YOU BETTER UNINSTALL THIS COMPONENT NOW!"', 'error');
     }
 
     require_once(JPATH_SITE . '/administrator/components/com_contentbuilder/classes/joomla_compat.php');
 
-    $this->installAndUpdate();
+    return $this->installAndUpdate();
   }
 
   /**
    * method to update the component
    *
-   * @return void
+   * @return bool
    */
-  function update($parent)
+  public function update(InstallerAdapter $parent): bool
   {
-    if (!version_compare(PHP_VERSION, '5.2.0', '>=')) {
-      Factory::getApplication()->enqueueMessage('"WARNING: YOU ARE RUNNING PHP VERSION "' . PHP_VERSION . '". ContentBuilder WON\'T WORK WITH THIS VERSION. PLEASE UPGRADE TO AT LEAST PHP 5.2.0, SORRY BUT YOU BETTER UNINSTALL THIS COMPONENT NOW!"', 'error');
+    if (!version_compare(PHP_VERSION, '8.1', '>=')) {
+      Factory::getApplication()->enqueueMessage('"WARNING: YOU ARE RUNNING PHP VERSION "' . PHP_VERSION . '". ContentBuilder WON\'T WORK WITH THIS VERSION. PLEASE UPGRADE TO AT LEAST PHP 8.1, SORRY BUT YOU BETTER UNINSTALL THIS COMPONENT NOW!"', 'error');
     }
 
-    $this->installAndUpdate();
+    return $this->installAndUpdate();
   }
 
   /**
    * method to uninstall the component
    *
-   * @return void
+   * @return bool
    */
-  function uninstall($parent)
+  public function uninstall(InstallerAdapter $parent): bool
   {
     $this->log('Uninstall of ContentBuilder.');
 
@@ -192,77 +198,68 @@ class com_contentbuilderInstallerScript
       $db->setQuery("INSERT INTO `#__menu` VALUES(1, '', 'Menu_Item_Root', 'root', '', '', '', '', 1, 0, 0, 0, 0, 0, NULL, 0, 0, '', 0, '', 0, (SELECT MAX(mlft.rgt)+1 FROM #__menu AS mlft), 0, '*', 0)");
       $db->execute();
     }
+
+    return true;
   }
 
   /**
    * method to run before an install/update/uninstall method
    *
-   * @return void
+   * @return bool
    */
-  function preflight($type, $parent)
+  public function preflight($type, $parent): bool
   {
+
+    if (!parent::preflight($type, $parent)) {
+      return false;
+    }
+
     $db = Factory::getContainer()->get(DatabaseInterface::class);
     $db->setQuery("Select id From `#__menu` Where `alias` = 'root'");
     if (!$db->loadResult()) {
       $db->setQuery("INSERT INTO `#__menu` VALUES(1, '', 'Menu_Item_Root', 'root', '', '', '', '', 1, 0, 0, 0, 0, 0, NULL, 0, 0, '', 0, '', 0, ( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone ), 0, '*', 0)");
       $db->execute();
     }
+
+    return true;
   }
 
 
   /**
-   * method to remove old librairies
+   * method to remove old librairies and files.
    *
    * @return void
    */
   private function removeOldLibraries(): void
   {
-    // Suppression propre de l'ancienne librairie PHPExcel
-    $classesPath    = JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes';
-    $phpexcelFolder = $classesPath . '/PHPExcel';
-    $phpexcelFile   = $classesPath . '/PHPExcel.php';
+    $paths = [
+      JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes/PHPExcel',
+      JPATH_ADMINISTRATOR . '/components/com_contentbuilder/classes/PHPExcel.php',
+      JPATH_ADMINISTRATOR . '/components/com_contentbuilder/librairies/PhpSpreadsheet',
+    ];
 
     $app = Factory::getApplication();
 
-    if (Folder::exists($phpexcelFolder)) {
-      if (Folder::delete($phpexcelFolder)) {
-        $this->log('[OK] Old PHPExcel folder successfully deleted.');
-        $app->enqueueMessage('[OK] Old PHPExcel folder successfully deleted.', 'message');
+    foreach ($paths as $path) {
+      if (Folder::exists($path)) {
+        if (Folder::delete($path)) {
+          $this->log("[OK] Old {$path} folder successfully deleted.");
+          $app->enqueueMessage("[OK] Old {$path} folder successfully deleted.", 'message');
+        } else {
+          $this->log("[ERROR] Failed to delete {$path} folder.", Log::ERROR);
+          $app->enqueueMessage("[ERROR] Failed to delete {$path} folder.", 'warning');
+        }
+      } elseif (File::exists($path)) {
+        if (File::delete($path)) {
+          $this->log("[OK] Old {$path} file successfully deleted.");
+          $app->enqueueMessage("[OK] Old {$path} file successfully deleted.", 'message');
+        } else {
+          $this->log("[ERROR] Failed to delete {$path} file.", Log::ERROR);
+          $app->enqueueMessage("[ERROR] Failed to delete {$path} file.", 'warning');
+        }
       } else {
-        $this->log('[ERROR] Failed to delete PHPExcel folder.', Log::ERROR);
-        $app->enqueueMessage('[ERROR] Failed to delete PHPExcel folder.', 'warning');
+        $this->log("[OK] No previous {$path} found.");
       }
-    } else {
-      $this->log('[OK] No previous PHPExcel library found.');
-    }
-
-    if (File::exists($phpexcelFile)) {
-      if (File::delete($phpexcelFile)) {
-        $this->log('[OK] Old PHPExcel.php file successfully deleted.');
-        $app->enqueueMessage('[OK] Old PHPExcel.php file successfully deleted.', 'message');
-      } else {
-        $this->log('[ERROR] Failed to delete PHPExcel.php file.', Log::ERROR);
-        $app->enqueueMessage('[ERROR] Failed to delete PHPExcel.php file.', 'warning');
-      }
-    } else {
-      $this->log('[OK] No previous PHPExcel file found.');
-    }
-
-    // Suppression propre de l'ancienne librairie PhpSpreadsheet
-    $oldFolder = JPATH_ADMINISTRATOR . '/components/com_contentbuilder/librairies/PhpSpreadsheet';
-
-    if (Folder::exists($oldFolder)) {
-      if (Folder::delete($oldFolder)) {
-        $msg = '[OK] Previous PhpSpreadsheet library deleted with success : ' . $oldFolder;
-        $this->log($msg);
-        Factory::getApplication()->enqueueMessage($msg, 'message');
-      } else {
-        $msg = '[ERROR] Previous PhpSpreadsheet library cannot be deleted : ' . $oldFolder . ' (check server ownership)';
-        $this->log($msg, Log::ERROR);
-        Factory::getApplication()->enqueueMessage($msg, 'warning');
-      }
-    } else {
-      $this->log('[OK] No previous PhpSpreadsheet library found.');
     }
   }
 
@@ -326,7 +323,7 @@ class com_contentbuilderInstallerScript
         $db->setQuery($query)->execute();
       } catch (Exception $e) {
         // Silencieux si la colonne est déjà correcte ou table inexistante
-        $msg = '[WARNING] Could not alter date column: ' . $e->getMessage() .'.';
+        $msg = '[WARNING] Could not alter date column: ' . $e->getMessage() . '.';
         $this->log($msg, Log::WARNING);
         Factory::getApplication()->enqueueMessage($msg, 'warning');
       }
