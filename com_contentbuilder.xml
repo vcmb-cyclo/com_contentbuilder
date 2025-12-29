@@ -1,26 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="5.4.1" method="upgrade">
- <name>Contentbuilder</name>
- <creationDate>2025-12-27</creationDate>
- <author>XDA+GIL</author>
- <authorEmail>breezingforms@vcmb.fr</authorEmail>
- <authorUrl>https://breezingforms.vcmb.fr</authorUrl>
- <copyright>Copyright 2011 - 2026 by XDA+GIL</copyright>
- <license>GNU/GPL v2.0</license>
- <version>5.4.1-RC2</version>
- <description>A content construction kit and application framework extension for Joomla!</description>
+<extension type="component" method="upgrade" version="6.0">
 
+    <name>com_contentbuilder</name>
+    <creationDate>2025-12-28</creationDate>
+    <author>XDA+GIL</author>
+    <authorEmail>breezingforms@vcmb.fr</authorEmail>
+    <authorUrl>https://breezingforms.vcmb.fr</authorUrl>
+    <copyright>Copyright 2011 - 2026 by XDA+GIL</copyright>
+    <license>GNU/GPL v2.0</license>
+    <version>6.0.0-RC1</version>
+    <description>COM_CONTENTBUILDER_XML_DESCRIPTION</description>
+
+    <!-- ===================== -->
+    <!-- PSR-4 NAMESPACES -->
+    <!-- ===================== -->
+    <namespace path="administrator/src">
+        CB\Component\Contentbuilder\Administrator
+    </namespace>
+
+    <namespace path="site/src">
+        CB\Component\Contentbuilder\Site
+    </namespace>
+
+    <!-- ===================== -->
+    <!-- INSTALL / UNINSTALL -->
+    <!-- ===================== -->
  <scriptfile>script.php</scriptfile>
 
 <install>
     <sql>
-        <file charset="utf8" driver="mysql">install.sql</file>
+        <file charset="utf8" driver="mysql">sql/install.sql</file>
     </sql>
 </install>
 
  <uninstall>
   <sql>
-    <file charset="utf8" driver="mysql">uninstall.sql</file>
+    <file charset="utf8" driver="mysql">sql/uninstall.sql</file>
   </sql>
  </uninstall>
  
@@ -42,12 +56,15 @@
     <folder>assets</folder>
  </files>
 
- <languages folder="admin">
+ <languages folder="administrator">
     <language tag="en-GB">languages/en-GB/site/en-GB.com_contentbuilder.ini</language>
     <language tag="de-DE">languages/de-DE/site/de-DE.com_contentbuilder.ini</language>
     <language tag="fr-FR">languages/fr-FR/site/fr-FR.com_contentbuilder.ini</language>
  </languages>
 
+    <!-- ===================== -->
+    <!-- ADMINISTRATION -->
+    <!-- ===================== -->
  <administration>
     <menu img="components/com_contentbuilder/views/logo_icon_cb.png">ContentBuilder</menu>
     <submenu>
@@ -57,13 +74,11 @@
         <menu view="contentbuilder">COM_CONTENTBUILDER_ABOUT</menu>
     </submenu>
 
-    <files folder="admin">
+    <files folder="administrator">
         <filename>controller.php</filename>
         <filename>contentbuilder.php</filename>
         <filename>access.xml</filename>
         <filename>config.xml</filename>
-        <filename>install.sql</filename>
-        <filename>uninstall.sql</filename>
         <filename>index.html</filename>
         <folder>controllers</folder>
         <folder>models</folder>
@@ -79,7 +94,7 @@
         <folder>src</folder>
     </files>
 
-    <languages folder="admin">
+    <languages folder="administrator">
         <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.ini</language>
         <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.menu.ini</language>
         <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.sys.ini</language>
@@ -91,14 +106,11 @@
         <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_contentbuilder.sys.ini</language>
     </languages>
 
-    <!-- NAMESPACE ET SERVICES -->
-   <namespace path="src">CB\Component\Contentbuilder</namespace>
-
-   <files folder="admin/services">
+   <files folder="administrator/services">
       <filename>provider.php</filename>
    </files>
 
-   <files folder="admin/src">
+   <files folder="administrator/src">
       <folder>Extension</folder>
       <folder>Service</folder>
       <folder>Controller</folder>
@@ -107,7 +119,7 @@
 
  
    <!-- Puis dans une sous-section si besoin -->
-   <files folder="admin/tmpl/test">
+   <files folder="administrator/tmpl/test">
       <filename>default.php</filename>
       <filename>index.html</filename>
    </files>
