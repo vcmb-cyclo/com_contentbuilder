@@ -1,13 +1,13 @@
 <extension type="component" method="upgrade" version="6.0">
 
     <name>com_contentbuilder</name>
-    <creationDate>2025-12-28</creationDate>
+    <creationDate>2025-12-30</creationDate>
     <author>XDA+GIL</author>
     <authorEmail>breezingforms@vcmb.fr</authorEmail>
     <authorUrl>https://breezingforms.vcmb.fr</authorUrl>
     <copyright>Copyright 2011 - 2026 by XDA+GIL</copyright>
     <license>GNU/GPL v2.0</license>
-    <version>6.0.0-RC1</version>
+    <version>6.0.0-RC2</version>
     <description>COM_CONTENTBUILDER_XML_DESCRIPTION</description>
 
     <!-- ===================== -->
