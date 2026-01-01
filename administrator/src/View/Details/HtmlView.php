@@ -39,7 +39,7 @@ class HtmlView extends BaseHtmlView
 			ToolBarHelper::title($subject->page_title . '</span>', 'logo_left.png');
 		}
 
-		$event = new stdClass();
+		$event = new \stdClass();
 
 		$db = Factory::getContainer()->get(DatabaseInterface::class);
 		$db->setQuery("Select articles.`article_id` From #__contentbuilder_articles As articles, #__content As content Where content.id = articles.article_id And (content.state = 1 Or content.state = 0) And articles.form_id = " . intval($subject->form_id) . " And articles.record_id = " . $db->Quote($subject->record_id));

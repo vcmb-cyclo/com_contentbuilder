@@ -37,12 +37,12 @@ class HtmlView extends BaseHtmlView
 		// Get data from the model
 		$subject = $this->get('Data');
 
-		$event = new stdClass();
+		$event = new \stdClass();
 		$event->afterDisplayTitle = '';
 		$event->beforeDisplayContent = '';
 		$event->afterDisplayContent = '';
 
-		$table2 = new stdClass();
+		$table2 = new \stdClass();
 		$table2->toc = '';
 
 		if ($subject->edit_by_type) {
