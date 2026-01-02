@@ -20,8 +20,9 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 class HtmlView extends BaseHtmlView
 {

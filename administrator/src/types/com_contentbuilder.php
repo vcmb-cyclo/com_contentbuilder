@@ -16,7 +16,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\File;
-use Joomla\Application\ApplicationInterface;
+use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 class contentbuilder_com_contentbuilder
 {

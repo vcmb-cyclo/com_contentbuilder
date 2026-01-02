@@ -74,7 +74,6 @@
         <folder>src</folder>
         <folder>sql</folder>
         <folder>tmpl</folder>
-        <folder>views</folder>
     </files>
 
     <!-- Languages admin (à laisser séparément, c'est correct) -->

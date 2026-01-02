@@ -15,8 +15,6 @@ namespace CB\Component\Contentbuilder\Administrator\View\Elementoptions;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 
-require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/classes/pane/CBTabs.php');
-
 class HtmlView extends BaseHtmlView
 {
     function display($tpl = null)

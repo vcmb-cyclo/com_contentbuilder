@@ -20,6 +20,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 $language_allowed = ContentbuilderLegacyHelper::authorize('language');
 $edit_allowed = ContentbuilderLegacyHelper::authorize('edit');
@@ -598,7 +599,6 @@ SELECT
     ?>
     <input type="hidden" name="option" value="com_contentbuilder" />
     <input type="hidden" name="task" id="task" value="" />
-    <input type="hidden" name="controller" id="controller" value="list" />
     <input type="hidden" name="view" id="view" value="list" />
     <input type="hidden" name="layout" id="view" value="select" />
     <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid', 0); ?>" />

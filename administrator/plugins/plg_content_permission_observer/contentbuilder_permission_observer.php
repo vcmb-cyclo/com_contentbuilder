@@ -15,6 +15,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 class plgContentContentbuilder_permission_observer extends CMSPlugin
 {

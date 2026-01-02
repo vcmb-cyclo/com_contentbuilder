@@ -18,11 +18,6 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
-
-
-require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/pane/CBTabs.php');
-
-
 class HtmlView extends BaseHtmlView
 {
     function display($tpl = null)
@@ -53,23 +48,23 @@ class HtmlView extends BaseHtmlView
         //ToolBarHelper::customX('linkable', 'default', '', Text::_('COM_CONTENTBUILDER_LINKABLE'), false);
         //ToolBarHelper::customX('not_linkable', 'default', '', Text::_('COM_CONTENTBUILDER_NOT_LINKABLE'), false);
 
-        ToolBarHelper::apply();
-        ToolBarHelper::save();
+        ToolBarHelper::apply('form.apply');
+        ToolBarHelper::save('form.save');
 
-        ToolBarHelper::custom('saveNew', 'save', '', Text::_('COM_CONTENTBUILDER_SAVENEW'), false);
-        ToolBarHelper::custom('list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_LIST_INCLUDE'), false);
-        ToolBarHelper::custom('no_list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_NO_LIST_INCLUDE'), false);
-        ToolBarHelper::custom('editable', 'edit', '', Text::_('COM_CONTENTBUILDER_EDITABLE'), false);
-        ToolBarHelper::custom('not_editable', 'edit', '', Text::_('COM_CONTENTBUILDER_NOT_EDITABLE'), false);
-        ToolBarHelper::custom('listpublish', 'publish', '', Text::_('COM_CONTENTBUILDER_PUBLISH'), false);
-        ToolBarHelper::custom('listunpublish', 'unpublish', '', Text::_('COM_CONTENTBUILDER_UNPUBLISH'), false);
+        ToolBarHelper::custom('form.saveNew', 'save', '', Text::_('COM_CONTENTBUILDER_SAVENEW'), false);
+        ToolBarHelper::custom('form.list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_LIST_INCLUDE'), false);
+        ToolBarHelper::custom('form.no_list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_NO_LIST_INCLUDE'), false);
+        ToolBarHelper::custom('form.editable', 'edit', '', Text::_('COM_CONTENTBUILDER_EDITABLE'), false);
+        ToolBarHelper::custom('form.not_editable', 'edit', '', Text::_('COM_CONTENTBUILDER_NOT_EDITABLE'), false);
+        ToolBarHelper::custom('form.listpublish', 'publish', '', Text::_('COM_CONTENTBUILDER_PUBLISH'), false);
+        ToolBarHelper::custom('form.listunpublish', 'unpublish', '', Text::_('COM_CONTENTBUILDER_UNPUBLISH'), false);
 
         //ToolBarHelper::deleteList();
         if ($isNew) {
-            ToolBarHelper::cancel();
+            ToolBarHelper::cancel('form.cancel', 'JTOOLBAR_CLOSE');
         } else {
             // for existing items the button is renamed `close`
-            ToolBarHelper::cancel('cancel', 'Close');
+            ToolBarHelper::cancel('form.cancel', 'Close');
         }
 
         $state = $this->get('state');

@@ -16,10 +16,12 @@ namespace CB\Component\Contentbuilder\Administrator\View\Details\Tmpl;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use CB\Component\Contentbuilder\Administrator\CBRequest;
 
+Factory::getApplication()->getDocument()->addStyleDeclaration($this->theme_css);
+Factory::getApplication()->getDocument()->addScriptDeclaration($this->theme_js);
 ?>
-<?php Factory::getApplication()->getDocument()->addStyleDeclaration($this->theme_css); ?>
-<?php Factory::getApplication()->getDocument()->addScriptDeclaration($this->theme_js); ?>
+
 <div align="center">
     <button class="button" onclick="window.print()">
         <?php echo Text::_('COM_CONTENTBUILDER_PRINT') ?>

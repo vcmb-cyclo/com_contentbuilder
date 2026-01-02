@@ -85,26 +85,31 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
         return false;
     }
 
-    function submitbutton(pressbutton) {
-        if (pressbutton == 'delete') {
-            pressbutton = 'listdelete';
+    function submitbutton(task) {
+
+      // Joomla 4/5 envoie "storage.apply", "storage.save", etc.
+      const shortTask = (task || '').split('.').pop();
+
+
+        if (shortTask == 'delete') {
+            task = 'storage.listdelete';
         }
 
-        if (pressbutton == 'listdelete') {
+        if (task == 'storage.listdelete') {
             var result = confirm("<?php echo addslashes(Text::_('COM_CONTENTBUILDER_STORAGE_DELETE_WARNING')); ?>");
             if (!result) {
                 return;
             }
         }
 
-        switch (pressbutton) {
+        switch (shortTask) {
             case 'cancel':
             case 'listdelete':
             case 'listpublish':
             case 'listunpublish':
             case 'listorderdown':
             case 'listorderup':
-                Joomla.submitform(pressbutton);
+                Joomla.submitform(task);
                 break;
             case 'save':
             case 'saveNew':
@@ -140,7 +145,7 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                 }
 
                 if (!error) {
-                    Joomla.submitform(pressbutton);
+                    Joomla.submitform(task);
                 }
 
                 break;
@@ -608,12 +613,3 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
     <input type="hidden" name="tabStartOffset" value="<?php echo Factory::getApplication()->getSession()->get('tabStartOffset', 0); ?>" />
     <?php echo HTMLHelper::_('form.token'); ?>
 </form>
-
-<script type="text/javascript">
-
-    if (typeof Joomla != 'undefined') {
-        $$('.tab0').addEvent('click', function () { document.adminForm.tabStartOffset.value = 0; });
-    } else {
-        $('tab0').addEvent('click', function () { document.adminForm.tabStartOffset.value = 0; });
-    }
-</script>

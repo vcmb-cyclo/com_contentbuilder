@@ -17,8 +17,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Environment\Browser;
-use Joomla\Application\ApplicationInterface;
-
+use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 class contentbuilder_com_breezingforms{
 

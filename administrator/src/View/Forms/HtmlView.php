@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     ContentBuilder
- * @author      Markus Bopp
+ * @author      Markus Bopp / XDA + GIL
  * @link        https://breezingforms.vcmb.fr
  * @copyright   Copyright (C) 2026 by XDA+GIL 
  * @license     GNU/GPL
@@ -32,10 +32,10 @@ class HtmlView extends BaseHtmlView
         echo '<link rel="stylesheet" href="' . Uri::root(true) . '/administrator/components/com_contentbuilder/views/bluestork.fix.css" type="text/css" />';
 
         ToolBarHelper::title('ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_FORMS') . '</span>', 'logo_left.png');
-        ToolBarHelper::addNew();
-        ToolBarHelper::custom('copy', 'copy', '', Text::_('COM_CONTENTBUILDER_COPY'));
-        ToolBarHelper::editList();
-        ToolBarHelper::deleteList();
+        ToolBarHelper::addNew('form.add');
+        ToolBarHelper::custom('form.copy', 'copy', '', Text::_('COM_CONTENTBUILDER_COPY'));
+        ToolBarHelper::editList('form.edit');
+        ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'forms.delete');
         ToolBarHelper::preferences('com_contentbuilder');
 
         // Get data from the model

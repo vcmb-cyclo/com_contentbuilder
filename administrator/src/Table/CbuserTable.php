@@ -12,8 +12,9 @@ namespace CB\Component\Contentbuilder\Administrator\Table;
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Table\Table;
+use Joomla\Database\DatabaseDriver;
 
-class TableCbuser extends Table
+class CbuserTable extends Table
 {
     public $id = 0;
     public $userid = 0;
@@ -34,11 +35,7 @@ class TableCbuser extends Table
      *
      * @param object Database connector object
      */
-    function __construct( $db ) {
+    function __construct( DatabaseDriver $db ) {
         parent::__construct('#__contentbuilder_users', 'id', $db);
     }
 }
-
-// as of J! 2.5
-class userTableCbuser extends TableCbuser{}
-

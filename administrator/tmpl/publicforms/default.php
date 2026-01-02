@@ -262,7 +262,6 @@ if ($this->page_heading) {
     <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid', 0); ?>" />
     <input type="hidden" name="limitstart" value="" />
     <input type="hidden" name="boxchecked" value="0" />
-    <input type="hidden" name="controller" value="publicforms" />
     <input type="hidden" name="view" id="view" value="publicforms" />
     <input type="hidden" name="filter_order" value="<?php echo $this->lists['order']; ?>" />
     <input type="hidden" name="filter_order_Dir" value="<?php echo $this->lists['order_Dir']; ?>" />

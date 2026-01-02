@@ -198,6 +198,5 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
     <input type="hidden" name="joomla_userid" value="<?php echo $this->subject->id; ?>" />
     <input type="hidden" name="cb_id" value="<?php echo $this->subject->cb_id; ?>" />
     <input type="hidden" name="tmpl" value="<?php echo CBRequest::getCmd('tmpl', ''); ?>" />
-    <input type="hidden" name="controller" value="users" />
     <?php echo HTMLHelper::_('form.token'); ?>
 </form>

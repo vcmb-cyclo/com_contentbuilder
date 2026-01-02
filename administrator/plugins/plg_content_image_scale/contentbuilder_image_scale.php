@@ -20,6 +20,7 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Registry\Registry;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 
 set_error_handler('myErrorHandler');

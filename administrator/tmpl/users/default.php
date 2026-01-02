@@ -175,7 +175,6 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
     <input type="hidden" name="option" value="com_contentbuilder" />
     <input type="hidden" name="task" value="" />
     <input type="hidden" name="boxchecked" value="0" />
-    <input type="hidden" name="controller" value="users" />
     <input type="hidden" name="form_id" value="<?php echo CBRequest::getInt('form_id', 0); ?>" />
     <input type="hidden" name="tmpl" value="<?php echo CBRequest::getWord('tmpl', ''); ?>" />
     <input type="hidden" name="filter_order" value="<?php echo $this->lists['order']; ?>" />

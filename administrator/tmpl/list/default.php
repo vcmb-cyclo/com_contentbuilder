@@ -637,7 +637,6 @@ endif;
     ?>
     <input type="hidden" name="option" value="com_contentbuilder" />
     <input type="hidden" name="task" id="task" value="" />
-    <input type="hidden" name="controller" id="controller" value="list" />
     <input type="hidden" name="view" id="view" value="list" />
     <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid', 0); ?>" />
     <input type="hidden" name="limitstart" value="" />

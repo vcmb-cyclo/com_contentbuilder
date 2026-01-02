@@ -34,7 +34,7 @@ $fullarticle_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::
 function contentbuilder_delete(){
     var confirmed = confirm('<?php echo Text::_('COM_CONTENTBUILDER_CONFIRM_DELETE_MESSAGE');?>');
     if(confirmed){
-        location.href = '<?php echo 'index.php?option=com_contentbuilder&view=edit&task=delete'.(CBRequest::getVar('tmpl', '') != '' ? '&tmpl='.CBRequest::getVar('tmpl', '') : '').(CBRequest::getVar('layout', '') != '' ? '&layout='.CBRequest::getVar('layout', '') : '').'&view=edit&id='.CBRequest::getInt('id', 0).'&cid[]='.CBRequest::getCmd('record_id', 0).'&Itemid='.CBRequest::getInt('Itemid',0).'&limitstart='.CBRequest::getInt('limitstart',0).'&filter_order='.CBRequest::getCmd('filter_order'); ?>';
+        location.href = '<?php echo 'index.php?option=com_contentbuilder&task=edit.delete'.(CBRequest::getVar('tmpl', '') != '' ? '&tmpl='.CBRequest::getVar('tmpl', '') : '').(CBRequest::getVar('layout', '') != '' ? '&layout='.CBRequest::getVar('layout', '') : '').'&view=edit&id='.CBRequest::getInt('id', 0).'&cid[]='.CBRequest::getCmd('record_id', 0).'&Itemid='.CBRequest::getInt('Itemid',0).'&limitstart='.CBRequest::getInt('limitstart',0).'&filter_order='.CBRequest::getCmd('filter_order'); ?>';
     }
 }
 //-->

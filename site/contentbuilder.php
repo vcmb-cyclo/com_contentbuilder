@@ -13,8 +13,7 @@
 \defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
-
-
+use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 
 class cbFeMarker

@@ -908,32 +908,9 @@ $is_plugin = false;
     <input type="hidden" name="element_id" value="<?php echo $this->element->id; ?>" />
     <input type="hidden" name="tmpl" value="component" />
     <input type="hidden" name="tabStartOffset" value="0" />
-    <input type="hidden" name="controller" value="elementoptions" />
     <input type="hidden" name="ordering" value="<?php echo $this->element->ordering; ?>" />
     <input type="hidden" name="published" value="<?php echo $this->element->published; ?>" />
     <?php echo HTMLHelper::_('form.token'); ?>
 </form>
 
-<script type="text/javascript">
-    if (typeof Joomla != 'undefined') {
 
-        $$('tab0').addEvent('click', function () { document.adminForm.tabStartOffset.value = 0; });
-        <?php
-        if ($this->element->type != 'captcha') {
-            ?>
-            $$('tab1').addEvent('click', function () { document.adminForm.tabStartOffset.value = 1; });
-            <?php
-        }
-        ?>
-
-    } else {
-        $('tab0').addEvent('click', function () { document.adminForm.tabStartOffset.value = 0; });
-        <?php
-        if ($this->element->type != 'captcha') {
-            ?>
-            $('tab1').addEvent('click', function () { document.adminForm.tabStartOffset.value = 1; });
-            <?php
-        }
-        ?>
-    }
-</script>

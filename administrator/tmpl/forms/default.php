@@ -121,7 +121,7 @@ Joomla.tableOrdering = function( order, dir, task ) {
             for ($i = 0; $i < $n; $i++) {
                 $row = $this->items[$i];
                 $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                $link = Route::_('index.php?option=com_contentbuilder&view=forms&task=form.edit&cid[]=' . $row->id);
+                $link = Route::_('index.php?option=com_contentbuilder&task=form.edit&cid[]=' . $row->id);
                 $published = ContentbuilderHelper::listPublish($row, $i);
                 ?>
                 <tr class="<?php echo "row$k"; ?>">
@@ -198,7 +198,6 @@ Joomla.tableOrdering = function( order, dir, task ) {
     <input type="hidden" name="limitstart" value="" />
     <input type="hidden" name="hidemainmenu" value="0" />
     <input type="hidden" name="boxchecked" value="0" />
-    <input type="hidden" name="controller" value="forms" />
     <input type="hidden" name="filter_order" value="<?php echo $this->lists['order']; ?>" />
     <input type="hidden" name="filter_order_Dir" value="<?php echo $this->lists['order_Dir']; ?>" />
     <?php echo HTMLHelper::_('form.token'); ?>

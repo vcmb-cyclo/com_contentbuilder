@@ -155,7 +155,6 @@ $___tableOrdering = "Joomla.tableOrdering = function";
     <input type="hidden" name="task" value="" />
     <input type="hidden" name="limitstart" value="" />
     <input type="hidden" name="boxchecked" value="0" />
-    <input type="hidden" name="controller" value="storages" />
     <input type="hidden" name="filter_order" value="<?php echo $this->lists['order']; ?>" />
     <input type="hidden" name="filter_order_Dir" value="<?php echo $this->lists['order_Dir']; ?>" />
     <?php echo HTMLHelper::_('form.token'); ?>

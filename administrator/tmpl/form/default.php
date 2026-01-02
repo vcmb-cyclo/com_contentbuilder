@@ -7,8 +7,6 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\View\Form\Tmpl;
-
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
 
@@ -18,6 +16,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 $___tableOrdering = "Joomla.tableOrdering = function";
 
@@ -87,12 +86,21 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         return false;
     }
 
-    function submitbutton(pressbutton) {
-        if (pressbutton == 'remove') {
-            pressbutton = 'listremove';
+    function submitbutton(task) {
+      const form = document.getElementById('adminForm') || document.adminForm;
+      if (!form) return;
+
+      // Joomla 4/5 envoie "storage.apply", "storage.save", etc.
+      const shortTask = (task || '').split('.').pop();
+
+              
+        if (shortTask == 'remove') {
+            task = 'listremove';
         }
 
-        switch (pressbutton) {
+        
+      // Ici tu gardes ta logique de validation, mais basée sur shortTask
+      switch (shortTask) {
             case 'cancel':
             case 'listpublish':
             case 'listunpublish':
@@ -107,7 +115,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
             case 'not_linkable':
             case 'editable':
             case 'not_editable':
-                Joomla.submitform(pressbutton);
+                Joomla.submitform(task);
                 break;
             case 'save':
             case 'saveNew':
@@ -139,7 +147,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 }
 
                 if (!error) {
-                    Joomla.submitform(pressbutton);
+                    Joomla.submitform(task);
                 }
 
                 break;
@@ -150,14 +158,6 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         Joomla.submitbutton = submitbutton;
         Joomla.listItemTask = listItemTask;
     }
-
-    String.prototype.startsWith = function (str) {
-        return (this.indexOf(str) === 0);
-    }
-
-    String.prototype.endsWith = function (suffix) {
-        return this.indexOf(suffix, this.length - suffix.length) !== -1;
-    };
 
     function contentbuilder_selectAll(checker, type) {
         var type = type == 'fe' ? 'perms_fe[' : 'perms[';
@@ -1502,10 +1502,10 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         echo HTMLHelper::_('uitab.endTab');
         echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab8', Text::_('COM_CONTENTBUILDER_PERMISSIONS'));
 
-        $sliders = CBTabs::getInstance('perm-pane', array('startOffset' => Factory::getApplication()->getSession()->get('slideStartOffset', 1), 'startTransition' => 0));
-
         // Démarrer les onglets
-        echo HTMLHelper::_('uitab.startTabSet', 'perm-pane', ['active' => 'permtab1']);
+        $activePermTab = Factory::getApplication()->getSession()->get('slideStartOffset', 'permtab1', 'com_contentbuilder');
+        echo HTMLHelper::_('uitab.startTabSet', 'perm-pane', ['active' => $activePermTab]);
+
 
         // Premier onglet
         echo HTMLHelper::_('uitab.addTab', 'perm-pane', 'permtab1', Text::_('COM_CONTENTBUILDER_PERMISSIONS_FRONTEND'));
@@ -2250,11 +2250,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         </table>
 
         <?php
-        echo HTMLHelper::_('uitab.endTab');
-        echo HTMLHelper::_('uitab.endTabSet'); // Fin des onglets
+        echo HTMLHelper::_('uitab.endTab'); // ✅ ferme permtab2
+        echo HTMLHelper::_('uitab.endTabSet'); // ✅ ferme perm-pane
  
-        echo HTMLHelper::_('uitab.endTab');
-        echo HTMLHelper::_('uitab.endTabSet'); // Fin des onglets
+        echo HTMLHelper::_('uitab.endTab');     // ferme tab8 (Permissions)
+        echo HTMLHelper::_('uitab.endTabSet');  // ferme view-pane
         ?>
 
     </div>
@@ -2263,9 +2263,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 
     <input type="hidden" name="option" value="com_contentbuilder" />
     <input type="hidden" name="id" value="<?php echo $this->form->id; ?>" />
-    <input type="hidden" name="task" value="edit" />
+    <input type="hidden" name="task" value="" />
     <input type="hidden" name="limitstart" value="" />
-    <input type="hidden" name="controller" value="forms" />
     <input type="hidden" name="ordering" value="<?php echo $this->form->ordering; ?>" />
     <input type="hidden" name="published" value="<?php echo $this->form->published; ?>" />
     <input type="hidden" name="filter_order" value="" />
@@ -2302,6 +2301,7 @@ echo HTMLHelper::_('bootstrap.renderModal', 'edit-modal', $modalParams);
 
 $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
 $wa->useScript('jquery');
+//$wa->useScript('bootstrap.tab');
 ?>
 
 <script>
@@ -2320,28 +2320,86 @@ $wa->useScript('jquery');
         jQuery('.modal-body').css('display', 'flex');
     });
 
-    jQuery(document).ready(function () {
+    (() => {
+    // Clés de stockage
+    const KEY_VIEW = 'cb_active_view_tab';
+    const KEY_PERM = 'cb_active_perm_tab';
 
-        setTimeout(function () {
+    // Helpers
+    const $ = (sel, root = document) => root.querySelector(sel);
 
-            jQuery('joomla-tab button').on('click', function () {
+    function setHidden(name, value) {
+        const el = document.querySelector(`input[name="${name}"]`);
+        if (el) el.value = value;
+    }
 
-                let item = localStorage.getItem('cb_clicked_view_tab');
-                item = jQuery(this).index();
-                localStorage.setItem('cb_clicked_view_tab', item);
+    /**
+     * Persistance d'un joomla-tab (uitab)
+     * @param {string} tabsetId  ex: 'view-pane' ou 'perm-pane'
+     * @param {string} storageKey
+     * @param {(value:string)=>void} onSave  callback optionnel (ex: hidden input)
+     */
+    function persistJoomlaTabset(tabsetId, storageKey, onSave) {
+        const tabset = document.getElementById(tabsetId);
+        if (!tabset) return;
 
-                console.log('saved item: ', jQuery(this).index());
-            });
+        // Joomla génère souvent un <joomla-tab> avec des <button> ou des liens internes.
+        const jTab = tabset.matches('joomla-tab') ? tabset : tabset.querySelector('joomla-tab');
+        if (!jTab) return;
 
-        }, 500);
-
-        let item = localStorage.getItem('cb_clicked_view_tab');
-
-        if (item !== null) {
-            console.log("loaded item: ", item);
-            let element = jQuery('joomla-tab button').eq(item);
-            jQuery(element).trigger('click');
-            jQuery(element).trigger('blur');
+        // Restauration : si on a une valeur stockée, on tente d'activer cet onglet
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+        // 1) tente via API si dispo
+        if (typeof jTab.show === 'function') {
+            try { jTab.show(saved); } catch (e) {}
         }
+
+        // 2) fallback : cliquer un bouton correspondant
+        // Les boutons ont souvent aria-controls ou data-tab / data-target
+        const btn =
+            jTab.querySelector(`button[aria-controls="${saved}"]`) ||
+            jTab.querySelector(`button[data-tab="${saved}"]`) ||
+            jTab.querySelector(`button[data-target="#${saved}"]`) ||
+            jTab.querySelector(`a[aria-controls="${saved}"]`) ||
+            jTab.querySelector(`a[href="#${saved}"]`);
+
+        if (btn) {
+            btn.click();
+            btn.blur?.();
+        }
+        }
+
+        // Sauvegarde : écouter les clics sur onglets
+        jTab.addEventListener('click', (ev) => {
+        const t = ev.target;
+
+        // Cherche un identifiant d'onglet stable
+        const id =
+            t?.getAttribute?.('aria-controls') ||
+            t?.getAttribute?.('data-tab') ||
+            (t?.getAttribute?.('href')?.startsWith('#') ? t.getAttribute('href').slice(1) : null) ||
+            (t?.getAttribute?.('data-target')?.startsWith('#') ? t.getAttribute('data-target').slice(1) : null);
+
+        if (!id) return;
+
+        localStorage.setItem(storageKey, id);
+        if (typeof onSave === 'function') onSave(id);
+        }, { passive: true });
+    }
+
+    // 1) onglets principaux view-pane (tab0, tab1, tab2…)
+    persistJoomlaTabset('view-pane', KEY_VIEW, (id) => {
+        // Optionnel : si tu veux continuer avec tabStartOffset
+        // Ici je stocke l'id, si tu veux l'index, dis-moi et je te donne la variante.
+        setHidden('tabStartOffset', id);
     });
+
+    // 2) onglets internes permissions perm-pane (permtab1, permtab2…)
+    persistJoomlaTabset('perm-pane', KEY_PERM, (id) => {
+        setHidden('slideStartOffset', id);
+    });
+
+    })();
+
 </script>
