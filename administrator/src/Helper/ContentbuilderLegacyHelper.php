@@ -1,17 +1,17 @@
 <?php
 /**
  * @package     ContentBuilder
- * @author      Markus Bopp
+ * @author      Markus Bopp / XDA + GIL
  * @link        https://breezingforms.vcmb.fr
  * @license     GNU/GPL
  * @copyright   Copyright (C) 2026 by XDA+GIL
  */
 
 
-namespace CB\Component\Contentbuilder\Administrator;
+namespace CB\Component\Contentbuilder\Administrator\Helper;
 
 // no direct access
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Editor\Editor;
@@ -27,9 +27,9 @@ use Joomla\CMS\Table\Table;
 use Joomla\Filesystem\Folder;
 use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\Access\Access;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
-class contentbuilder
+final class ContentbuilderLegacyHelper
 {
 
     public static function makeSafeFolder($path)
@@ -483,7 +483,7 @@ class contentbuilder
 
                             $article->text = trim($w[count($w) - 1]) ? trim($w[count($w) - 1]) : $value;
                             $article->text = str_replace('{value_inline}', $value, $article->text);
-                            $recc = new stdClass();
+                            $recc = new \stdClass();
                             $recc->recName = $wrapper['label'];
                             $recc->recValue = $value;
                             $recc->recElementId = $wrapper['reference_id'];
@@ -898,7 +898,7 @@ class contentbuilder
 
         foreach ($elements as $reference_id => $title) {
             // TODO: auto-type-recognition
-            $options = new stdClass();
+            $options = new \stdClass();
             $options->length = '';
             $options->maxlength = '';
             $options->password = 0;
@@ -1064,7 +1064,7 @@ class contentbuilder
 
             $user = null;
             if ($result['act_as_registration']) {
-                $form = contentbuilder::getForm($result['type'], $result['reference_id']);
+                $form = self::getForm($result['type'], $result['reference_id']);
                 $meta = $form->getRecordMetadata($record_id);
                 $db->setQuery("Select * From #__users Where id = " . $meta->created_id);
                 $user = $db->loadObject();
@@ -1204,7 +1204,7 @@ class contentbuilder
 
             $user = null;
             if ($result['act_as_registration']) {
-                $form = contentbuilder::getForm($result['type'], $result['reference_id']);
+                $form = self::getForm($result['type'], $result['reference_id']);
                 $meta = $form->getRecordMetadata($record_id);
                 $db->setQuery("Select * From #__users Where id = " . $meta->created_id);
                 $user = $db->loadObject();
@@ -1322,7 +1322,7 @@ class contentbuilder
             $user = null;
             if ($result['act_as_registration']) {
                 if ($record_id) {
-                    $form = contentbuilder::getForm($result['type'], $result['reference_id']);
+                    $form = self::getForm($result['type'], $result['reference_id']);
                     $meta = $form->getRecordMetadata($record_id);
                     $db->setQuery("Select * From #__users Where id = " . $meta->created_id);
                     $user = $db->loadObject();
@@ -1754,7 +1754,7 @@ class contentbuilder
         $user = null;
         if ($form['act_as_registration']) {
             if ($record_id) {
-                $form_ = contentbuilder::getForm($form['type'], $form['reference_id']);
+                $form_ = self::getForm($form['type'], $form['reference_id']);
                 $meta = $form_->getRecordMetadata($record_id);
                 $db->setQuery("Select * From #__users Where id = " . $meta->created_id);
                 $user = $db->loadObject();

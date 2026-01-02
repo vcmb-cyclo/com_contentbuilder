@@ -11,7 +11,7 @@
 namespace CB\Component\Contentbuilder\Site\Element;
 
 // no direct access
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
@@ -97,7 +97,7 @@ class JFormFieldCategories extends FormField
 
         if (isset($row) && !isset($options[0])) {
             if ($row->parent_id == '1') {
-                $parent = new stdClass();
+                $parent = new \stdClass();
                 $parent->text = Text::_('JGLOBAL_ROOT_PARENT');
                 array_unshift($options, $parent);
             }

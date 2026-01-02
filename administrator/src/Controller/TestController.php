@@ -12,7 +12,7 @@ namespace CB\Component\Contentbuilder\Administrator\Controller;
 
 use Joomla\CMS\MVC\Controller\BaseController;
 
-defined('_JEXEC') or die;
+\defined('_JEXEC') or die;
 
 class TestController extends BaseController
 {

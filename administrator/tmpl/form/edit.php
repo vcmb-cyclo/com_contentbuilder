@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     ContentBuilder
- * @author      Markus Bopp
+ * @author      Markus Bopp / XDA + GIL
  * @link        https://breezingforms.vcmb.fr
  * @copyright   Copyright (C) 2026 by XDA+GIL 
  * @license     GNU/GPL
@@ -10,12 +10,14 @@
 namespace CB\Component\Contentbuilder\Administrator\View\Form\Tmpl;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
 $___tableOrdering = "Joomla.tableOrdering = function";
 
@@ -170,15 +172,14 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         }
     }
 </script>
-<?php
-$cbcompat = new CBCompat();
-?>
 <form action="index.php" method="post" name="adminForm" id="adminForm">
     <div class="col100 row-fluid" style="margin-left: 20px; overflow-x: auto;">
 
         <?php
-        echo $cbcompat->startPane("view-pane");
-        echo $cbcompat->startPanel(Text::_('COM_CONTENTBUILDER_VIEW'), "tab0");
+        // Démarrer les onglets
+        echo HTMLHelper::_('uitab.startTabSet', 'view-pane', ['active' => 'tab0']);
+        // Premier onglet
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab0', Text::_('COM_CONTENTBUILDER_STORAGE'));
         ?>
 
         <table width="100%">
@@ -722,7 +723,7 @@ $cbcompat = new CBCompat();
                             </th>
                             <th width="150">
                                 <span class="editlinktip hasTip"
-                                    title="<?php echo contentbuilder::allhtmlentities(Text::_('COM_CONTENTBUILDER_LIST_ITEM_WRAPPER_TIP')); ?>">
+                                    title="<?php echo ContentbuilderLegacyHelper::allhtmlentities(Text::_('COM_CONTENTBUILDER_LIST_ITEM_WRAPPER_TIP')); ?>">
                                     <?php echo Text::_('COM_CONTENTBUILDER_LIST_ITEM_WRAPPER'); ?>
                                 </span>
                             </th>
@@ -743,11 +744,11 @@ $cbcompat = new CBCompat();
                     for ($i = 0; $i < $n; $i++) {
                         $row = $this->elements[$i];
                         $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                        $published = contentbuilder_helpers::listPublish($row, $i);
-                        $list_include = contentbuilder_helpers::listIncludeInList($row, $i);
-                        $search_include = contentbuilder_helpers::listIncludeInSearch($row, $i);
-                        $linkable = contentbuilder_helpers::listLinkable($row, $i);
-                        $editable = contentbuilder_helpers::listEditable($row, $i);
+                        $published = ContentbuilderHelper::listPublish($row, $i);
+                        $list_include = ContentbuilderHelper::listIncludeInList($row, $i);
+                        $search_include = ContentbuilderHelper::listIncludeInSearch($row, $i);
+                        $linkable = ContentbuilderHelper::listLinkable($row, $i);
+                        $editable = ContentbuilderHelper::listEditable($row, $i);
                         ?>
                         <tr class="<?php echo "row$k"; ?>">
                             <td valign="top">
@@ -870,17 +871,15 @@ $cbcompat = new CBCompat();
         </table>
 
         <?php
-        $title = Text::_('COM_CONTENTBUILDER_LIST_INTRO_TEXT');
         echo HTMLHelper::_('uitab.endTab');
-        echo $cbcompat->startPanel($title, "tab2");
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab2', Text::_('COM_CONTENTBUILDER_LIST_INTRO_TEXT'));
         $editor = Editor::getInstance(Factory::getApplication()->get('editor'));
         echo $editor->display("intro_text", $this->form->intro_text, '100%', '550', '75', '20');
         ?>
 
         <?php
-        $title = Text::_('COM_CONTENTBUILDER_LIST_STATES');
         echo HTMLHelper::_('uitab.endTab');
-        echo $cbcompat->startPanel($title, "tab1");
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab1', Text::_('COM_CONTENTBUILDER_LIST_STATES'));
         ?>
         <table class="adminlist table table-striped">
             <thead>
@@ -941,9 +940,9 @@ $cbcompat = new CBCompat();
             ?>
         </table>
         <?php
-        $title = Text::_('COM_CONTENTBUILDER_DETAILS_TEMPLATE');
         echo HTMLHelper::_('uitab.endTab');
-        echo $cbcompat->startPanel($title, "tab3");
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab3', Text::_('COM_CONTENTBUILDER_DETAILS_TEMPLATE'));
+
         ?>
         <table width="100%" class="adminform table table-striped">
             <tr>
@@ -1195,9 +1194,8 @@ $cbcompat = new CBCompat();
         $editor = Editor::getInstance(Factory::getApplication()->get('editor'));
         echo $editor->display("details_template", $this->form->details_template, '100%', '550', '75', '20');
 
-        $title = Text::_('COM_CONTENTBUILDER_DETAILS_PREPARE');
         echo HTMLHelper::_('uitab.endTab');
-        echo $cbcompat->startPanel($title, "tab4");
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab4', Text::_('COM_CONTENTBUILDER_DETAILS_PREPARE'));
         if (trim($this->form->details_prepare ?? '') == '') {
             $this->form->details_prepare = '// Here you may alter labels and values for each item before it gets rendered through your details template.' . "\n";
             $this->form->details_prepare .= '// For example:' . "\n";
@@ -1213,8 +1211,8 @@ $cbcompat = new CBCompat();
         ?>
         <?php
         echo HTMLHelper::_('uitab.endTab');
-        $title = Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE');
-        echo $cbcompat->startPanel($title, "tab5");
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab5', Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE'));
+
         if ($this->form->edit_by_type && $this->form->type == 'com_breezingforms') {
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
             echo '<input type="hidden" name="editable_template" value="{BreezingForms: ' . (isset($this->form->type_name) ? $this->form->type_name : '') . '}"/>';
@@ -1252,9 +1250,9 @@ $cbcompat = new CBCompat();
         echo $editor->display("editable_template", $this->form->editable_template, '100%', '550', '75', '20');
         ?>
         <?php
-        $title = Text::_('COM_CONTENTBUILDER_EDITABLE_PREPARE');
         echo HTMLHelper::_('uitab.endTab');
-        echo $cbcompat->startPanel($title, "tab6");
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab6', Text::_('COM_CONTENTBUILDER_EDITABLE_PREPARE'));
+
         if ($this->form->edit_by_type) {
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
             echo '<input type="hidden" name="editable_prepare" value="' . htmlentities($this->form->editable_prepare ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
@@ -1272,8 +1270,7 @@ $cbcompat = new CBCompat();
         }
 
         echo HTMLHelper::_('uitab.endTab');
-        $title = Text::_('COM_CONTENTBUILDER_EMAIL_TEMPLATES');
-        echo $cbcompat->startPanel($title, "tab7");
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab7', Text::_('COM_CONTENTBUILDER_EMAIL_TEMPLATES'));
 
         if ($this->form->edit_by_type) {
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
@@ -1503,15 +1500,15 @@ $cbcompat = new CBCompat();
         }
 
         echo HTMLHelper::_('uitab.endTab');
-        $title = Text::_('COM_CONTENTBUILDER_PERMISSIONS');
-        echo $cbcompat->startPanel($title, "tab8");
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab8', Text::_('COM_CONTENTBUILDER_PERMISSIONS'));
 
         $sliders = CBTabs::getInstance('perm-pane', array('startOffset' => Factory::getApplication()->getSession()->get('slideStartOffset', 1), 'startTransition' => 0));
 
-        echo $sliders->startPane("perm-pane");
+        // Démarrer les onglets
+        echo HTMLHelper::_('uitab.startTabSet', 'perm-pane', ['active' => 'permtab1']);
 
-        $title = Text::_('COM_CONTENTBUILDER_PERMISSIONS_FRONTEND');
-        echo $sliders->startPanel($title, "permtab1");
+        // Premier onglet
+        echo HTMLHelper::_('uitab.addTab', 'perm-pane', 'permtab1', Text::_('COM_CONTENTBUILDER_PERMISSIONS_FRONTEND'));
         ?>
         <table class="adminlist table table-striped">
             <tr class="row0">
@@ -1738,7 +1735,7 @@ $cbcompat = new CBCompat();
             ?>
         </table>
         <?php
-        echo $sliders->endPanel();
+        echo HTMLHelper::_('uitab.endTab');
 
         /*  MODIF XDA - GILLES (REMOVE : PERMISSION - BACKEND BOTTON), */
         /* Supprime le bouton PERMISSION - BACKEND, laisse FRONTEND seulement pour les droits */
@@ -1931,11 +1928,7 @@ $cbcompat = new CBCompat();
         //FIN MODIF XDA - GILLES
 
 
-
-
-
-        $title = Text::_('COM_CONTENTBUILDER_PERMISSIONS_USERS');
-        echo $sliders->startPanel($title, "permtab2");
+        echo HTMLHelper::_('uitab.addTab', 'perm-pane', 'permtab2', Text::_('COM_CONTENTBUILDER_PERMISSIONS_USERS'));
         ?>
 
         <table class="adminlist table table-striped">
@@ -2257,12 +2250,11 @@ $cbcompat = new CBCompat();
         </table>
 
         <?php
-        echo $sliders->endPanel();
-
-        echo $sliders->endPane();
-
         echo HTMLHelper::_('uitab.endTab');
-        echo $cbcompat->endPane();
+        echo HTMLHelper::_('uitab.endTabSet'); // Fin des onglets
+ 
+        echo HTMLHelper::_('uitab.endTab');
+        echo HTMLHelper::_('uitab.endTabSet'); // Fin des onglets
         ?>
 
     </div>

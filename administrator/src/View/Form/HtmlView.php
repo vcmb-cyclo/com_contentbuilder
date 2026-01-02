@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\View\Form;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -18,8 +18,6 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
 
 
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/pane/CBTabs.php');

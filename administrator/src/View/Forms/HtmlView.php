@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\View\Forms;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 //use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;

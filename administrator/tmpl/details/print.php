@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\View\Details\Tmpl;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 
 use Joomla\CMS\Factory;

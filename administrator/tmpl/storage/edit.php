@@ -8,14 +8,14 @@
  */
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
-$___tableOrdering = "function tableOrdering";
-$___tableOrdering = "Joomla.tableOrdering = function";
 ?>
 <style type="text/css">
     .cbPagesCounter {
@@ -36,6 +36,14 @@ $___tableOrdering = "Joomla.tableOrdering = function";
     //-->
 </script>
 <script type="text/javascript">
+    Joomla.tableOrdering = function(order, dir, task) {
+        var form = document.adminForm;
+        form.limitstart.value = Joomla.getOptions('com_contentbuilder.limitstart', 0);
+        form.filter_order.value = order;
+        form.filter_order_Dir.value = dir;
+        Joomla.submitform(task, form);
+    };
+
     function saveorder(n, task) {
         checkAll_button(n, 'listsaveorder');
     }
@@ -157,15 +165,16 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         display: inline;
     }
 </style>
-<?php
-$cbcompat = new CBCompat();
-?>
+
 <form action="index.php" method="post" name="adminForm" id="adminForm" enctype="multipart/form-data">
     <div class="col100" style="margin-left: 20px;overflow-x: auto;">
 
         <?php
-        echo $cbcompat->startPane("view-pane");
-        echo $cbcompat->startPanel(Text::_('COM_CONTENTBUILDER_STORAGE'), "tab0");
+
+        // Démarrer les onglets
+        echo HTMLHelper::_('uitab.startTabSet', 'view-pane', ['active' => 'tab0']);
+        // Premier onglet
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab0', Text::_('COM_CONTENTBUILDER_STORAGE'));
         ?>
 
         <table width="100%">
@@ -484,7 +493,7 @@ $cbcompat = new CBCompat();
                         for ($i = 0; $i < $n; $i++) {
                             $row = $this->elements[$i];
                             $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                            $published = contentbuilder_helpers::listPublish($row, $i);
+                            $published = ContentbuilderHelper::listPublish($row, $i);
                             ?>
                             <tr class="<?php echo "row$k"; ?>">
                                 <td>

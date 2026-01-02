@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Controller;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -18,7 +18,7 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\BaseController;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class EditController extends BaseController
 {
@@ -29,13 +29,13 @@ class EditController extends BaseController
 
         if (CBRequest::getCmd('task', '') == 'delete' || CBRequest::getCmd('task', '') == 'publish') {
             $items = CBRequest::getVar('cid', array(), 'request', 'array');
-            contentbuilder::setPermissions(CBRequest::getInt('id', 0), $items, class_exists('cbFeMarker') ? '_fe' : '');
+            ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), $items, class_exists('cbFeMarker') ? '_fe' : '');
         } else {
             if (CBRequest::getCmd('record_id', '')) {
-                contentbuilder::setPermissions(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', ''), class_exists('cbFeMarker') ? '_fe' : '');
+                ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', ''), class_exists('cbFeMarker') ? '_fe' : '');
             } else {
                 CBRequest::setVar('cbIsNew', 1);
-                contentbuilder::setPermissions(CBRequest::getInt('id', 0), 0, class_exists('cbFeMarker') ? '_fe' : '');
+                ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, class_exists('cbFeMarker') ? '_fe' : '');
             }
         }
         parent::__construct($config);
@@ -57,10 +57,10 @@ class EditController extends BaseController
         CBRequest::setVar('ContentbuilderHelper::cbinternalCheck', 1);
 
         if (CBRequest::getCmd('record_id', '')) {
-            contentbuilder::checkPermissions('edit', Text::_('COM_CONTENTBUILDER_PERMISSIONS_EDIT_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+            ContentbuilderLegacyHelper::checkPermissions('edit', Text::_('COM_CONTENTBUILDER_PERMISSIONS_EDIT_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
         } else {
             CBRequest::setVar('cbIsNew', 1);
-            contentbuilder::checkPermissions('new', Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+            ContentbuilderLegacyHelper::checkPermissions('new', Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
         }
 
         $model = $this->getModel('edit');
@@ -110,7 +110,7 @@ class EditController extends BaseController
     function delete()
     {
 
-        contentbuilder::checkPermissions('delete', Text::_('COM_CONTENTBUILDER_PERMISSIONS_DELETE_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+        ContentbuilderLegacyHelper::checkPermissions('delete', Text::_('COM_CONTENTBUILDER_PERMISSIONS_DELETE_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
 
         $model = $this->getModel('edit');
         $id = $model->delete();
@@ -122,7 +122,7 @@ class EditController extends BaseController
     function state()
     {
 
-        contentbuilder::checkPermissions('state', Text::_('COM_CONTENTBUILDER_PERMISSIONS_STATE_CHANGE_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+        ContentbuilderLegacyHelper::checkPermissions('state', Text::_('COM_CONTENTBUILDER_PERMISSIONS_STATE_CHANGE_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
 
         $model = $this->getModel('edit');
         $model->change_list_states();
@@ -134,7 +134,7 @@ class EditController extends BaseController
     function publish()
     {
 
-        contentbuilder::checkPermissions('publish', Text::_('COM_CONTENTBUILDER_PERMISSIONS_PUBLISHING_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+        ContentbuilderLegacyHelper::checkPermissions('publish', Text::_('COM_CONTENTBUILDER_PERMISSIONS_PUBLISHING_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
 
         $model = $this->getModel('edit');
         $model->change_list_publish();
@@ -150,7 +150,7 @@ class EditController extends BaseController
     function language()
     {
 
-        contentbuilder::checkPermissions('language', Text::_('COM_CONTENTBUILDER_PERMISSIONS_CHANGE_LANGUAGE_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+        ContentbuilderLegacyHelper::checkPermissions('language', Text::_('COM_CONTENTBUILDER_PERMISSIONS_CHANGE_LANGUAGE_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
 
         $model = $this->getModel('edit');
         $model->change_list_language();
@@ -163,9 +163,9 @@ class EditController extends BaseController
     {
 
         if (CBRequest::getCmd('record_id', '')) {
-            contentbuilder::checkPermissions('edit', Text::_('COM_CONTENTBUILDER_PERMISSIONS_EDIT_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+            ContentbuilderLegacyHelper::checkPermissions('edit', Text::_('COM_CONTENTBUILDER_PERMISSIONS_EDIT_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
         } else {
-            contentbuilder::checkPermissions('new', Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+            ContentbuilderLegacyHelper::checkPermissions('new', Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
         }
 
         CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));

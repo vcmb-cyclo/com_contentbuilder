@@ -11,7 +11,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Application\ApplicationHelper;
 use Joomla\CMS\Factory;
@@ -31,9 +31,9 @@ use Joomla\CMS\Table\Table;
 use Joomla\CMS\User\UserHelper;
 use Joomla\CMS\Mail\MailerFactoryInterface;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 $pluginHelper4 = new \Joomla\CMS\Plugin\PluginHelper4();
 
@@ -106,7 +106,7 @@ class EditModel extends BaseDatabaseModel
         $path = str_replace('{date}', $_now->toSql(), $path);
         $path = str_replace('{datetime}', $_now->format('Y-m-d H:i:s'), $path);
 
-        $endpath = contentbuilder::makeSafeFolder($path);
+        $endpath = ContentbuilderLegacyHelper::makeSafeFolder($path);
         $parts = explode('/', $endpath);
         $inner_path = '';
         foreach ($parts as $part) {
@@ -172,7 +172,7 @@ class EditModel extends BaseDatabaseModel
                 $keyval = explode("\t", $line);
                 if (count($keyval) == 2) {
                     $keyval[1] = str_replace(array("\n", "\r"), "", $keyval[1]);
-                    $keyval[1] = contentbuilder::execPhpValue($keyval[1]);
+                    $keyval[1] = ContentbuilderLegacyHelper::execPhpValue($keyval[1]);
                     if ($keyval[1] != '') {
                         $this->_menu_filter[$keyval[0]] = explode('|', $keyval[1]);
                     }
@@ -319,19 +319,19 @@ class EditModel extends BaseDatabaseModel
                                 $data->lists = array();
                             } else {
                                 $data->sectioncategories = array();
-                                $data->row = new stdClass();
+                                $data->row = new \stdClass();
                                 $data->row->title = '';
                                 $data->row->alias = ''; // special for 1.5
                                 $data->lists = array('state' => '', 'frontpage' => '', 'sectionid' => '', 'catid' => ''); // special for 1.5
                             }
 
-                            $data->article_settings = new stdClass();
+                            $data->article_settings = new \stdClass();
                             $data->article_settings->modified_by = $article['modified_by'];
                             $data->article_settings->version = $article['version'];
                             $data->article_settings->hits = $article['hits'];
                             $data->article_settings->catid = $article['catid'];
                         } else {
-                            $data->article_settings = new stdClass();
+                            $data->article_settings = new \stdClass();
                             $data->article_settings->modified_by = 0;
                             $data->article_settings->version = 0;
                             $data->article_settings->hits = 0;
@@ -345,7 +345,7 @@ class EditModel extends BaseDatabaseModel
                     $data->latest = $this->_latest;
                     $data->is15 = $this->is15;
                     $data->frontend = $this->frontend;
-                    $data->form = contentbuilder::getForm($data->type, $data->reference_id);
+                    $data->form = ContentbuilderLegacyHelper::getForm($data->type, $data->reference_id);
                     if (!$data->form->exists) {
                         throw new Exception(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 404);
                     }
@@ -535,7 +535,7 @@ var contentbuilder = new function(){
                     );
                     //}
 
-                    $data->template = contentbuilder::getEditableTemplate($this->_id, $this->_record_id, $data->items, $ids, !$data->edit_by_type);
+                    $data->template = ContentbuilderLegacyHelper::getEditableTemplate($this->_id, $this->_record_id, $data->items, $ids, !$data->edit_by_type);
 
                     if (
                         Factory::getApplication()->isClient('administrator')
@@ -608,11 +608,11 @@ var contentbuilder = new function(){
             if ($data->type && $data->reference_id) {
 
                 $values = array();
-                $data->form = contentbuilder::getForm($data->type, $data->reference_id);
+                $data->form = ContentbuilderLegacyHelper::getForm($data->type, $data->reference_id);
                 $meta = $data->form->getRecordMetadata($this->_record_id);
                 if (!$data->edit_by_type) {
 
-                    $noneditable_fields = contentbuilder::getListNonEditableElements($this->_id);
+                    $noneditable_fields = ContentbuilderLegacyHelper::getListNonEditableElements($this->_id);
                     $names = $data->form->getElementNames();
 
                     $this->_db->setQuery("Select * From #__contentbuilder_elements Where form_id = " . $this->_id . " And published = 1 And editable = 1");
@@ -1228,11 +1228,11 @@ var contentbuilder = new function(){
 
                             if (!$meta->created_id) {
 
-                                $bypass = new stdClass();
+                                $bypass = new \stdClass();
                                 $verification_name = str_replace(array(';', '___', '|'), '-', trim($data->registration_bypass_verification_name) ? trim($data->registration_bypass_verification_name) : $data->title);
                                 $verify_view = trim($data->registration_bypass_verify_view) ? trim($data->registration_bypass_verify_view) : $data->id;
                                 $bypass->text = $orig_text = '{CBVerify plugin: ' . $data->registration_bypass_plugin . '; verification-name: ' . $verification_name . '; verify-view: ' . $verify_view . '; ' . str_replace(array("\r", "\n"), '', $data->registration_bypass_plugin_params) . '}';
-                                $params = new stdClass();
+                                $params = new \stdClass();
 
                                 PluginHelper::importPlugin('content', 'contentbuilder_verify');
 
@@ -1430,8 +1430,8 @@ var contentbuilder = new function(){
                         $config = CBRequest::getVar('Form', array());
                     }
 
-                    $full = $this->frontend ? contentbuilder::authorizeFe('fullarticle') : contentbuilder::authorize('fullarticle');
-                    $article_id = contentbuilder::createArticle($this->_id, $record_return, $data->items, $ids, $data->title_field, $data->form->getRecordMetadata($record_return), $config, $full, $this->frontend ? $data->limited_article_options_fe : $data->limited_article_options, CBRequest::getVar('cb_category_id', null));
+                    $full = $this->frontend ? ContentbuilderLegacyHelper::authorizeFe('fullarticle') : ContentbuilderLegacyHelper::authorize('fullarticle');
+                    $article_id = ContentbuilderLegacyHelper::createArticle($this->_id, $record_return, $data->items, $ids, $data->title_field, $data->form->getRecordMetadata($record_return), $config, $full, $this->frontend ? $data->limited_article_options_fe : $data->limited_article_options, CBRequest::getVar('cb_category_id', null));
 
                     if (isset($form_elements_objects)) {
                         foreach ($form_elements_objects as $form_elements_object) {
@@ -1534,7 +1534,7 @@ var contentbuilder = new function(){
 
                             $recipients_checked_admin = array_merge(array($main_recipient), $recipients_checked_admin);
 
-                            $email_admin_template = contentbuilder::getEmailTemplate($this->_id, $record_return, $data_email_items, $ids, true);
+                            $email_admin_template = ContentbuilderLegacyHelper::getEmailTemplate($this->_id, $record_return, $data_email_items, $ids, true);
 
                             // subject
                             $subject_admin = Text::_('COM_CONTENTBUILDER_EMAIL_RECORD_RECEIVED');
@@ -1645,7 +1645,7 @@ var contentbuilder = new function(){
 
                             $recipients_checked = array_merge(array($main_recipient), $recipients_checked);
 
-                            $email_template = contentbuilder::getEmailTemplate($this->_id, $record_return, $data_email_items, $ids, false);
+                            $email_template = ContentbuilderLegacyHelper::getEmailTemplate($this->_id, $record_return, $data_email_items, $ids, false);
 
                             // subject
                             $subject = Text::_('COM_CONTENTBUILDER_EMAIL_RECORD_RECEIVED');
@@ -2025,7 +2025,7 @@ var contentbuilder = new function(){
                 }
                 $data->form_id = $this->_id;
                 if ($data->type && $data->reference_id) {
-                    $data->form = contentbuilder::getForm($data->type, $data->reference_id);
+                    $data->form = ContentbuilderLegacyHelper::getForm($data->type, $data->reference_id);
                     $res = $data->form->delete($items, $data->form_id);
                     $cnt = count($items);
                     $new_items = array();

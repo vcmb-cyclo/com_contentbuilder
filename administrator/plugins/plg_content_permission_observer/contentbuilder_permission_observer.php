@@ -1,6 +1,6 @@
 <?php
 /**
- * @version 1.0
+ * @version 2.0
  * @package ContentBuilder Image Scale
  * @copyright (C) 2011 by Markus Bopp
  * @copyright   Copyright (C) 2026 by XDA+GIL
@@ -8,16 +8,13 @@
  **/
 
 /** ensure this file is being included by a parent file */
-defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
-
-
-
-
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class plgContentContentbuilder_permission_observer extends CMSPlugin
 {
@@ -53,7 +50,7 @@ class plgContentContentbuilder_permission_observer extends CMSPlugin
             $data = $db->loadAssoc();
 
             require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/src/contentbuilder.php');
-            $form = contentbuilder::getForm($data['type'], $data['reference_id']);
+            $form = ContentbuilderLegacyHelper::getForm($data['type'], $data['reference_id']);
 
             if (!$form || !$form->exists) {
                 return true;
@@ -62,17 +59,17 @@ class plgContentContentbuilder_permission_observer extends CMSPlugin
             if ($form && !(CBRequest::getVar('option', '') == 'com_contentbuilder' && CBRequest::getVar('controller', '') == 'edit')) {
 
                 Factory::getApplication()->getLanguage()->load('com_contentbuilder');
-                contentbuilder::setPermissions($data['form_id'], $data['record_id'], $frontend ? '_fe' : '');
+                ContentbuilderLegacyHelper::setPermissions($data['form_id'], $data['record_id'], $frontend ? '_fe' : '');
 
                 if (CBRequest::getCmd('view') == 'article') {
-                    contentbuilder::checkPermissions('view', Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED'), $frontend ? '_fe' : '');
+                    ContentbuilderLegacyHelper::checkPermissions('view', Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED'), $frontend ? '_fe' : '');
                 } else {
                     if ($frontend) {
-                        if (!contentbuilder::authorizeFe('view')) {
+                        if (!ContentbuilderLegacyHelper::authorizeFe('view')) {
                             $article->text = Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED');
                         }
                     } else {
-                        if (!contentbuilder::authorize('view')) {
+                        if (!ContentbuilderLegacyHelper::authorize('view')) {
                             $article->text = Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED');
                         }
                     }

@@ -12,7 +12,7 @@
 
 namespace CB\Component\Contentbuilder\Administrator\Extension;
 
-defined('_JEXEC') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Extension\BootableExtensionInterface;
 use Joomla\CMS\Extension\MVCComponent;

@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\View\Export;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 

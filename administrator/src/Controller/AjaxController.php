@@ -12,8 +12,8 @@ namespace CB\Component\Contentbuilder\Administrator\Controller;
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 use Joomla\CMS\MVC\Controller\BaseController;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class AjaxController extends BaseController
 {
@@ -21,7 +21,7 @@ class AjaxController extends BaseController
     {
         parent::__construct($config);
         
-        contentbuilder::setPermissions(CBRequest::getInt('id',0),0, class_exists('cbFeMarker') ? '_fe' : '');
+        ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id',0),0, class_exists('cbFeMarker') ? '_fe' : '');
     }
 
     function display($cachable = false, $urlparams = array())

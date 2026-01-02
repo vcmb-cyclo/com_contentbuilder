@@ -14,7 +14,7 @@
 
 
 // no direct access
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 ?>
 
 <h2>Template default.php chargé ✅</h2>

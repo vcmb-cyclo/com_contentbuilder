@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -24,7 +24,7 @@ use Joomla\CMS\Application\ApplicationHelper;
 use Joomla\CMS\Mail\MailerFactoryInterface;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class VerifyModel extends BaseDatabaseModel
 {
@@ -122,7 +122,7 @@ class VerifyModel extends BaseDatabaseModel
                 throw new Exception('Verification Setup failed. Reason: View id ' . $out['require_view'] . ' has been requested but is not available (not existent or unpublished). Please update your content template or publish the view.', 500);
             }
 
-            $form = contentbuilder::getForm($formsettings['type'], $formsettings['reference_id']);
+            $form = ContentbuilderLegacyHelper::getForm($formsettings['type'], $formsettings['reference_id']);
             $labels = $form->getElementLabels();
 
             $ids = array();

@@ -11,15 +11,16 @@
 
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 
-$plugins = contentbuilder::getFormElementsPlugins();
+$plugins = ContentbuilderLegacyHelper::getFormElementsPlugins();
 
 $plgs = \Joomla\CMS\Plugin\PluginHelper4::importPlugin('contentbuilder_form_elements', $this->element->type);
 
@@ -40,10 +41,7 @@ $is_plugin = false;
         display: inline;
     }
 </style>
-<?php
-$cbcompat = new CBCompat();
 
-?>
 <form action="index.php" method="post" name="adminForm" id="adminForm">
 
     <?php echo Text::_('COM_CONTENTBUILDER_ELEMENT_TYPE'); ?>
@@ -94,8 +92,11 @@ $cbcompat = new CBCompat();
 
     <div class="col100">
         <?php
-        echo $cbcompat->startPane("view-pane");
-        echo $cbcompat->startPanel(Text::_('COM_CONTENTBUILDER_ELEMENT_OPTIONS'), "tab0");
+
+        // Démarrer les onglets
+        echo HTMLHelper::_('uitab.startTabSet', 'view-pane', ['active' => 'tab0']);
+        // Premier onglet
+        echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab0', Text::_('COM_CONTENTBUILDER_ELEMENT_OPTIONS'));
         ?>
         <h3>
             <?php echo htmlentities($this->element->label, ENT_QUOTES, 'UTF-8'); ?>
@@ -775,7 +776,7 @@ $cbcompat = new CBCompat();
 
         echo HTMLHelper::_('uitab.endTab');
         if ($this->element->type != 'captcha') {
-            echo $cbcompat->startPanel(Text::_('COM_CONTENTBUILDER_ELEMENT_OPTIONS_SCRIPTS'), "tab1");
+            echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab1', Text::_('COM_CONTENTBUILDER_ELEMENT_OPTIONS_SCRIPTS'));
             ?>
             <h3>
                 <?php echo htmlentities($this->element->label, ENT_QUOTES, 'UTF-8'); ?>

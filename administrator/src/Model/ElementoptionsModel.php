@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
@@ -19,7 +19,8 @@ use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+
 class ElementoptionsModel extends BaseDatabaseModel
 {
     private $_element_id = 0;
@@ -81,7 +82,7 @@ class ElementoptionsModel extends BaseDatabaseModel
     {
         $this->_db->setQuery("Select `type`, `reference_id` From #__contentbuilder_forms Where id = " . intval($this->_id));
         $form = $this->_db->loadAssoc();
-        $form = contentbuilder::getForm($form['type'], $form['reference_id']);
+        $form = ContentbuilderLegacyHelper::getForm($form['type'], $form['reference_id']);
         if ($form->isGroup($this->_data->reference_id)) {
             return $form->getGroupDefinition($this->_data->reference_id);
         }
@@ -96,10 +97,10 @@ class ElementoptionsModel extends BaseDatabaseModel
             return 1;
         }
         $query = '';
-        $plugins = contentbuilder::getFormElementsPlugins();
+        $plugins = ContentbuilderLegacyHelper::getFormElementsPlugins();
         $type = CBRequest::getCmd('field_type', '');
         switch ($type) {
-            case in_array(CBRequest::getCmd('field_type', ''), contentbuilder::getFormElementsPlugins()):
+            case in_array(CBRequest::getCmd('field_type', ''), ContentbuilderLegacyHelper::getFormElementsPlugins()):
 
                 $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
 
@@ -131,7 +132,7 @@ class ElementoptionsModel extends BaseDatabaseModel
                 $allow_html = CBRequest::getInt('allow_encoding', 0) == 1 ? true : false;
                 $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
 
-                $options = new stdClass();
+                $options = new \stdClass();
                 $options->length = $length;
                 $options->class = $class;
                 $options->maxlength = $maxlength;
@@ -154,7 +155,7 @@ class ElementoptionsModel extends BaseDatabaseModel
                 $allow_html = CBRequest::getInt('allow_encoding', 0) == 1 ? true : false;
                 $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
 
-                $options = new stdClass();
+                $options = new \stdClass();
                 $options->class = $class;
                 $options->maxlength = $maxlength;
                 $options->width = $width;
@@ -180,7 +181,7 @@ class ElementoptionsModel extends BaseDatabaseModel
                 $allow_html = CBRequest::getInt('allow_encoding', 0) == 1 ? true : false;
                 $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
 
-                $options = new stdClass();
+                $options = new \stdClass();
                 $options->class = $class;
                 $options->seperator = $seperator;
                 $options->allow_raw = $allow_raw;
@@ -251,9 +252,9 @@ class ElementoptionsModel extends BaseDatabaseModel
 
                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' (/media/contentbuilder/upload' . ')', 'warning');
 
-                } else if (trim(CBRequest::getVar('upload_directory', '')) != '' && !is_dir(contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', '')))) {
+                } else if (trim(CBRequest::getVar('upload_directory', '')) != '' && !is_dir(ContentbuilderLegacyHelper::makeSafeFolder(CBRequest::getVar('upload_directory', '')))) {
 
-                    $upload_directory = contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
+                    $upload_directory = ContentbuilderLegacyHelper::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
 
                     Folder::create($upload_directory);
                     File::write($upload_directory .'/index.html', $def = '');
@@ -269,9 +270,9 @@ class ElementoptionsModel extends BaseDatabaseModel
 
                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' (' . $upload_directory . ')', 'warning');
 
-                } else if (trim(CBRequest::getVar('upload_directory', '')) != '' && is_dir(contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', '')))) {
+                } else if (trim(CBRequest::getVar('upload_directory', '')) != '' && is_dir(ContentbuilderLegacyHelper::makeSafeFolder(CBRequest::getVar('upload_directory', '')))) {
 
-                    $upload_directory = contentbuilder::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
+                    $upload_directory = ContentbuilderLegacyHelper::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
 
                     if ($is_opt_relative) {
                         $is_relative = 1;
@@ -290,11 +291,11 @@ class ElementoptionsModel extends BaseDatabaseModel
 
                 if ($protect && is_dir($upload_directory)) {
 
-                    File::write(contentbuilder::makeSafeFolder($upload_directory) .'/.htaccess', $def = 'deny from all');
+                    File::write(ContentbuilderLegacyHelper::makeSafeFolder($upload_directory) .'/.htaccess', $def = 'deny from all');
 
                 } else if (!$protect && is_dir($upload_directory)) {
-                    if (file_exists(contentbuilder::makeSafeFolder($upload_directory) .'/.htaccess')) {
-                        File::delete(contentbuilder::makeSafeFolder($upload_directory) .'/.htaccess');
+                    if (file_exists(ContentbuilderLegacyHelper::makeSafeFolder($upload_directory) .'/.htaccess')) {
+                        File::delete(ContentbuilderLegacyHelper::makeSafeFolder($upload_directory) .'/.htaccess');
                     }
 
                 }
@@ -302,7 +303,7 @@ class ElementoptionsModel extends BaseDatabaseModel
                 $default_value = CBRequest::getVar('default_value', '');
                 $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
 
-                $options = new stdClass();
+                $options = new \stdClass();
                 $options->upload_directory = is_dir($upload_directory) ? ($is_relative ? $tmp_upload_directory : $upload_directory) . $tokens : '';
                 $options->allowed_file_extensions = CBRequest::getVar('allowed_file_extensions', '');
                 $options->max_filesize = CBRequest::getVar('max_filesize', '');
@@ -313,7 +314,7 @@ class ElementoptionsModel extends BaseDatabaseModel
                 $default_value = CBRequest::getVar('default_value', '');
                 $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
 
-                $options = new stdClass();
+                $options = new \stdClass();
 
                 $query = " `options`='" . base64_decode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->_db->Quote($hint) . ", `default_value`=" . $this->_db->Quote($default_value) . " ";
                 break;
@@ -326,7 +327,7 @@ class ElementoptionsModel extends BaseDatabaseModel
                 $default_value = CBRequest::getVar('default_value', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
                 $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
 
-                $options = new stdClass();
+                $options = new \stdClass();
                 $options->length = $length;
                 $options->maxlength = $maxlength;
                 $options->readonly = $readonly;
@@ -342,7 +343,7 @@ class ElementoptionsModel extends BaseDatabaseModel
                 $default_value = CBRequest::getVar('default_value', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
                 $hint = '';
 
-                $options = new stdClass();
+                $options = new \stdClass();
                 $options->allow_raw = $allow_raw;
                 $options->allow_html = $allow_html;
 

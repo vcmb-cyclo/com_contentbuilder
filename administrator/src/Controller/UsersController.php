@@ -186,7 +186,7 @@ class UsersController extends BaseController
         $additionalParams = '';
         if($keep_task){
             if($id){
-                $additionalParams = '&task=edit&joomla_userid='.$id;
+                $additionalParams = '&task=user.edit&joomla_userid='.$id;
                 $limit = CBRequest::getInt('limitstart');
             }
         }

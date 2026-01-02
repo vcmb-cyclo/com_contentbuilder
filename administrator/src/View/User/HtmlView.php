@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\View\User;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;

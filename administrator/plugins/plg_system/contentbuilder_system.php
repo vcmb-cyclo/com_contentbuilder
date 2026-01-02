@@ -1,5 +1,6 @@
 <?php
 /**
+ * @version     2.0
  * @package     ContentBuilder
  * @author      Markus Bopp
  * @link        https://breezingforms.vcmb.fr
@@ -8,7 +9,7 @@
  */
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -16,6 +17,7 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class plgSystemContentbuilder_system extends CMSPlugin
 {
@@ -237,7 +239,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
             foreach ($views as $view) {
                 if (!isset($typeview[$view['type'] . $view['reference_id']])) {
                     $typeview[$view['type'] . $view['reference_id']] = true;
-                    $form = contentbuilder::getForm($view['type'], $view['reference_id']);
+                    $form = ContentbuilderLegacyHelper::getForm($view['type'], $view['reference_id']);
                     if (is_object($form)) {
                         $form->synchRecords();
                     }
@@ -515,7 +517,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
                 if (is_array($data)) {
 
-                    $form = contentbuilder::getForm($data['type'], $data['reference_id']);
+                    $form = ContentbuilderLegacyHelper::getForm($data['type'], $data['reference_id']);
                     if (!$form || !$form->exists) {
                         return;
                     }
@@ -540,7 +542,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
                         $data['items'] = $form->getRecord($data['record_id'], false, -1, true);
 
-                        $article_id = contentbuilder::createArticle($data['form_id'], $data['record_id'], $data['items'], $ids, $data['title_field'], $form->getRecordMetadata($data['record_id']), array(), false, 1, $data['default_category']);
+                        $article_id = ContentbuilderLegacyHelper::createArticle($data['form_id'], $data['record_id'], $data['items'], $ids, $data['title_field'], $form->getRecordMetadata($data['record_id']), array(), false, 1, $data['default_category']);
 
                         if ($article_id) {
                             $this->db->setQuery("Update #__contentbuilder_articles Set `last_update`=" . $this->db->Quote($now) . " Where article_id = " . $this->db->Quote($article_id) . " And record_id = " . $this->db->Quote($data['record_id']) . " And form_id = " . $this->db->Quote($data['form_id']));

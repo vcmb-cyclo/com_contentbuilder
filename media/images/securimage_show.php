@@ -9,7 +9,7 @@ if (!defined('_JEXEC')) {
 	define('_JEXEC', 1);
 }
 
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
 
@@ -25,7 +25,7 @@ $app = Factory::getApplication('administrator');
 
 ob_end_clean();
 
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 include JPATH_SITE .'/components/com_contentbuilder/images/securimage/securimage.php';
 

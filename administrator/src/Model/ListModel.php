@@ -11,7 +11,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -22,9 +22,9 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class ListModel extends BaseDatabaseModel
 {
@@ -143,7 +143,7 @@ class ListModel extends BaseDatabaseModel
                 $keyval = explode("\t", $line);
                 if (count($keyval) == 2) {
                     $keyval[1] = str_replace(array("\n", "\r"), "", $keyval[1]);
-                    $keyval[1] = contentbuilder::execPhpValue($keyval[1]);
+                    $keyval[1] = ContentbuilderLegacyHelper::execPhpValue($keyval[1]);
                     if ($keyval[1] != '') {
                         $this->_menu_filter[$keyval[0]] = explode('|', $keyval[1]);
                     }
@@ -248,7 +248,7 @@ class ListModel extends BaseDatabaseModel
                 $data->page_class = $this->_page_class;
                 $data->form_id = $this->_id;
                 if ($data->type && $data->reference_id) {
-                    $data->form = contentbuilder::getForm($data->type, $data->reference_id);
+                    $data->form = ContentbuilderLegacyHelper::getForm($data->type, $data->reference_id);
                     if (!$data->form->exists) {
                         throw new Exception(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 404);
                     }
@@ -474,9 +474,9 @@ class ListModel extends BaseDatabaseModel
                     foreach ($data->labels as $reference_id => $label) {
                         $ids[] = $this->_db->Quote($reference_id);
                     }
-                    $searchable_elements = contentbuilder::getListSearchableElements($this->_id);
+                    $searchable_elements = ContentbuilderLegacyHelper::getListSearchableElements($this->_id);
                     $data->display_filter = count($searchable_elements) && $data->show_filter;
-                    $data->linkable_elements = contentbuilder::getListLinkableElements($this->_id);
+                    $data->linkable_elements = ContentbuilderLegacyHelper::getListLinkableElements($this->_id);
                     $data->labels = array();
                     $order_types = array();
                     if (count($ids)) {
@@ -513,7 +513,7 @@ class ListModel extends BaseDatabaseModel
                         $mainframe->setUserState($option . 'formsd_filter_order', '');
                         throw new Exception(Text::_('Stale list setup detected. Please reload view.'), 500);
                     }
-                    $data->items = contentbuilder::applyItemWrappers($this->_id, $data->items, $data);
+                    $data->items = ContentbuilderLegacyHelper::applyItemWrappers($this->_id, $data->items, $data);
                     $this->_total = $data->form->getListRecordsTotal($ids, $this->getState('formsd_filter'), $searchable_elements);
                     $data->visible_cols = $ids;
 
@@ -521,19 +521,19 @@ class ListModel extends BaseDatabaseModel
                     $data->state_colors = array();
                     $data->state_titles = array();
                     $data->published_items = array();
-                    $data->states = contentbuilder::getListStates($this->_id);
+                    $data->states = ContentbuilderLegacyHelper::getListStates($this->_id);
                     if ($data->list_state) {
-                        $data->state_colors = contentbuilder::getStateColors($data->items, $this->_id);
-                        $data->state_titles = contentbuilder::getStateTitles($data->items, $this->_id);
+                        $data->state_colors = ContentbuilderLegacyHelper::getStateColors($data->items, $this->_id);
+                        $data->state_titles = ContentbuilderLegacyHelper::getStateTitles($data->items, $this->_id);
                     }
                     if ($data->list_publish) {
-                        $data->published_items = contentbuilder::getRecordsPublishInfo($data->items, $data->type, $data->reference_id);
+                        $data->published_items = ContentbuilderLegacyHelper::getRecordsPublishInfo($data->items, $data->type, $data->reference_id);
                     }
                     $data->lang_codes = array();
                     if ($data->list_language) {
-                        $data->lang_codes = contentbuilder::getRecordsLanguage($data->items, $data->type, $data->reference_id);
+                        $data->lang_codes = ContentbuilderLegacyHelper::getRecordsLanguage($data->items, $data->type, $data->reference_id);
                     }
-                    $data->languages = contentbuilder::getLanguageCodes();
+                    $data->languages = ContentbuilderLegacyHelper::getLanguageCodes();
 
                     // Search for the {readmore} tag and split the text up accordingly.
                     $pattern = '#<hr\s+id=("|\')system-readmore("|\')\s*\/*>#i';

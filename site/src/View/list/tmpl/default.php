@@ -10,7 +10,7 @@
 
 
 // no direct access
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -18,15 +18,18 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
-$language_allowed = contentbuilder::authorizeFe('language');
-$edit_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('edit') : contentbuilder::authorize('edit');
-$delete_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('delete') : contentbuilder::authorize('delete');
-$view_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('view') : contentbuilder::authorize('view');
-$new_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('new') : contentbuilder::authorize('new');
-$state_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('state') : contentbuilder::authorize('state');
-$publish_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('publish') : contentbuilder::authorize('publish');
-$rating_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('rating') : contentbuilder::authorize('rating');
+
+$language_allowed = ContentbuilderLegacyHelper::authorizeFe('language');
+$edit_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('edit') : ContentbuilderLegacyHelper::authorize('edit');
+$delete_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('delete') : ContentbuilderLegacyHelper::authorize('delete');
+$view_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('view') : ContentbuilderLegacyHelper::authorize('view');
+$new_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
+$state_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('state') : ContentbuilderLegacyHelper::authorize('state');
+$publish_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('publish') : ContentbuilderLegacyHelper::authorize('publish');
+$rating_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('rating') : ContentbuilderLegacyHelper::authorize('rating');
 
 Factory::getApplication()->getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
 
@@ -504,7 +507,7 @@ echo Route::_($szRoute); ?>" method="<?php echo $___getpost; ?>" name="adminForm
 					if ($this->list_publish && $publish_allowed) {
 						?>
 						<td align="center" valign="middle">
-							<?php echo contentbuilder_helpers::publishButton(isset($this->published_items[$row->colRecord]) && $this->published_items[$row->colRecord] ? true : false, $publish_link, $unpublish_link, 'tick.png', 'publish_x.png', $publish_allowed); ?>
+							<?php echo ContentbuilderHelper::publishButton(isset($this->published_items[$row->colRecord]) && $this->published_items[$row->colRecord] ? true : false, $publish_link, $unpublish_link, 'tick.png', 'publish_x.png', $publish_allowed); ?>
 						</td>
 						<?php
 					}
@@ -565,7 +568,7 @@ echo Route::_($szRoute); ?>" method="<?php echo $___getpost; ?>" name="adminForm
 						?>
 						<td class="hidden-phone">
 							<?php
-							echo contentbuilder::getRating(CBRequest::getInt('id', 0), $row->colRecord, $row->colRating, $this->rating_slots, CBRequest::getCmd('lang', ''), $rating_allowed, $row->colRatingCount, $row->colRatingSum);
+							echo ContentbuilderLegacyHelper::getRating(CBRequest::getInt('id', 0), $row->colRecord, $row->colRating, $this->rating_slots, CBRequest::getCmd('lang', ''), $rating_allowed, $row->colRatingCount, $row->colRatingSum);
 							?>
 						</td>
 						<?php

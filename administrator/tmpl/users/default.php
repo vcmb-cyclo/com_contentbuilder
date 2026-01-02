@@ -10,12 +10,13 @@
 
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
 ?>
 <style type="text/css">
@@ -117,14 +118,14 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
             for ($i = 0; $i < $n; $i++) {
                 $row = $this->items[$i];
                 $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                $link = Route::_('index.php?option=com_contentbuilder&view=users&tmpl=' . CBRequest::getCmd('tmpl', '') . '&task=edit&form_id=' . CBRequest::getInt('form_id', 0) . '&joomla_userid=' . $row->id);
+                $link = Route::_('index.php?option=com_contentbuilder&view=users&tmpl=' . CBRequest::getCmd('tmpl', '') . '&task=user.edit&form_id=' . CBRequest::getInt('form_id', 0) . '&joomla_userid=' . $row->id);
                 if ($row->published === null) {
                     $row->published = 1;
                 }
-                $published = contentbuilder_helpers::listPublish($row, $i);
-                $verified_view = contentbuilder_helpers::listVerifiedView($row, $i);
-                $verified_new = contentbuilder_helpers::listVerifiedNew($row, $i);
-                $verified_edit = contentbuilder_helpers::listVerifiedEdit($row, $i);
+                $published = ContentbuilderHelper::listPublish($row, $i);
+                $verified_view = ContentbuilderHelper::listVerifiedView($row, $i);
+                $verified_new = ContentbuilderHelper::listVerifiedNew($row, $i);
+                $verified_edit = ContentbuilderHelper::listVerifiedEdit($row, $i);
                 ?>
                 <tr class="<?php echo "row$k"; ?>">
                     <td>

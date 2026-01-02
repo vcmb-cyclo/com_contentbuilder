@@ -8,12 +8,12 @@
  */
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
 class plgContentbuilder_validationDate_is_valid extends CMSPlugin
 {

@@ -1,14 +1,13 @@
 <?php
 /**
- * @version     1.0
+ * @version     2.0
  * @package     ContentBuilder Image Scale
- * @copyright   (C) 2011 by Markus Bopp
  * @copyright   Copyright (C) 2026 by XDA+GIL 
  * @license     Released under the terms of the GNU General Public License
  **/
 
 /** ensure this file is being included by a parent file */
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
@@ -18,9 +17,7 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
-
-
-
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class plgContentContentbuilder_download extends CMSPlugin
 {
@@ -217,7 +214,7 @@ class plgContentContentbuilder_download extends CMSPlugin
                     $data = $this->db->loadAssoc();
 
                     require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/src/contentbuilder.php');
-                    $form = contentbuilder::getForm($data['type'], $data['reference_id']);
+                    $form = ContentbuilderLegacyHelper::getForm($data['type'], $data['reference_id']);
                     if (!$form || !$form->exists) {
                         return true;
                     }
@@ -245,10 +242,10 @@ class plgContentContentbuilder_download extends CMSPlugin
 
                 if (!$is_list) {
 
-                    contentbuilder::setPermissions($form_id, $record_id, $frontend ? '_fe' : '');
+                    ContentbuilderLegacyHelper::setPermissions($form_id, $record_id, $frontend ? '_fe' : '');
 
                     if ($frontend) {
-                        if (!contentbuilder::authorizeFe('view')) {
+                        if (!ContentbuilderLegacyHelper::authorizeFe('view')) {
                             if (CBRequest::getVar('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW)) {
                                 ob_end_clean();
                                 die('No Access');
@@ -257,7 +254,7 @@ class plgContentContentbuilder_download extends CMSPlugin
                             }
                         }
                     } else {
-                        if (!contentbuilder::authorize('view')) {
+                        if (!ContentbuilderLegacyHelper::authorize('view')) {
                             if (CBRequest::getVar('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW)) {
                                 ob_end_clean();
                                 die('No Access');

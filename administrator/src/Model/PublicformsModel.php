@@ -10,12 +10,13 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\MVC\Model\ListModel;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class PublicformsModel extends ListModel
 {
@@ -226,10 +227,10 @@ class PublicformsModel extends ListModel
 
             foreach ($this->items as $item) {
 
-                contentbuilder::setPermissions($item->id, '', '_fe');
-                $view = contentbuilder::authorizeFe('view');
-                $new = contentbuilder::authorizeFe('new');
-                $edit = contentbuilder::authorizeFe('edit');
+                ContentbuilderLegacyHelper::setPermissions($item->id, '', '_fe');
+                $view = ContentbuilderLegacyHelper::authorizeFe('view');
+                $new = ContentbuilderLegacyHelper::authorizeFe('new');
+                $edit = ContentbuilderLegacyHelper::authorizeFe('edit');
 
                 $perms[$item->id] = array('view' => $view, 'new' => $new, 'edit' => $edit);
             }

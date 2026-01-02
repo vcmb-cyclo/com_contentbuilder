@@ -10,12 +10,12 @@
 
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Text;
 use PhpOffice\PhpSpreadsheet\Shared\Font;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
 @ob_end_clean();
 

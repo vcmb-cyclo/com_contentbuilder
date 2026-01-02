@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\View\Details;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 
 use Joomla\CMS\Factory;
@@ -20,7 +20,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
@@ -59,7 +59,7 @@ class HtmlView extends BaseHtmlView
 		$table->cbrecord = $subject;
 		$table->text = $table->cbrecord->template;
 
-		$alias = $table->alias ? contentbuilder::stringURLUnicodeSlug($table->alias) : contentbuilder::stringURLUnicodeSlug($subject->page_title);
+		$alias = $table->alias ? ContentbuilderLegacyHelper::stringURLUnicodeSlug($table->alias) : ContentbuilderLegacyHelper::stringURLUnicodeSlug($subject->page_title);
 		if (trim(str_replace('-', '', $alias)) == '') {
 			$datenow = Factory::getDate();
 			$alias = $datenow->format("%Y-%m-%d-%H-%M-%S");

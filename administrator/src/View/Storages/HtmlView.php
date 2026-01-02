@@ -8,7 +8,7 @@
 
 namespace CB\Component\Contentbuilder\Administrator\View\Storages;
 
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;

@@ -1,15 +1,14 @@
 <?php
 /**
- * @version     1.0
+ * @version     2.0
  * @package     ContentBuilder Image Scale
- * @copyright   (C) 2011 by Markus Bopp
  * @copyright   (C) 2026 by XDA+GIL
  * @license     Released under the terms of the GNU General Public License
  **/
 
 
 /** ensure this file is being included by a parent file */
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
@@ -18,11 +17,7 @@ use Joomla\Filesystem\File;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Registry\Registry;
-
-
-
-
-
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class plgContentContentbuilder_rating extends CMSPlugin
 {
@@ -121,7 +116,7 @@ class plgContentContentbuilder_rating extends CMSPlugin
                     $data = $db->loadAssoc();
 
                     require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/src/contentbuilder.php');
-                    $form = contentbuilder::getForm($data['type'], $data['reference_id']);
+                    $form = ContentbuilderLegacyHelper::getForm($data['type'], $data['reference_id']);
                     if (!$form || !$form->exists) {
                         return true;
                     }
@@ -162,14 +157,14 @@ class plgContentContentbuilder_rating extends CMSPlugin
 
                 if (!$is_list) {
 
-                    contentbuilder::setPermissions($form_id, $record_id, $frontend ? '_fe' : '');
+                    ContentbuilderLegacyHelper::setPermissions($form_id, $record_id, $frontend ? '_fe' : '');
 
                     if ($frontend) {
-                        if (!contentbuilder::authorizeFe('rating')) {
+                        if (!ContentbuilderLegacyHelper::authorizeFe('rating')) {
                             $rating_allowed = false;
                         }
                     } else {
-                        if (!contentbuilder::authorize('rating')) {
+                        if (!ContentbuilderLegacyHelper::authorize('rating')) {
                             $rating_allowed = false;
                         }
                     }
@@ -190,7 +185,7 @@ class plgContentContentbuilder_rating extends CMSPlugin
                         }
                     }
 
-                    $out = contentbuilder::getRating($form_id, $record_id, $rating, $rating_slots, CBRequest::getCmd('lang', ''), $rating_allowed, $rating_count, $rating_sum);
+                    $out = ContentbuilderLegacyHelper::getRating($form_id, $record_id, $rating, $rating_slots, CBRequest::getCmd('lang', ''), $rating_allowed, $rating_count, $rating_sum);
 
                     $article->text = str_replace($matches[0][$i], $out, $article->text);
 

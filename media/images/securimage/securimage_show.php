@@ -6,7 +6,7 @@ ob_start();
 
 define('_JEXEC', 1);
 
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 require_once dirname(__FILE__) . '/../../../../includes/app.php';
 /* To use Joomla's Database Class */
@@ -18,7 +18,7 @@ $app = Factory::getApplication('site');
 
 ob_end_clean();
 
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 include JPATH_SITE . '/components/com_contentbuilder/images/securimage/securimage.php';
 

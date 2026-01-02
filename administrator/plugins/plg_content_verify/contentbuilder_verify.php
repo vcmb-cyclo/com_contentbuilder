@@ -2,14 +2,13 @@
 /**
  * @version     1.0
  * @package     ContentBuilder Image Scale
- * @copyright   (C) 2011 by Markus Bopp
  * @copyright   (C) 2026 by XDA+GIL
  * @license     Released under the terms of the GNU General Public License
  **/
 
 /** ensure this file is being included by a parent file */
 
-defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Plugin\CMSPlugin;

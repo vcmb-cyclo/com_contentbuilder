@@ -10,12 +10,13 @@
 
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
 $___tableOrdering = "Joomla.tableOrdering = function";
 ?>
@@ -93,7 +94,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 $row = $this->items[$i];
                 $checked = HTMLHelper::_('grid.id', $i, $row->id);
                 $link = Route::_('index.php?option=com_contentbuilder&task=storage.edit&id=' . (int) $row->id);
-                $published = contentbuilder_helpers::listPublish($row, $i);
+                $published = ContentbuilderHelper::listPublish($row, $i);
                 ?>
                 <tr class="<?php echo "row$k"; ?>">
                     <td>

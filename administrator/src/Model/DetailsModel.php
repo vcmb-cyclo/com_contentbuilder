@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -18,8 +18,8 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\MVC\Model\ListModel;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class DetailsModel extends ListModel
 {
@@ -89,7 +89,7 @@ class DetailsModel extends ListModel
                 $keyval = explode("\t", $line);
                 if (count($keyval) == 2) {
                     $keyval[1] = str_replace(array("\n", "\r"), "", $keyval[1]);
-                    $keyval[1] = contentbuilder::execPhpValue($keyval[1]);
+                    $keyval[1] = ContentbuilderLegacyHelper::execPhpValue($keyval[1]);
                     if ($keyval[1] != '') {
                         $this->_menu_filter[$keyval[0]] = explode('|', $keyval[1]);
                     }
@@ -166,7 +166,7 @@ class DetailsModel extends ListModel
 
                 if ($data->type && $data->reference_id) {
 
-                    $data->form = contentbuilder::getForm($data->type, $data->reference_id);
+                    $data->form = ContentbuilderLegacyHelper::getForm($data->type, $data->reference_id);
 
                     $data->labels = $data->form->getElementLabels();
                     $ids = array();
@@ -199,8 +199,8 @@ class DetailsModel extends ListModel
                         } else {
 
                             CBRequest::setVar('cbIsNew', 1);
-                            contentbuilder::setPermissions(CBRequest::getInt('id', 0), 0, $this->frontend ? '_fe' : '');
-                            $auth = $this->frontend ? contentbuilder::authorizeFe('new') : contentbuilder::authorize('new');
+                            ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, $this->frontend ? '_fe' : '');
+                            $auth = $this->frontend ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
 
                             if ($auth) {
                                 Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&view=edit&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . $this->_id . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
@@ -347,7 +347,7 @@ class DetailsModel extends ListModel
                             $document->setTitle(html_entity_decode($data->page_title, ENT_QUOTES, 'UTF-8'));
                         }
 
-                        $data->template = contentbuilder::getTemplate($this->_id, $this->_record_id, $data->items, $ids);
+                        $data->template = ContentbuilderLegacyHelper::getTemplate($this->_id, $this->_record_id, $data->items, $ids);
 
                         if (
                             Factory::getApplication()->isClient('administrator')

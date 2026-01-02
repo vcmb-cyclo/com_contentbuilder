@@ -15,9 +15,9 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class ExportModel extends BaseDatabaseModel
 {
@@ -75,7 +75,7 @@ class ExportModel extends BaseDatabaseModel
                 $keyval = explode("\t", $line);
                 if(count($keyval) == 2){
                     $keyval[1] = str_replace( array("\n","\r"), "", $keyval[1] );
-                    $keyval[1] = contentbuilder::execPhpValue($keyval[1]);
+                    $keyval[1] = ContentbuilderLegacyHelper::execPhpValue($keyval[1]);
                     if($keyval[1] != ''){
                         $this->_menu_filter[$keyval[0]] = explode('|',$keyval[1]);
                     }
@@ -150,11 +150,11 @@ class ExportModel extends BaseDatabaseModel
                 }
                 $data->form_id = $this->_id;
                 if($data->type && $data->reference_id){
-                    $data->form = contentbuilder::getForm($data->type, $data->reference_id);
+                    $data->form = ContentbuilderLegacyHelper::getForm($data->type, $data->reference_id);
                     if(!$data->form->exists){
 	                    throw new Exception(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 404);
                     }
-                    $searchable_elements = contentbuilder::getListSearchableElements($this->_id);
+                    $searchable_elements = ContentbuilderLegacyHelper::getListSearchableElements($this->_id);
                     $data->labels = $data->form->getElementLabels();
                     
                     if(

@@ -159,7 +159,7 @@ class contentbuilder_com_breezingforms{
 
     public function getRecordMetadata($record_id){
          
-         $data = new stdClass();
+         $data = new \stdClass();
          
          $db = Factory::getContainer()->get(DatabaseInterface::class);
          
@@ -289,7 +289,7 @@ class contentbuilder_com_breezingforms{
         if($colValues){
             $i = 0;
             foreach($elements As $element){
-                $out[$i] = new stdClass();
+                $out[$i] = new \stdClass();
                 $out[$i]->recElementId = $element['id'];
                 $out[$i]->recTitle = $element['title'];
                 $out[$i]->recName = $element['name'];

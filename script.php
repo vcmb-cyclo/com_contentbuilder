@@ -7,7 +7,7 @@
  * @copyright   (C) 2025 by XDA+GIL
  * @license     GNU/GPL
  */
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\InstallerScript;

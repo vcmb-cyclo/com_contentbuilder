@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
@@ -55,7 +55,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				$this->dbo->setQuery($query, $offset, $limit);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 
 				$this->last_query = false;
 				$this->last_failed_query = $query;
@@ -74,7 +74,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->loadObjectList();
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
@@ -96,7 +96,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->loadObject($class);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
@@ -118,7 +118,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->loadColumn($offset);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
@@ -139,7 +139,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->loadAssocList($key, $column);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {
@@ -159,7 +159,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->loadAssoc();
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
@@ -183,7 +183,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->execute();
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {
@@ -201,7 +201,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->updateObject($table, $object, $key, $nulls);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {
@@ -219,7 +219,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->insertObject($table, $object, $key);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {
@@ -282,7 +282,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->getTableColumns($table, $typeOnly);
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {
@@ -300,7 +300,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->getTableList();
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {
@@ -320,7 +320,7 @@ if (!class_exists('CBDbo')) {
 
 			try {
 				return $this->dbo->loadResult();
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				$this->errNo = $e->getCode();
 				$this->errMsg = $e->getMessage();
 			} catch (Error $e) {

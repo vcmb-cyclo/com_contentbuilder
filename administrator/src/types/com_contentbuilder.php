@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Table\Types;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
@@ -138,7 +138,7 @@ class contentbuilder_com_contentbuilder
 
     public function getRecordMetadata($record_id)
     {
-        $data = new stdClass();
+        $data = new \stdClass();
         $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery("Select metakey, metadesc, author, robots, rights, xreference From #__contentbuilder_records Where `type` = 'com_contentbuilder' And reference_id = " . $db->Quote($this->properties->id) . " And record_id = " . $db->Quote($record_id));
         $metadata = $db->loadObject();
@@ -225,7 +225,7 @@ class contentbuilder_com_contentbuilder
         if ($colValues) {
             $i = 0;
             foreach ($this->elements as $element) {
-                $out[$i] = new stdClass();
+                $out[$i] = new \stdClass();
                 $out[$i]->recElementId = $element['id'];
                 $out[$i]->recTitle = $element['title'];
                 $out[$i]->recName = $element['name'];

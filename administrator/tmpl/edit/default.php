@@ -10,20 +10,21 @@
 
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 
-$new_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('new') : contentbuilder::authorize('new');
-$edit_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('edit') : contentbuilder::authorize('edit');
-$delete_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('delete') : contentbuilder::authorize('delete');
-$view_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('view') : contentbuilder::authorize('view');
-$fullarticle_allowed = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('fullarticle') : contentbuilder::authorize('fullarticle');
+$new_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
+$edit_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('edit') : ContentbuilderLegacyHelper::authorize('edit');
+$delete_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('delete') : ContentbuilderLegacyHelper::authorize('delete');
+$view_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('view') : ContentbuilderLegacyHelper::authorize('view');
+$fullarticle_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('fullarticle') : ContentbuilderLegacyHelper::authorize('fullarticle');
 ?>
 <?php Factory::getApplication()->getDocument()->addStyleDeclaration($this->theme_css);?>
 <?php Factory::getApplication()->getDocument()->addScriptDeclaration($this->theme_js);?>

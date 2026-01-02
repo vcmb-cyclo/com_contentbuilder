@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
@@ -23,7 +23,7 @@ use Joomla\CMS\Table\Table;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 HTMLHelper::_('behavior.keepalive');
 
@@ -268,7 +268,7 @@ class FormModel extends BaseDatabaseModel
         $data = $this->_db->loadObject();
 
         if (!$data) {
-            $data = new stdClass();
+            $data = new \stdClass();
             $data->id = 0;
             $data->type = null;
             $data->reference_id = null;
@@ -402,15 +402,15 @@ class FormModel extends BaseDatabaseModel
         }
 
         $data->forms = array();
-        $data->types = contentbuilder::getTypes();
+        $data->types = ContentbuilderLegacyHelper::getTypes();
 
         if ($data->type) {
-            $data->forms = contentbuilder::getForms($data->type);
+            $data->forms = ContentbuilderLegacyHelper::getForms($data->type);
         }
 
         $data->form = null;
         if ($data->type && $data->reference_id) {
-            $data->form = contentbuilder::getForm($data->type, $data->reference_id);
+            $data->form = ContentbuilderLegacyHelper::getForm($data->type, $data->reference_id);
             if (!$data->form->exists) {
                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 'error');
                 Factory::getApplication()->redirect('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->getState('limitstart', 0));
@@ -422,7 +422,7 @@ class FormModel extends BaseDatabaseModel
             }
             $data->title = $data->form->getPageTitle();
             if (is_object($data->form)) {
-                contentbuilder::synchElements($data->id, $data->form);
+                ContentbuilderLegacyHelper::synchElements($data->id, $data->form);
                 $elements_table = $this->getTable('elements');
                 $elements_table->reorder('form_id=' . $data->id);
             }
@@ -438,7 +438,7 @@ class FormModel extends BaseDatabaseModel
             $data->list_states = $this->_default_list_states;
         }
 
-        $data->language_codes = contentbuilder::getLanguageCodes();
+        $data->language_codes = ContentbuilderLegacyHelper::getLanguageCodes();
 
         $data->sectioncategories = $this->getOptions();
         $data->accesslevels = array();
@@ -489,7 +489,7 @@ class FormModel extends BaseDatabaseModel
 
         if (isset($row) && !isset($options[0])) {
             if ($row->parent_id == '1') {
-                $parent = new stdClass();
+                $parent = new \stdClass();
                 $parent->text = Text::_('JGLOBAL_ROOT_PARENT');
                 array_unshift($options, $parent);
             }
@@ -617,20 +617,20 @@ class FormModel extends BaseDatabaseModel
             $tokens = '|' . $upl_ex[1];
         }
 
-        if ($data['protect_upload_directory'] && is_dir(contentbuilder::makeSafeFolder($data['upload_directory']))) {
-            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) .'/index.html'))
-                File::write(contentbuilder::makeSafeFolder($data['upload_directory']) .'/index.html', $def = '');
+        if ($data['protect_upload_directory'] && is_dir(ContentbuilderLegacyHelper::makeSafeFolder($data['upload_directory']))) {
+            if (!file_exists(ContentbuilderLegacyHelper::makeSafeFolder($data['upload_directory']) .'/index.html'))
+                File::write(ContentbuilderLegacyHelper::makeSafeFolder($data['upload_directory']) .'/index.html', $def = '');
         }
 
-        if ($data['protect_upload_directory'] && is_dir(contentbuilder::makeSafeFolder($data['upload_directory']))) {
+        if ($data['protect_upload_directory'] && is_dir(ContentbuilderLegacyHelper::makeSafeFolder($data['upload_directory']))) {
 
-            if (!file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) .'/.htaccess'))
-                File::write(contentbuilder::makeSafeFolder($data['upload_directory']) .'/.htaccess', $def = 'deny from all');
+            if (!file_exists(ContentbuilderLegacyHelper::makeSafeFolder($data['upload_directory']) .'/.htaccess'))
+                File::write(ContentbuilderLegacyHelper::makeSafeFolder($data['upload_directory']) .'/.htaccess', $def = 'deny from all');
 
         } else {
 
-            if (file_exists(contentbuilder::makeSafeFolder($data['upload_directory']) .'/.htaccess'))
-                File::delete(contentbuilder::makeSafeFolder($data['upload_directory']) .'/.htaccess');
+            if (file_exists(ContentbuilderLegacyHelper::makeSafeFolder($data['upload_directory']) .'/.htaccess'))
+                File::delete(ContentbuilderLegacyHelper::makeSafeFolder($data['upload_directory']) .'/.htaccess');
 
         }
 
@@ -860,22 +860,22 @@ class FormModel extends BaseDatabaseModel
 
         $data['config'] = base64_decode(serialize($config));
 
-        //contentbuilder::createBackendMenuItem($form->id, $form->name, CBRequest::getInt('display_in',0));
+        //ContentbuilderLegacyHelper::createBackendMenuItem($form->id, $form->name, CBRequest::getInt('display_in',0));
 
         if (CBRequest::getBool('create_sample', false)) {
-            $data['details_template'] .= contentbuilder::createDetailsSample($form->id, $form->form, $data['theme_plugin']);
+            $data['details_template'] .= ContentbuilderLegacyHelper::createDetailsSample($form->id, $form->form, $data['theme_plugin']);
         }
 
         if (CBRequest::getBool('create_editable_sample', false)) {
-            $data['editable_template'] .= contentbuilder::createEditableSample($form->id, $form->form, $data['theme_plugin']);
+            $data['editable_template'] .= ContentbuilderLegacyHelper::createEditableSample($form->id, $form->form, $data['theme_plugin']);
         }
 
         if (CBRequest::getBool('email_admin_create_sample', false)) {
-            $data['email_admin_template'] .= contentbuilder::createEmailSample($form->id, $form->form, CBRequest::getBool('email_admin_html', false));
+            $data['email_admin_template'] .= ContentbuilderLegacyHelper::createEmailSample($form->id, $form->form, CBRequest::getBool('email_admin_html', false));
         }
 
         if (CBRequest::getBool('email_create_sample', false)) {
-            $data['email_template'] .= contentbuilder::createEmailSample($form->id, $form->form, CBRequest::getBool('email_html', false));
+            $data['email_template'] .= ContentbuilderLegacyHelper::createEmailSample($form->id, $form->form, CBRequest::getBool('email_html', false));
         }
 
         $data['email_html'] = CBRequest::getBool('email_html', false) ? 1 : 0;

@@ -58,7 +58,6 @@
     <submenu>
         <menu view="storages" img="components/com_contentbuilder/views/logo_icon_cb.png">COM_CONTENTBUILDER_STORAGES</menu>
         <menu view="forms" img="components/com_contentbuilder/views/logo_icon_cb.png">COM_CONTENTBUILDER_LIST</menu>
-        <menu link="option=com_contentbuilder&amp;view=contentbuilder&amp;market=true">Try BreezingForms!</menu>
         <menu view="contentbuilder">COM_CONTENTBUILDER_ABOUT</menu>
     </submenu>
 
@@ -68,7 +67,6 @@
         <filename>config.xml</filename>
         <filename>index.html</filename>
         
-        <folder>helpers</folder>
         <folder>languages</folder>
         <folder>librairies</folder>
         <folder>plugins</folder>

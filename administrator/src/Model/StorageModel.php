@@ -11,7 +11,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
@@ -148,7 +148,7 @@ class StorageModel extends BaseDatabaseModel
         $data = $this->_db->loadObject();
 
         if (!$data) {
-            $data = new stdClass();
+            $data = new \stdClass();
             $data->id = 0;
             $data->name = null;
             $data->title = null;
@@ -170,7 +170,7 @@ class StorageModel extends BaseDatabaseModel
         $data = $this->_db->loadObjectList();
 
         if (!$data) {
-            $data = new stdClass();
+            $data = new \stdClass();
             $data->id = 0;
             $data->storage_id = 0;
             $data->name = null;
@@ -557,7 +557,13 @@ class StorageModel extends BaseDatabaseModel
 
         $last_update = Factory::getDate()->toSql();
 
-        $tables = CBCompat::getTableFields(Factory::getContainer()->get(DatabaseInterface::class)->getTableList());
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $tableList = $db->getTableList();
+
+        $tables = [];
+        foreach ($tableList as $table) {
+            $tables[$table] = $db->getTableColumns($table, true);  // true = retourne seulement les types (comme dans l'original)
+        }
 
         if (!$bytable && !isset($tables[Factory::getContainer()->get(DatabaseInterface::class)->getPrefix() . $data['name']])) {
             if ($storage->name && isset($tables[Factory::getContainer()->get(DatabaseInterface::class)->getPrefix() . $storage->name])) {
@@ -589,7 +595,7 @@ class StorageModel extends BaseDatabaseModel
                     $this->_db->execute();
                     $this->_db->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `modified` )");
                     $this->_db->execute();
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                 }
             }
         } else if ($bytable) {
@@ -699,7 +705,12 @@ class StorageModel extends BaseDatabaseModel
             }
         }
 
-        $tables = CBCompat::getTableFields($this->_db->getTableList());
+        
+        $tableList = $db->getTableList();
+        $tables = array_combine(
+            $tableList,
+            array_map(static fn($t) => $db->getTableColumns($t, true), $tableList)
+        );
 
         foreach ($listnames as $field_id => $name) {
 

@@ -8,7 +8,7 @@
 
 namespace CB\Component\Contentbuilder\Administrator\Pane;
 
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 // shouldn't be required no longer in Joomla 3.0 Stable
 require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/classes/pane/CBBehaviorTabs.php');

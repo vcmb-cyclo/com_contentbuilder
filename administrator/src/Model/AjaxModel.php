@@ -10,13 +10,13 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class AjaxModel extends BaseDatabaseModel
 {
@@ -40,17 +40,14 @@ class AjaxModel extends BaseDatabaseModel
 
     function getData()
     {
-
         switch ($this->_subject) {
-
             case 'get_unique_values':
-
                 if ($this->frontend) {
-                    if (!contentbuilder::authorizeFe('listaccess')) {
+                    if (!ContentbuilderLegacyHelper::authorizeFe('listaccess')) {
                         return json_encode(array('code' => 1, 'msg' => Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED')));
                     }
                 } else {
-                    if (!contentbuilder::authorize('listaccess')) {
+                    if (!ContentbuilderLegacyHelper::authorize('listaccess')) {
                         return json_encode(array('code' => 1, 'msg' => Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED')));
                     }
                 }
@@ -58,7 +55,7 @@ class AjaxModel extends BaseDatabaseModel
                 $this->_db->setQuery("Select `type`, `reference_id`, `rating_slots` From #__contentbuilder_forms Where id = " . $this->_id);
                 $result = $this->_db->loadAssoc();
 
-                $form = contentbuilder::getForm($result['type'], $result['reference_id']);
+                $form = ContentbuilderLegacyHelper::getForm($result['type'], $result['reference_id']);
 
                 if (!$form || !$form->exists) {
                     return json_encode(array('code' => 2, 'msg' => Text::_('COM_CONTENTBUILDER_FORM_ERROR')));
@@ -74,11 +71,11 @@ class AjaxModel extends BaseDatabaseModel
             case 'rating':
 
                 if ($this->frontend) {
-                    if (!contentbuilder::authorizeFe('rating')) {
+                    if (!ContentbuilderLegacyHelper::authorizeFe('rating')) {
                         return json_encode(array('code' => 1, 'msg' => Text::_('COM_CONTENTBUILDER_RATING_NOT_ALLOWED')));
                     }
                 } else {
-                    if (!contentbuilder::authorize('rating')) {
+                    if (!ContentbuilderLegacyHelper::authorize('rating')) {
                         return json_encode(array('code' => 1, 'msg' => Text::_('COM_CONTENTBUILDER_RATING_NOT_ALLOWED')));
                     }
                 }
@@ -86,7 +83,7 @@ class AjaxModel extends BaseDatabaseModel
                 $this->_db->setQuery("Select `type`, `reference_id`, `rating_slots` From #__contentbuilder_forms Where id = " . $this->_id);
                 $result = $this->_db->loadAssoc();
 
-                $form = contentbuilder::getForm($result['type'], $result['reference_id']);
+                $form = ContentbuilderLegacyHelper::getForm($result['type'], $result['reference_id']);
 
                 if (!$form || !$form->exists) {
                     return json_encode(array('code' => 2, 'msg' => Text::_('COM_CONTENTBUILDER_FORM_ERROR')));

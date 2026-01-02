@@ -1,14 +1,13 @@
 <?php
 /**
- * @version     1.0
+ * @version     2.0
  * @package     ContentBuilder Image Scale
- * @copyright   (C) 2011 by Markus Bopp
  * @copyright   Copyright (C) 2026 by XDA+GIL 
  * @license     Released under the terms of the GNU General Public License
  **/
 
 /** ensure this file is being included by a parent file */
-defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die ('Direct Access to this location is not allowed.');
 
 use Joomla\Filesystem\Folder;
 use Joomla\CMS\Uri\Uri;
@@ -19,9 +18,8 @@ use Joomla\Filesystem\Path;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Registry\Registry;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
-
-
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 
 set_error_handler('myErrorHandler');
@@ -185,7 +183,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 					$data = $this->db->loadAssoc();
 
 					require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/src/contentbuilder.php');
-					$form = contentbuilder::getForm($data['type'], $data['reference_id']);
+					$form = ContentbuilderLegacyHelper::getForm($data['type'], $data['reference_id']);
 					if (!$form || !$form->exists) {
 						return true;
 					}
@@ -249,10 +247,10 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 
 				// if it is a list, permissions will be handled by the list
 				if (!$is_list) {
-					contentbuilder::setPermissions($form_id, $record_id, $frontend ? '_fe' : '');
+					ContentbuilderLegacyHelper::setPermissions($form_id, $record_id, $frontend ? '_fe' : '');
 
 					if ($frontend) {
-						if (!contentbuilder::authorizeFe('view')) {
+						if (!ContentbuilderLegacyHelper::authorizeFe('view')) {
 							if (CBRequest::getInt('contentbuilder_display', 0) || ($protect && CBRequest::getInt('contentbuilder_display_detail', 0))) {
 								ob_end_clean();
 								die ('No Access');
@@ -261,7 +259,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 							}
 						}
 					} else {
-						if (!contentbuilder::authorize('view')) {
+						if (!ContentbuilderLegacyHelper::authorize('view')) {
 							if (CBRequest::getInt('contentbuilder_display', 0) || ($protect && CBRequest::getInt('contentbuilder_display_detail', 0))) {
 								ob_end_clean();
 								die ('No Access');
@@ -365,7 +363,7 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
 						if (!$use_form) {
 
 							require_once (JPATH_SITE .'/administrator/components/com_contentbuilder/src/contentbuilder.php');
-							$use_form = contentbuilder::getForm($ref_type, $ref_id);
+							$use_form = ContentbuilderLegacyHelper::getForm($ref_type, $ref_id);
 						}
 
 						if ($use_form && $use_form->exists) {

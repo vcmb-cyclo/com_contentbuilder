@@ -3,7 +3,7 @@ if(!defined('_JEXEC')){
     define('_JEXEC', 1);
 }
 
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 /**
  * BreezingForms - A Joomla Forms Application

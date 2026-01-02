@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator;
 
 // no direct access
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 Use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Controller\BaseController;

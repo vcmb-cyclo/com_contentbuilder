@@ -10,7 +10,7 @@
 
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
@@ -18,6 +18,7 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 $th = 'th';
 if ($this->page_heading) {
@@ -143,7 +144,7 @@ if ($this->page_heading) {
             $row = $this->items[$i];
             $link_ = htmlentities($row->name, ENT_QUOTES, 'UTF-8');
             if (($this->show_permissions && $this->perms[$row->id]['view']) || !$this->show_permissions) {
-                $link = Route::_('index.php?option=com_contentbuilder&title=' . contentbuilder::stringURLUnicodeSlug($row->name) . '&view=list&id=' . $row->id);
+                $link = Route::_('index.php?option=com_contentbuilder&title=' . ContentbuilderLegacyHelper::stringURLUnicodeSlug($row->name) . '&view=list&id=' . $row->id);
                 $link_ = '<a href="' . $link . '">' . htmlentities($row->name, ENT_QUOTES, 'UTF-8') . '</a>';
             }
             ?>

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     ContentBuilder
- * @author      Markus Bopp
+ * @author      Markus Bopp / XDA+GIL
  * @link        https://breezingforms.vcmb.fr
  * @copyright   Copyright (C) 2026 by XDA+GIL
  * @license     GNU/GPL
@@ -10,422 +10,77 @@
 namespace CB\Component\Contentbuilder\Administrator\Controller;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\MVC\Controller\BaseController;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Joomla\CMS\MVC\Controller\AdminController;
 
-// use Joomla\CMS\HTML\HTMLHelper;
-
-class FormsController extends BaseController
+final class FormsController extends AdminController
 {
+    /**
+     * Nom de la vue liste et item (convention Joomla 6).
+     */
+    protected $view_list = 'forms';
+    protected $view_item = 'form';
+
     public function __construct($config = [])
     {
         parent::__construct($config);
 
-        //HTMLHelper::_('bootstrap.modal');
+        // Si tu veux absolument garder ces paramètres en session (legacy),
+        // tu peux le faire proprement via $this->input.
+        $session = Factory::getApplication()->getSession();
 
-        if (CBRequest::getInt('email_users', -1) != -1) {
-            Factory::getApplication()->getSession()->set('email_users', CBRequest::getVar('email_users', 'none'), 'com_contentbuilder');
-        }
-        if (CBRequest::getInt('email_admins', -1) != -1) {
-            Factory::getApplication()->getSession()->set('email_admins', CBRequest::getVar('email_admins', ''), 'com_contentbuilder');
-        }
-        if (CBRequest::getInt('slideStartOffset', -1) != -1) {
-            Factory::getApplication()->getSession()->set('slideStartOffset', CBRequest::getInt('slideStartOffset', 1));
-        }
-        if (CBRequest::getInt('tabStartOffset', -1) != -1) {
-            Factory::getApplication()->getSession()->set('tabStartOffset', CBRequest::getInt('tabStartOffset', 0));
-        }
-        // Register Extra tasks
-        $this->registerTask('add', 'edit');
-    }
-
-    function copy()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        if (count($cid) > 0) {
-            $model = $this->getModel('forms');
-            $model->copy();
+        if ($this->input->getInt('email_users', -1) !== -1) {
+            $session->set('email_users', $this->input->get('email_users', 'none'), 'com_contentbuilder');
         }
 
-        $this->setRedirect('index.php?option=com_contentbuilder&view=forms&limitstart=' . CBRequest::getInt('limitstart'), Text::_('COM_CONTENTBUILDER_COPIED'));
-    }
-
-    function orderup()
-    {
-        $model = $this->getModel('form');
-        $model->move(-1);
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . CBRequest::getInt('limitstart'), false));
-    }
-
-    function listorderup()
-    {
-        $model = $this->getModel('form');
-        $model->listMove(-1);
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-        parent::display();
-    }
-
-    function orderdown()
-    {
-        $model = $this->getModel('form');
-        $model->move(1);
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . CBRequest::getInt('limitstart'), false));
-    }
-
-    function listorderdown()
-    {
-        $model = $this->getModel('form');
-        $model->listMove(1);
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-        parent::display();
-    }
-
-    function saveorder()
-    {
-        $model = $this->getModel('forms');
-        $model->saveOrder();
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . CBRequest::getInt('limitstart'), false));
-    }
-
-
-    function listsaveorder()
-    {
-        $model = $this->getModel('form');
-        $model->listSaveOrder();
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function publish()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        if (count($cid) == 1) {
-            $model = $this->getModel('form');
-            $model->setPublished();
-        } else if (count($cid) > 1) {
-            $model = $this->getModel('form');
-            $model->setPublished();
+        if ($this->input->getInt('email_admins', -1) !== -1) {
+            $session->set('email_admins', $this->input->get('email_admins', ''), 'com_contentbuilder');
         }
 
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_PUBLISHED'));
-    }
-
-    function listpublish()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListPublished();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function linkable()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListLinkable();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function editable()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListEditable();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function editable_include()
-    {
-        $this->editable();
-    }
-
-    function list_include()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListListInclude();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function search_include()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListSearchInclude();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function unpublish()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        if (count($cid) == 1) {
-            $model = $this->getModel('form');
-            $model->setUnpublished();
-        } else if (count($cid) > 1) {
-            $model = $this->getModel('form');
-            $model->setUnpublished();
+        if ($this->input->getInt('slideStartOffset', -1) !== -1) {
+            $session->set('slideStartOffset', $this->input->getInt('slideStartOffset', 1));
         }
 
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
-    }
-
-    function listunpublish()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListUnpublished();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function not_linkable()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListNotLinkable();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function not_editable()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListNotEditable();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function no_list_include()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListNoListInclude();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    function no_search_include()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('form');
-        $model->setListNoSearchInclude();
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
+        if ($this->input->getInt('tabStartOffset', -1) !== -1) {
+            $session->set('tabStartOffset', $this->input->getInt('tabStartOffset', 0));
+        }
     }
 
     /**
-     * display the edit form
-     * @return void
+     * Copie (custom)
      */
-    function edit()
+    public function copy(): void
     {
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        parent::display();
-    }
+        $cid = (array) $this->input->get('cid', [], 'array');
 
-    function apply()
-    {
-        $this->save(true);
-    }
-
-    function save($keep_task = false)
-    {
-
-        $model = $this->getModel('form');
-        $id = $model->store();
-
-        if ($id) {
-            $msg = Text::_('COM_CONTENTBUILDER_SAVED');
-        } else {
-            $msg = Text::_('COM_CONTENTBUILDER_ERROR');
+        if (!empty($cid)) {
+            $model = $this->getModel('Forms');
+            $model->copy();
         }
 
-        $limit = 0;
-        $additionalParams = '';
-        if ($keep_task) {
-            if ($id) {
-                $additionalParams = '&task=edit&cid[]=' . $id;
-                $limit = CBRequest::getInt('limitstart');
-            }
-        }
-
-        // Check the table in so it can be edited.... we are done with it anyway
-        $link = Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $limit . $additionalParams, false);
-        $this->setRedirect($link, $msg);
+        $this->setRedirect(
+            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
+            Text::_('COM_CONTENTBUILDER_COPIED')
+        );
     }
 
-    function saveNew()
+    /**
+     * Si tu avais une raison de forcer la vue dans display(), tu peux l’enlever :
+     * AdminController::display() gère déjà la vue liste.
+     * (On la laisse quand même pour coller à ton comportement.)
+     */
+    public function display($cachable = false, $urlparams = []): void
     {
-        $model = $this->getModel('form');
-
-        if ($model->store()) {
-            $msg = Text::_('COM_CONTENTBUILDER_SAVED');
-        } else {
-            $msg = Text::_('COM_CONTENTBUILDER_ERROR');
-        }
-
-        // Check the table in so it can be edited.... we are done with it anyway
-        $link = Route::_('index.php?option=com_contentbuilder&view=forms&task=edit&limitstart=' . CBRequest::getInt('limitstart'), false);
-        $this->setRedirect($link, $msg);
+        $this->input->set('view', $this->view_list);
+        parent::display($cachable, $urlparams);
     }
 
-    function remove()
-    {
-        $model = $this->getModel('form');
-        if (!$model->delete()) {
-            $msg = Text::_('COM_CONTENTBUILDER_ERROR');
-        } else {
-            $msg = Text::_('COM_CONTENTBUILDER_DELETED');
-        }
-
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . CBRequest::getInt('limitstart'), false), $msg);
-    }
-
-    function listremove()
-    {
-        $model = $this->getModel('form');
-        if (!$model->listDelete()) {
-            $msg = Text::_('COM_CONTENTBUILDER_ERROR');
-        } else {
-            $msg = Text::_('COM_CONTENTBUILDER_DELETED');
-        }
-
-        CBRequest::setVar('view', 'form');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart', 0));
-
-        parent::display();
-    }
-
-    function cancel()
-    {
-        $msg = Text::_('COM_CONTENTBUILDER_CANCELLED');
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=0', false), $msg);
-    }
-
-    function display($cachable = false, $urlparams = array())
-    {
-        CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));
-        CBRequest::setVar('layout', CBRequest::getWord('layout', null));
-        CBRequest::setVar('view', 'forms');
-
-        parent::display();
-    }
+    /**
+     * Si tu avais un vieux mapping add->edit, le core le gère déjà.
+     * Donc registerTask('add','edit') n’est plus nécessaire.
+     */
 }

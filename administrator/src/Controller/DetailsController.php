@@ -9,7 +9,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Controller;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
@@ -17,8 +17,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\BaseController;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\contentbuilder;
-
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class DetailsController extends BaseController
 {
@@ -46,7 +45,7 @@ class DetailsController extends BaseController
 
             $db->setQuery('Select `type`, `reference_id` From #__contentbuilder_forms Where id = ' . intval(CBRequest::getInt('id', 0)) . ' And published = 1');
             $form = $db->loadAssoc();
-            $form = contentbuilder::getForm($form['type'], $form['reference_id']);
+            $form = ContentbuilderLegacyHelper::getForm($form['type'], $form['reference_id']);
 
             $labels = $form->getElementLabels();
             $ids = array();
@@ -78,8 +77,8 @@ class DetailsController extends BaseController
             if (!CBRequest::getCmd('record_id', '')) {
 
                 CBRequest::setVar('cbIsNew', 1);
-                contentbuilder::setPermissions(CBRequest::getInt('id', 0), 0, class_exists('cbFeMarker') ? '_fe' : '');
-                $auth = class_exists('cbFeMarker') ? contentbuilder::authorizeFe('new') : contentbuilder::authorize('new');
+                ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, class_exists('cbFeMarker') ? '_fe' : '');
+                $auth = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
 
                 if ($auth) {
                     Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&view=edit&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
@@ -90,13 +89,13 @@ class DetailsController extends BaseController
             }
         }
 
-        contentbuilder::setPermissions(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', 0), class_exists('cbFeMarker') ? '_fe' : '');
+        ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', 0), class_exists('cbFeMarker') ? '_fe' : '');
         parent::__construct($config);
     }
 
     function display($cachable = false, $urlparams = array())
     {
-        contentbuilder::checkPermissions('view', Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+        ContentbuilderLegacyHelper::checkPermissions('view', Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
 
         CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));
         CBRequest::setVar('layout', CBRequest::getWord('layout', null) == 'latest' ? null : CBRequest::getWord('layout', null));

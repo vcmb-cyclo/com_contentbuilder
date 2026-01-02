@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Table;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Table\Table;
 
 class TableStorage extends Table

@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
 // No direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
@@ -104,7 +104,7 @@ class FormsModel extends ListModel
                 $this->_db->insertObject('#__contentbuilder_list_states', $element);
             }
             // XDA-Gil fix 'Copy of Form' in Component Menu in Backen CB View
-            // contentbuilder::createBackendMenuItem($insertId, $obj->name, true);
+            // ContentbuilderLegacyHelper::createBackendMenuItem($insertId, $obj->name, true);
         }
 
         $table->reorder();

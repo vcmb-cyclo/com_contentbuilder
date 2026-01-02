@@ -8,7 +8,7 @@
 
 namespace CB\Component\Contentbuilder\Administrator\View\Contentbuilder;
 
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
 

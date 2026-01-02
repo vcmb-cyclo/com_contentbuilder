@@ -9,6 +9,6 @@
 namespace CB\Component\Contentbuilder\Site\Publicforms\List;
 
 // no direct access
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 require_once(JPATH_COMPONENT_ADMINISTRATOR .'/views/list/view.html.php');

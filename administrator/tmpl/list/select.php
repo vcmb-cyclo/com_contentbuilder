@@ -10,7 +10,7 @@
 namespace CB\Component\Contentbuilder\Administrator\View\List\Tmpl;
 
 // no direct access
-defined('_JEXEC') or die('Restricted access');
+\defined('_JEXEC') or die('Restricted access');
 
 
 use Joomla\CMS\Factory;
@@ -18,16 +18,17 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
-use CB\Component\Contentbuilder\Administrator\ContentbuilderHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
-$language_allowed = contentbuilder::authorize('language');
-$edit_allowed = contentbuilder::authorize('edit');
-$delete_allowed = contentbuilder::authorize('delete');
-$view_allowed = contentbuilder::authorize('view');
-$new_allowed = contentbuilder::authorize('new');
-$state_allowed = contentbuilder::authorize('state');
-$publish_allowed = contentbuilder::authorize('publish');
-$rating_allowed = contentbuilder::authorize('rating');
+$language_allowed = ContentbuilderLegacyHelper::authorize('language');
+$edit_allowed = ContentbuilderLegacyHelper::authorize('edit');
+$delete_allowed = ContentbuilderLegacyHelper::authorize('delete');
+$view_allowed = ContentbuilderLegacyHelper::authorize('view');
+$new_allowed = ContentbuilderLegacyHelper::authorize('new');
+$state_allowed = ContentbuilderLegacyHelper::authorize('state');
+$publish_allowed = ContentbuilderLegacyHelper::authorize('publish');
+$rating_allowed = ContentbuilderLegacyHelper::authorize('rating');
 
 Factory::getApplication()->getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
 ?>
@@ -476,7 +477,7 @@ SELECT
                     if ($this->list_publish && $publish_allowed) {
                         ?>
                         <td align="center" valign="middle">
-                            <?php echo contentbuilder_helpers::publishButton(isset($this->published_items[$row->colRecord]) && $this->published_items[$row->colRecord] ? true : false, $publish_link, $unpublish_link, 'tick.png', 'publish_x.png', $publish_allowed); ?>
+                            <?php echo ContentbuilderHelper::publishButton(isset($this->published_items[$row->colRecord]) && $this->published_items[$row->colRecord] ? true : false, $publish_link, $unpublish_link, 'tick.png', 'publish_x.png', $publish_allowed); ?>
                         </td>
                         <?php
                     }
@@ -537,7 +538,7 @@ SELECT
                         ?>
                         <td>
                             <?php
-                            echo contentbuilder::getRating(CBRequest::getInt('id', 0), $row->colRecord, $row->colRating, $this->rating_slots, CBRequest::getCmd('lang', ''), $rating_allowed, $row->colRatingCount, $row->colRatingSum);
+                            echo ContentbuilderLegacyHelper::getRating(CBRequest::getInt('id', 0), $row->colRecord, $row->colRating, $this->rating_slots, CBRequest::getCmd('lang', ''), $rating_allowed, $row->colRatingCount, $row->colRatingSum);
                             ?>
                         </td>
                         <?php

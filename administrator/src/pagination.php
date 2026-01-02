@@ -19,7 +19,7 @@
 namespace CB\Component\Contentbuilder\Administrator;
 
 // no direct access
-defined('_JEXEC') or die('Direct Access to this location is not allowed.');
+\defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 
 use Joomla\CMS\Factory;
@@ -606,7 +606,7 @@ class CBPagination
 	 */
 	protected function _buildDataObject()
 	{
-		$data = new stdClass;
+		$data = new \stdClass();
 
 		// Build the additional URL parameters string.
 		$params = '';
