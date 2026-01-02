@@ -93,7 +93,7 @@ final class FormsController extends AdminController
 
         if (!$cid) {
             $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=forms', false),
+                Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
                 Text::_('JERROR_NO_ITEMS_SELECTED'),
                 'warning'
             );
@@ -104,12 +104,64 @@ final class FormsController extends AdminController
         $ok = $model->delete($cid);
 
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms', false),
+            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
             $ok ? Text::_('COM_CONTENTBUILDER_DELETED') : Text::_('COM_CONTENTBUILDER_ERROR'),
             $ok ? 'message' : 'error'
         );
 
         return $ok;
+    }
+
+    public function publish()
+    {
+        $this->checkToken();
+
+        $app = Factory::getApplication();
+        $input = $app->getInput();
+        $cid = $input->get('cid', [], 'array');
+        ArrayHelper::toInteger($cid);
+
+        if (!$cid) {
+            $this->setRedirect(
+                Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
+                Text::_('JERROR_NO_ITEMS_SELECTED'),
+                'warning'
+            );
+            return false;
+        }
+
+        $model = $this->getModel('Form');
+        $model->publish($cid, 1);
+
+        $this->setRedirect(
+            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
+            Text::_('COM_CONTENTBUILDER_PUBLISHED'));
+    }
+
+    public function unpublish()
+    {
+        $this->checkToken();
+
+        $app = Factory::getApplication();
+        $input = $app->getInput();
+        $cid = $input->get('cid', [], 'array');
+        ArrayHelper::toInteger($cid);
+
+        if (!$cid) {
+            $this->setRedirect(
+                Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
+                Text::_('JERROR_NO_ITEMS_SELECTED'),
+                'warning'
+            );
+            return false;
+        }
+
+        $model = $this->getModel('Form');
+        $model->publish($cid, 0);
+
+        $this->setRedirect(
+            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
+            Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
     }
 
 
@@ -143,7 +195,6 @@ final class FormsController extends AdminController
             Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
         );
     }
-
  
     public function linkable(): void
     {

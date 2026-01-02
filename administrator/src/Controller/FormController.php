@@ -24,7 +24,7 @@ class FormController extends BaseController
     protected $view_item = 'form';
     protected $view_list = 'forms';
 
-    public function save()
+    public function apply()
     {
         $model = $this->getModel('Form');
         $id = $model->store();
@@ -45,19 +45,28 @@ class FormController extends BaseController
         );
         return true;
     }
-    
 
-    public function apply()
+
+    public function save()
     {
         $model = $this->getModel('Form');
         $id = $model->store();
 
+        if (!$id) {
+            $this->setRedirect(
+                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $this->input->getInt('id', 0), false),
+                $model->getError() ?: 'Store failed (no id returned)',
+                'error'
+            );
+            return false;
+        }
+
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&id=' . (int) $id, false), 
+            Route::_('index.php?option=com_contentbuilder&view=forms', false), 
             'Saved');
         return true;
     }
-
+    
     public function cancel()
     {
         $this->setRedirect(
@@ -66,7 +75,7 @@ class FormController extends BaseController
     }
 
     public function save2new(){
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Form');
         $model->store();
 
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=0', false));
@@ -91,22 +100,22 @@ class FormController extends BaseController
     public function publish()
     {
         $id = $this->input->getInt('id', 0);
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Form');
         $model->setPublished([$id]); // ou $model->setId($id) + méthode single
 
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . $id, false),
+            Route::_('index.php?option=com_contentbuilder&view=formlayout=edit&id=' . $id, false),
             Text::_('COM_CONTENTBUILDER_PUBLISHED'));
     }
 
     public function unpublish()
     {
         $id = $this->input->getInt('id', 0);
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Form');
         $model->setUnpublished([$id]); // ou $model->setId($id) + méthode single
 
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . $id, false),
+            Route::_('index.php?option=com_contentbuilder&view=formlayout=edit&id=' . $id, false),
             Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
     }
 

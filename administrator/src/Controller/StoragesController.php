@@ -31,17 +31,17 @@ class StoragesController extends BaseController
 
     function orderup()
     {
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         $model->move(-1);
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . CBRequest::getInt('limitstart'), false));
     }
 
     function listdelete()
     {
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         $model->listDelete();
         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_DELETED'));
-        CBRequest::setVar('view', 'storage');
+        CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
         CBRequest::setVar('hidemainmenu', 0);
         CBRequest::setVar('filter_order', 'ordering');
@@ -52,9 +52,9 @@ class StoragesController extends BaseController
 
     function listorderup()
     {
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         $model->listMove(-1);
-        CBRequest::setVar('view', 'storage');
+        CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
         CBRequest::setVar('hidemainmenu', 0);
         CBRequest::setVar('filter_order', 'ordering');
@@ -65,16 +65,16 @@ class StoragesController extends BaseController
 
     function orderdown()
     {
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         $model->move(1);
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . CBRequest::getInt('limitstart'), false));
     }
 
     function listorderdown()
     {
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         $model->listMove(1);
-        CBRequest::setVar('view', 'storage');
+        CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
         CBRequest::setVar('hidemainmenu', 0);
         CBRequest::setVar('filter_order', 'ordering');
@@ -85,9 +85,9 @@ class StoragesController extends BaseController
 
      function listsaveorder()
     {
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         $model->listSaveOrder();
-        CBRequest::setVar('view', 'storage');
+        CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
         CBRequest::setVar('hidemainmenu', 0);
         CBRequest::setVar('filter_order', 'ordering');
@@ -102,10 +102,10 @@ class StoragesController extends BaseController
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
         if (count($cid) == 1) {
-            $model = $this->getModel('storage');
+            $model = $this->getModel('Storage');
             $model->setPublished();
         } else if (count($cid) > 1) {
-            $model = $this->getModel('storage');
+            $model = $this->getModel('Storage');
             $model->setPublished();
         }
 
@@ -116,10 +116,10 @@ class StoragesController extends BaseController
     {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         $model->setListPublished();
 
-        CBRequest::setVar('view', 'storage');
+        CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
         CBRequest::setVar('hidemainmenu', 0);
         CBRequest::setVar('filter_order', 'ordering');
@@ -134,10 +134,10 @@ class StoragesController extends BaseController
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
         if (count($cid) == 1) {
-            $model = $this->getModel('storage');
+            $model = $this->getModel('Storage');
             $model->setUnpublished();
         } else if (count($cid) > 1) {
-            $model = $this->getModel('storage');
+            $model = $this->getModel('Storage');
             $model->setUnpublished();
         }
 
@@ -148,10 +148,10 @@ class StoragesController extends BaseController
     {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         $model->setListUnpublished();
 
-        CBRequest::setVar('view', 'storage');
+        CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
         CBRequest::setVar('hidemainmenu', 0);
         CBRequest::setVar('filter_order', 'ordering');
@@ -164,14 +164,14 @@ class StoragesController extends BaseController
 
     function listremove()
     {
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         if (!$model->listDelete()) {
             $msg = Text::_('COM_CONTENTBUILDER_ERROR');
         } else {
             $msg = Text::_('COM_CONTENTBUILDER_DELETED');
         }
 
-        CBRequest::setVar('view', 'storage');
+        CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
         CBRequest::setVar('hidemainmenu', 0);
         CBRequest::setVar('filter_order', 'ordering');

@@ -97,17 +97,6 @@ class FormModel extends BaseDatabaseModel
         }
     }
 
-    function setListPublished()
-    {
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
-        ArrayHelper::toInteger($items);
-        if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
-                '  Set published = 1 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
-        }
-    }
-
     function setListLinkable()
     {
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
@@ -148,17 +137,6 @@ class FormModel extends BaseDatabaseModel
         if (count($items)) {
             $this->_db->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set search_include = 1 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
-        }
-    }
-
-    function setListUnpublished()
-    {
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
-        ArrayHelper::toInteger($items);
-        if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
-                '  Set published = 0 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
             $this->_db->execute();
         }
     }
@@ -1253,4 +1231,23 @@ class FormModel extends BaseDatabaseModel
 
         $row->reorder("form_id = " . $this->_id);
     }
+
+    // Publish & unpublish
+    public function publish(array $pks, int $value = 1): bool
+    {
+        $pks = array_filter(array_map('intval', $pks));
+        if (!$pks) return false;
+
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $query = $db->getQuery(true)
+            ->update($db->quoteName('#__contentbuilder_forms'))
+            ->set($db->quoteName('published') . ' = ' . (int) $value)
+            ->where($db->quoteName('id') . ' IN (' . implode(',', $pks) . ')');
+
+        $db->setQuery($query);
+        $db->execute();
+
+        return true;
+    }
+
 }

@@ -127,7 +127,7 @@ class StorageController extends BaseController
     }
 
     public function save2new(){
-        $model = $this->getModel('storage');
+        $model = $this->getModel('Storage');
         $model->store();
 
         $this->setRedirect('index.php?option=com_contentbuilder&view=storage&layout=edit&id=0');
@@ -157,10 +157,10 @@ class StorageController extends BaseController
         ArrayHelper::toInteger($cid);
 
         if (count($cid) == 1) {
-            $model = $this->getModel('storage');
+            $model = $this->getModel('Storage');
             $model->setPublished();
         } else if (count($cid) > 1) {
-            $model = $this->getModel('storage');
+            $model = $this->getModel('Storage');
             $model->setPublished();
         }
 
@@ -177,10 +177,10 @@ class StorageController extends BaseController
         ArrayHelper::toInteger($cid);
 
         if (count($cid) == 1) {
-            $model = $this->getModel('storage');
+            $model = $this->getModel('Storage');
             $model->setUnpublished();
         } else if (count($cid) > 1) {
-            $model = $this->getModel('storage');
+            $model = $this->getModel('Storage');
             $model->setUnpublished();
         }
 
