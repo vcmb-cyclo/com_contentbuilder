@@ -6,7 +6,7 @@
  * @license     GNU/GPL
 */
 
-namespace CB\Component\Contentbuilder\Administrator\Controller;
+namespace Component\Contentbuilder\Administrator\Controller;
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
@@ -14,7 +14,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\BaseController;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 class UsersController extends BaseController
 {
@@ -29,7 +29,7 @@ class UsersController extends BaseController
     public function verified_view() {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel( 'user' );
+        $model = $this->getModel( 'User' );
         $model->setListVerifiedView();
 
         CBRequest::setVar( 'view', 'users' );
@@ -45,7 +45,7 @@ class UsersController extends BaseController
     public function not_verified_view() {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel( 'user' );
+        $model = $this->getModel( 'User' );
         $model->setListNotVerifiedView();
 
         CBRequest::setVar( 'view', 'users' );
@@ -61,7 +61,7 @@ class UsersController extends BaseController
     public function verified_new() {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel( 'user' );
+        $model = $this->getModel( 'User' );
         $model->setListVerifiedNew();
 
         CBRequest::setVar( 'view', 'users' );
@@ -77,7 +77,7 @@ class UsersController extends BaseController
     public function not_verified_new() {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel( 'user' );
+        $model = $this->getModel( 'User' );
         $model->setListNotVerifiedNew();
 
         CBRequest::setVar( 'view', 'users' );
@@ -93,7 +93,7 @@ class UsersController extends BaseController
     public function verified_edit() {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel( 'user' );
+        $model = $this->getModel( 'User' );
         $model->setListVerifiedEdit();
 
         CBRequest::setVar( 'view', 'users' );
@@ -109,7 +109,7 @@ class UsersController extends BaseController
     public function not_verified_edit() {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel( 'user' );
+        $model = $this->getModel( 'User' );
         $model->setListNotVerifiedEdit();
 
         CBRequest::setVar( 'view', 'users' );
@@ -124,7 +124,7 @@ class UsersController extends BaseController
     
     public function edit()
     {
-        CBRequest::setVar( 'view', 'user' );
+        CBRequest::setVar( 'view', 'User' );
         CBRequest::setVar( 'layout', 'default'  );
         CBRequest::setVar( 'hidemainmenu', 1 );
         CBRequest::setVar( 'filter_order', 'ordering' );
@@ -173,7 +173,7 @@ class UsersController extends BaseController
     
     public function save($keep_task = false)
     {
-        $model = $this->getModel('user');
+        $model = $this->getModel('User', 'Contentbuilder');
         $id = $model->store();
         
         if ($id) {
@@ -186,7 +186,7 @@ class UsersController extends BaseController
         $additionalParams = '';
         if($keep_task){
             if($id){
-                $additionalParams = '&task=user.edit&joomla_userid='.$id;
+                $additionalParams = '&task=User.edit&joomla_userid='.$id;
                 $limit = CBRequest::getInt('limitstart');
             }
         }

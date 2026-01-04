@@ -10,7 +10,7 @@
 
 // administrator/src/Controller/DisplayController.php
 
-namespace CB\Component\Contentbuilder\Administrator\Controller;
+namespace Component\Contentbuilder\Administrator\Controller;
 
 \defined('_JEXEC') or die;
 

@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -15,8 +15,8 @@ namespace CB\Component\Contentbuilder\Administrator\Model;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class AjaxModel extends BaseDatabaseModel
 {
@@ -24,7 +24,7 @@ class AjaxModel extends BaseDatabaseModel
     private $frontend = false;
     private $_subject = '';
 
-    function __construct($config)
+    public function __construct($config = [])
     {
         parent::__construct($config);
 

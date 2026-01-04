@@ -8,7 +8,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -22,9 +22,9 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class ListModel extends BaseDatabaseModel
 {

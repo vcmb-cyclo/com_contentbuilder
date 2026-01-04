@@ -8,7 +8,7 @@
  */
 
 
-namespace CB\Component\Contentbuilder\Administrator\Helper;
+namespace Component\Contentbuilder\Administrator\Helper;
 
 // no direct access
 \defined('_JEXEC') or die('Direct Access to this location is not allowed.');
@@ -27,8 +27,8 @@ use Joomla\CMS\Table\Table;
 use Joomla\Filesystem\Folder;
 use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\Access\Access;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 final class ContentbuilderLegacyHelper
 {

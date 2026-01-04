@@ -7,10 +7,13 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\View\Elementoptions;
+namespace Component\Contentbuilder\Administrator\View\Elementoptions;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
@@ -19,7 +22,7 @@ class HtmlView extends BaseHtmlView
 {
     function display($tpl = null)
     {
-        echo '<link rel="stylesheet" href="' . Uri::root(true) . '/administrator/components/com_contentbuilder/views/bluestork.fix.css" type="text/css" />';
+        echo '<link rel="stylesheet" href="' . Uri::root(true) . '/media/com_contentbuilder/css/bluestork.fix.css" type="text/css" />';
 
         // Get data from the model
         $element = $this->get('Data');

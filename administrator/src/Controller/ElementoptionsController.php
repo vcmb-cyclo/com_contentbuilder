@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Controller;
+namespace Component\Contentbuilder\Administrator\Controller;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -15,13 +15,15 @@ namespace CB\Component\Contentbuilder\Administrator\Controller;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\BaseController;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 class ElementoptionsController extends BaseController
 {
     public function __construct($config = [])
     {
         parent::__construct($config);
+  //      $this->option = 'com_contentbuilder';
+
     }
 
     function display($cachable = false, $urlparams = array())
@@ -35,7 +37,7 @@ class ElementoptionsController extends BaseController
 
     function save()
     {
-        $model = $this->getModel('elementoptions');
+        $model = $this->getModel('Elementoptions', 'Contentbuilder');
         $id = $model->store();
 
         if ($id) {

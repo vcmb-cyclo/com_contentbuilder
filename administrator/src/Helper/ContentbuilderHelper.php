@@ -9,7 +9,7 @@
  */
 
 
-namespace CB\Component\Contentbuilder\Administrator\Helper;
+namespace Component\Contentbuilder\Administrator\Helper;
 
 // no direct access
 \defined('_JEXEC') or die('Direct Access to this location is not allowed.');
@@ -601,7 +601,7 @@ class ContentbuilderHelper
 
         $icon = $row->published ? $publish_icon : $unpublish_icon;
         $task = $row->published ? 'unpublish' : 'publish';
-        $action = $row->published ? Text::_('UNPUBLISH') : Text::_('PUBLISH');
+        $action = $row->published ? Text::_('COM_CONTENTBUILDER_UNPUBLISH') : Text::_('COM_CONTENTBUILDER_PUBLISH');
 
         $href = '
                     <a href="javascript:void(0);" onclick="return listItemTask(\'cb' . $i . '\',\'' . $prefix . $task . '\')" title="' . $action . '">
@@ -615,8 +615,8 @@ class ContentbuilderHelper
 
         $img = $published ? $imgY : $imgX;
         $url = $published ? $url_unpublish : $url_publish;
-        $alt = $published ? Text::_('PUBLISH') : Text::_('UNPUBLISH');
-        $action = $published ? Text::_('PUBLISH') : Text::_('UNPUBLISH');
+        $alt = $published ? Text::_('COM_CONTENTBUILDER_PUBLISH') : Text::_('COM_CONTENTBUILDER_UNPUBLISH');
+        $action = $published ? Text::_('COM_CONTENTBUILDER_PUBLISH') : Text::_('COM_CONTENTBUILDER_UNPUBLISH');
 
         $href = ($allowed ? '<a href="' . $url . '" title="' . $action . '">' : '') . '
                      <img src="' . Uri::root(true) . '/components/com_contentbuilder/images/_' . $img . '" border="0" alt="' . $alt . '" />' .

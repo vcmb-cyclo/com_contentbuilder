@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\View\Forms;
+namespace Component\Contentbuilder\Administrator\View\Forms;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -23,29 +23,29 @@ class HtmlView extends BaseHtmlView
 {
     function display($tpl = null)
     {
-
         echo '
         <style type="text/css">
-        .icon-48-logo_left { background-image: url(../administrator/components/com_contentbuilder/views/logo_left.png); }
+        .icon-48-logo_left { background-image: url(../media/com_contentbuilder/images/logo_left.png); }
         </style>
         ';
-        echo '<link rel="stylesheet" href="' . Uri::root(true) . '/administrator/components/com_contentbuilder/views/bluestork.fix.css" type="text/css" />';
+        echo '<link rel="stylesheet" href="' . Uri::root(true) . '/media/contentbuilder/css/bluestork.fix.css" type="text/css" />';
 
         ToolBarHelper::title('ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_FORMS') . '</span>', 'logo_left.png');
         ToolBarHelper::addNew('form.add');
-        ToolBarHelper::custom('form.copy', 'copy', '', Text::_('COM_CONTENTBUILDER_COPY'));
+        ToolBarHelper::custom('forms.copy', 'copy', '', Text::_('COM_CONTENTBUILDER_COPY'));
         ToolBarHelper::editList('form.edit');
-        ToolBarHelper::custom('forms.publish', 'publish', '', Text::_('COM_CONTENTBUILDER_PUBLISH'), false);
-        ToolBarHelper::custom('forms.unpublish', 'unpublish', '', Text::_('COM_CONTENTBUILDER_UNPUBLISH'), false);
+
+        ToolbarHelper::publish('forms.publish');
+        ToolbarHelper::unpublish('forms.unpublish');
         ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'forms.delete');
         ToolBarHelper::preferences('com_contentbuilder');
 
         // Get data from the model
-        $items = $this->get('Data');
-        $pagination = $this->get('Pagination');
-        $tags = $this->get('Tags');
+        $items = $this->getModel()->getData();
+        $pagination = $this->getModel()->getPagination();
+        $tags = $this->getModel()->getTags();
+        $state = $this->getModel()->getState();
 
-        $state = $this->get('state');
         $lists['order_Dir'] = $state->get('forms_filter_order_Dir');
         $lists['order'] = $state->get('forms_filter_order');
         $lists['state'] = HTMLHelper::_('grid.state', $state->get('forms_filter_state'));

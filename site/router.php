@@ -7,7 +7,7 @@
  */
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 
 function ContentbuilderBuildRoute(&$query) {

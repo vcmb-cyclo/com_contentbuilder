@@ -1,13 +1,15 @@
 <?php
 /**
  * @package     ContentBuilder
- * @author      Markus Bopp
+ * @author      Markus Bopp / XDA+GIL
  * @link        https://breezingforms.vcmb.fr
  * @copyright   (C) 2026 by XDA+GIL
  * @license     GNU/GPL
+ * 
+ * Description de la table __contentbuilder_forms.
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Table;
+namespace Component\Contentbuilder\Administrator\Table;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -154,5 +156,8 @@ class FormTable extends Table
     function __construct(DatabaseDriver $db)
     {
         parent::__construct('#__contentbuilder_forms', 'id', $db);
+
+        // Joomla attend un champ "state" pour publish/unpublish ; chez toi c'est "published"
+        $this->setColumnAlias('state', 'published');
     }
 }

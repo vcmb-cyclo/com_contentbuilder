@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -18,16 +18,20 @@ use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class ElementoptionsModel extends BaseDatabaseModel
 {
     private $_element_id = 0;
 
-    function __construct($config)
+    public function __construct($config = [])
     {
+        $this->_db = Factory::getContainer()->get(DatabaseInterface::class);
         parent::__construct($config);
+
+        $mainframe = Factory::getApplication();
+        $option = 'com_contentbuilder';
 
         $this->setIds(CBRequest::getInt('id', 0), CBRequest::getInt('element_id', ''));
     }

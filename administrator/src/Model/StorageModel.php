@@ -8,7 +8,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -18,13 +18,10 @@ use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\File;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\CMS\Table\Table;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-
-HTMLHelper::_('behavior.keepalive');
+use Component\Contentbuilder\Administrator\CBRequest;
 
 class StorageModel extends BaseDatabaseModel
 {
@@ -38,7 +35,7 @@ class StorageModel extends BaseDatabaseModel
 
 
 
-    public function getTable($type = 'Storage', $prefix = 'CB\\Component\\Contentbuilder\\Administrator\\Table\\', $config = [])
+    public function getTable($type = 'Storage', $prefix = 'Component\\Contentbuilder\\Administrator\\Table\\', $config = [])
     {
         return Table::getInstance($type, $prefix, $config);
     }

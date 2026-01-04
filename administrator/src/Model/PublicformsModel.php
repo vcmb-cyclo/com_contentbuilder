@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -15,8 +15,8 @@ namespace CB\Component\Contentbuilder\Administrator\Model;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\MVC\Model\ListModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class PublicformsModel extends ListModel
 {
@@ -54,7 +54,7 @@ class PublicformsModel extends ListModel
 
     private $_show_page_heading = false;
 
-    function __construct($config)
+    public function __construct($config = [])
     {
         parent::__construct($config);
 

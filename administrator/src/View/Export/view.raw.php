@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\View\Export;
+namespace Component\Contentbuilder\Administrator\View\Export;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');

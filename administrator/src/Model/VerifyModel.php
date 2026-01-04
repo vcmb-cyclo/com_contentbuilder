@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -23,8 +23,8 @@ use Joomla\CMS\User\UserHelper;
 use Joomla\CMS\Application\ApplicationHelper;
 use Joomla\CMS\Mail\MailerFactoryInterface;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class VerifyModel extends BaseDatabaseModel
 {
@@ -32,7 +32,7 @@ class VerifyModel extends BaseDatabaseModel
     private $frontend = false;
     var $mainframe;
 
-    function __construct($config)
+    public function __construct($config = [])
     {
         parent::__construct($config);
 

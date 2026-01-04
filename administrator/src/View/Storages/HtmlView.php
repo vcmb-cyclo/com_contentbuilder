@@ -6,7 +6,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\View\Storages;
+namespace Component\Contentbuilder\Administrator\View\Storages;
 
 \defined('_JEXEC') or die('Restricted access');
 
@@ -60,6 +60,7 @@ class HtmlView extends BaseHtmlView
         $this->addStylesheet();
         $this->addToolbarIcon();
 
+        HTMLHelper::_('behavior.keepalive');
         parent::display($tpl);
     }
 
@@ -86,7 +87,7 @@ class HtmlView extends BaseHtmlView
     {
         // Chargement d'un CSS fixe pour bluestork si nécessaire (sinon à supprimer)
         $document = Factory::getDocument();
-        $document->addStyleSheet(Uri::root(true) . '/administrator/components/com_contentbuilder/views/bluestork.fix.css');
+        $document->addStyleSheet(Uri::root(true) . '/media/contentbuilder/css/bluestork.fix.css');
     }
 
     /**

@@ -13,7 +13,7 @@
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
 class plgContentbuilder_validationDate_is_valid extends CMSPlugin
 {

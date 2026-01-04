@@ -8,7 +8,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Controller;
+namespace Component\Contentbuilder\Administrator\Controller;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -34,8 +34,8 @@ class StorageController extends BaseController
         // Sécurité token
         $this->checkToken();
 
-        /** @var \CB\Component\Contentbuilder\Administrator\Model\StorageModel $model */
-        $model = $this->getModel('Storage');
+        /** @var \Component\Contentbuilder\Administrator\Model\StorageModel $model */
+        $model = $this->getModel('Storage', 'Contentbuilder');
 
         // Lecture fichier upload (legacy)
         $file = Factory::getApplication()->getInput()->files->get('csv_file', null, 'array');
@@ -111,8 +111,8 @@ class StorageController extends BaseController
             return false;
         }
 
-        /** @var \CB\Component\Contentbuilder\Administrator\Model\StorageModel $model */
-        $model = $this->getModel('Storage');
+        /** @var \Component\Contentbuilder\Administrator\Model\StorageModel $model */
+        $model = $this->getModel('Storage', 'Contentbuilder');
 
         // IMPORTANT : ton model delete() doit utiliser $pks, pas CBRequest (je t’ai donné le patch)
         $ok = $model->delete($cid);
@@ -127,7 +127,7 @@ class StorageController extends BaseController
     }
 
     public function save2new(){
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Storage', 'Contentbuilder');
         $model->store();
 
         $this->setRedirect('index.php?option=com_contentbuilder&view=storage&layout=edit&id=0');
@@ -157,10 +157,10 @@ class StorageController extends BaseController
         ArrayHelper::toInteger($cid);
 
         if (count($cid) == 1) {
-            $model = $this->getModel('Storage');
+            $model = $this->getModel('Storage', 'Contentbuilder');
             $model->setPublished();
         } else if (count($cid) > 1) {
-            $model = $this->getModel('Storage');
+            $model = $this->getModel('Storage', 'Contentbuilder');
             $model->setPublished();
         }
 
@@ -177,10 +177,10 @@ class StorageController extends BaseController
         ArrayHelper::toInteger($cid);
 
         if (count($cid) == 1) {
-            $model = $this->getModel('Storage');
+            $model = $this->getModel('Storage', 'Contentbuilder');
             $model->setUnpublished();
         } else if (count($cid) > 1) {
-            $model = $this->getModel('Storage');
+            $model = $this->getModel('Storage', 'Contentbuilder');
             $model->setUnpublished();
         }
 

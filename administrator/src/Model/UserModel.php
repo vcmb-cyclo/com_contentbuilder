@@ -6,14 +6,14 @@
  * @license     GNU/GPL
 */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 class UserModel extends BaseDatabaseModel
 {

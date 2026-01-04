@@ -15,8 +15,8 @@
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
 ?>
 <style type="text/css">
@@ -47,10 +47,10 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                 <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED_UNPUBLISHED'); ?> -
             </option>
             <option value="publish">
-                <?php echo Text::_('PUBLISH'); ?>
+                <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH'); ?>
             </option>
             <option value="unpublish">
-                <?php echo Text::_('UNPUBLISH'); ?>
+                <?php echo Text::_('COM_CONTENTBUILDER_UNPUBLISH'); ?>
             </option>
         </select>
         <select class="form-select-sm"

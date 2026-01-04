@@ -1,15 +1,16 @@
 <?php
 /**
- * @package     ContentBuilder
- * @author      Markus Bopp / XDA+GIL
- * @link        https://breezingforms.vcmb.fr
- * @copyright   (C) 2026 by XDA+GIL
- * @license     GNU/GPL
+ * @package ContentBuilder
+ * @author Markus Bopp / XDA+GIL
+ * @link https://breezingforms.vcmb.fr
+ * @copyright (C) 2026 by XDA+GIL
+ * @license GNU/GPL
  */
+namespace Component\Contentbuilder\Administrator\View\Form;
 
-namespace CB\Component\Contentbuilder\Administrator\View\Form;
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// no direct access
 \defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
@@ -18,40 +19,54 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\CMS\HTML\HTMLHelper;
 
 class HtmlView extends BaseHtmlView
 {
-    function display($tpl = null)
+
+    public function display($tpl = null)
     {
         Factory::getApplication()->input->set('hidemainmenu', true);
 
         $document = Factory::getApplication()->getDocument();
-        $document->addScript(Uri::root(true) . '/administrator/components/com_contentbuilder/assets/js/jscolor/jscolor.js');
+        $document->addScript(Uri::root(true) . '/media/js/jscolor/jscolor.js');
 
-        echo '
-        <style type="text/css">
-        .icon-48-logo_left { background-image: url(../administrator/components/com_contentbuilder/views/logo_left.png); }
-        </style>
-        ';
+        echo '<style type="text/css">
+                .icon-48-logo_left { background-image: url(../administrator/components/com_contentbuilder/views/logo_left.png); }
+            </style>';
+        echo '<link rel="stylesheet" href="' . Uri::root(true) . '/media/contentbuilder/css/bluestork.fix.css" type="text/css" />';
 
-        echo '<link rel="stylesheet" href="' . Uri::root(true) . '/administrator/components/com_contentbuilder/views/bluestork.fix.css" type="text/css" />';
+        // Formulaire principal
+        $this->form = $this->get('Item');
 
-        $form = $this->get('Item');
-        $elements = $this->get('Data');
-        $all_elements = $this->get('AllElements');
-        $pagination = $this->get('Pagination');
-        $isNew = ($form->id < 1);
+        // Chargement sécurisé des éléments
+        $formId = (int) $this->getModel()->getState('form.id'); // ou $this->input->getInt('id');
 
+        if ($formId > 0) {
+            $elementsModel = $this->getModel('Elements', 'Contentbuilder');
+            if ($elementsModel === null) {
+                Factory::getApplication()->enqueueMessage('Erreur : Modèle Elements non trouvé. Vérifiez src/Model/ElementsModel.php', 'error');
+                $this->elements = [];
+            } else {
+                $this->elements = $elementsModel->getItems() ?? [];;
+                $this->elementsPagination = $elementsModel->getPagination();
+            }
+        } else {
+            $this->elements = [];
+            $this->elementsPagination = null;
+        }
+
+        
+        $this->pagination = $elementsModel ? $elementsModel->getPagination() : null;
+        $this->state = $elementsModel ? $elementsModel->getState() : null;
+
+        $isNew = ($this->form->id < 1);
         $text = $isNew ? Text::_('COM_CONTENTBUILDER_NEW') : Text::_('COM_CONTENTBUILDER_EDIT');
 
-        ToolBarHelper::title('ContentBuilder :: ' . ($isNew ? Text::_('COM_CONTENTBUILDER_FORM') : $form->name) . ' : <small><small>[ ' . $text . ' ]</small></small></span>', 'logo_left.png');
+        ToolBarHelper::title('ContentBuilder :: ' . ($isNew ? Text::_('COM_CONTENTBUILDER_FORM') : $this->form->name) . ' : <small><small>[ ' . $text . ' ]</small></small>', 'logo_left.png');
 
-        //ToolBarHelper::customX('linkable', 'default', '', Text::_('COM_CONTENTBUILDER_LINKABLE'), false);
-        //ToolBarHelper::customX('not_linkable', 'default', '', Text::_('COM_CONTENTBUILDER_NOT_LINKABLE'), false);
-
-        ToolBarHelper::apply('form.apply'); // Save
-        ToolBarHelper::save('form.save');   // Save & Close
-
+        ToolBarHelper::apply('form.apply');
+        ToolBarHelper::save('form.save');
         ToolBarHelper::custom('form.save2New', 'save', '', Text::_('COM_CONTENTBUILDER_SAVENEW'), false);
         ToolBarHelper::custom('form.list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_LIST_INCLUDE'), false);
         ToolBarHelper::custom('form.no_list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_NO_LIST_INCLUDE'), false);
@@ -60,47 +75,34 @@ class HtmlView extends BaseHtmlView
         ToolBarHelper::custom('form.listpublish', 'publish', '', Text::_('COM_CONTENTBUILDER_PUBLISH'), false);
         ToolBarHelper::custom('form.listunpublish', 'unpublish', '', Text::_('COM_CONTENTBUILDER_UNPUBLISH'), false);
 
-        //ToolBarHelper::deleteList();
         if ($isNew) {
             ToolBarHelper::cancel('form.cancel', 'JTOOLBAR_CLOSE');
         } else {
-            // for existing items the button is renamed `close`
             ToolBarHelper::cancel('form.cancel', 'Close');
         }
 
-        $state = $this->get('state');
-        $lists['order_Dir'] = $state->get('elements_filter_order_Dir');
-        $lists['order'] = $state->get('elements_filter_order');
-        $lists['limitstart'] = $state->get('limitstart');
+        // Compatibilité template
+        $this->lists['order_Dir'] = $this->state ? $this->state->get('list.direction', 'asc') : 'asc';
+        $this->lists['order'] = $this->state ? $this->state->get('list.ordering', 'ordering') : 'ordering';
+        $this->lists['limitstart'] = $this->state ? $this->state->get('list.start', 0) : 0;
+        $this->ordering = true;
 
-        $ordering = ($lists['order'] == 'ordering');
-
-        $gmap = array();
+        // Données additionnelles
         $db = Factory::getContainer()->get(DatabaseInterface::class);
-        $query = 'SELECT CONCAT( REPEAT(\'..\', COUNT(parent.id) - 1), node.title) as text, node.id as value'
-            . ' FROM #__usergroups AS node, #__usergroups AS parent'
-            . ' WHERE node.lft BETWEEN parent.lft AND parent.rgt'
-            . ' GROUP BY node.id'
-            . ' ORDER BY node.lft';
+        $query = 'SELECT CONCAT(REPEAT(\'..\', COUNT(parent.id) - 1), node.title) as text, node.id as value
+                FROM #__usergroups AS node, #__usergroups AS parent
+                WHERE node.lft BETWEEN parent.lft AND parent.rgt
+                GROUP BY node.id ORDER BY node.lft';
         $db->setQuery($query);
-        $gmap = $db->loadObjectList();
+        $this->gmap = $db->loadObjectList() ?? [];
 
-        $form->config = $form->config ? unserialize(base64_decode($form->config)) : null;
+        $this->form->config = $this->form->config ? unserialize(base64_decode($this->form->config)) : null;
 
-        $actionPlugins = $this->get('ListStatesActionPlugins');
-        $verificationPlugins = $this->get('VerificationPlugins');
-        $themePlugins = $this->get('ThemePlugins');
+        $this->list_states_action_plugins = $this->get('ListStatesActionPlugins') ?? [];
+        $this->verification_plugins = $this->get('VerificationPlugins') ?? [];
+        $this->theme_plugins = $this->get('ThemePlugins') ?? [];
 
-        $this->list_states_action_plugins = $actionPlugins;
-        $this->verification_plugins = $verificationPlugins;
-        $this->theme_plugins = $themePlugins;
-        $this->gmap = $gmap;
-        $this->ordering = $ordering;
-        $this->form = $form;
-        $this->elements = $elements;
-        $this->all_elements = $all_elements;
-        $this->pagination = $pagination;
-
+        HTMLHelper::_('behavior.keepalive');
         parent::display($tpl);
     }
 }

@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\View\List\Tmpl;
+namespace Component\Contentbuilder\Administrator\View\List\Tmpl;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -18,9 +18,9 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 $language_allowed = ContentbuilderLegacyHelper::authorize('language');
 $edit_allowed = ContentbuilderLegacyHelper::authorize('edit');
@@ -171,10 +171,10 @@ SELECT
                                 <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED_UNPUBLISHED'); ?> -
                             </option>
                             <option value="1">
-                                <?php echo Text::_('PUBLISH') ?>
+                                <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH') ?>
                             </option>
                             <option value="0">
-                                <?php echo Text::_('UNPUBLISH') ?>
+                                <?php echo Text::_('COM_CONTENTBUILDER_UNPUBLISH') ?>
                             </option>
                         </select>
                         <a class="button cbButton cbSetButton" href="javascript:contentbuilder_publish();">
@@ -266,10 +266,10 @@ SELECT
                                     <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED_UNPUBLISHED'); ?> -
                                 </option>
                                 <option value="1" <?php echo $this->lists['filter_publish'] == 1 ? ' selected="selected"' : ''; ?>>
-                                    <?php echo Text::_('PUBLISHED') ?>
+                                    <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED') ?>
                                 </option>
                                 <option value="0" <?php echo $this->lists['filter_publish'] == 0 ? ' selected="selected"' : ''; ?>>
-                                    <?php echo Text::_('UNPUBLISHED') ?>
+                                    <?php echo Text::_('COM_CONTENTBUILDER_UNPUBLISHED') ?>
                                 </option>
                             </select>
                             <?php
@@ -355,7 +355,7 @@ SELECT
                     if ($this->list_publish && $publish_allowed) {
                         ?>
                         <th class="sectiontableheader" width="20">
-                            <?php echo Text::_('PUBLISHED'); ?>
+                            <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED'); ?>
                         </th>
                         <?php
                     }

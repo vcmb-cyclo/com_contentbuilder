@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Controller;
+namespace Component\Contentbuilder\Administrator\Controller;
 
 
 // no direct access
@@ -17,10 +17,19 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\BaseController;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Controller\BaseAdminController;
 
-class StoragesController extends BaseController
+final class StoragesController extends BaseAdminController
 {
+    
+    /**
+     * Nom de la vue liste et item (convention Joomla 6).
+     */
+    protected $view_list = 'Storage';
+    protected $view_item = 'storage';
+
+
     public function __construct($config = [])
     {
         parent::__construct($config);
@@ -29,16 +38,41 @@ class StoragesController extends BaseController
         $this->registerTask('add', 'edit');
     }
 
-    function orderup()
+    /**
+     * Method to get a model object, loading it if required.
+     *
+     * @param   string  $name    The model name. Optional.
+     * @param   string  $prefix  The class prefix. Optional.
+     * @param   array   $config  Configuration array for model. Optional.
+     *
+     * @return  \Joomla\CMS\MVC\Model\BaseDatabaseModel|false  Model object on success; otherwise false on failure.
+     */
+    public function getModel($name = 'Storage', $prefix = '', $config = ['ignore_request' => true])
     {
-        $model = $this->getModel('Storage');
+        // On force explicitement le bon namespace complet
+        $className = 'Component\\Contentbuilder\\Administrator\\Model\\StorageModel';
+
+        if (!class_exists($className)) {
+            // Si la classe n'existe pas, on laisse le parent essayer (mais ça plantera proprement)
+            return parent::getModel($name, 'Administrator', $config);
+        }
+
+        // On instancie manuellement le modèle avec la factory
+        $model = new $className($config);
+
+        return $model;
+    }
+
+    public function orderup()
+    {
+        $model = $this->getModel('Storage', 'Contentbuilder');
         $model->move(-1);
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . CBRequest::getInt('limitstart'), false));
     }
 
-    function listdelete()
+    public function listdelete()
     {
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Storage', 'Contentbuilder');
         $model->listDelete();
         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_DELETED'));
         CBRequest::setVar('view', 'Storage');
@@ -50,9 +84,9 @@ class StoragesController extends BaseController
         parent::display();
     }
 
-    function listorderup()
+    public function listorderup()
     {
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Storage', 'Contentbuilder');
         $model->listMove(-1);
         CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
@@ -63,16 +97,16 @@ class StoragesController extends BaseController
         parent::display();
     }
 
-    function orderdown()
+    public function orderdown()
     {
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Storage', 'Contentbuilder');
         $model->move(1);
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . CBRequest::getInt('limitstart'), false));
     }
 
-    function listorderdown()
+    public function listorderdown()
     {
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Storage', 'Contentbuilder');
         $model->listMove(1);
         CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
@@ -83,9 +117,9 @@ class StoragesController extends BaseController
         parent::display();
     }
 
-     function listsaveorder()
+     public function listsaveorder()
     {
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Storage', 'Contentbuilder');
         $model->listSaveOrder();
         CBRequest::setVar('view', 'Storage');
         CBRequest::setVar('layout', 'form');
@@ -97,26 +131,26 @@ class StoragesController extends BaseController
         parent::display();
     }
 
-    function publish()
+    public function publish()
     {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
         if (count($cid) == 1) {
-            $model = $this->getModel('Storage');
+            $model = $this->getModel('Storage', 'Contentbuilder');
             $model->setPublished();
         } else if (count($cid) > 1) {
-            $model = $this->getModel('Storage');
+            $model = $this->getModel('Storage', 'Contentbuilder');
             $model->setPublished();
         }
 
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_PUBLISHED'));
     }
 
-    function listpublish()
+    public function listpublish()
     {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Storage', 'Contentbuilder');
         $model->setListPublished();
 
         CBRequest::setVar('view', 'Storage');
@@ -129,26 +163,26 @@ class StoragesController extends BaseController
         parent::display();
     }
 
-    function unpublish()
+    public function unpublish()
     {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
         if (count($cid) == 1) {
-            $model = $this->getModel('Storage');
+            $model = $this->getModel('Storage', 'Contentbuilder');
             $model->setUnpublished();
         } else if (count($cid) > 1) {
-            $model = $this->getModel('Storage');
+            $model = $this->getModel('Storage', 'Contentbuilder');
             $model->setUnpublished();
         }
 
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
     }
 
-    function listunpublish()
+    public function listunpublish()
     {
         $cid = CBRequest::getVar('cid', array(), '', 'array');
 
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Storage', 'Contentbuilder');
         $model->setListUnpublished();
 
         CBRequest::setVar('view', 'Storage');
@@ -162,9 +196,9 @@ class StoragesController extends BaseController
     }
 
 
-    function listremove()
+    public function listremove()
     {
-        $model = $this->getModel('Storage');
+        $model = $this->getModel('Storage', 'Contentbuilder');
         if (!$model->listDelete()) {
             $msg = Text::_('COM_CONTENTBUILDER_ERROR');
         } else {
@@ -181,7 +215,7 @@ class StoragesController extends BaseController
         parent::display();
     }
 
-    function display($cachable = false, $urlparams = array())
+    public function display($cachable = false, $urlparams = array())
     {
         CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));
         CBRequest::setVar('layout', CBRequest::getWord('layout', null));

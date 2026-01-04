@@ -1,19 +1,19 @@
 <extension type="component" method="upgrade" version="6.0">
 
     <name>com_contentbuilder</name>
-    <creationDate>2025-12-28</creationDate>
+    <creationDate>2026-01-04</creationDate>
     <author>XDA+GIL</author>
     <authorEmail>breezingforms@vcmb.fr</authorEmail>
     <authorUrl>https://breezingforms.vcmb.fr</authorUrl>
     <copyright>Copyright 2011 - 2026 by XDA+GIL</copyright>
     <license>GNU/GPL v2.0</license>
-    <version>6.0.0-RC2</version>
+    <version>6.0.0-RC5</version>
     <description>COM_CONTENTBUILDER_XML_DESCRIPTION</description>
 
     <!-- ===================== -->
     <!-- PSR-4 NAMESPACE -->
     <!-- ===================== -->
-    <namespace path="src">CB\Component\Contentbuilder</namespace>
+    <namespace path="src">Component\Contentbuilder</namespace>
 
     <!-- ===================== -->
     <!-- INSTALL / UNINSTALL -->
@@ -38,16 +38,16 @@
 
  <files folder="site">
     <filename>index.html</filename>
-    <filename>contentbuilder.php</filename>
     <filename>controller.php</filename>
     <filename>router.php</filename>
+    <filename>contentbuilder.php</filename>
     <folder>src</folder>
  </files>
 
- <languages folder="administrator">
-    <language tag="en-GB">languages/en-GB/site/en-GB.com_contentbuilder.ini</language>
-    <language tag="de-DE">languages/de-DE/site/de-DE.com_contentbuilder.ini</language>
-    <language tag="fr-FR">languages/fr-FR/site/fr-FR.com_contentbuilder.ini</language>
+ <languages folder="site">
+    <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.ini</language>
+    <language tag="de-DE">languages/de-DE/admin/de-DE.com_contentbuilder.ini</language>
+    <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_contentbuilder.ini</language>
  </languages>
 
 <!-- ===================== -->
@@ -66,6 +66,7 @@
         <filename>access.xml</filename>
         <filename>config.xml</filename>
         <filename>index.html</filename>
+        <filename>contentbuilder.php</filename>
         
         <folder>languages</folder>
         <folder>librairies</folder>

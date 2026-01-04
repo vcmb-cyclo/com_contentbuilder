@@ -7,7 +7,7 @@
  * @license     GNU/GPL
 */
 
-namespace CB\Component\Contentbuilder\Administrator\View\User;
+namespace Component\Contentbuilder\Administrator\View\User;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');

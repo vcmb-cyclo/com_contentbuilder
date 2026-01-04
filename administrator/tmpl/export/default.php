@@ -15,7 +15,7 @@
 use Joomla\CMS\Language\Text;
 use PhpOffice\PhpSpreadsheet\Shared\Font;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
 @ob_end_clean();
 
@@ -82,7 +82,7 @@ if ($this->data->list_state) {
 $col_publish = 0;
 if ($this->data->list_publish) {
     $col_publish = ++$colreserved;
-    array_push($reserved_labels, Text::_('PUBLISH'));
+    array_push($reserved_labels, Text::_('COM_CONTENTBUILDER_PUBLISH'));
 }
 
 $labels = array_merge($reserved_labels, $labels);

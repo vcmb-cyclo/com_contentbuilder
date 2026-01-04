@@ -14,9 +14,9 @@ use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 $___tableOrdering = "Joomla.tableOrdering = function";
 
@@ -398,7 +398,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 <input class="form-check-input" type="checkbox" id="list_publish" name="list_publish"
                                     value="1" <?php echo $this->form->list_publish ? ' checked="checked"' : '' ?> />
                                 <label for="list_publish">
-                                    <?php echo Text::_('PUBLISH'); ?>
+                                    <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH'); ?>
                                 </label>
                                 <input class="form-check-input" type="checkbox" id="list_language" name="list_language"
                                     value="1" <?php echo $this->form->list_language ? ' checked="checked"' : '' ?> />
@@ -851,13 +851,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <td colspan="11">
                                 <div class="pagination pagination-toolbar">
                                     <div class="cbPagesCounter">
-                                        <?php echo $this->pagination->getPagesCounter(); ?>
+                                        <?php if (!empty($this->pagination)) {echo $this->pagination->getPagesCounter();} ?>
                                         <?php
                                         echo '<span>' . Text::_('COM_CONTENTBUILDER_DISPLAY_NUM') . '&nbsp;</span>';
-                                        echo '<div style="display:inline-block;">' . $this->pagination->getLimitBox() . '</div>';
+                                        echo '<div style="display:inline-block;">' . (empty($this->pagination) ? '' : $this->pagination->getLimitBox()) . '</div>';
                                         ?>
                                     </div>
-                                    <?php echo $this->pagination->getPagesLinks(); ?>
+                                    <?php if (!empty($this->pagination)) {echo $this->pagination->getPagesLinks();} ?>
                                 </div>
                             </td>
                         </tr>
@@ -1572,7 +1572,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                     <input class="form-check-input" type="checkbox" name="own_fe[publish]" id="own_fe_publish" value="1"
                         <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['publish']) && $this->form->config['own_fe']['publish'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_publish">
-                        <?php echo Text::_('PUBLISH'); ?>
+                        <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH'); ?>
                     </label>
                     <input class="form-check-input" type="checkbox" name="own_fe[fullarticle]" id="own_fe_fullarticle"
                         value="1" <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['fullarticle']) && $this->form->config['own_fe']['fullarticle'] ? ' checked="checked"' : ''; ?> /> <label
@@ -1657,7 +1657,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_STATE') ?>
                     </th>
                     <th>
-                        <?php echo Text::_('PUBLISH') ?>
+                        <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH') ?>
                     </th>
                     <th>
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_FULL_ARTICLE') ?>
@@ -1802,7 +1802,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_STATE'); ?>
                     </label>
                     <input class="form-check-input" type="checkbox" name="own[publish]" id="own_publish" value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['publish']) && $this->form->config['own']['publish'] ? ' checked="checked"' : ''; ?> /> <label for="own_publish">
-                        <?php echo Text::_('PUBLISH'); ?>
+                        <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH'); ?>
                     </label>
                     <input class="form-check-input" type="checkbox" name="own[fullarticle]" id="own_fullarticle"
                         value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['fullarticle']) && $this->form->config['own']['fullarticle'] ? ' checked="checked"' : ''; ?> /> <label for="own_fullarticle">
@@ -1844,7 +1844,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_STATE') ?>
                     </th>
                     <th>
-                        <?php echo Text::_('PUBLISH') ?>
+                        <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH') ?>
                     </th>
                     <th>
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_FULL_ARTICLE') ?>

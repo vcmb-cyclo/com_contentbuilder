@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -17,7 +17,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\MVC\Model\ListModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 class UsersModel extends ListModel
 {
@@ -33,9 +33,8 @@ class UsersModel extends ListModel
      */
     private $_pagination = null;
 
-    function __construct($config)
+    public function __construct($config = [])
     {
-
         $this->_db = Factory::getContainer()->get(DatabaseInterface::class);
 
         parent::__construct($config);

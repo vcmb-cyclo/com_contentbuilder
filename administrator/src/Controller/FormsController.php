@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     ContentBuilder
  * @author      Markus Bopp / XDA+GIL
@@ -7,7 +8,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Controller;
+namespace Component\Contentbuilder\Administrator\Controller;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -15,10 +16,11 @@ namespace CB\Component\Contentbuilder\Administrator\Controller;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\MVC\Controller\AdminController;
+use Component\Contentbuilder\Administrator\Controller\BaseAdminController;
 use Joomla\Utilities\ArrayHelper;
+use Component\Contentbuilder\Administrator\Helper\Logger;
 
-final class FormsController extends AdminController
+final class FormsController extends BaseAdminController
 {
     /**
      * Nom de la vue liste et item (convention Joomla 6).
@@ -51,17 +53,139 @@ final class FormsController extends AdminController
         }
     }
 
-   
+    /**
+     * Method to get a model object, loading it if required.
+     *
+     * @param   string  $name    The model name. Optional.
+     * @param   string  $prefix  The class prefix. Optional.
+     * @param   array   $config  Configuration array for model. Optional.
+     *
+     * @return  \Joomla\CMS\MVC\Model\BaseDatabaseModel|false  Model object on success; otherwise false on failure.
+     */
+/*
+    public function getModel($name = 'Form', $prefix = 'Administrator', $config = ['ignore_request' => true])
+    {
+        return parent::getModel($name, $prefix, $config);
+    }
+*/
+
+    public function display($cachable = false, $urlparams = []): void
+    {
+        $this->input->set('view', $this->view_list);
+        parent::display($cachable, $urlparams);
+    }
+
+    // Publish methode : manage both publish and unpublish
+    public function publish()
+    {
+        // Vérif CSRF.
+        $this->checkToken();
+
+        $cid = (array) $this->input->get('cid', [], 'array');
+        $cid = array_values(array_filter(array_map('intval', $cid)));
+        $task = $this->input->getCmd('task'); // forms.publish / forms.unpublish
+
+        Logger::debug('[Un]Publish action clicked', [
+            'task' => $task,
+            'cid'  => $cid,
+        ]);
+
+        $model = $this->getModel('Form', 'Contentbuilder', ['ignore_request' => true]);
+        if (!$model) {
+            throw new \RuntimeException('FormModel introuvable');
+        }
+
+        error_log('TASK=' . $task);
+        error_log('MODEL=' . ($model ? get_class($model) : 'false'));
+
+        $value = str_contains($task, 'unpublish') ? 0 : 1;
+
+        try {
+            $result = $model->publish($cid, $value);
+            // Message OK
+            /* $count = count((array) $cid);
+            $this->setMessage(Text::sprintf(
+                $value ? 'COM_CONTENTBUILDER_N_ITEMS_PUBLISHED' : 'COM_CONTENTBUILDER_N_ITEMS_UNPUBLISHED',
+                $count
+            ));*/
+
+            $this->setMessage(
+                $value ? Text::_('COM_CONTENTBUILDER_PUBLISHED')
+                       : Text::_('COM_CONTENTBUILDER_UNPUBLISHED'),
+                'message'
+            );
+        } catch (\Throwable $e) {
+            $this->setMessage($e->getMessage(), 'warning');
+        }
+
+        $this->setRedirect('index.php?option=com_contentbuilder&view=forms');
+    }
+
+    public function delete(): void
+    {
+        // Vérif CSRF.
+        $this->checkToken();
+
+        $cid = (array) $this->input->get('cid', [], 'array');
+        $cid = array_values(array_filter(array_map('intval', $cid)));
+
+        Logger::debug('Delete action clicked', [
+            'task' => $this->input->getCmd('task'),
+            'cid'  => $cid,
+        ]);
+
+        $model = $this->getModel('Form', 'Contentbuilder', ['ignore_request' => true]);
+        if (!$model) {
+            throw new \RuntimeException('FormModel introuvable');
+        }
+
+        try {
+            $model->delete($cid);
+
+            $count = count($cid);
+            // Message Joomla standard (tu peux aussi faire tes propres Text::sprintf)
+            $this->setMessage(
+                Text::plural('JLIB_APPLICATION_N_ITEMS_DELETED', $count),
+                'message'
+            );
+        } catch (\Throwable $e) {
+            $this->setMessage($e->getMessage(), 'warning');
+        }
+
+        $this->setRedirect('index.php?option=com_contentbuilder&view=forms');
+    }
+
     /**
      * Copie (custom)
      */
     public function copy(): void
     {
-        $cid = (array) $this->input->get('cid', [], 'array');
+        // Vérif CSRF.
+        $this->checkToken();
 
-        if (!empty($cid)) {
-            $model = $this->getModel('Forms');
-            $model->copy();
+        $cid = (array) $this->input->get('cid', [], 'array');
+        $cid = array_values(array_filter(array_map('intval', $cid)));
+
+        Logger::debug('Copy action clicked', [
+            'task' => $this->input->getCmd('task'),
+            'cid'  => $cid,
+        ]);
+
+        $model = $this->getModel('Form', 'Contentbuilder', ['ignore_request' => true]);
+        if (!$model) {
+            throw new \RuntimeException('FormModel introuvable');
+        }
+
+        try {
+            $model->copy($cid);
+
+            // Message Joomla standard (tu peux aussi faire tes propres Text::sprintf)
+            $this->setMessage(
+                Text::plural('COM_CONTENTBUILDER_COPIED'),
+                'message'
+            );
+        } catch (\Throwable $e) {
+            $this->setMessage($e->getMessage(), 'warning');
         }
 
         $this->setRedirect(
@@ -70,209 +194,99 @@ final class FormsController extends AdminController
         );
     }
 
-    public function display($cachable = false, $urlparams = []): void
+
+    // ==================================================================
+    // Toutes les tâches sur les ÉLÉMENTS (champs du formulaire)
+    // ==================================================================
+
+    // Ces tâches agissent sur les éléments sélectionnés dans l'édition d'un form
+    // Elles doivent utiliser ElementsModel
+
+    private function getElementsModel()
     {
-        $this->input->set('view', $this->view_list);
-        parent::display($cachable, $urlparams);
+        return $this->getModel('Elements', 'Contentbuilder');
     }
-
-
-    /**
-     * Task: forms.delete (au lieu de remove)
-     * Joomla va passer cid[] dans l’input.
-     */
-    public function delete()
-    {
-        $this->checkToken();
-
-        $app = Factory::getApplication();
-        $input = $app->getInput();
-
-        $cid = $input->get('cid', [], 'array');
-        ArrayHelper::toInteger($cid);
-
-        if (!$cid) {
-            $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
-                Text::_('JERROR_NO_ITEMS_SELECTED'),
-                'warning'
-            );
-            return false;
-        }
-
-        $model = $this->getModel('Form');
-        $ok = $model->delete($cid);
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
-            $ok ? Text::_('COM_CONTENTBUILDER_DELETED') : Text::_('COM_CONTENTBUILDER_ERROR'),
-            $ok ? 'message' : 'error'
-        );
-
-        return $ok;
-    }
-
-    public function publish()
-    {
-        $this->checkToken();
-
-        $app = Factory::getApplication();
-        $input = $app->getInput();
-        $cid = $input->get('cid', [], 'array');
-        ArrayHelper::toInteger($cid);
-
-        if (!$cid) {
-            $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
-                Text::_('JERROR_NO_ITEMS_SELECTED'),
-                'warning'
-            );
-            return false;
-        }
-
-        $model = $this->getModel('Form');
-        $model->publish($cid, 1);
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
-            Text::_('COM_CONTENTBUILDER_PUBLISHED'));
-    }
-
-    public function unpublish()
-    {
-        $this->checkToken();
-
-        $app = Factory::getApplication();
-        $input = $app->getInput();
-        $cid = $input->get('cid', [], 'array');
-        ArrayHelper::toInteger($cid);
-
-        if (!$cid) {
-            $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
-                Text::_('JERROR_NO_ITEMS_SELECTED'),
-                'warning'
-            );
-            return false;
-        }
-
-        $model = $this->getModel('Form');
-        $model->publish($cid, 0);
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
-            Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
-    }
-
 
     public function listorderup(): void
     {
-        $model = $this->getModel('Forms');
-        $model->listMove(-1);
-
-        // Après une action mutative : redirect (PRG), pas display()
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $model = $this->getElementsModel();
+        $model->move(-1); // ou utilise reorder si tu préfères
+        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false));
     }
 
     public function listorderdown(): void
     {
-        $model = $this->getModel('Forms');
-        $model->listMove(1);
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $model = $this->getElementsModel();
+        $model->move(1);
+        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false));
     }
 
     public function listsaveorder(): void
     {
-        $model = $this->getModel('Forms');
-        $model->listSaveOrder();
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $model = $this->getElementsModel();
+        $model->saveorder($this->input->get('cid', [], 'array'), $this->input->get('order', [], 'array'));
+        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false));
     }
- 
+
+    // Les tâches batch sur les éléments (linkable, editable, etc.)
+    // Tu peux les factoriser ou les garder séparées
+
     public function linkable(): void
     {
-        $model = $this->getModel('Forms');
-        $model->setListLinkable();
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $this->batchElementUpdate('linkable', 1);
     }
 
     public function not_linkable(): void
     {
-        $model = $this->getModel('Forms');
-        $model->setListNotLinkable();
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $this->batchElementUpdate('linkable', 0);
     }
 
     public function editable(): void
     {
-        $model = $this->getModel('Forms');
-        $model->setListEditable();
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $this->batchElementUpdate('editable', 1);
     }
 
     public function not_editable(): void
     {
-        $model = $this->getModel('Forms');
-        $model->setListNotEditable();
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $this->batchElementUpdate('editable', 0);
     }
 
     public function list_include(): void
     {
-        $model = $this->getModel('Forms');
-        $model->setListListInclude();
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $this->batchElementUpdate('list_include', 1);
     }
 
     public function no_list_include(): void
     {
-        $model = $this->getModel('Forms');
-        $model->setListNoListInclude();
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $this->batchElementUpdate('list_include', 0);
     }
 
     public function search_include(): void
     {
-        $model = $this->getModel('Forms');
-        $model->setListSearchInclude();
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+        $this->batchElementUpdate('search_include', 1);
     }
 
     public function no_search_include(): void
     {
-        $model = $this->getModel('Forms');
-        $model->setListNoSearchInclude();
+        $this->batchElementUpdate('search_include', 0);
+    }
 
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&layout=edit&cid[]=' . $this->input->getInt('id', 0), false)
-        );
+    private function batchElementUpdate(string $field, int $value): void
+    {
+        $cids = $this->input->get('cid', [], 'array');
+        ArrayHelper::toInteger($cids);
+
+        if ($cids) {
+            $db = $this->getDatabase();
+            $db->setQuery(
+                $db->getQuery(true)
+                    ->update($db->quoteName('#__contentbuilder_elements'))
+                    ->set($db->quoteName($field) . ' = ' . $value)
+                    ->where($db->quoteName('id') . ' IN (' . implode(',', $cids) . ')')
+            );
+            $db->execute();
+        }
+
+        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false));
     }
 }

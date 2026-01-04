@@ -8,7 +8,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -31,9 +31,9 @@ use Joomla\CMS\Table\Table;
 use Joomla\CMS\User\UserHelper;
 use Joomla\CMS\Mail\MailerFactoryInterface;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 $pluginHelper4 = new \Joomla\CMS\Plugin\PluginHelper4();
 
@@ -119,10 +119,13 @@ class EditModel extends BaseDatabaseModel
         return $endpath;
     }
 
-    function __construct($config)
-    {
-
+     public function __construct($config = [])
+   {
+        $this->_db = Factory::getContainer()->get(DatabaseInterface::class);
         parent::__construct($config);
+
+        $mainframe = Factory::getApplication();
+        $option = 'com_contentbuilder';
 
         $this->is15 = false;
         $this->is16 = false;

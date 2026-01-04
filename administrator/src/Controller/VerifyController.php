@@ -6,15 +6,15 @@
  * @license     GNU/GPL
 */
 
-namespace CB\Component\Contentbuilder\Administrator\Controller;
+namespace Component\Contentbuilder\Administrator\Controller;
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 use Joomla\CMS\MVC\Controller\BaseController;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\CBRequest;
 
-class VerifyControllerV extends BaseController
+class VerifyController extends BaseController
 {
     public function __construct($config = [])
     {

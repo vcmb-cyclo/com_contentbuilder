@@ -14,7 +14,7 @@
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 ?>
 <style type="text/css">
@@ -180,7 +180,7 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
             <tr class="row0">
                 <td width="20%" align="right" class="key">
                     <label for="published">
-                        <?php echo Text::_('PUBLISHED'); ?>
+                        <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED'); ?>
                     </label>
                 </td>
                 <td>

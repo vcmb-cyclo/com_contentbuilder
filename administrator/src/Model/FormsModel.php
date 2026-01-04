@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -16,7 +16,7 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\MVC\Model\ListModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 class FormsModel extends ListModel
 {
@@ -32,7 +32,7 @@ class FormsModel extends ListModel
      */
     private $_pagination = null;
 
-    function __construct($config)
+    public function __construct($config = [])
     {
         parent::__construct($config);
 
@@ -62,71 +62,30 @@ class FormsModel extends ListModel
         $this->setState('forms_filter_tag', $filter_tag);
     }
 
-    function copy()
+    
+    /**
+     * Supprime plusieurs formulaires
+     * Appelée automatiquement par AdminController
+     */
+    public function delete($pks = null): bool
     {
-        $table = $this->getTable('Form');
-        $cids = CBRequest::getVar('cid', array(), '', 'array');
-        ArrayHelper::toInteger($cids);
+        $pks = (array) $pks;
+        ArrayHelper::toInteger($pks);
 
-        if (!count($cids))
-            return;
-
-        $this->_db->setQuery(' Select * From #__contentbuilder_forms ' .
-            '  Where id In ( ' . implode(',', $cids) . ')');
-        $result = $this->_db->loadObjectList();
-
-        foreach ($result as $obj) {
-            $origId = $obj->id;
-            unset($obj->id);
-
-            $obj->name = 'Copy of ' . $obj->name;
-            $obj->published = 0;
-            $this->_db->insertObject('#__contentbuilder_forms', $obj);
-            $insertId = $this->_db->insertid();
-
-            // elements
-            $this->_db->setQuery(' Select * From #__contentbuilder_elements ' .
-                '  Where form_id = ' . $origId);
-            $elements = $this->_db->loadObjectList();
-            foreach ($elements as $element) {
-                unset($element->id);
-                $element->form_id = $insertId;
-                $this->_db->insertObject('#__contentbuilder_elements', $element);
-            }
-
-            // list states
-            $this->_db->setQuery(' Select * From #__contentbuilder_list_states ' .
-                '  Where form_id = ' . $origId);
-            $elements = $this->_db->loadObjectList();
-            foreach ($elements as $element) {
-                unset($element->id);
-                $element->form_id = $insertId;
-                $this->_db->insertObject('#__contentbuilder_list_states', $element);
-            }
-            // XDA-Gil fix 'Copy of Form' in Component Menu in Backen CB View
-            // ContentbuilderLegacyHelper::createBackendMenuItem($insertId, $obj->name, true);
+        if (empty($pks)) {
+            return false;
         }
 
-        $table->reorder();
-    }
+        $model = $this->getModel('Form', 'Contentbuilder'); // utilise FormModel pour la suppression complète
 
-    function setPublished()
-    {
-        $cids = CBRequest::getVar('cid', array(), '', 'array');
-        ArrayHelper::toInteger($cids);
-        $this->_db->setQuery(' Update #__contentbuilder_forms ' .
-            '  Set published = 1 Where id In ( ' . implode(',', $cids) . ')');
-        $this->_db->execute();
+        foreach ($pks as $pk) {
+            if (!$model->delete([$pk])) {
+                $this->setError($model->getError());
+                return false;
+            }
+        }
 
-    }
-
-    function setUnpublished()
-    {
-        $cids = CBRequest::getVar('cid', array(), '', 'array');
-        ArrayHelper::toInteger($cids);
-        $this->_db->setQuery(' Update #__contentbuilder_forms ' .
-            '  Set published = 0 Where id In ( ' . implode(',', $cids) . ')');
-        $this->_db->execute();
+        return true;
     }
 
     /*
@@ -135,7 +94,7 @@ class FormsModel extends ListModel
      * 
      */
 
-    private function buildOrderBy()
+    public function buildOrderBy()
     {
         $mainframe = Factory::getApplication();
         $option = 'com_contentbuilder';
@@ -156,7 +115,7 @@ class FormsModel extends ListModel
     /**
      * @return string The query
      */
-    private function _buildQuery()
+    public function _buildQuery()
     {
 
         $where = '';
@@ -188,13 +147,13 @@ class FormsModel extends ListModel
         return 'Select SQL_CALC_FOUND_ROWS * From #__contentbuilder_forms ' . $where . $filter_state . $this->buildOrderBy();
     }
 
-    function saveOrder()
+    public function saveOrder()
     {
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
 
         $total = count($items);
-        $row = $this->getTable('Form');
+        $row = $this->getTable('Form', '');
         $groupings = array();
 
         $order = CBRequest::getVar('order', array(), 'post', 'array');
@@ -217,17 +176,24 @@ class FormsModel extends ListModel
     }
 
 
-    function getTags()
+    public function getTags()
     {
-        $this->_db->setQuery("Select Distinct `tag` As `tag` From #__contentbuilder_forms Order by `tag` Desc");
-        return $this->_db->loadObjectList();
+        $db = $this->_db;
+        
+        $query = $db->getQuery(true)
+            ->select('DISTINCT tag AS tag')
+            ->from('#__contentbuilder_forms')
+            ->where('tag <> ""')
+            ->order('tag DESC');
+        $db->setQuery($query);
+        return $db->loadObjectList();
     }
 
     /**
      * Gets the currencies
      * @return array List of products
      */
-    function getData()
+    public function getData()
     {
         // Lets load the data if it doesn't already exist
         if (empty($this->_data)) {
@@ -238,7 +204,7 @@ class FormsModel extends ListModel
         return $this->_data;
     }
 
-    function getTotal()
+    public function getTotal()
     {
         // Load the content if it doesn't already exist
         if (empty($this->_total)) {
@@ -248,7 +214,7 @@ class FormsModel extends ListModel
         return $this->_total;
     }
 
-    function getPagination()
+    public function getPagination()
     {
         // Load the content if it doesn't already exist
         if (empty($this->_pagination)) {

@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -17,9 +17,9 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\MVC\Model\ListModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class DetailsModel extends ListModel
 {
@@ -43,10 +43,9 @@ class DetailsModel extends ListModel
 
     private $_page_heading = '';
 
-    function __construct($config)
+    public function __construct($config = [])
     {
         parent::__construct($config);
-
         $option = 'com_contentbuilder';
 
         $this->frontend = Factory::getApplication()->isClient('site');

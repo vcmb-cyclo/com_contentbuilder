@@ -1,17 +1,26 @@
 <?php
-
 /**
+ * ContentBuilder Form Model.
+ *
+ * Handles CRUD and publish state for form in the admin interface.
+ *
  * @package     ContentBuilder
+ * @subpackage  Administrator.Model
  * @author      Markus Bopp / XDA+GIL
+ * @copyright   Copyright (C) 2011–2026 by XDA+GIL
+ * @license     GNU/GPL v2 or later
  * @link        https://breezingforms.vcmb.fr
- * @copyright   Copyright (C) 2026 by XDA+GIL 
- * @license     GNU/GPL
+ * @since       6.0.0  Joomla 6 compatibility rewrite.
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Model;
+
+namespace Component\Contentbuilder\Administrator\Model;
 
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
@@ -19,15 +28,13 @@ use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
-use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Table\Table;
-use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
-
-HTMLHelper::_('behavior.keepalive');
-
+use Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\Helper\Logger;
+use Component\Contentbuilder\Administrator\Table\FormTable;
+use Component\Contentbuilder\Administrator\Table\ElementsTable;
 
 class FormModel extends BaseDatabaseModel
 {
@@ -46,11 +53,21 @@ class FormModel extends BaseDatabaseModel
         array('id' => -10, 'action' => '', 'title' => 'State 10', 'color' => 'FFFFFF', 'published' => 0)
     );
 
-    function __construct($config)
+    public function __construct($config = [])
     {
         $this->_db = Factory::getContainer()->get(DatabaseInterface::class);
         parent::__construct($config);
 
+        $this->option = 'com_contentbuilder';
+        
+        $app   = Factory::getApplication();
+        $input = $app->input;
+
+        $cid = $input->get('cid', [0], 'array');
+        $id  = $input->getInt('id', 0);
+
+        $this->setId((int)($id ?: (int)reset($cid)));
+/*
         $mainframe = Factory::getApplication();
         $option = 'com_contentbuilder';
 
@@ -76,37 +93,28 @@ class FormModel extends BaseDatabaseModel
         $this->setState('elements_filter_order_Dir', $filter_order_Dir);
 
         $filter_state = $mainframe->getUserStateFromRequest($option . 'elements_filter_state', 'filter_state', '', 'word');
-        $this->setState('elements_filter_state', $filter_state);
+        $this->setState('elements_filter_state', $filter_state);*/
     }
 
-    function setPublished()
+    /**
+     * Joomla 6 compatibility:
+     * Force direct table instantiation because MVCFactory
+     * resolves this component in Legacy mode.
+     */
+
+    public function getTable($name = 'Form', $prefix = 'Contentbuilder', $options = [])
     {
-        if (empty($this->_data)) {
-            $this->_db->setQuery(' Update #__contentbuilder_forms ' .
-                '  Set published = 1 Where id = ' . $this->_id);
-            $this->_db->execute();
+        switch ($name) {
+            case 'Form':
+                return new FormTable($this->_db);
+
+            case 'Elements':
+                return new ElementsTable($this->_db);
         }
+
+        return parent::getTable($name, $prefix, $options);
     }
 
-    function setUnpublished()
-    {
-        if (empty($this->_data)) {
-            $this->_db->setQuery(' Update #__contentbuilder_forms ' .
-                '  Set published = 0 Where id = ' . $this->_id);
-            $this->_db->execute();
-        }
-    }
-
-    function setListLinkable()
-    {
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
-        ArrayHelper::toInteger($items);
-        if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
-                '  Set linkable = 1 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
-        }
-    }
 
     function setListEditable()
     {
@@ -244,10 +252,14 @@ class FormModel extends BaseDatabaseModel
             $this->setId((int) $pk);
         }
 
-        $query = ' Select * From #__contentbuilder_forms ' .
-            '  Where id = ' . $this->_id;
-        $this->_db->setQuery($query);
-        $data = $this->_db->loadObject();
+        $db = $this->_db;
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from($db->quoteName('#__contentbuilder_forms'))
+            ->where($db->quoteName('id') . ' = ' . (int)$this->_id);
+
+        $db->setQuery($query);
+        $data = $db->loadObject();
 
         if (!$data) {
             $data = new \stdClass();
@@ -403,15 +415,24 @@ class FormModel extends BaseDatabaseModel
                 $data->type_name = '';
             }
             $data->title = $data->form->getPageTitle();
+
+            /*
             if (is_object($data->form)) {
                 ContentbuilderLegacyHelper::synchElements($data->id, $data->form);
                 $elements_table = $this->getTable('Elements');
                 $elements_table->reorder('form_id=' . $data->id);
-            }
+            }*/
         }
 
         $db = Factory::getContainer()->get(DatabaseInterface::class);
-        $db->setQuery("Select * From #__contentbuilder_list_states Where form_id = " . $this->_id . " Order By id");
+        $db->setQuery(
+            $db->getQuery(true)
+                ->select('*')
+                ->from($db->quoteName('#__contentbuilder_list_states'))
+                ->where($db->quoteName('form_id') . ' = ' . (int)$this->_id)
+                ->order('id ASC')
+        );
+
         $list_states = $db->loadAssocList();
 
         if (count($list_states)) {
@@ -480,60 +501,14 @@ class FormModel extends BaseDatabaseModel
         return $options;
     }
 
-    private function buildOrderBy()
-    {
-        $mainframe = Factory::getApplication();
-        $option = 'com_contentbuilder';
-
-        $orderby = '';
-        $filter_order = $this->getState('elements_filter_order');
-        $filter_order_Dir = $this->getState('elements_filter_order_Dir');
-
-        /* Error handling is never a bad thing*/
-        if (!empty($filter_order) && !empty($filter_order_Dir)) {
-            $orderby = ' ORDER BY ' . $filter_order . ' ' . $filter_order_Dir . ' , ordering ';
-        } else {
-            $orderby = ' ORDER BY ordering ';
-        }
-
-        return $orderby;
-    }
-
-
-    function _buildQuery()
-    {
-        $filter_state = '';
-        if ($this->getState('elements_filter_state') == 'P' || $this->getState('elements_filter_state') == 'U') {
-            $published = 0;
-            if ($this->getState('elements_filter_state') == 'P') {
-                $published = 1;
-            }
-
-            $filter_state .= ' And published = ' . $published;
-        }
-
-        return "Select * From #__contentbuilder_elements Where form_id = " . $this->_id . $filter_state . $this->buildOrderBy();
-    }
-
-    function getData()
-    {
-        $this->_db->setQuery($this->_buildQuery(), $this->getState('limitstart'), $this->getState('limit'));
-        $entries = $this->_db->loadObjectList();
-
-        return $entries;
-    }
-
-    function getAllElements()
-    {
-        $this->_db->setQuery($this->_buildQuery());
-        $entries = $this->_db->loadObjectList();
-        return $entries;
-    }
 
     function store()
     {
         $db = Factory::getContainer()->get(DatabaseInterface::class);
-        $row = $this->getTable('Form');
+        error_log('MVCFactory=' . (is_object($this->getMVCFactory()) ? get_class($this->getMVCFactory()) : 'NULL'));
+        error_log('getTable(Form) from ' . __METHOD__);
+
+        $row = $this->getTable('Form', '');
         $form = $this->getItem();
         $form_id = 0;
 
@@ -957,6 +932,7 @@ class FormModel extends BaseDatabaseModel
 
         $row->reorder();
 
+        /*
         $item_wrapper = CBRequest::getVar('itemWrapper', '', 'POST', 'ARRAY', CBREQUEST_ALLOWRAW);
         $wordwrap = CBRequest::getVar('itemWordwrap', array(), 'post', 'array');
         $labels = CBRequest::getVar('itemLabels', array(), 'post', 'array');
@@ -967,19 +943,31 @@ class FormModel extends BaseDatabaseModel
                 $this->_db->setQuery("Update #__contentbuilder_elements Set `order_type` = " . $this->_db->Quote($order_types[$elementId]) . ", `label`= " . $this->_db->Quote($labels[$elementId]) . ", `wordwrap` = " . $this->_db->Quote($wordwrap[$elementId]) . ", `item_wrapper` =  " . $this->_db->Quote(trim($value)) . " Where form_id = $form_id And id = " . $elementId);
                 $this->_db->execute();
             }
-        }
+        }*/
 
         return $form_id;
     }
 
-    function delete()
+
+    public function delete(array $pks): bool
+    {
+        if (empty($pks)) {
+            throw new \RuntimeException(
+              Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
+            );
+        }
+
+        $pks = array_filter(array_map('intval', $pks));
+
+        return $this->deleteByIds($pks);
+    }
+
+    private function deleteByIds(array $cids): bool
     {
         // Mode Joomla5
         $is15 = false;
 
-        $cids = CBRequest::getVar('cid', array(0), 'post', 'array');
-        ArrayHelper::toInteger($cids);
-        $row = $this->getTable('Form');
+        $row = $this->getTable('Form', '');
 
         foreach ($cids as $cid) {
             $this->_db->setQuery("Select article.article_id From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.delete_articles > 0 And form.id = article.form_id And article.form_id = " . intval($cid));
@@ -1122,6 +1110,7 @@ class FormModel extends BaseDatabaseModel
         return true;
     }
 
+    /*
     function listDelete()
     {
         $cids = CBRequest::getVar('cid', array(0), 'post', 'array');
@@ -1138,7 +1127,7 @@ class FormModel extends BaseDatabaseModel
             $this->_db->execute();
             $this->getTable('Elements')->reorder('form_id = ' . $this->_id);
         }
-    }
+    }*/
 
     function move($direction)
     {
@@ -1146,7 +1135,7 @@ class FormModel extends BaseDatabaseModel
         $db = Factory::getContainer()->get(DatabaseInterface::class);
         $mainframe = Factory::getApplication();
 
-        $row = $this->getTable('Form');
+        $row = $this->getTable('Form', '');
 
         if (!$row->load($this->_id)) {
             $this->setError($db->getErrorMessage());
@@ -1161,6 +1150,7 @@ class FormModel extends BaseDatabaseModel
         return true;
     }
 
+    /*
     function listMove($direction)
     {
         $mainframe = Factory::getApplication();
@@ -1230,22 +1220,116 @@ class FormModel extends BaseDatabaseModel
 
 
         $row->reorder("form_id = " . $this->_id);
-    }
+    }*/
 
-    // Publish & unpublish
+
+    /**
+     * Publie ou dépublie plusieurs formulaires
+     */
     public function publish(array $pks, int $value = 1): bool
     {
-        $pks = array_filter(array_map('intval', $pks));
-        if (!$pks) return false;
+        $pks = (array) $pks;
 
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        if (empty($pks)) {
+            throw new \RuntimeException(
+              Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
+            );
+        }
+
+        ArrayHelper::toInteger($pks);
+        $pks = array_filter($pks);
+
+        Logger::info('Publish change', [
+            'value' => $value,
+            'pks'   => $pks,
+        ]);
+
+        $value = (int) $value;
+        $db = $this->getDatabase(); // ou $this->_db si tu préfères rester cohérent
         $query = $db->getQuery(true)
             ->update($db->quoteName('#__contentbuilder_forms'))
-            ->set($db->quoteName('published') . ' = ' . (int) $value)
+            ->set($db->quoteName('published') . ' = ' . $value)
             ->where($db->quoteName('id') . ' IN (' . implode(',', $pks) . ')');
 
         $db->setQuery($query);
-        $db->execute();
+
+        try {
+            $db->execute();
+        } catch (\Throwable $e) {
+            $this->setError($e->getMessage());
+            return false;
+        }
+
+        // Optionnel mais OK
+        try {
+            $table = $this->getTable('Form', '');
+            $table->reorder();
+        } catch (\Throwable $e) {
+            // pas bloquant
+        }
+
+        return true;
+    }
+
+    public function copy(array $pks): bool
+    {
+        if (empty($pks)) {
+            throw new \RuntimeException(
+              Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
+            );
+        }
+
+        $pks = array_filter(array_map('intval', $pks));
+
+        return $this->copyByIds($pks);
+    }
+
+    private function copyByIds($cids): bool
+    {
+        $cids = CBRequest::getVar('cid', array(), '', 'array');
+        ArrayHelper::toInteger($cids);
+
+        if (!count($cids))
+            return false;
+
+        $table = $this->getTable('Form', '');
+        $this->_db->setQuery(' Select * From #__contentbuilder_forms ' .
+            '  Where id In ( ' . implode(',', $cids) . ')');
+        $result = $this->_db->loadObjectList();
+
+        foreach ($result as $obj) {
+            $origId = $obj->id;
+            unset($obj->id);
+
+            $obj->name = 'Copy of ' . $obj->name;
+            $obj->published = 0;
+            $this->_db->insertObject('#__contentbuilder_forms', $obj);
+            $insertId = $this->_db->insertid();
+
+            // elements
+            $this->_db->setQuery(' Select * From #__contentbuilder_elements ' .
+                '  Where form_id = ' . $origId);
+            $elements = $this->_db->loadObjectList();
+            foreach ($elements as $element) {
+                unset($element->id);
+                $element->form_id = $insertId;
+                $this->_db->insertObject('#__contentbuilder_elements', $element);
+            }
+
+            // list states
+            $this->_db->setQuery(' Select * From #__contentbuilder_list_states ' .
+                '  Where form_id = ' . $origId);
+            $elements = $this->_db->loadObjectList();
+            foreach ($elements as $element) {
+                unset($element->id);
+                $element->form_id = $insertId;
+                $this->_db->insertObject('#__contentbuilder_list_states', $element);
+            }
+            // XDA-Gil fix 'Copy of Form' in Component Menu in Backen CB View
+            // ContentbuilderLegacyHelper::createBackendMenuItem($insertId, $obj->name, true);
+        }
+
+        $table->reorder();
 
         return true;
     }

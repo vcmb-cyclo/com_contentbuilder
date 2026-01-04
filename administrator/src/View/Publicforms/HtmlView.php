@@ -7,7 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\View\PublicForms;
+namespace Component\Contentbuilder\Administrator\View\PublicForms;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');

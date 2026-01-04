@@ -12,7 +12,11 @@
 // no direct access
 \defined('_JEXEC') or die;
 
-use Joomla\CMS\Dispatcher\ComponentDispatcher;
+use Joomla\CMS\Factory;
 
-$dispatcher = ComponentDispatcher::getInstance('com_contentbuilder');
-$dispatcher->dispatch();
+$app = Factory::getApplication();
+
+// Boot moderne : charge services/provider.php, extension class, MVCFactory, etc.
+$app->bootComponent('com_contentbuilder')
+    ->getDispatcher($app)
+    ->dispatch();

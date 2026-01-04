@@ -17,8 +17,8 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
+use Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
+use Component\Contentbuilder\Administrator\CBRequest;
 
 class plgContentContentbuilder_download extends CMSPlugin
 {
