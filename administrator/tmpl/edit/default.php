@@ -298,7 +298,7 @@ if(!$this->limited_options){
         }
         ?>
         <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid',0); ?>"/>
-        <input type="hidden" name="task" id="contentbuilder_task" value="save"/>
+        <input type="hidden" name="task" id="contentbuilder_task" value="edit.save"/>
         <input type="hidden" name="backtolist" value="<?php echo CBRequest::getInt('backtolist',0);?>"/>
         <input type="hidden" name="return" value="<?php echo CBRequest::getVar('return','');?>"/>
         <?php echo HTMLHelper::_('form.token'); ?>
@@ -343,7 +343,7 @@ if(!$this->edit_by_type){
     }
     ?>
     <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid',0); ?>"/>
-    <input type="hidden" name="task" id="contentbuilder_task" value="save"/>
+    <input type="hidden" name="task" id="contentbuilder_task" value="edit.save"/>
     <input type="hidden" name="backtolist" value="<?php echo CBRequest::getInt('backtolist',0);?>"/>
     <input type="hidden" name="return" value="<?php echo CBRequest::getVar('return','');?>"/>
     <?php echo HTMLHelper::_('form.token'); ?>
@@ -378,7 +378,7 @@ if(!$this->edit_by_type){
     }
     ?>
     <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid',0); ?>"/>
-    <input type="hidden" name="task" id="contentbuilder_task" value="save"/>
+    <input type="hidden" name="task" id="contentbuilder_task" value="edit.save"/>
     <input type="hidden" name="backtolist" value="<?php echo CBRequest::getInt('backtolist',0);?>"/>
     <input type="hidden" name="return" value="<?php echo CBRequest::getVar('return','');?>"/>
     <?php echo HTMLHelper::_('form.token'); ?>

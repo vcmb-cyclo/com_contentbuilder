@@ -16,7 +16,7 @@ namespace CB\Component\Contentbuilder\Administrator\View\List;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {

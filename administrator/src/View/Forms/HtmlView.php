@@ -17,18 +17,18 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {
     function display($tpl = null)
     {
+        
         echo '
         <style type="text/css">
         .icon-48-logo_left { background-image: url(../media/com_contentbuilder/images/logo_left.png); }
         </style>
         ';
-        echo '<link rel="stylesheet" href="' . Uri::root(true) . '/media/com_contentbuilder/css/bluestork.fix.css" type="text/css" />';
 
         ToolBarHelper::title('ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_FORMS') . '</span>', 'logo_left.png');
         ToolBarHelper::addNew('form.add');
@@ -40,15 +40,9 @@ class HtmlView extends BaseHtmlView
         ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'forms.delete');
         ToolBarHelper::preferences('com_contentbuilder');
 
-        // Get data from the model
-        /*$items = $this->getModel()->getData();
-        $pagination = $this->getModel()->getPagination();
-        $state = $this->getModel()->getState();
-        */
-
         $items      = $this->getModel()->getItems();
         $pagination = $this->getModel()->getPagination();
-        $state      = $this->get('State');
+        $state      = $this->getModel()->getState();
 
         $tags = $this->getModel()->getTags();
 

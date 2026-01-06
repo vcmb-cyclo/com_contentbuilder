@@ -547,7 +547,6 @@ class FormModel extends BaseDatabaseModel
 
         // if not existing, we create the fallback directory
         if (!is_dir($upload_directory)) {
-
             if (!is_dir(JPATH_SITE . '/media/contentbuilder')) {
                 Folder::create(JPATH_SITE . '/media/contentbuilder');
                 File::write(JPATH_SITE . '/media/contentbuilder/index.html', $def = '');
@@ -862,16 +861,30 @@ class FormModel extends BaseDatabaseModel
         $last_update = Factory::getDate()->toSql();
         $data['last_update'] = $last_update;
 
-        if (!$row->bind($data)) {
-            $this->setError($row->getError());
+        try {
+            if (!$row->bind($data)) {
+                $this->setError($row->getError());
+                return false;
+            }
+        } catch (\Throwable $e) {
+            Logger::exception($e);
+            // En debug tu peux garder le message brut
+            $this->setError($e->getMessage());
             return false;
         }
 
-        if (!$row->check()) {
-            $this->setError($row->getError());
+        try {
+            if (!$row->check()) {
+                $this->setError($row->getError());
+                return false;
+            }
+        } catch (\Throwable $e) {
+            Logger::exception($e);
+            // En debug tu peux garder le message brut
+            $this->setError($e->getMessage());
             return false;
         }
-
+      
         $form_id = 0;
 
         try {
@@ -934,7 +947,7 @@ class FormModel extends BaseDatabaseModel
 
         $row->reorder();
 
-        /*
+        
         $item_wrapper = CBRequest::getVar('itemWrapper', '', 'POST', 'ARRAY', CBREQUEST_ALLOWRAW);
         $wordwrap = CBRequest::getVar('itemWordwrap', array(), 'post', 'array');
         $labels = CBRequest::getVar('itemLabels', array(), 'post', 'array');
@@ -945,7 +958,7 @@ class FormModel extends BaseDatabaseModel
                 $this->_db->setQuery("Update #__contentbuilder_elements Set `order_type` = " . $this->_db->Quote($order_types[$elementId]) . ", `label`= " . $this->_db->Quote($labels[$elementId]) . ", `wordwrap` = " . $this->_db->Quote($wordwrap[$elementId]) . ", `item_wrapper` =  " . $this->_db->Quote(trim($value)) . " Where form_id = $form_id And id = " . $elementId);
                 $this->_db->execute();
             }
-        }*/
+        }
 
         return $form_id;
     }

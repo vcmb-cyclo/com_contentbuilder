@@ -18,7 +18,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
 use Joomla\CMS\HTML\HTMLHelper;
 
 class HtmlView extends BaseHtmlView
@@ -33,69 +33,39 @@ class HtmlView extends BaseHtmlView
         // JS
         $document->addScript(Uri::root(true) . '/media/js/com_contentbuilder/jscolor/jscolor.js');
 
-        // CSS (propre, évite echo <link>)
-        // Variante 1: via Document
-        $document->addStyleSheet(Uri::root(true) . '/media/com_contentbuilder/css/bluestork.fix.css');
 
-        // (Optionnel) Ton CSS inline (ok, mais évite les chemins relatifs fragiles)
-        $document->addStyleDeclaration(
-            ".icon-48-logo_left { background-image: url(" .
-            Uri::root(true) . "/administrator/components/com_contentbuilder/views/logo_left.png); }"
-        );
-
-        // Charge l'item (chez toi tu appelles ça $this->form)
-        $this->form = $this->get('Item');
+        // Charge le form.
+        $this->form = $this->getModel()->getItem();
 
         // Chargement sécurisé des éléments
         $formId = (int) ($this->form->id ?? 0);
 
-        if ($formId > 0) {
-            try {
-                $factory = Factory::getApplication()
-                    ->bootComponent('com_contentbuilder')
-                    ->getMVCFactory();
+        $this->elements = [];
+        $this->elementsPagination = null;
+        $this->pagination = null;
+        $this->state = null;
 
+        try {
+            $formId = (int) ($formId ?? 0);
+            if ($formId > 0) {
+                $factory = $app->bootComponent('com_contentbuilder')->getMVCFactory();
                 $elementsModel = $factory->createModel('Elements', 'Administrator', ['ignore_request' => true]);
 
                 if (!$elementsModel) {
-                    throw new \RuntimeException('Modèle Elements introuvable');
+                    throw new \RuntimeException('Modèle Elements introuvable (factory)');
                 }
 
-                // Récupération sécurisée des données
-                // $items = $elementsModel->getItems();
-
-                $items = $elementsModel->getData($formId);
-                $this->elements = is_array($items) ? $items : [];  // Force tableau
-
-                $this->elementsPagination = $elementsModel->getPagination() ?? null;
-                $this->pagination         = $elementsModel->getPagination() ?? null;
-
-                $state = $elementsModel->getState();
-                $this->state = ($state instanceof \Joomla\CMS\MVC\Model\ListModel) ? $state : null;
-                // OU simplement :
-                // $this->state = $elementsModel->getState() ?? new \stdClass();
-
-            } catch (\Throwable $e) {
-                // Message visible pour le dev/admin
-                Factory::getApplication()->enqueueMessage(
-                    'Erreur lors du chargement des éléments : ' . $e->getMessage(),
-                    'warning'
-                );
-
-                // Valeurs de secours pour éviter tout plantage dans le template
-                $this->elements           = [];
-                $this->elementsPagination = null;
-                $this->pagination         = null;
-                $this->state              = null;
+                $this->elements   = (array) $elementsModel->getData($formId);
+                $this->elementsPagination   = $elementsModel->getPagination() ?? null;
+                $this->pagination           = $elementsModel->getPagination() ?? null;
+                $this->state                = $elementsModel->getState();
             }
-        } else {
-            // Nouveau formulaire → pas d'éléments
-            $this->elements           = [];
-            $this->elementsPagination = null;
-            $this->pagination         = null;
-            $this->state              = null;
+        } catch (\Throwable $e) {
+            Factory::getApplication()->enqueueMessage(
+                'Erreur lors du chargement des éléments : ' . $e->getMessage(),
+                'warning'
+            );
         }
-
 
         $isNew = ($formId < 1);
         $text  = $isNew ? Text::_('COM_CONTENTBUILDER_NEW') : Text::_('COM_CONTENTBUILDER_EDIT');

@@ -200,6 +200,7 @@ class FormController extends BaseFormController
      * (Optionnel) Publish/unpublish sur écran d'édition.
      * Idéalement à mettre dans FormsController (AdminController) pour du multi-cid[].
      */
+    /*
     public function publish()
     {
         try {
@@ -252,7 +253,8 @@ class FormController extends BaseFormController
             $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false));
             return false;
         }
-    }
+    }*/
+        
 
     public function editable_include(): void
     {
@@ -266,7 +268,7 @@ class FormController extends BaseFormController
     // ==================================================================
 
     // Ces tâches agissent sur les éléments sélectionnés dans l'édition d'un form
-    // Elles doivent utiliser ElementoptionsModel
+    // Elles doivent utiliser ElementoptionModel
 
     private function getElementsModel()
     {

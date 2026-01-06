@@ -25,10 +25,10 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 <div style="float:right" class="mb-3">
     <input type="button" class="btn btn-sm btn-primary w-25" value="<?php echo Text::_('COM_CONTENTBUILDER_SAVE'); ?>"
-        onclick="document.adminForm.task.value='save';document.adminForm.submit();" />
+        onclick="document.adminForm.task.value='user.save';document.adminForm.submit();" />
     <input type="button" class="btn btn-sm btn-primary w-25"
         value="<?php echo Text::_('COM_CONTENTBUILDER_CANCEL'); ?>"
-        onclick="document.adminForm.task.value='cancel';document.adminForm.submit();" />
+        onclick="document.adminForm.task.value='user.cancel';document.adminForm.submit();" />
 </div>
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">

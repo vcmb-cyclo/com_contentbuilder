@@ -12,15 +12,12 @@ namespace CB\Component\Contentbuilder\Administrator\View\User;
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {
     function display($tpl = null)
     {
-        echo '<link rel="stylesheet" href="' . Uri::root(true) . '/media/com_contentbuilder/css/bluestork.fix.css" type="text/css" />';
-
         // Get data from the model
         $subject = $this->get('Data');
         $this->subject = $subject;

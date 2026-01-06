@@ -14,7 +14,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
 use Joomla\CMS\Factory;
 
 /**
@@ -86,8 +86,8 @@ class HtmlView extends BaseHtmlView
     protected function addStylesheet()
     {
         // Chargement d'un CSS fixe pour bluestork si nécessaire (sinon à supprimer)
-        $document = Factory::getDocument();
-        $document->addStyleSheet(Uri::root(true) . '/media/com_ontentbuilder/css/bluestork.fix.css');
+        // $document = Factory::getDocument();
+        // $document->addStyleSheet(Uri::root(true) . '/media/com_ontentbuilder/css/bluestork.fix.css');
     }
 
     /**

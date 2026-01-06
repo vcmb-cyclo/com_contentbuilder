@@ -45,7 +45,7 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
     };
 
     function saveorder(n, task) {
-        checkAll_button(n, 'listsaveorder');
+        checkAll_button(n, 'storage.listsaveorder');
     }
 
     function listItemTask(id, task) {
@@ -63,20 +63,20 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
             cb.checked = true;
             f.boxchecked.value = 1;
             switch (task) {
-                case 'delete':
-                    task = 'listdelete';
+                case 'storage.delete':
+                    task = 'storage.listdelete';
                     break;
                 case 'publish':
-                    task = 'listpublish';
+                    task = 'storage.listpublish';
                     break;
                 case 'unpublish':
-                    task = 'listunpublish';
+                    task = 'storage.listunpublish';
                     break;
                 case 'orderdown':
-                    task = 'listorderdown';
+                    task = 'storage.listorderdown';
                     break;
                 case 'orderup':
-                    task = 'listorderup';
+                    task = 'storage.listorderup';
                     break;
             }
 
@@ -86,12 +86,8 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
     }
 
     function submitbutton(task) {
-
-      // Joomla 4/5 envoie "storage.apply", "storage.save", etc.
-      const shortTask = (task || '').split('.').pop();
-
-
-        if (shortTask == 'delete') {
+    
+        if (task == 'storage.delete') {
             task = 'storage.listdelete';
         }
 
@@ -102,18 +98,18 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
             }
         }
 
-        switch (shortTask) {
-            case 'cancel':
-            case 'listdelete':
-            case 'listpublish':
-            case 'listunpublish':
-            case 'listorderdown':
-            case 'listorderup':
+        switch (task) {
+            case 'storage.cancel':
+            case 'storage.listdelete':
+            case 'storage.listpublish':
+            case 'storage.listunpublish':
+            case 'storage.listorderdown':
+            case 'storage.listorderup':
                 Joomla.submitform(task);
                 break;
-            case 'save':
-            case 'save2New':
-            case 'apply':
+            case 'storage.save':
+            case 'storage.save2New':
+            case 'storage.apply':
                 var error = false;
                 var nodes = document.adminForm['cid[]'];
 

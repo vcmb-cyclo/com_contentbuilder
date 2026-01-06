@@ -31,7 +31,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 <script type="text/javascript">
     function saveorder(n, task) {
         console.log('saveorder called with n=', n, 'task=', task);
-        Joomla.checkAll(n, 'listsaveorder');
+        Joomla.checkAll(n, 'form.listsaveorder');
 
         var form = document.adminForm;
         
@@ -67,17 +67,17 @@ $___tableOrdering = "Joomla.tableOrdering = function";
             f.boxchecked.value = 1;
 
             switch (task) {
-                case 'publish':
-                    task = 'listpublish';
+                case 'form.publish':
+                    task = 'form.listpublish';
                     break;
-                case 'unpublish':
-                    task = 'listunpublish';
+                case 'form.unpublish':
+                    task = 'form.listunpublish';
                     break;
-                case 'orderdown':
-                    task = 'listorderdown';
+                case 'form.orderdown':
+                    task = 'form.listorderdown';
                     break;
-                case 'orderup':
-                    task = 'listorderup';
+                case 'form.orderup':
+                    task = 'form.listorderup';
                     break;
             }
 
@@ -90,36 +90,31 @@ $___tableOrdering = "Joomla.tableOrdering = function";
       const form = document.getElementById('adminForm') || document.adminForm;
       if (!form) return;
 
-      // Joomla 4/5 envoie "storage.apply", "storage.save", etc.
-      const shortTask = (task || '').split('.').pop();
-
-              
-        if (shortTask == 'remove') {
-            task = 'listremove';
+        if (task == 'form.remove') {
+            task = 'form.listremove';
         }
 
         
-      // Ici tu gardes ta logique de validation, mais basée sur shortTask
-      switch (shortTask) {
-            case 'cancel':
-            case 'listpublish':
-            case 'listunpublish':
-            case 'listorderdown':
-            case 'listorderup':
-            case 'listremove':
-            case 'list_include':
-            case 'no_list_include':
-            case 'search_include':
-            case 'no_search_include':
-            case 'linkable':
-            case 'not_linkable':
-            case 'editable':
-            case 'not_editable':
+      switch (task) {
+            case 'form.cancel':
+            case 'form.listpublish':
+            case 'form.listunpublish':
+            case 'form.listorderdown':
+            case 'form.listorderup':
+            case 'form.listremove':
+            case 'form.list_include':
+            case 'form.no_list_include':
+            case 'form.search_include':
+            case 'form.no_search_include':
+            case 'form.linkable':
+            case 'form.not_linkable':
+            case 'form.editable':
+            case 'form.not_editable':
                 Joomla.submitform(task);
                 break;
-            case 'save':
-            case 'save2New':
-            case 'apply':
+            case 'form.save':
+            case 'form.save2New':
+            case 'form.apply':
                 var error = false;
                 var nodes = document.adminForm['cid[]'];
 

@@ -14,7 +14,6 @@ namespace CB\Component\Contentbuilder\Administrator\Model;
 
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\MVC\Model\ListModel;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use Joomla\Database\QueryInterface;
@@ -112,9 +111,6 @@ class FormsModel extends ListModel
         return $orderby;
     }
 
-
-
-
     public function saveOrder()
     {
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
@@ -143,7 +139,7 @@ class FormsModel extends ListModel
         $row->reorder();
     }
 
-
+    // Tag non standard.
     public function getTags()
     {
         $db = $this->_db;

@@ -66,19 +66,19 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 	function contentbuilder_state() {
 		document.getElementById('controller').value = 'edit';
 		document.getElementById('view').value = 'edit';
-		document.getElementById('task').value = 'state';
+		document.getElementById('task').value = 'list.state';
 		document.adminForm.submit();
 	}
 	function contentbuilder_publish() {
 		document.getElementById('controller').value = 'edit';
 		document.getElementById('view').value = 'edit';
-		document.getElementById('task').value = 'publish';
+		document.getElementById('task').value = 'list.publish';
 		document.adminForm.submit();
 	}
 	function contentbuilder_language() {
 		document.getElementById('controller').value = 'edit';
 		document.getElementById('view').value = 'edit';
-		document.getElementById('task').value = 'language';
+		document.getElementById('task').value = 'list.language';
 		document.adminForm.submit();
 	}
 	function contentbuilder_delete() {
@@ -86,7 +86,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 		if (confirmed) {
 			document.getElementById('controller').value = 'edit';
 			document.getElementById('view').value = 'edit';
-			document.getElementById('task').value = 'delete';
+			document.getElementById('task').value = 'list.delete';
 			document.adminForm.submit();
 		}
 	}
@@ -445,8 +445,8 @@ echo Route::_($szRoute); ?>" method="<?php echo $___getpost; ?>" name="adminForm
 				$row = $this->items[$i];
 				$link = Route::_('index.php?option=com_contentbuilder&view=details&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
 				$edit_link = Route::_('index.php?option=com_contentbuilder&view=edit&backtolist=1&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
-				$publish_link = Route::_('index.php?option=com_contentbuilder&view=edit&task=publish&backtolist=1&id=' . $this->form_id . '&list_publish=1&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
-				$unpublish_link = Route::_('index.php?option=com_contentbuilder&view=edit&task=publish&backtolist=1&id=' . $this->form_id . '&list_publish=0&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
+				$publish_link = Route::_('index.php?option=com_contentbuilder&view=edit&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=1&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
+				$unpublish_link = Route::_('index.php?option=com_contentbuilder&view=edit&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=0&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'));
 				$select = '<input class="form-check-input" type="checkbox" name="cid[]" value="' . $row->colRecord . '"/>';
 				?>
 				<tr class="<?php echo "row$k"; ?>">
