@@ -198,24 +198,31 @@ class FormController extends BaseFormController
 
 
     // ==================================================================
-    // Toutes les tâches sur les ÉLÉMENTS (champs du formulaire)
+    // Toutes les tâches sur la liste des ÉLÉMENTS (champs du formulaire)
     // ==================================================================
     // Ces tâches agissent sur les éléments sélectionnés dans l'édition d'un form
-    // Elles doivent utiliser ElementoptionModel
-
+    // Elles doivent utiliser Elements
     public function listorderup(): void
     {
-        $model = $this->getModel('Elementoption', 'Administrator');
+        $model = $this->getModel('Elements', 'Administrator');
         $model->move(-1); // ou utilise reorder si tu préfères
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false));
     }
 
     public function listorderdown(): void
     {
-        $model = $this->getModel('Elementoption', 'Administrator');
+        $model = $this->getModel('Elements', 'Administrator');
         $model->move(1);
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false));
     }
+
+
+    // ==================================================================
+    // Toutes les tâches sur les ÉLÉMENTS (champs du formulaire)
+    // ==================================================================
+    // Ces tâches agissent sur les éléments sélectionnés dans l'édition d'un form
+    // Elles doivent utiliser ElementoptionModel
+
 
     public function listsaveorder(): void
     {

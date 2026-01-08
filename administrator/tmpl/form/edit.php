@@ -243,7 +243,6 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <div></div>
 
                             <div class="alert">
-
                                 <label for="name">
                                     <b>
                                         <?php echo Text::_('COM_CONTENTBUILDER_FORM_SOURCE'); ?>:

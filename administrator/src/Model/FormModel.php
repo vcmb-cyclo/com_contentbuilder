@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ContentBuilder Form Model.
  *
@@ -19,9 +20,6 @@ namespace CB\Component\Contentbuilder\Administrator\Model;
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Utilities\ArrayHelper;
@@ -29,14 +27,14 @@ use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Table\Table;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\MVC\Model\AdminModel;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\Helper\Logger;
 use CB\Component\Contentbuilder\Administrator\Table\FormTable;
 use CB\Component\Contentbuilder\Administrator\Table\ElementoptionTable;
 
-class FormModel extends BaseDatabaseModel
+class FormModel extends AdminModel
 {
     private $_form_data = null;
 
@@ -59,15 +57,16 @@ class FormModel extends BaseDatabaseModel
         parent::__construct($config);
 
         $this->option = 'com_contentbuilder';
-        
+
+        /*
         $app   = Factory::getApplication();
         $input = $app->input;
 
         $cid = $input->get('cid', [0], 'array');
         $id  = $input->getInt('id', 0);
 
-        $this->setId((int)($id ?: (int)reset($cid)));
-/*
+        $this->setId((int)($id ?: (int)reset($cid)));*/
+        /*
         $mainframe = Factory::getApplication();
         $option = 'com_contentbuilder';
 
@@ -96,6 +95,17 @@ class FormModel extends BaseDatabaseModel
         $this->setState('elements_filter_state', $filter_state);*/
     }
 
+    protected function populateState()
+    {
+        parent::populateState();
+
+        $app = Factory::getApplication();
+        $id  = $app->input->getInt('id', 0);
+
+        $this->setState($this->getName() . '.id', $id);
+    }
+
+
     /**
      * Joomla 6 compatibility:
      * Force direct table instantiation because MVCFactory
@@ -115,6 +125,20 @@ class FormModel extends BaseDatabaseModel
         return parent::getTable($name, $prefix, $options);
     }
 
+    public function getForm($data = [], $loadData = true)
+    {
+        return $this->loadForm(
+            'com_contentbuilder.form',
+            'form',
+            ['control' => 'jform', 'load_data' => $loadData]
+        );
+    }
+
+    protected function loadFormData()
+    {
+        // Si tu veux rester legacy, tu peux renvoyer ton item
+        return (array) $this->getItem();
+    }
 
     public function reorder($pks = null, $delta = 0)
     {
@@ -265,6 +289,11 @@ class FormModel extends BaseDatabaseModel
 
     public function getItem($pk = null)
     {
+
+        if ($pk === null) {
+            $pk = (int) $this->getState($this->getName() . '.id');
+        }
+
         // Optionnel: si $pk est fourni, mets à jour l'id
         if ($pk !== null) {
             $this->setId((int) $pk);
@@ -520,18 +549,27 @@ class FormModel extends BaseDatabaseModel
         return $options;
     }
 
+    public function save($data)
+    {
+        return $this->store();
+    }
 
-    function store()
+    public function store()
     {
         $db = Factory::getContainer()->get(DatabaseInterface::class);
         error_log('MVCFactory=' . (is_object($this->getMVCFactory()) ? get_class($this->getMVCFactory()) : 'NULL'));
         error_log('getTable(Form) from ' . __METHOD__);
 
         $row = $this->getTable('Form', '');
-        $form = $this->getItem();
         $form_id = 0;
 
         $data = CBRequest::get('post');
+
+        $input = Factory::getApplication()->getInput();
+        $id    = $input->getInt('id', 0);
+
+        $form  = $this->getItem($id);
+
         $data['details_template'] = CBRequest::getVar('details_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
         $data['editable_template'] = CBRequest::getVar('editable_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
         $data['details_prepare'] = CBRequest::getVar('details_prepare', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
@@ -543,7 +581,6 @@ class FormModel extends BaseDatabaseModel
 
         #### SETTINGS
         $data['create_articles'] = CBRequest::getInt('create_articles', 0);
-
         $data['protect_upload_directory'] = CBRequest::getInt('protect_upload_directory', 0);
 
         //$data['upload_directory'] = JPATH_SITE .'/media/contentbuilder/upload';
@@ -902,7 +939,7 @@ class FormModel extends BaseDatabaseModel
             $this->setError($e->getMessage());
             return false;
         }
-      
+
         $form_id = 0;
 
         try {
@@ -965,7 +1002,7 @@ class FormModel extends BaseDatabaseModel
 
         $row->reorder();
 
-        
+
         $item_wrapper = CBRequest::getVar('itemWrapper', '', 'POST', 'ARRAY', CBREQUEST_ALLOWRAW);
         $wordwrap = CBRequest::getVar('itemWordwrap', array(), 'post', 'array');
         $labels = CBRequest::getVar('itemLabels', array(), 'post', 'array');
@@ -982,11 +1019,11 @@ class FormModel extends BaseDatabaseModel
     }
 
 
-    public function delete(array $pks): bool
+    public function delete(&$pks)
     {
         if (empty($pks)) {
             throw new \RuntimeException(
-              Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
+                Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
             );
         }
 
@@ -1208,24 +1245,6 @@ class FormModel extends BaseDatabaseModel
         return true;
     }
 
-    function getTotal()
-    {
-        // Load the content if it doesn't already exist
-        if (empty($this->_total)) {
-            $query = $this->_buildQuery();
-            $this->_total = $this->_getListCount($query);
-        }
-        return $this->_total;
-    }
-
-    function getPagination()
-    {
-        // Load the content if it doesn't already exist
-        if (empty($this->_pagination)) {
-            $this->_pagination = new Pagination($this->getTotal(), $this->getState('limitstart'), $this->getState('limit'));
-        }
-        return $this->_pagination;
-    }
 
     function listSaveOrder()
     {
@@ -1259,6 +1278,7 @@ class FormModel extends BaseDatabaseModel
     /**
      * Publie ou dépublie plusieurs formulaires
      */
+    /*
     public function publish(array $pks, int $value = 1): bool
     {
         $pks = (array) $pks;
@@ -1304,13 +1324,13 @@ class FormModel extends BaseDatabaseModel
         }
 
         return true;
-    }
+    }*/
 
     public function copy(array $pks): bool
     {
         if (empty($pks)) {
             throw new \RuntimeException(
-              Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
+                Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
             );
         }
 
@@ -1368,5 +1388,4 @@ class FormModel extends BaseDatabaseModel
 
         return true;
     }
-
 }

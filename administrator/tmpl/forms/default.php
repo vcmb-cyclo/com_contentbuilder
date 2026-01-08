@@ -111,7 +111,7 @@ Joomla.tableOrdering = function( order, dir, task ) {
                         <?php // TODO: change to draganddrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->items );   ?>
                     </th>
                     <th width="5">
-                        <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED'); ?>
+                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_PUBLISHED'), 'published', $this->lists['order_Dir'], $this->lists['order']); ?>
                     </th>
                 </tr>
             </thead>
