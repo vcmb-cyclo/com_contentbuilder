@@ -161,7 +161,7 @@ class FormsModel extends ListModel
     // Tag non standard.
     public function getTags()
     {
-        $db = $this->_db;
+        $db = $this->getDatabase();
         
         $query = $db->getQuery(true)
             ->select('DISTINCT tag AS tag')

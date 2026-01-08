@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ContentBuilder Form controller.
  *
@@ -22,8 +23,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\Controller\FormController as BaseFormController;
 use Joomla\CMS\Router\Route;
 use Joomla\Utilities\ArrayHelper;
-use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
 
 class FormController extends BaseFormController
 {
@@ -97,7 +96,7 @@ class FormController extends BaseFormController
 
             $this->setRedirect(
                 Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $id, false),
-                Text::_('JSAVE_SUCCESS'),
+                Text::_('JLIB_APPLICATION_SAVE_SUCCESS'),
                 'message'
             );
 
@@ -114,10 +113,6 @@ class FormController extends BaseFormController
         }
     }
 
-    /**
-     * Save : par défaut tu voulais rester sur l'édition (je garde ton comportement).
-     * Si tu veux retour liste, je te donne la ligne à changer juste après.
-     */
     public function save($key = null, $urlVar = null)
     {
         $model = $this->getModel('Form', '', ['ignore_request' => true]);
@@ -143,12 +138,12 @@ class FormController extends BaseFormController
             // ✅ Comportement actuel: rester sur l'édition
             $this->setRedirect(
                 Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $id, false),
-                Text::_('JSAVE_SUCCESS'),
+                Text::_('JLIB_APPLICATION_SAVE_SUCCESS'),
                 'message'
             );
 
             // 👉 Si tu veux plutôt revenir à la liste après Save :
-            // $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false), Text::_('JSAVE_SUCCESS'));
+            // $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false), Text::_('JLIB_APPLICATION_SAVE_SUCCESS'));
 
             return true;
         } catch (\Throwable $e) {
@@ -184,7 +179,7 @@ class FormController extends BaseFormController
 
             $this->setRedirect(
                 Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=0', false),
-                Text::_('JSAVE_SUCCESS'),
+                Text::_('JLIB_APPLICATION_SAVE_SUCCESS'),
                 'message'
             );
 
@@ -196,170 +191,160 @@ class FormController extends BaseFormController
         }
     }
 
-    /**
-     * (Optionnel) Publish/unpublish sur écran d'édition.
-     * Idéalement à mettre dans FormsController (AdminController) pour du multi-cid[].
-     */
-    /*
-    public function publish()
-    {
-        try {
-            $id = $this->input->getInt('id', 0);
-
-            if (!$id) {
-                $this->setMessage(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
-                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false));
-                return false;
-            }
-
-            $model = $this->getModel('Form', '');
-            $model->setPublished([$id]);
-
-            $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $id, false),
-                Text::_('COM_CONTENTBUILDER_PUBLISHED')
-            );
-
-            return true;
-        } catch (\Throwable $e) {
-            $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false));
-            return false;
-        }
-    }
-
-    public function unpublish()
-    {
-        try {
-            $id = $this->input->getInt('id', 0);
-
-            if (!$id) {
-                $this->setMessage(Text::_('JERROR_AN_ERROR_HAS_OCCURRED'), 'error');
-                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false));
-                return false;
-            }
-
-            $model = $this->getModel('Form', '');
-            $model->setUnpublished([$id]);
-
-            $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $id, false),
-                Text::_('COM_CONTENTBUILDER_UNPUBLISHED')
-            );
-
-            return true;
-        } catch (\Throwable $e) {
-            $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false));
-            return false;
-        }
-    }*/
-        
-
     public function editable_include(): void
     {
         $this->editable();
     }
 
 
-
     // ==================================================================
     // Toutes les tâches sur les ÉLÉMENTS (champs du formulaire)
     // ==================================================================
-
     // Ces tâches agissent sur les éléments sélectionnés dans l'édition d'un form
     // Elles doivent utiliser ElementoptionModel
 
-    private function getElementsModel()
-    {
-        return $this->getModel('Elementoption', 'Contentbuilder');
-    }
-
     public function listorderup(): void
     {
-        $model = $this->getElementsModel();
+        $model = $this->getModel('Elementoption', 'Administrator');
         $model->move(-1); // ou utilise reorder si tu préfères
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false));
     }
 
     public function listorderdown(): void
     {
-        $model = $this->getElementsModel();
+        $model = $this->getModel('Elementoption', 'Administrator');
         $model->move(1);
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false));
     }
 
     public function listsaveorder(): void
     {
-        $model = $this->getElementsModel();
+        $model = $this->getModel('Elementoption', 'Administrator');
         $model->saveorder($this->input->get('cid', [], 'array'), $this->input->get('order', [], 'array'));
         $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false));
     }
 
     // Les tâches batch sur les éléments (linkable, editable, etc.)
-    // Tu peux les factoriser ou les garder séparées
-
-    public function linkable(): void
+     public function linkable(): void
     {
-        $this->batchElementUpdate('linkable', 1);
+        $this->elementsUpdate('linkable', 1);
     }
 
     public function not_linkable(): void
     {
-        $this->batchElementUpdate('linkable', 0);
+        $this->elementsUpdate('linkable', 0);
     }
 
     public function editable(): void
     {
-        $this->batchElementUpdate('editable', 1);
+        $this->elementsUpdate('editable', 1);
     }
 
     public function not_editable(): void
     {
-        $this->batchElementUpdate('editable', 0);
+        $this->elementsUpdate('editable', 0);
     }
 
     public function list_include(): void
     {
-        $this->batchElementUpdate('list_include', 1);
+        $this->elementsUpdate('list_include', 1);
     }
 
     public function no_list_include(): void
     {
-        $this->batchElementUpdate('list_include', 0);
+        $this->elementsUpdate('list_include', 0);
     }
 
     public function search_include(): void
     {
-        $this->batchElementUpdate('search_include', 1);
+        $this->elementsUpdate('search_include', 1);
     }
 
     public function no_search_include(): void
     {
-        $this->batchElementUpdate('search_include', 0);
+        $this->elementsUpdate('search_include', 0);
     }
 
-    // Devrait migrer dans Element*Controller.
-    private function batchElementUpdate(string $field, int $value): void
+    public function listpublish(): bool
     {
-        $cids = $this->input->get('cid', [], 'array');
-        ArrayHelper::toInteger($cids);
-
-        if ($cids) {
-            $db = Factory::getContainer()->get(DatabaseInterface::class);
-
-            $query = $db->getQuery(true)
-                ->update($db->quoteName('#__contentbuilder_elements'))
-                ->set($db->quoteName($field) . ' = ' . (int) $value)
-                ->where($db->quoteName('id') . ' IN (' . implode(',', $cids) . ')');
-
-            $db->setQuery($query);
-            $db->execute();
-        }
-
-        $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $this->input->getInt('id'), false)
-        );
+        return $this->elementsPublish(1, 'COM_CONTENTBUILDER_PUBLISHED');
     }
-    
+
+    public function listunpublish(): bool
+    {
+        return $this->elementsPublish(0, 'COM_CONTENTBUILDER_UNPUBLISHED');
+    }
+
+    public function publish(): bool
+    {
+        return $this->elementsPublish(1, 'COM_CONTENTBUILDER_PUBLISHED');
+    }
+
+    public function unpublish(): bool
+    {
+        return $this->elementsPublish(0, 'COM_CONTENTBUILDER_UNPUBLISHED');
+    }
+
+
+    // Devrait migrer dans Element*Controller ?
+    private function elementsUpdate(string $field, int $value): bool
+    {
+        try {
+            $cids = $this->input->get('cid', [], 'array');
+            $formId = (int) $this->input->getInt('id');
+            ArrayHelper::toInteger($cids);
+
+            $formId = $this->input->getInt('id');
+
+            if (empty($cids)) {
+                $this->setMessage(Text::_('JERROR_NO_ITEMS_SELECTED'), 'error');
+                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form'. '&id=' . $formId, false));
+                return false;
+            }
+
+            $model = $this->getModel('Elementoption', 'Administrator', ['ignore_request' => true]);
+            $model->fieldUpdate($cids, $field, $value);
+
+            $this->setRedirect(
+                Route::_('index.php?option=com_contentbuilder&view=' . $this->view_item . '&id=' . $formId, false),
+                Text::_('JLIB_APPLICATION_SAVE_SUCCESS')
+            );
+            return true;
+        } catch (\Throwable $e) {
+            $this->setMessage($e->getMessage(), 'warning');
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form'. '&id=' . $formId, false));
+            return false;
+        }
+    }
+
+    // Passe par le modèle.
+    private function elementsPublish(int $state, string $successMsgKey)
+    {
+        try {
+            $cids = $this->input->get('cid', [], 'array');
+            ArrayHelper::toInteger($cids);
+
+            $formId = (int) $this->input->getInt('id');
+
+            if (empty($cids)) {
+                $this->setMessage(Text::_('JERROR_NO_ITEMS_SELECTED'), 'error');
+                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form'. '&id=' .$formId, false));
+                return false;
+            }
+
+            $model = $this->getModel('Elementoption', 'Administrator', ['ignore_request' => true]);
+            $model->publish($cids, $state);
+
+            $this->setRedirect(
+                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' .$formId, false),
+                Text::_($successMsgKey)
+            );
+
+            return true;
+        } catch (\Throwable $e) {
+            $this->setMessage($e->getMessage(), 'warning');
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form', false));
+            return false;
+        }
+    }
 }

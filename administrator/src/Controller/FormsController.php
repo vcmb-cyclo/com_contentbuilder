@@ -73,7 +73,6 @@ final class FormsController extends AdminController
     }
 
     /**
-     * Méthode REQUISE par ReorderTrait
      * Retourne les conditions pour limiter le reorder aux enregistrements du même groupe
      * Si tu veux que TOUS les forms soient réordonnés ensemble (pas de groupe), retourne un tableau vide ou ['1 = 1']
      */

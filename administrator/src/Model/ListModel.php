@@ -272,10 +272,10 @@ class ListModel extends BaseDatabaseModel
                   if ($data->initial_sort_order == 'Rand' &&
                         (empty($data->rand_date_update) || $now->toUnix() - strtotime($data->rand_date_update) >= $data->rand_update)
                     ) {
-                        $this->_db->setQuery("UPDATE #__contentbuilder_records SET rand_date = '" . $___now . "' + interval rand()*10000 day Where `type` = " . $this->_db->Quote($data->type) . " And reference_id = " . $this->_db->Quote($data->reference_id));
-                        $this->_db->execute();
-                        $this->_db->setQuery("Update #__contentbuilder_forms Set rand_date_update = '" . $___now . "'");
-                        $this->_db->execute();
+                        $this->getDatabase()->setQuery("UPDATE #__contentbuilder_records SET rand_date = '" . $___now . "' + interval rand()*10000 day Where `type` = " . $this->getDatabase()->Quote($data->type) . " And reference_id = " . $this->getDatabase()->Quote($data->reference_id));
+                        $this->getDatabase()->execute();
+                        $this->getDatabase()->setQuery("Update #__contentbuilder_forms Set rand_date_update = '" . $___now . "'");
+                        $this->getDatabase()->execute();
                     }
 
                     $data->labels = $data->form->getElementLabels();
@@ -472,7 +472,7 @@ class ListModel extends BaseDatabaseModel
 
                     $ids = array();
                     foreach ($data->labels as $reference_id => $label) {
-                        $ids[] = $this->_db->Quote($reference_id);
+                        $ids[] = $this->getDatabase()->Quote($reference_id);
                     }
                     $searchable_elements = ContentbuilderLegacyHelper::getListSearchableElements($this->_id);
                     $data->display_filter = count($searchable_elements) && $data->show_filter;
@@ -480,8 +480,8 @@ class ListModel extends BaseDatabaseModel
                     $data->labels = array();
                     $order_types = array();
                     if (count($ids)) {
-                        $this->_db->setQuery("Select Distinct `id`,`label`, reference_id, `order_type` From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 And list_include = 1 Order By ordering");
-                        $rows = $this->_db->loadAssocList();
+                        $this->getDatabase()->setQuery("Select Distinct `id`,`label`, reference_id, `order_type` From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 And list_include = 1 Order By ordering");
+                        $rows = $this->getDatabase()->loadAssocList();
                         $ids = array();
                         foreach ($rows as $row) {
                             // cleaned up, in desired order

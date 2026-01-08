@@ -114,7 +114,7 @@ class HtmlView extends BaseHtmlView
         $this->theme_plugins              = $this->get('ThemePlugins') ?? [];
 
         HTMLHelper::_('behavior.keepalive');
-
+        $this->setLayout('edit');
         parent::display($tpl);
     }
 

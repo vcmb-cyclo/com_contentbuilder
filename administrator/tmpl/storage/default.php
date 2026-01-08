@@ -493,7 +493,7 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                         for ($i = 0; $i < $n; $i++) {
                             $row = $this->elements[$i];
                             $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                            $published = ContentbuilderHelper::listPublish($row, $i);
+                            $published = ContentbuilderHelper::listPublish('storage', $row, $i);
                             ?>
                             <tr class="<?php echo "row$k"; ?>">
                                 <td>

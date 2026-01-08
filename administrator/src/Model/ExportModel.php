@@ -288,11 +288,11 @@ class ExportModel extends BaseDatabaseModel
                     $order_types = array();
                     $ids = array();
                     foreach($data->labels As $reference_id => $label){
-                        $ids[] = $this->_db->Quote($reference_id);
+                        $ids[] = $this->getDatabase()->Quote($reference_id);
                     }
                     if(count($ids)){
-                        $this->_db->setQuery("Select Distinct `id`,`label`, reference_id, `order_type` From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
-                        $rows = $this->_db->loadAssocList();
+                        $this->getDatabase()->setQuery("Select Distinct `id`,`label`, reference_id, `order_type` From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
+                        $rows = $this->getDatabase()->loadAssocList();
                         $ids = array();
                         foreach($rows As $row){
                            // cleaned up, in desired order

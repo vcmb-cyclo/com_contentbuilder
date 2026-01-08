@@ -54,16 +54,16 @@ class UserModel extends BaseDatabaseModel
         if (count($items)) {
             $cids = $items;
             foreach($cids As $cid){
-                $this->_db->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
-                if(!$this->_db->loadResult() && CBRequest::getInt('form_id',0) && $cid){
-                    $this->_db->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
-                    $this->_db->execute();
+                $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
+                if(!$this->getDatabase()->loadResult() && CBRequest::getInt('form_id',0) && $cid){
+                    $this->getDatabase()->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
+                    $this->getDatabase()->execute();
                 }
             }
             
-            $this->_db->setQuery( ' Update #__contentbuilder_users '.
+            $this->getDatabase()->setQuery( ' Update #__contentbuilder_users '.
                         '  Set verified_view = 1 Where form_id = '.$this->_form_id.' And userid In ( '.implode(',', $items) . ')' );
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
     
@@ -75,16 +75,16 @@ class UserModel extends BaseDatabaseModel
             
             $cids = $items;
             foreach($cids As $cid){
-                $this->_db->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
-                if(!$this->_db->loadResult() && CBRequest::getInt('form_id',0) && $cid){
-                    $this->_db->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
-                    $this->_db->execute();
+                $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
+                if(!$this->getDatabase()->loadResult() && CBRequest::getInt('form_id',0) && $cid){
+                    $this->getDatabase()->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
+                    $this->getDatabase()->execute();
                 }
             }
             
-            $this->_db->setQuery( ' Update #__contentbuilder_users '.
+            $this->getDatabase()->setQuery( ' Update #__contentbuilder_users '.
                         '  Set verified_view = 0 Where form_id = '.$this->_form_id.' And userid In ( '.implode(',', $items) . ')' );
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -95,16 +95,16 @@ class UserModel extends BaseDatabaseModel
         if (count($items)) {
             $cids = $items;
             foreach($cids As $cid){
-                $this->_db->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
-                if(!$this->_db->loadResult() && CBRequest::getInt('form_id',0) && $cid){
-                    $this->_db->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
-                    $this->_db->execute();
+                $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
+                if(!$this->getDatabase()->loadResult() && CBRequest::getInt('form_id',0) && $cid){
+                    $this->getDatabase()->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
+                    $this->getDatabase()->execute();
                 }
             }
             
-            $this->_db->setQuery( ' Update #__contentbuilder_users '.
+            $this->getDatabase()->setQuery( ' Update #__contentbuilder_users '.
                         '  Set verified_new = 1 Where form_id = '.$this->_form_id.' And userid In ( '.implode(',', $items) . ')' );
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
     
@@ -116,16 +116,16 @@ class UserModel extends BaseDatabaseModel
             
             $cids = $items;
             foreach($cids As $cid){
-                $this->_db->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
-                if(!$this->_db->loadResult() && CBRequest::getInt('form_id',0) && $cid){
-                    $this->_db->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
-                    $this->_db->execute();
+                $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
+                if(!$this->getDatabase()->loadResult() && CBRequest::getInt('form_id',0) && $cid){
+                    $this->getDatabase()->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
+                    $this->getDatabase()->execute();
                 }
             }
             
-            $this->_db->setQuery( ' Update #__contentbuilder_users '.
+            $this->getDatabase()->setQuery( ' Update #__contentbuilder_users '.
                         '  Set verified_new = 0 Where form_id = '.$this->_form_id.' And userid In ( '.implode(',', $items) . ')' );
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
     
@@ -136,16 +136,16 @@ class UserModel extends BaseDatabaseModel
         if (count($items)) {
             $cids = $items;
             foreach($cids As $cid){
-                $this->_db->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
-                if(!$this->_db->loadResult() && CBRequest::getInt('form_id',0) && $cid){
-                    $this->_db->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
-                    $this->_db->execute();
+                $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
+                if(!$this->getDatabase()->loadResult() && CBRequest::getInt('form_id',0) && $cid){
+                    $this->getDatabase()->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
+                    $this->getDatabase()->execute();
                 }
             }
             
-            $this->_db->setQuery( ' Update #__contentbuilder_users '.
+            $this->getDatabase()->setQuery( ' Update #__contentbuilder_users '.
                         '  Set verified_edit = 1 Where form_id = '.$this->_form_id.' And userid In ( '.implode(',', $items) . ')' );
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
     
@@ -157,16 +157,16 @@ class UserModel extends BaseDatabaseModel
             
             $cids = $items;
             foreach($cids As $cid){
-                $this->_db->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
-                if(!$this->_db->loadResult() && CBRequest::getInt('form_id',0) && $cid){
-                    $this->_db->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
-                    $this->_db->execute();
+                $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . $cid);
+                if(!$this->getDatabase()->loadResult() && CBRequest::getInt('form_id',0) && $cid){
+                    $this->getDatabase()->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", $cid, 1)");
+                    $this->getDatabase()->execute();
                 }
             }
             
-            $this->_db->setQuery( ' Update #__contentbuilder_users '.
+            $this->getDatabase()->setQuery( ' Update #__contentbuilder_users '.
                         '  Set verified_edit = 0 Where form_id = '.$this->_form_id.' And userid In ( '.implode(',', $items) . ')' );
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
     
@@ -176,8 +176,8 @@ class UserModel extends BaseDatabaseModel
         if (empty( $this->_data ))
         {
             $query = $this->_buildQuery();
-            $this->_db->setQuery($query);
-            $this->_data = $this->_db->loadObject();
+            $this->getDatabase()->setQuery($query);
+            $this->_data = $this->getDatabase()->loadObject();
             
             if($this->_data->published === null){
                 $this->_data->published = 1;
@@ -191,11 +191,11 @@ class UserModel extends BaseDatabaseModel
     function store()
     {
         $insert = 0;
-        $this->_db->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . CBRequest::getInt('joomla_userid',0));
-        if(!$this->_db->loadResult() && CBRequest::getInt('form_id',0) && CBRequest::getInt('joomla_userid',0)){
-            $this->_db->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", ".CBRequest::getInt('joomla_userid',0).", 1)");
-            $this->_db->execute();
-            $insert = $this->_db->insertid();
+        $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where form_id = ".CBRequest::getInt('form_id',0)." And userid = " . CBRequest::getInt('joomla_userid',0));
+        if(!$this->getDatabase()->loadResult() && CBRequest::getInt('form_id',0) && CBRequest::getInt('joomla_userid',0)){
+            $this->getDatabase()->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (".CBRequest::getInt('form_id',0).", ".CBRequest::getInt('joomla_userid',0).", 1)");
+            $this->getDatabase()->execute();
+            $insert = $this->getDatabase()->insertid();
         }
         
         $data = CBRequest::get( 'post' );
@@ -217,19 +217,19 @@ class UserModel extends BaseDatabaseModel
         $row = $this->getTable('Cbuser');
         
         if (!$row->bind($data)) {
-            $this->setError($this->_db->getErrorMessage());
+            $this->setError($this->getDatabase()->getErrorMessage());
             return false;
         }
 
         if (!$row->check()) {
-            $this->setError($this->_db->getErrorMessage());
+            $this->setError($this->getDatabase()->getErrorMessage());
             return false;
         }
         
         $storeRes = $row->store();
 
         if (!$storeRes) {
-            $this->setError($this->_db->getErrorMessage());
+            $this->setError($this->getDatabase()->getErrorMessage());
             return false;
         }
         

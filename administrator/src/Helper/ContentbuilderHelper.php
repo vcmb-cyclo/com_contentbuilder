@@ -499,11 +499,12 @@ class ContentbuilderHelper
         return $value;
     }
 
-    public static function listIncludeInList($row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish', $prefix = '')
+    public static function listIncludeInList($domain, $row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish', $prefix = '')
     {
-
         $icon = $row->list_include ? $publish_icon : $unpublish_icon;
-        $task = $row->list_include ? 'no_list_include' : 'list_include';
+        $taskName = $row->list_include ? 'no_list_include' : 'list_include';
+        $task = $domain . '.' . $taskName;
+
         $action = $row->list_include ? Text::_('COM_CONTENTBUILDER_NO_LIST_INCLUDE') : Text::_('COM_CONTENTBUILDER_LIST_INCLUDE');
 
         $href = '
@@ -512,11 +513,12 @@ class ContentbuilderHelper
         return $href;
     }
 
-    public static function listIncludeInSearch($row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish', $prefix = '')
+    public static function listIncludeInSearch($domain, $row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish', $prefix = '')
     {
-
         $icon = $row->search_include ? $publish_icon : $unpublish_icon;
-        $task = $row->search_include ? 'no_search_include' : 'search_include';
+        $taskName = $row->search_include ? 'no_search_include' : 'search_include';
+        $task = $domain . '.' . $taskName;
+
         $action = $row->search_include ? Text::_('COM_CONTENTBUILDER_NO_SEARCH_INCLUDE') : Text::_('COM_CONTENTBUILDER_SEARCH_INCLUDE');
 
         $href = '
@@ -526,11 +528,12 @@ class ContentbuilderHelper
         return $href;
     }
 
-    public static function listLinkable($row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish', $prefix = '')
+    public static function listLinkable($domain, $row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish', $prefix = '')
     {
-
         $icon = $row->linkable ? $publish_icon : $unpublish_icon;
-        $task = $row->linkable ? 'not_linkable' : 'linkable';
+        $taskName = $row->linkable ? 'not_linkable' : 'linkable';
+        $task = $domain . '.' . $taskName;
+
         $action = $row->linkable ? Text::_('COM_CONTENTBUILDER_NOT_LINKABLE') : Text::_('COM_CONTENTBUILDER_LINKABLE');
 
         $href = '
@@ -540,11 +543,12 @@ class ContentbuilderHelper
         return $href;
     }
 
-    public static function listEditable($row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
+    public static function listEditable($domain, $row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
     {
-
         $icon = $row->editable ? $publish_icon : $unpublish_icon;
-        $task = $row->editable ? 'not_editable' : 'editable';
+        $taskName = $row->editable ? 'not_editable' : 'editable';
+        $task = $domain . '.' . $taskName;
+
         $action = $row->editable ? Text::_('COM_CONTENTBUILDER_NOT_EDITABLE') : Text::_('COM_CONTENTBUILDER_EDITABLE');
 
         $href = '
@@ -554,11 +558,12 @@ class ContentbuilderHelper
         return $href;
     }
 
-    public static function listVerifiedView($row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
+    public static function listVerifiedView($domain, $row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
     {
-
         $icon = $row->verified_view ? $publish_icon : $unpublish_icon;
-        $task = $row->verified_view ? 'not_verified_view' : 'verified_view';
+        $taskName = $row->verified_view ? 'not_verified_view' : 'verified_view';
+        $task = $domain . '.' . $taskName;
+
         $action = $row->verified_view ? Text::_('COM_CONTENTBUILDER_VERIFIED_VIEW') : Text::_('COM_CONTENTBUILDER_VERIFIED_VIEW');
 
         $href = '
@@ -568,11 +573,12 @@ class ContentbuilderHelper
         return $href;
     }
 
-    public static function listVerifiedNew($row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
+    public static function listVerifiedNew($domain, $row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
     {
-
         $icon = $row->verified_new ? $publish_icon : $unpublish_icon;
-        $task = $row->verified_new ? 'not_verified_new' : 'verified_new';
+        $taskName = $row->verified_new ? 'not_verified_new' : 'verified_new';
+        $task = $domain . '.' . $taskName;
+
         $action = $row->verified_new ? Text::_('COM_CONTENTBUILDER_VERIFIED_NEW') : Text::_('COM_CONTENTBUILDER_VERIFIED_NEW');
 
         $href = '
@@ -582,11 +588,12 @@ class ContentbuilderHelper
         return $href;
     }
 
-    public static function listVerifiedEdit($row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
+    public static function listVerifiedEdit($domain, $row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
     {
-
         $icon = $row->verified_edit ? $publish_icon : $unpublish_icon;
-        $task = $row->verified_edit ? 'not_verified_edit' : 'verified_edit';
+        $taskName = $row->verified_edit ? 'not_verified_edit' : 'verified_edit';
+        $task = $domain . '.' . $taskName;
+
         $action = $row->verified_edit ? Text::_('COM_CONTENTBUILDER_VERIFIED_EDIT') : Text::_('COM_CONTENTBUILDER_VERIFIED_EDIT');
 
         $href = '
@@ -596,11 +603,12 @@ class ContentbuilderHelper
         return $href;
     }
 
-    public static function listPublish($row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
+    public static function listPublish($domain, $row, $i, $publish_icon = 'icon-publish', $unpublish_icon = 'icon-unpublish',  $prefix = '')
     {
-
         $icon = $row->published ? $publish_icon : $unpublish_icon;
-        $task = $row->published ? 'unpublish' : 'publish';
+        $taskName = $row->published ? 'unpublish' : 'publish';
+        $task = $domain . '.' . $taskName;
+
         $action = $row->published ? Text::_('COM_CONTENTBUILDER_UNPUBLISH') : Text::_('COM_CONTENTBUILDER_PUBLISH');
 
         $href = '

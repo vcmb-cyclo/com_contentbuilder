@@ -63,9 +63,9 @@ class StoragesModel extends ListModel
     {
         $cids = CBRequest::getVar('cid', array(), '', 'array');
         ArrayHelper::toInteger($cids);
-        $this->_db->setQuery(' Update #__contentbuilder_storages ' .
+        $this->getDatabase()->setQuery(' Update #__contentbuilder_storages ' .
             '  Set published = 1 Where id In ( ' . implode(',', $cids) . ')');
-        $this->_db->execute();
+        $this->getDatabase()->execute();
 
     }
 
@@ -73,9 +73,9 @@ class StoragesModel extends ListModel
     {
         $cids = CBRequest::getVar('cid', array(), '', 'array');
         ArrayHelper::toInteger($cids);
-        $this->_db->setQuery(' Update #__contentbuilder_storages ' .
+        $this->getDatabase()->setQuery(' Update #__contentbuilder_storages ' .
             '  Set published = 0 Where id In ( ' . implode(',', $cids) . ')');
-        $this->_db->execute();
+        $this->getDatabase()->execute();
     }
 
     /*

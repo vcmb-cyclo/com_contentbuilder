@@ -231,8 +231,8 @@ class ElementsModel extends ListModel
     function getData(int $formId)
     {
         $this->formId = $formId;
-        $this->_db->setQuery($this->_buildQuery(), $this->getState('limitstart'), $this->getState('limit'));
-        $elements = $this->_db->loadObjectList();
+        $this->getDatabase()->setQuery($this->_buildQuery(), $this->getState('limitstart'), $this->getState('limit'));
+        $elements = $this->getDatabase()->loadObjectList();
 
         return $elements;
     }
@@ -241,8 +241,8 @@ class ElementsModel extends ListModel
     function getAllElements(int $formId)
     {
         $this->formId = $formId;
-        $this->_db->setQuery($this->_buildQuery());
-        $elements = $this->_db->loadObjectList();
+        $this->getDatabase()->setQuery($this->_buildQuery());
+        $elements = $this->getDatabase()->loadObjectList();
         return $elements;
     }
 

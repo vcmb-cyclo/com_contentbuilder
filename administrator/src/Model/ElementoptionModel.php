@@ -13,12 +13,14 @@ namespace CB\Component\Contentbuilder\Administrator\Model;
 \defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\Database\DatabaseInterface;
 use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\Utilities\ArrayHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
+use CB\Component\Contentbuilder\Administrator\Helper\Logger;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class ElementoptionModel extends BaseDatabaseModel
@@ -62,8 +64,8 @@ class ElementoptionModel extends BaseDatabaseModel
         // Lets load the data if it doesn't already exist
         if (empty($this->_data)) {
             $query = $this->_buildQuery();
-            $this->_db->setQuery($query);
-            $this->_data = $this->_db->loadObject();
+            $this->getDatabase()->setQuery($query);
+            $this->_data = $this->getDatabase()->loadObject();
             if (is_object($this->_data)) {
                 $this->_data->options = $this->_data->options ? unserialize(base64_decode($this->_data->options)) : null;
             }
@@ -84,8 +86,8 @@ class ElementoptionModel extends BaseDatabaseModel
 
     function getGroupDefinition()
     {
-        $this->_db->setQuery("Select `type`, `reference_id` From #__contentbuilder_forms Where id = " . intval($this->_id));
-        $form = $this->_db->loadAssoc();
+        $this->getDatabase()->setQuery("Select `type`, `reference_id` From #__contentbuilder_forms Where id = " . intval($this->_id));
+        $form = $this->getDatabase()->loadAssoc();
         $form = ContentbuilderLegacyHelper::getForm($form['type'], $form['reference_id']);
         if ($form->isGroup($this->_data->reference_id)) {
             return $form->getGroupDefinition($this->_data->reference_id);
@@ -96,8 +98,8 @@ class ElementoptionModel extends BaseDatabaseModel
     function store()
     {
         if (CBRequest::getInt('type_change', 0)) {
-            $this->_db->setQuery("Update #__contentbuilder_elements Set `type`=" . $this->_db->Quote(CBRequest::getCmd('type_selection', '')) . " Where id = " . $this->_element_id);
-            $this->_db->execute();
+            $this->getDatabase()->setQuery("Update #__contentbuilder_elements Set `type`=" . $this->getDatabase()->Quote(CBRequest::getCmd('type_selection', '')) . " Where id = " . $this->_element_id);
+            $this->getDatabase()->execute();
             return 1;
         }
         $query = '';
@@ -121,7 +123,7 @@ class ElementoptionModel extends BaseDatabaseModel
 
                 $the_item = $results;
 
-                $query = " `options`='" . base64_encode(serialize($the_item['options'])) . "', `type`=" . $this->_db->Quote(CBRequest::getCmd('field_type', '')) . ", `change_type`=" . $this->_db->Quote(CBRequest::getCmd('field_type', '')) . ", `hint`=" . $this->_db->Quote($hint) . ", `default_value`=" . $this->_db->Quote($the_item['default_value']) . " ";
+                $query = " `options`='" . base64_encode(serialize($the_item['options'])) . "', `type`=" . $this->getDatabase()->Quote(CBRequest::getCmd('field_type', '')) . ", `change_type`=" . $this->getDatabase()->Quote(CBRequest::getCmd('field_type', '')) . ", `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($the_item['default_value']) . " ";
 
                 break;
             case '':
@@ -145,7 +147,7 @@ class ElementoptionModel extends BaseDatabaseModel
                 $options->allow_raw = $allow_raw;
                 $options->allow_html = $allow_html;
 
-                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='text', `change_type`='text', `hint`=" . $this->_db->Quote($hint) . ", `default_value`=" . $this->_db->Quote($default_value) . " ";
+                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='text', `change_type`='text', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
 
                 break;
             case 'textarea':
@@ -168,7 +170,7 @@ class ElementoptionModel extends BaseDatabaseModel
                 $options->allow_raw = $allow_raw;
                 $options->allow_html = $allow_html;
 
-                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='textarea', `change_type`='textarea', `hint`=" . $this->_db->Quote($hint) . ", `default_value`=" . $this->_db->Quote($default_value) . " ";
+                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='textarea', `change_type`='textarea', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
                 break;
             case 'checkboxgroup':
             case 'radiogroup':
@@ -202,11 +204,11 @@ class ElementoptionModel extends BaseDatabaseModel
                     $options->horizontal_length = CBRequest::getVar('horizontal_length', '');
                 }
 
-                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->_db->Quote($hint) . ", `default_value`=" . $this->_db->Quote($default_value) . " ";
+                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
                 break;
             case 'upload':
-                $this->_db->setQuery("Select upload_directory, protect_upload_directory From #__contentbuilder_forms Where id = " . $this->_id);
-                $setup = $this->_db->loadAssoc();
+                $this->getDatabase()->setQuery("Select upload_directory, protect_upload_directory From #__contentbuilder_forms Where id = " . $this->_id);
+                $setup = $this->getDatabase()->loadAssoc();
 
                 // rel check for setup
 
@@ -312,7 +314,7 @@ class ElementoptionModel extends BaseDatabaseModel
                 $options->allowed_file_extensions = CBRequest::getVar('allowed_file_extensions', '');
                 $options->max_filesize = CBRequest::getVar('max_filesize', '');
 
-                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->_db->Quote($hint) . ", `default_value`=" . $this->_db->Quote($default_value) . " ";
+                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
                 break;
             case 'captcha':
                 $default_value = CBRequest::getVar('default_value', '');
@@ -320,7 +322,7 @@ class ElementoptionModel extends BaseDatabaseModel
 
                 $options = new \stdClass();
 
-                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->_db->Quote($hint) . ", `default_value`=" . $this->_db->Quote($default_value) . " ";
+                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
                 break;
             case 'calendar':
                 $length = CBRequest::getVar('length', '');
@@ -338,7 +340,7 @@ class ElementoptionModel extends BaseDatabaseModel
                 $options->format = $format;
                 $options->transfer_format = $transfer_format;
 
-                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='calendar', `change_type`='calendar', `hint`=" . $this->_db->Quote($hint) . ", `default_value`=" . $this->_db->Quote($default_value) . " ";
+                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='calendar', `change_type`='calendar', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
 
                 break;
             case 'hidden':
@@ -351,7 +353,7 @@ class ElementoptionModel extends BaseDatabaseModel
                 $options->allow_raw = $allow_raw;
                 $options->allow_html = $allow_html;
 
-                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->_db->Quote($hint) . ", `default_value`=" . $this->_db->Quote($default_value) . " ";
+                $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
                 break;
         }
         if ($query) {
@@ -362,16 +364,96 @@ class ElementoptionModel extends BaseDatabaseModel
             $validation_message = CBRequest::getVar('validation_message', '');
             $validations = CBRequest::getVar('validations', array());
 
-            $other = " `validations`=" . $this->_db->Quote(implode(',', $validations)) . ", ";
-            $other .= " `custom_init_script`=" . $this->_db->Quote($custom_init_script) . ", ";
-            $other .= " `custom_action_script`=" . $this->_db->Quote($custom_action_script) . ", ";
-            $other .= " `custom_validation_script`=" . $this->_db->Quote($custom_validation_script) . ", ";
-            $other .= " `validation_message`=" . $this->_db->Quote($validation_message) . ", ";
+            $other = " `validations`=" . $this->getDatabase()->Quote(implode(',', $validations)) . ", ";
+            $other .= " `custom_init_script`=" . $this->getDatabase()->Quote($custom_init_script) . ", ";
+            $other .= " `custom_action_script`=" . $this->getDatabase()->Quote($custom_action_script) . ", ";
+            $other .= " `custom_validation_script`=" . $this->getDatabase()->Quote($custom_validation_script) . ", ";
+            $other .= " `validation_message`=" . $this->getDatabase()->Quote($validation_message) . ", ";
 
-            $this->_db->setQuery("Update #__contentbuilder_elements Set $other $query Where id = " . $this->_element_id);
-            $this->_db->execute();
+            $this->getDatabase()->setQuery("Update #__contentbuilder_elements Set $other $query Where id = " . $this->_element_id);
+            $this->getDatabase()->execute();
             return true;
         }
         return false;
+    }
+
+    /**
+     * Publie ou dépublie plusieurs Elements.
+     */
+    public function publish(array $pks, int $value = 1): bool
+    {
+        $pks = (array) $pks;
+
+        if (empty($pks)) {
+            throw new \RuntimeException(
+              Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
+            );
+        }
+
+        ArrayHelper::toInteger($pks);
+        $pks = array_filter($pks);
+
+        Logger::info('DB publish', [
+            'value' => $value,
+            'pks'   => $pks,
+        ]);
+
+        $value = (int) $value;
+        $db = $this->getDatabase();
+        $query = $db->getQuery(true)
+            ->update($db->quoteName('#__contentbuilder_elements'))
+            ->set($db->quoteName('published') . ' = ' . $value)
+            ->where($db->quoteName('id') . ' IN (' . implode(',', $pks) . ')');
+
+        $db->setQuery($query);
+
+        try {
+            $db->execute();
+        } catch (\Throwable $e) {
+            Logger::exception($e);
+            $this->setError($e->getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public function fieldUpdate(array $pks, string $field, int $value): bool
+    {
+        $pks = (array) $pks;
+
+        if (empty($pks)) {
+            throw new \RuntimeException(
+              Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
+            );
+        }
+
+        ArrayHelper::toInteger($pks);
+        $pks = array_filter($pks);
+
+        Logger::info('DB publish', [
+            'value' => $value,
+            'pks'   => $pks,
+        ]);
+
+        $value = (int) $value;
+        $db = $this->getDatabase();
+
+        $query = $db->getQuery(true)
+            ->update($db->quoteName('#__contentbuilder_elements'))
+            ->set($db->quoteName($field) . ' = ' . (int) $value)
+            ->where($db->quoteName('id') . ' IN (' . implode(',', $pks) . ')');
+
+        $db->setQuery($query);
+        try {
+            $db->execute();
+        } catch (\Throwable $e) {
+            Logger::exception($e);
+            $this->setError($e->getMessage());
+            return false;
+        }
+
+        return true;
     }
 }

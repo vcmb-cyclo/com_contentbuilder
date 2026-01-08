@@ -79,18 +79,18 @@ class StorageModel extends BaseDatabaseModel
     function setPublished()
     {
         if (empty($this->_data)) {
-            $this->_db->setQuery(' Update #__contentbuilder_storages ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_storages ' .
                 '  Set published = 1 Where id = ' . $this->_id);
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
     function setUnpublished()
     {
         if (empty($this->_data)) {
-            $this->_db->setQuery(' Update #__contentbuilder_storages ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_storages ' .
                 '  Set published = 0 Where id = ' . $this->_id);
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -99,9 +99,9 @@ class StorageModel extends BaseDatabaseModel
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_storage_fields ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_storage_fields ' .
                 '  Set published = 1 Where id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -110,9 +110,9 @@ class StorageModel extends BaseDatabaseModel
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_storage_fields ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_storage_fields ' .
                 '  Set published = 0 Where id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -142,8 +142,8 @@ class StorageModel extends BaseDatabaseModel
     {
         $query = ' Select * From #__contentbuilder_storages ' .
             '  Where id = ' . $this->_id;
-        $this->_db->setQuery($query);
-        $data = $this->_db->loadObject();
+        $this->getDatabase()->setQuery($query);
+        $data = $this->getDatabase()->loadObject();
 
         if (!$data) {
             $data = new \stdClass();
@@ -164,8 +164,8 @@ class StorageModel extends BaseDatabaseModel
     {
         $query = ' Select * From #__contentbuilder_storage_fields ' .
             '  Where storage_id = ' . $this->_id;
-        $this->_db->setQuery($query);
-        $data = $this->_db->loadObjectList();
+        $this->getDatabase()->setQuery($query);
+        $data = $this->getDatabase()->loadObjectList();
 
         if (!$data) {
             $data = new \stdClass();
@@ -219,8 +219,8 @@ class StorageModel extends BaseDatabaseModel
 
     function getData()
     {
-        $this->_db->setQuery($this->_buildQuery(), $this->getState('limitstart'), $this->getState('limit'));
-        $entries = $this->_db->loadObjectList();
+        $this->getDatabase()->setQuery($this->_buildQuery(), $this->getState('limitstart'), $this->getState('limit'));
+        $entries = $this->getDatabase()->loadObjectList();
         return $entries;
     }
 
@@ -351,12 +351,12 @@ class StorageModel extends BaseDatabaseModel
             }
 
             if (CBRequest::getBool('csv_drop_records', false)) {
-                $this->_db->setQuery("Truncate Table #__" . $this->target_table);
-                $this->_db->execute();
-                $this->_db->setQuery("Delete From #__contentbuilder_records Where `type` = 'com_contentbuilder' And reference_id = " . $this->_db->Quote($this->_id));
-                $this->_db->execute();
-                $this->_db->setQuery("Delete a.*, c.* From #__contentbuilder_articles As a, #__content As c Where c.id = a.article_id And a.`type` = 'com_contentbuilder' And a.reference_id = " . $this->_db->Quote($this->_id));
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Truncate Table #__" . $this->target_table);
+                $this->getDatabase()->execute();
+                $this->getDatabase()->setQuery("Delete From #__contentbuilder_records Where `type` = 'com_contentbuilder' And reference_id = " . $this->getDatabase()->Quote($this->_id));
+                $this->getDatabase()->execute();
+                $this->getDatabase()->setQuery("Delete a.*, c.* From #__contentbuilder_articles As a, #__content As c Where c.id = a.article_id And a.`type` = 'com_contentbuilder' And a.reference_id = " . $this->getDatabase()->Quote($this->_id));
+                $this->getDatabase()->execute();
             }
 
             $insert_query_prefix = "INSERT INTO #__" . $this->target_table . " (" . join(",", $fieldnames) . ")\nVALUES";
@@ -365,10 +365,10 @@ class StorageModel extends BaseDatabaseModel
                 while (count($data) < count($columns))
                     array_push($data, NULL);
                 $query = "$insert_query_prefix (" . join(", ", $this->quote_all_array($data)) . ")";
-                $this->_db->setQuery($query);
-                $this->_db->execute();
-                $this->_db->setQuery("Insert Into #__contentbuilder_records (`type`,last_update,is_future,lang_code, sef, published, record_id, reference_id) Values ('com_contentbuilder'," . $this->_db->Quote($last_update) . ",0,'*',''," . CBRequest::getInt('csv_published', 0) . ", " . $this->_db->Quote(intval($this->_db->insertid())) . ", " . $this->_db->Quote($this->_id) . ")");
-                $this->_db->execute();
+                $this->getDatabase()->setQuery($query);
+                $this->getDatabase()->execute();
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (`type`,last_update,is_future,lang_code, sef, published, record_id, reference_id) Values ('com_contentbuilder'," . $this->getDatabase()->Quote($last_update) . ",0,'*',''," . CBRequest::getInt('csv_published', 0) . ", " . $this->getDatabase()->Quote(intval($this->getDatabase()->insertid())) . ", " . $this->getDatabase()->Quote($this->_id) . ")");
+                $this->getDatabase()->execute();
             }
             fclose($handle);
         }
@@ -390,7 +390,7 @@ class StorageModel extends BaseDatabaseModel
         if (is_null($value))
             return "''";
 
-        $value = $this->_db->Quote($value);
+        $value = $this->getDatabase()->Quote($value);
         return $value;
     }
 
@@ -485,8 +485,8 @@ class StorageModel extends BaseDatabaseModel
             } else {
                 $newfieldtitle = trim($data['fieldtitle']);
             }
-            $this->_db->setQuery("Select `name` From #__contentbuilder_storage_fields Where `name` = " . $this->_db->Quote($newfieldname) . " And storage_id = " . CBRequest::getInt('id', 0));
-            $fieldexists = $this->_db->loadResult();
+            $this->getDatabase()->setQuery("Select `name` From #__contentbuilder_storage_fields Where `name` = " . $this->getDatabase()->Quote($newfieldname) . " And storage_id = " . CBRequest::getInt('id', 0));
+            $fieldexists = $this->getDatabase()->loadResult();
             if ($fieldexists) {
                 $newfieldname = $fieldexists;
             }
@@ -537,7 +537,7 @@ class StorageModel extends BaseDatabaseModel
             $storage_id = (int) $row->{$row->getKeyName()};
             if (!$storage_id) {
                 $isNew = true;
-                $storage_id = $this->_db->insertid();
+                $storage_id = $this->getDatabase()->insertid();
                 $this->_id = $storage_id;
             }
 
@@ -547,14 +547,14 @@ class StorageModel extends BaseDatabaseModel
 
         $row->reorder();
 
-        $this->_db->setQuery("Select Max(ordering)+1 From #__contentbuilder_storage_fields Where storage_id = " . $this->_id . "");
-        $max = intval($this->_db->loadResult());
+        $this->getDatabase()->setQuery("Select Max(ordering)+1 From #__contentbuilder_storage_fields Where storage_id = " . $this->_id . "");
+        $max = intval($this->getDatabase()->loadResult());
 
         // we have a new field, so let's add it
         if (!$bytable && $this->_id && $newfieldname && !$fieldexists) {
 
-            $this->_db->setQuery("Insert Into #__contentbuilder_storage_fields (ordering, storage_id,`name`,`title`,`is_group`,`group_definition`) Values ($max," . intval($this->_id) . "," . $this->_db->Quote($newfieldname) . "," . $this->_db->Quote($newfieldtitle) . "," . $is_group . "," . $this->_db->Quote($group_definition) . ")");
-            $this->_db->execute();
+            $this->getDatabase()->setQuery("Insert Into #__contentbuilder_storage_fields (ordering, storage_id,`name`,`title`,`is_group`,`group_definition`) Values ($max," . intval($this->_id) . "," . $this->getDatabase()->Quote($newfieldname) . "," . $this->getDatabase()->Quote($newfieldtitle) . "," . $is_group . "," . $this->getDatabase()->Quote($group_definition) . ")");
+            $this->getDatabase()->execute();
         }
 
         // table
@@ -573,11 +573,11 @@ class StorageModel extends BaseDatabaseModel
         if (!$bytable && !isset($tables[Factory::getContainer()->get(DatabaseInterface::class)->getPrefix() . $data['name']])) {
             if ($storage->name && isset($tables[Factory::getContainer()->get(DatabaseInterface::class)->getPrefix() . $storage->name])) {
 
-                $this->_db->setQuery("Rename Table #__" . $storage->name . " To #__" . $data['name']);
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Rename Table #__" . $storage->name . " To #__" . $data['name']);
+                $this->getDatabase()->execute();
             } else {
                 try {
-                    $this->_db->setQuery('
+                    $this->getDatabase()->setQuery('
                     CREATE TABLE `#__' . $data['name'] . '` (
                     `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
                     `storage_id` INT NOT NULL DEFAULT "' . $this->_id . '",
@@ -589,17 +589,17 @@ class StorageModel extends BaseDatabaseModel
                     `modified_by` VARCHAR( 255 ) NOT NULL DEFAULT ""
                     ) ;
                     ');
-                    $this->_db->execute();
-                    $this->_db->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `storage_id` )");
-                    $this->_db->execute();
-                    $this->_db->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `user_id` )");
-                    $this->_db->execute();
-                    $this->_db->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `created` )");
-                    $this->_db->execute();
-                    $this->_db->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `modified_user_id` )");
-                    $this->_db->execute();
-                    $this->_db->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `modified` )");
-                    $this->_db->execute();
+                    $this->getDatabase()->execute();
+                    $this->getDatabase()->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `storage_id` )");
+                    $this->getDatabase()->execute();
+                    $this->getDatabase()->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `user_id` )");
+                    $this->getDatabase()->execute();
+                    $this->getDatabase()->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `created` )");
+                    $this->getDatabase()->execute();
+                    $this->getDatabase()->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `modified_user_id` )");
+                    $this->getDatabase()->execute();
+                    $this->getDatabase()->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD INDEX ( `modified` )");
+                    $this->getDatabase()->execute();
                 } catch (\Exception $e) {
                     Logger::exception($e);
                 }
@@ -615,13 +615,13 @@ class StorageModel extends BaseDatabaseModel
             }
             $fieldin = rtrim($fieldin, ',');
             if ($fieldin) {
-                $this->_db->setQuery("Select `name` From #__contentbuilder_storage_fields Where `name` In (" . $fieldin . ") And storage_id = " . $this->_id);
+                $this->getDatabase()->setQuery("Select `name` From #__contentbuilder_storage_fields Where `name` In (" . $fieldin . ") And storage_id = " . $this->_id);
 
-                $fieldnames = $this->_db->loadColumn();
+                $fieldnames = $this->getDatabase()->loadColumn();
                 foreach ($fields as $field => $type) {
                     if (!in_array($field, $fieldnames) && !in_array($field, $system_fields)) {
-                        $this->_db->setQuery("Insert Into #__contentbuilder_storage_fields (ordering,storage_id,`name`,`title`,`is_group`,`group_definition`) Values ($max," . intval($this->_id) . "," . $this->_db->Quote($field) . "," . $this->_db->Quote($field) . ",0,'')");
-                        $this->_db->execute();
+                        $this->getDatabase()->setQuery("Insert Into #__contentbuilder_storage_fields (ordering,storage_id,`name`,`title`,`is_group`,`group_definition`) Values ($max," . intval($this->_id) . "," . $this->getDatabase()->Quote($field) . "," . $this->getDatabase()->Quote($field) . ",0,'')");
+                        $this->getDatabase()->execute();
                     }
                     $allfields[] = $field;
                 }
@@ -632,36 +632,36 @@ class StorageModel extends BaseDatabaseModel
                         if (!in_array($missing, $allfields)) {
                             switch ($missing) {
                                 case 'id':
-                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ");
-                                    $this->_db->execute();
+                                    $this->getDatabase()->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ");
+                                    $this->getDatabase()->execute();
                                     break;
                                 case 'storage_id':
-                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `storage_id` INT NOT NULL DEFAULT " . $this->_id . ", ADD INDEX ( `storage_id` )");
-                                    $this->_db->execute();
+                                    $this->getDatabase()->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `storage_id` INT NOT NULL DEFAULT " . $this->_id . ", ADD INDEX ( `storage_id` )");
+                                    $this->getDatabase()->execute();
                                     break;
                                 case 'user_id':
-                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `user_id` INT NOT NULL DEFAULT 0, ADD INDEX ( `user_id` ) ");
-                                    $this->_db->execute();
+                                    $this->getDatabase()->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `user_id` INT NOT NULL DEFAULT 0, ADD INDEX ( `user_id` ) ");
+                                    $this->getDatabase()->execute();
                                     break;
                                 case 'created':
-                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `created` DATETIME NOT NULL DEFAULT '" . $last_update . "', ADD INDEX ( `created` ) ");
-                                    $this->_db->execute();
+                                    $this->getDatabase()->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `created` DATETIME NOT NULL DEFAULT '" . $last_update . "', ADD INDEX ( `created` ) ");
+                                    $this->getDatabase()->execute();
                                     break;
                                 case 'created_by':
-                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `created_by` VARCHAR( 255 ) NOT NULL DEFAULT '' ");
-                                    $this->_db->execute();
+                                    $this->getDatabase()->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `created_by` VARCHAR( 255 ) NOT NULL DEFAULT '' ");
+                                    $this->getDatabase()->execute();
                                     break;
                                 case 'modified_user_id':
-                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `modified_user_id` INT NOT NULL DEFAULT 0, ADD INDEX ( `modified_user_id` ) ");
-                                    $this->_db->execute();
+                                    $this->getDatabase()->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `modified_user_id` INT NOT NULL DEFAULT 0, ADD INDEX ( `modified_user_id` ) ");
+                                    $this->getDatabase()->execute();
                                     break;
                                 case 'modified':
-                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `modified` DATETIME NOT NULL DEFAULT NULL, ADD INDEX ( `modified` ) ");
-                                    $this->_db->execute();
+                                    $this->getDatabase()->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `modified` DATETIME NOT NULL DEFAULT NULL, ADD INDEX ( `modified` ) ");
+                                    $this->getDatabase()->execute();
                                     break;
                                 case 'modified_by':
-                                    $this->_db->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `modified_by` VARCHAR( 255 ) NOT NULL DEFAULT '' ");
-                                    $this->_db->execute();
+                                    $this->getDatabase()->setQuery("ALTER TABLE `" . $data['name'] . "` ADD `modified_by` VARCHAR( 255 ) NOT NULL DEFAULT '' ");
+                                    $this->getDatabase()->execute();
                                     break;
                             }
                         }
@@ -673,18 +673,18 @@ class StorageModel extends BaseDatabaseModel
                 // importing records
                 if ($isNew) {
 
-                    $this->_db->setQuery("Alter Table `" . $data['name'] . "` Alter Column `storage_id` Set Default '" . $this->_id . "'");
-                    $this->_db->execute();
+                    $this->getDatabase()->setQuery("Alter Table `" . $data['name'] . "` Alter Column `storage_id` Set Default '" . $this->_id . "'");
+                    $this->getDatabase()->execute();
 
-                    $this->_db->setQuery("Update `" . $data['name'] . "` Set `storage_id` = '" . $this->_id . "'");
-                    $this->_db->execute();
+                    $this->getDatabase()->setQuery("Update `" . $data['name'] . "` Set `storage_id` = '" . $this->_id . "'");
+                    $this->getDatabase()->execute();
 
-                    $this->_db->setQuery("Select id From `" . $data['name'] . "`");
+                    $this->getDatabase()->setQuery("Select id From `" . $data['name'] . "`");
 
-                    $third_party_ids = $this->_db->loadColumn();
+                    $third_party_ids = $this->getDatabase()->loadColumn();
 
                     foreach ($third_party_ids as $third_party_id) {
-                        $this->_db->setQuery("Insert Into #__contentbuilder_records (
+                        $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (
                             `type`,
                             last_update,
                             is_future,
@@ -697,16 +697,16 @@ class StorageModel extends BaseDatabaseModel
                         Values 
                         (
                             'com_contentbuilder',
-                            " . $this->_db->Quote($last_update) . ",
+                            " . $this->getDatabase()->Quote($last_update) . ",
                             0,
                             '*',
                             '',
                             1,
-                            " . $this->_db->Quote(intval($third_party_id)) . ",
-                            " . $this->_db->Quote($this->_id) . "
+                            " . $this->getDatabase()->Quote(intval($third_party_id)) . ",
+                            " . $this->getDatabase()->Quote($this->_id) . "
                         )"); // ignore already imported records
 
-                        $this->_db->execute();
+                        $this->getDatabase()->execute();
                     }
                 }
             }
@@ -733,20 +733,20 @@ class StorageModel extends BaseDatabaseModel
 
             if (!$bytable) {
 
-                $this->_db->setQuery("Select `name` From #__contentbuilder_storage_fields Where id = " . intval($field_id));
-                $old_name = $this->_db->loadResult();
+                $this->getDatabase()->setQuery("Select `name` From #__contentbuilder_storage_fields Where id = " . intval($field_id));
+                $old_name = $this->getDatabase()->loadResult();
 
-                $this->_db->setQuery("Update #__contentbuilder_storage_fields Set group_definition = " . $this->_db->Quote($listgroupdefinitions[$field_id]) . ", is_group = " . intval($listisgroup[$field_id]) . ",`name` = " . $this->_db->Quote($name) . ", `title` = " . $this->_db->Quote($listtitles[$field_id]) . " Where id = " . intval($field_id));
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Update #__contentbuilder_storage_fields Set group_definition = " . $this->getDatabase()->Quote($listgroupdefinitions[$field_id]) . ", is_group = " . intval($listisgroup[$field_id]) . ",`name` = " . $this->getDatabase()->Quote($name) . ", `title` = " . $this->getDatabase()->Quote($listtitles[$field_id]) . " Where id = " . intval($field_id));
+                $this->getDatabase()->execute();
 
                 if ($old_name != $name) {
 
-                    $this->_db->setQuery("ALTER TABLE `#__" . $data['name'] . "` CHANGE `" . $old_name . "` `" . $name . "` TEXT ");
-                    $this->_db->execute();
+                    $this->getDatabase()->setQuery("ALTER TABLE `#__" . $data['name'] . "` CHANGE `" . $old_name . "` `" . $name . "` TEXT ");
+                    $this->getDatabase()->execute();
                 }
             } else {
-                $this->_db->setQuery("Update #__contentbuilder_storage_fields Set group_definition = " . $this->_db->Quote($listgroupdefinitions[$field_id]) . ", is_group = " . intval($listisgroup[$field_id]) . ", `title` = " . $this->_db->Quote($listtitles[$field_id]) . " Where id = " . intval($field_id));
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Update #__contentbuilder_storage_fields Set group_definition = " . $this->getDatabase()->Quote($listgroupdefinitions[$field_id]) . ", is_group = " . intval($listisgroup[$field_id]) . ", `title` = " . $this->getDatabase()->Quote($listtitles[$field_id]) . " Where id = " . intval($field_id));
+                $this->getDatabase()->execute();
             }
         }
 
@@ -763,10 +763,10 @@ class StorageModel extends BaseDatabaseModel
                     continue;
                 }
                 $fieldname = $field->name;
-                if ($fieldname && !isset($tables[$this->_db->getPrefix() . $data['name']][$fieldname])) {
+                if ($fieldname && !isset($tables[$this->getDatabase()->getPrefix() . $data['name']][$fieldname])) {
                     try {
-                        $this->_db->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD `" . $fieldname . "` TEXT NULL ");
-                        $this->_db->execute();
+                        $this->getDatabase()->setQuery("ALTER TABLE `#__" . $data['name'] . "` ADD `" . $fieldname . "` TEXT NULL ");
+                        $this->getDatabase()->execute();
                     } catch (\Exception $e) {
                         Logger::exception($e);
                     }
@@ -793,10 +793,10 @@ class StorageModel extends BaseDatabaseModel
             $this->setId($pk);
             $storage = $this->getStorage();
 
-            $this->_db->setQuery(
+            $this->getDatabase()->setQuery(
                 "DELETE FROM #__contentbuilder_storage_fields WHERE storage_id = " . (int) $pk
             );
-            $this->_db->execute();
+            $this->getDatabase()->execute();
 
             $this->getTable('StorageFields')->reorder('storage_id = ' . (int) $pk);
 
@@ -807,8 +807,8 @@ class StorageModel extends BaseDatabaseModel
 
             if (!$storage->bytable) {
                 try {
-                    $this->_db->setQuery("DROP TABLE `#__" . $storage->name . "`");
-                    $this->_db->execute();
+                    $this->getDatabase()->setQuery("DROP TABLE `#__" . $storage->name . "`");
+                    $this->getDatabase()->execute();
                 } catch (\Throwable $e) {
                     Logger::exception($e);
                 }
@@ -828,18 +828,18 @@ class StorageModel extends BaseDatabaseModel
         ArrayHelper::toInteger($cids);
         foreach ($cids as $cid) {
 
-            $this->_db->setQuery("Select `name` From #__contentbuilder_storage_fields Where id = " . $cid);
-            $field_name = $this->_db->loadResult();
+            $this->getDatabase()->setQuery("Select `name` From #__contentbuilder_storage_fields Where id = " . $cid);
+            $field_name = $this->getDatabase()->loadResult();
 
-            $this->_db->setQuery(
+            $this->getDatabase()->setQuery(
                 "DELETE FROM #__contentbuilder_storage_fields WHERE id = " . (int) $cid
             );
-            $this->_db->execute();
+            $this->getDatabase()->execute();
 
             if (!$storage->bytable) {
                 try {
-                    $this->_db->setQuery("ALTER TABLE `#__" . $storage->name . "` DROP `" . $field_name . "`");
-                    $this->_db->execute();
+                    $this->getDatabase()->setQuery("ALTER TABLE `#__" . $storage->name . "` DROP `" . $field_name . "`");
+                    $this->getDatabase()->execute();
                 } catch (\Exception $e) {
                     Logger::exception($e);
                 }
@@ -940,5 +940,22 @@ class StorageModel extends BaseDatabaseModel
 
 
         $row->reorder("storage_id = " . $this->_id);
+    }
+
+    public function reorder($pks = null, $delta = 0)
+    {
+        $table = $this->getTable();
+
+        // Sécurité : clés primaires
+        $pks = (array) $pks;
+
+        foreach ($pks as $pk) {
+            $table->load((int) $pk);
+
+            // Réordonne à l'intérieur du même id
+            $table->move($delta);
+        }
+
+        return true;
     }
 }

@@ -94,7 +94,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 $row = $this->items[$i];
                 $checked = HTMLHelper::_('grid.id', $i, $row->id);
                 $link = Route::_('index.php?option=com_contentbuilder&task=storage.edit&id=' . (int) $row->id);
-                $published = ContentbuilderHelper::listPublish($row, $i);
+                $published = ContentbuilderHelper::listPublish('storages', $row, $i);
                 ?>
                 <tr class="<?php echo "row$k"; ?>">
                     <td>

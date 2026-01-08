@@ -122,10 +122,10 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                 if ($row->published === null) {
                     $row->published = 1;
                 }
-                $published = ContentbuilderHelper::listPublish($row, $i);
-                $verified_view = ContentbuilderHelper::listVerifiedView($row, $i);
-                $verified_new = ContentbuilderHelper::listVerifiedNew($row, $i);
-                $verified_edit = ContentbuilderHelper::listVerifiedEdit($row, $i);
+                $published = ContentbuilderHelper::listPublish('users', $row, $i);
+                $verified_view = ContentbuilderHelper::listVerifiedView('users', $row, $i);
+                $verified_new = ContentbuilderHelper::listVerifiedNew('users', $row, $i);
+                $verified_edit = ContentbuilderHelper::listVerifiedEdit('users', $row, $i);
                 ?>
                 <tr class="<?php echo "row$k"; ?>">
                     <td>

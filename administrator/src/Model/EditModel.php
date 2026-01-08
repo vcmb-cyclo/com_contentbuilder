@@ -261,8 +261,8 @@ class EditModel extends BaseDatabaseModel
                 if ($data->type && $data->reference_id) {
 
                     // article options
-                    $this->_db->setQuery("Select content.id, content.modified_by, content.version, content.hits, content.catid From #__contentbuilder_articles As articles, #__content As content Where (content.state = 1 Or content.state = 0) And content.id = articles.article_id And articles.form_id = " . $this->_id . " And articles.record_id = " . $this->_db->Quote($this->_record_id));
-                    $article = $this->_db->loadAssoc();
+                    $this->getDatabase()->setQuery("Select content.id, content.modified_by, content.version, content.hits, content.catid From #__contentbuilder_articles As articles, #__content As content Where (content.state = 1 Or content.state = 0) And content.id = articles.article_id And articles.form_id = " . $this->_id . " And articles.record_id = " . $this->getDatabase()->Quote($this->_record_id));
+                    $article = $this->getDatabase()->loadAssoc();
 
                     if ($data->create_articles) {
                         Form::addFormPath(JPATH_SITE . '/administrator/components/com_contentbuilder/models/forms');
@@ -364,12 +364,12 @@ class EditModel extends BaseDatabaseModel
                     $data->labels = $data->form->getElementLabels();
                     $ids = array();
                     foreach ($data->labels as $reference_id => $label) {
-                        $ids[] = $this->_db->Quote($reference_id);
+                        $ids[] = $this->getDatabase()->Quote($reference_id);
                     }
 
                     if (count($ids)) {
-                        $this->_db->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
-                        $rows = $this->_db->loadAssocList();
+                        $this->getDatabase()->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
+                        $rows = $this->getDatabase()->loadAssocList();
                         $ids = array();
                         foreach ($rows as $row) {
                             $ids[] = $row['reference_id'];
@@ -384,8 +384,8 @@ class EditModel extends BaseDatabaseModel
 
                         if ($data->act_as_registration) {
                             $meta = $data->form->getRecordMetadata($this->_record_id);
-                            $this->_db->setQuery("Select * From #__users Where id = " . $meta->created_id);
-                            $user = $this->_db->loadObject();
+                            $this->getDatabase()->setQuery("Select * From #__users Where id = " . $meta->created_id);
+                            $user = $this->getDatabase()->loadObject();
                         }
 
                         $label = '';
@@ -618,8 +618,8 @@ var contentbuilder = new function(){
                     $noneditable_fields = ContentbuilderLegacyHelper::getListNonEditableElements($this->_id);
                     $names = $data->form->getElementNames();
 
-                    $this->_db->setQuery("Select * From #__contentbuilder_elements Where form_id = " . $this->_id . " And published = 1 And editable = 1");
-                    $fields = $this->_db->loadAssocList();
+                    $this->getDatabase()->setQuery("Select * From #__contentbuilder_elements Where form_id = " . $this->_id . " And published = 1 And editable = 1");
+                    $fields = $this->getDatabase()->loadAssocList();
 
                     $the_fields = array();
                     $the_name_field = null;
@@ -738,14 +738,14 @@ var contentbuilder = new function(){
 
                             if (!$meta->created_id && !Factory::getApplication()->getIdentity()->get('id', 0)) {
 
-                                $this->_db->setQuery("Select count(id) From #__users Where `username` = " . $this->_db->Quote($username));
-                                if ($this->_db->loadResult()) {
+                                $this->getDatabase()->setQuery("Select count(id) From #__users Where `username` = " . $this->getDatabase()->Quote($username));
+                                if ($this->getDatabase()->loadResult()) {
                                     CBRequest::setVar('cb_submission_failed', 1);
                                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_USERNAME_NOT_AVAILABLE'), 'error');
                                 }
 
-                                $this->_db->setQuery("Select count(id) From #__users Where `email` = " . $this->_db->Quote($email));
-                                if ($this->_db->loadResult()) {
+                                $this->getDatabase()->setQuery("Select count(id) From #__users Where `email` = " . $this->getDatabase()->Quote($email));
+                                if ($this->getDatabase()->loadResult()) {
                                     CBRequest::setVar('cb_submission_failed', 1);
                                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_EMAIL_NOT_AVAILABLE'), 'error');
                                 }
@@ -765,26 +765,26 @@ var contentbuilder = new function(){
                                 }
                             } else {
                                 if ($meta->created_id && $meta->created_id != Factory::getApplication()->getIdentity()->get('id', 0)) {
-                                    $this->_db->setQuery("Select count(id) From #__users Where id <> " . $this->_db->Quote($meta->created_id) . " And `username` = " . $this->_db->Quote($username));
-                                    if ($this->_db->loadResult()) {
+                                    $this->getDatabase()->setQuery("Select count(id) From #__users Where id <> " . $this->getDatabase()->Quote($meta->created_id) . " And `username` = " . $this->getDatabase()->Quote($username));
+                                    if ($this->getDatabase()->loadResult()) {
                                         CBRequest::setVar('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_USERNAME_NOT_AVAILABLE'), 'error');
                                     }
 
-                                    $this->_db->setQuery("Select count(id) From #__users Where id <> " . $this->_db->Quote($meta->created_id) . " And `email` = " . $this->_db->Quote($email));
-                                    if ($this->_db->loadResult()) {
+                                    $this->getDatabase()->setQuery("Select count(id) From #__users Where id <> " . $this->getDatabase()->Quote($meta->created_id) . " And `email` = " . $this->getDatabase()->Quote($email));
+                                    if ($this->getDatabase()->loadResult()) {
                                         CBRequest::setVar('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_EMAIL_NOT_AVAILABLE'), 'error');
                                     }
                                 } else {
-                                    $this->_db->setQuery("Select count(id) From #__users Where id <> " . $this->_db->Quote(Factory::getApplication()->getIdentity()->get('id', 0)) . " And `username` = " . $this->_db->Quote($username));
-                                    if ($this->_db->loadResult()) {
+                                    $this->getDatabase()->setQuery("Select count(id) From #__users Where id <> " . $this->getDatabase()->Quote(Factory::getApplication()->getIdentity()->get('id', 0)) . " And `username` = " . $this->getDatabase()->Quote($username));
+                                    if ($this->getDatabase()->loadResult()) {
                                         CBRequest::setVar('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_USERNAME_NOT_AVAILABLE'), 'error');
                                     }
 
-                                    $this->_db->setQuery("Select count(id) From #__users Where id <> " . $this->_db->Quote(Factory::getApplication()->getIdentity()->get('id', 0)) . " And `email` = " . $this->_db->Quote($email));
-                                    if ($this->_db->loadResult()) {
+                                    $this->getDatabase()->setQuery("Select count(id) From #__users Where id <> " . $this->getDatabase()->Quote(Factory::getApplication()->getIdentity()->get('id', 0)) . " And `email` = " . $this->getDatabase()->Quote($email));
+                                    if ($this->getDatabase()->loadResult()) {
                                         CBRequest::setVar('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_EMAIL_NOT_AVAILABLE'), 'error');
                                     }
@@ -1285,7 +1285,7 @@ var contentbuilder = new function(){
                                     Factory::getApplication()->getSession()->clear($data->registration_bypass_plugin . $verification_name, 'com_contentbuilder.verify.' . $data->registration_bypass_plugin . $verification_name);
                                     $___now = $_now->toSql();
 
-                                    $this->_db->setQuery("
+                                    $this->getDatabase()->setQuery("
                                             Insert Into #__contentbuilder_verifications
                                             (
                                             `verification_hash`,
@@ -1299,17 +1299,17 @@ var contentbuilder = new function(){
                                             )
                                             Values
                                             (
-                                            " . $this->_db->Quote($verification_id) . ",
-                                            " . $this->_db->Quote($___now) . ",
-                                            " . $this->_db->Quote('type=registration&') . ",
+                                            " . $this->getDatabase()->Quote($verification_id) . ",
+                                            " . $this->getDatabase()->Quote($___now) . ",
+                                            " . $this->getDatabase()->Quote('type=registration&') . ",
                                             " . $user_id . ",
-                                            " . $this->_db->Quote($data->registration_bypass_plugin) . ",
-                                            " . $this->_db->Quote($_SERVER['REMOTE_ADDR']) . ",
-                                            " . $this->_db->Quote($setup) . ",
+                                            " . $this->getDatabase()->Quote($data->registration_bypass_plugin) . ",
+                                            " . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']) . ",
+                                            " . $this->getDatabase()->Quote($setup) . ",
                                             " . intval(Factory::getApplication()->isClient('administrator') ? 1 : 0) . "
                                             )
                                     ");
-                                    $this->_db->execute();
+                                    $this->getDatabase()->execute();
                                 }
                             }
                         }
@@ -1343,8 +1343,8 @@ var contentbuilder = new function(){
                         $sef = '';
                         $ignore_lang_code = '*';
                         if ($data->default_lang_code_ignore) {
-                            $this->_db->setQuery("Select lang_code From #__languages Where published = 1 And sef = " . $this->_db->Quote(trim(CBRequest::getCmd('lang', ''))));
-                            $ignore_lang_code = $this->_db->loadResult();
+                            $this->getDatabase()->setQuery("Select lang_code From #__languages Where published = 1 And sef = " . $this->getDatabase()->Quote(trim(CBRequest::getCmd('lang', ''))));
+                            $ignore_lang_code = $this->getDatabase()->loadResult();
                             if (!$ignore_lang_code) {
                                 $ignore_lang_code = '*';
                             }
@@ -1354,14 +1354,14 @@ var contentbuilder = new function(){
                                 $sef = '';
                             }
                         } else {
-                            $this->_db->setQuery("Select sef From #__languages Where published = 1 And lang_code = " . $this->_db->Quote($data->default_lang_code));
-                            $sef = $this->_db->loadResult();
+                            $this->getDatabase()->setQuery("Select sef From #__languages Where published = 1 And lang_code = " . $this->getDatabase()->Quote($data->default_lang_code));
+                            $sef = $this->getDatabase()->loadResult();
                         }
 
                         $language = $data->default_lang_code_ignore ? $ignore_lang_code : $data->default_lang_code;
 
-                        $this->_db->setQuery("Select id, edited From #__contentbuilder_records Where `type` = " . $this->_db->Quote($data->type) . " And `reference_id` = " . $this->_db->Quote($data->form->getReferenceId()) . " And record_id = " . $this->_db->Quote($record_return));
-                        $res = $this->_db->loadAssoc();
+                        $this->getDatabase()->setQuery("Select id, edited From #__contentbuilder_records Where `type` = " . $this->getDatabase()->Quote($data->type) . " And `reference_id` = " . $this->getDatabase()->Quote($data->form->getReferenceId()) . " And record_id = " . $this->getDatabase()->Quote($record_return));
+                        $res = $this->getDatabase()->loadAssoc();
                         $last_update = Factory::getDate();
                         $last_update = $last_update->toSql();
 
@@ -1381,11 +1381,11 @@ var contentbuilder = new function(){
                                 $date = Factory::getDate(strtotime($created_up . ' +' . intval($data->default_publish_down_days) . ' days'));
                                 $created_down = $date->toSql();
                             }
-                            $this->_db->setQuery("Insert Into #__contentbuilder_records (session_id,`type`,last_update,is_future,lang_code, sef, published, record_id, reference_id, publish_up, publish_down) Values ('" . Factory::getApplication()->getSession()->getId() . "'," . $this->_db->Quote($data->type) . "," . $this->_db->Quote($last_update) . ",$is_future," . $this->_db->Quote($language) . "," . $this->_db->Quote(trim($sef)) . "," . $this->_db->Quote($data->auto_publish && !$is_future ? 1 : 0) . ", " . $this->_db->Quote($record_return) . ", " . $this->_db->Quote($data->form->getReferenceId()) . ", " . $this->_db->Quote($created_up) . ", " . $this->_db->Quote($created_down) . ")");
-                            $this->_db->execute();
+                            $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (session_id,`type`,last_update,is_future,lang_code, sef, published, record_id, reference_id, publish_up, publish_down) Values ('" . Factory::getApplication()->getSession()->getId() . "'," . $this->getDatabase()->Quote($data->type) . "," . $this->getDatabase()->Quote($last_update) . ",$is_future," . $this->getDatabase()->Quote($language) . "," . $this->getDatabase()->Quote(trim($sef)) . "," . $this->getDatabase()->Quote($data->auto_publish && !$is_future ? 1 : 0) . ", " . $this->getDatabase()->Quote($record_return) . ", " . $this->getDatabase()->Quote($data->form->getReferenceId()) . ", " . $this->getDatabase()->Quote($created_up) . ", " . $this->getDatabase()->Quote($created_down) . ")");
+                            $this->getDatabase()->execute();
                         } else {
-                            $this->_db->setQuery("Update #__contentbuilder_records Set last_update = " . $this->_db->Quote($last_update) . ",lang_code = " . $this->_db->Quote($language) . ", sef = " . $this->_db->Quote(trim($sef ?? '')) . ", edited = edited + 1 Where `type` = " . $this->_db->Quote($data->type) . " And  `reference_id` = " . $this->_db->Quote($data->form->getReferenceId()) . " And record_id = " . $this->_db->Quote($record_return));
-                            $this->_db->execute();
+                            $this->getDatabase()->setQuery("Update #__contentbuilder_records Set last_update = " . $this->getDatabase()->Quote($last_update) . ",lang_code = " . $this->getDatabase()->Quote($language) . ", sef = " . $this->getDatabase()->Quote(trim($sef ?? '')) . ", edited = edited + 1 Where `type` = " . $this->getDatabase()->Quote($data->type) . " And  `reference_id` = " . $this->getDatabase()->Quote($data->form->getReferenceId()) . " And record_id = " . $this->getDatabase()->Quote($record_return));
+                            $this->getDatabase()->execute();
                         }
                     }
                 } else {
@@ -1397,17 +1397,17 @@ var contentbuilder = new function(){
 
                 $data_email_items = $data->form->getRecord($record_return, false, -1, true);
 
-                $this->_db->setQuery("Select * From #__contentbuilder_records");
+                $this->getDatabase()->setQuery("Select * From #__contentbuilder_records");
 
                 $data->labels = $data->form->getElementLabels();
                 $ids = array();
                 foreach ($data->labels as $reference_id => $label) {
-                    $ids[] = $this->_db->Quote($reference_id);
+                    $ids[] = $this->getDatabase()->Quote($reference_id);
                 }
                 $data->labels = array();
                 if (count($ids)) {
-                    $this->_db->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
-                    $rows = $this->_db->loadAssocList();
+                    $this->getDatabase()->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
+                    $rows = $this->getDatabase()->loadAssocList();
                     $ids = array();
                     foreach ($rows as $row) {
                         $ids[] = $row['reference_id'];
@@ -1425,8 +1425,8 @@ var contentbuilder = new function(){
                     //     JError::raiseError(404, Text::_('COM_CONTENTBUILDER_RECORD_NOT_FOUND'));
                     //}
 
-                    $this->_db->setQuery("Select articles.`id` From #__contentbuilder_articles As articles, #__content As content Where content.id = articles.article_id And (content.state = 1 Or content.state = 0) And articles.form_id = " . intval($this->_id) . " And articles.record_id = " . $this->_db->Quote($record_return));
-                    $article = $this->_db->loadResult();
+                    $this->getDatabase()->setQuery("Select articles.`id` From #__contentbuilder_articles As articles, #__content As content Where content.id = articles.article_id And (content.state = 1 Or content.state = 0) And articles.form_id = " . intval($this->_id) . " And articles.record_id = " . $this->getDatabase()->Quote($record_return));
+                    $article = $this->getDatabase()->loadResult();
 
                     $config = array();
                     if ($article) {
@@ -1447,8 +1447,8 @@ var contentbuilder = new function(){
 
                 // required to determine blocked users in system plugin
                 if ($data->act_as_registration && isset($user_id) && intval($user_id) > 0) {
-                    $this->_db->setQuery("Insert Into #__contentbuilder_registered_users (user_id, form_id, record_id) Values (" . intval($user_id) . ", " . $this->_id . ", " . $this->_db->Quote($record_return) . ")");
-                    $this->_db->execute();
+                    $this->getDatabase()->setQuery("Insert Into #__contentbuilder_registered_users (user_id, form_id, record_id) Values (" . intval($user_id) . ", " . $this->_id . ", " . $this->getDatabase()->Quote($record_return) . ")");
+                    $this->getDatabase()->execute();
                 }
 
                 if (!$data->edit_by_type) {
@@ -2034,22 +2034,22 @@ var contentbuilder = new function(){
                     $new_items = array();
                     if ($res && $cnt) {
                         for ($i = 0; $i < $cnt; $i++) {
-                            $new_items[] = $this->_db->Quote($items[$i]);
+                            $new_items[] = $this->getDatabase()->Quote($items[$i]);
                         }
                         $new_items = implode(',', $new_items);
-                        $this->_db->setQuery("Delete From #__contentbuilder_list_records Where form_id = " . intval($this->_id) . " And record_id In ($new_items)");
-                        $this->_db->execute();
-                        $this->_db->setQuery("Delete From #__contentbuilder_records Where `type` = " . $this->_db->Quote($data->type) . " And  `reference_id` = " . $this->_db->Quote($data->form->getReferenceId()) . " And record_id In ($new_items)");
-                        $this->_db->execute();
+                        $this->getDatabase()->setQuery("Delete From #__contentbuilder_list_records Where form_id = " . intval($this->_id) . " And record_id In ($new_items)");
+                        $this->getDatabase()->execute();
+                        $this->getDatabase()->setQuery("Delete From #__contentbuilder_records Where `type` = " . $this->getDatabase()->Quote($data->type) . " And  `reference_id` = " . $this->getDatabase()->Quote($data->form->getReferenceId()) . " And record_id In ($new_items)");
+                        $this->getDatabase()->execute();
                         if ($data->delete_articles) {
-                            $this->_db->setQuery("Select article_id From #__contentbuilder_articles Where `type` = " . $this->_db->Quote($data->type) . " And reference_id = " . $this->_db->Quote($data->form->getReferenceId()) . " And record_id In ($new_items)");
-                            $articles = $this->_db->loadColumn();
+                            $this->getDatabase()->setQuery("Select article_id From #__contentbuilder_articles Where `type` = " . $this->getDatabase()->Quote($data->type) . " And reference_id = " . $this->getDatabase()->Quote($data->form->getReferenceId()) . " And record_id In ($new_items)");
+                            $articles = $this->getDatabase()->loadColumn();
 
                             if (count($articles)) {
                                 $article_items = array();
                                 $article_ids = array();
                                 foreach ($articles as $article) {
-                                    $article_items[] = $this->_db->Quote('com_content.article.' . $article);
+                                    $article_items[] = $this->getDatabase()->Quote('com_content.article.' . $article);
                                     $article_ids[] = $article;
                                     $table = Table::getInstance('content');
                                     // Trigger the onContentBeforeDelete event.
@@ -2057,8 +2057,8 @@ var contentbuilder = new function(){
                                         $dispatcher = Factory::getApplication()->getDispatcher();
                                         $dispatcher->dispatch('onContentBeforeDelete', new Joomla\Event\Event('onContentBeforeDelete', array('com_content.article', $table)));
                                     }
-                                    $this->_db->setQuery("Delete From #__content Where id = " . intval($article));
-                                    $this->_db->execute();
+                                    $this->getDatabase()->setQuery("Delete From #__content Where id = " . intval($article));
+                                    $this->getDatabase()->execute();
                                     // Trigger the onContentAfterDelete event.
                                     $table->reset();
                                     if (!$this->is15) {
@@ -2066,18 +2066,18 @@ var contentbuilder = new function(){
                                         $dispatcher->dispatch('onContentAfterDelete', new Joomla\Event\Event('onContentAfterDelete', array('com_content.article', $table)));
                                     }
                                 }
-                                $this->_db->setQuery("Delete From #__assets Where `name` In (" . implode(',', $article_items) . ")");
-                                $this->_db->execute();
+                                $this->getDatabase()->setQuery("Delete From #__assets Where `name` In (" . implode(',', $article_items) . ")");
+                                $this->getDatabase()->execute();
 
-                                $this->_db->setQuery("Delete From #__workflow_associations Where item_id In (" . implode(',', $article_ids) . ")");
-                                $this->_db->execute();
+                                $this->getDatabase()->setQuery("Delete From #__workflow_associations Where item_id In (" . implode(',', $article_ids) . ")");
+                                $this->getDatabase()->execute();
 
                                 echo "Delete From #__workflow_associations Where item_id In (" . implode(',', $article_ids) . ")";
                             }
                         }
 
-                        $this->_db->setQuery("Delete From #__contentbuilder_articles Where `type` = " . $this->_db->Quote($data->type) . " And reference_id = " . $this->_db->Quote($data->form->getReferenceId()) . " And record_id In ($new_items)");
-                        $this->_db->execute();
+                        $this->getDatabase()->setQuery("Delete From #__contentbuilder_articles Where `type` = " . $this->getDatabase()->Quote($data->type) . " And reference_id = " . $this->getDatabase()->Quote($data->form->getReferenceId()) . " And record_id In ($new_items)");
+                        $this->getDatabase()->execute();
                     }
                 }
             }
@@ -2099,15 +2099,15 @@ var contentbuilder = new function(){
     function change_list_states()
     {
 
-        $this->_db->setQuery('Select reference_id From #__contentbuilder_forms Where id = ' . intval($this->_id));
-        $reference_id = $this->_db->loadResult();
+        $this->getDatabase()->setQuery('Select reference_id From #__contentbuilder_forms Where id = ' . intval($this->_id));
+        $reference_id = $this->getDatabase()->loadResult();
         if (!$reference_id) {
             return;
         }
 
         // prevent from changing to an unpublished state
-        $this->_db->setQuery("Select id, action From #__contentbuilder_list_states Where published = 1 And id = " . CBRequest::getInt('list_state', 0) . " And form_id = " . $this->_id);
-        $res = $this->_db->loadAssoc();
+        $this->getDatabase()->setQuery("Select id, action From #__contentbuilder_list_states Where published = 1 And id = " . CBRequest::getInt('list_state', 0) . " And form_id = " . $this->_id);
+        $res = $this->getDatabase()->loadAssoc();
         if (!is_array($res)) {
             return;
         }
@@ -2125,14 +2125,14 @@ var contentbuilder = new function(){
         }
 
         foreach ($items as $item) {
-            $this->_db->setQuery("Select id From #__contentbuilder_list_records Where form_id = " . $this->_id . " And record_id = " . $this->_db->Quote($item));
-            $res = $this->_db->loadResult();
+            $this->getDatabase()->setQuery("Select id From #__contentbuilder_list_records Where form_id = " . $this->_id . " And record_id = " . $this->getDatabase()->Quote($item));
+            $res = $this->getDatabase()->loadResult();
             if (!$res) {
-                $this->_db->setQuery("Insert Into #__contentbuilder_list_records (state_id, form_id, record_id, reference_id) Values (" . CBRequest::getInt('list_state', 0) . ", " . $this->_id . ", " . $this->_db->Quote($item) . ", " . $this->_db->Quote($reference_id) . ")");
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_list_records (state_id, form_id, record_id, reference_id) Values (" . CBRequest::getInt('list_state', 0) . ", " . $this->_id . ", " . $this->getDatabase()->Quote($item) . ", " . $this->getDatabase()->Quote($reference_id) . ")");
+                $this->getDatabase()->execute();
             } else {
-                $this->_db->setQuery("Update #__contentbuilder_list_records Set state_id = " . CBRequest::getInt('list_state', 0) . " Where form_id = " . $this->_id . " And record_id = " . $this->_db->Quote($item));
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Update #__contentbuilder_list_records Set state_id = " . CBRequest::getInt('list_state', 0) . " Where form_id = " . $this->_id . " And record_id = " . $this->getDatabase()->Quote($item));
+                $this->getDatabase()->execute();
             }
         }
 
@@ -2148,8 +2148,8 @@ var contentbuilder = new function(){
 
     function change_list_language()
     {
-        $this->_db->setQuery('Select reference_id,`type` From #__contentbuilder_forms Where id = ' . intval($this->_id));
-        $typeref = $this->_db->loadAssoc();
+        $this->getDatabase()->setQuery('Select reference_id,`type` From #__contentbuilder_forms Where id = ' . intval($this->_id));
+        $typeref = $this->getDatabase()->loadAssoc();
 
         if (!is_array($typeref)) {
             return;
@@ -2161,22 +2161,22 @@ var contentbuilder = new function(){
         $items = CBRequest::getVar('cid', array(), 'request', 'array');
 
         $sef = '';
-        $this->_db->setQuery("Select sef From #__languages Where published = 1 And lang_code = " . $this->_db->Quote(CBRequest::getVar('list_language', '*')));
-        $sef = $this->_db->loadResult();
+        $this->getDatabase()->setQuery("Select sef From #__languages Where published = 1 And lang_code = " . $this->getDatabase()->Quote(CBRequest::getVar('list_language', '*')));
+        $sef = $this->getDatabase()->loadResult();
 
         foreach ($items as $item) {
-            $this->_db->setQuery("Select id From #__contentbuilder_records Where `type` = " . $this->_db->Quote($type) . " And `reference_id` = " . $this->_db->Quote($reference_id) . " And record_id = " . $this->_db->Quote($item));
-            $res = $this->_db->loadResult();
+            $this->getDatabase()->setQuery("Select id From #__contentbuilder_records Where `type` = " . $this->getDatabase()->Quote($type) . " And `reference_id` = " . $this->getDatabase()->Quote($reference_id) . " And record_id = " . $this->getDatabase()->Quote($item));
+            $res = $this->getDatabase()->loadResult();
             if (!$res) {
-                $this->_db->setQuery("Insert Into #__contentbuilder_records (`type`,lang_code, sef, record_id, reference_id) Values (" . $this->_db->Quote($type) . "," . $this->_db->Quote(CBRequest::getVar('list_language', '*')) . ", " . $this->_db->Quote($sef) . ", " . $this->_db->Quote($item) . ", " . $this->_db->Quote($reference_id) . ")");
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (`type`,lang_code, sef, record_id, reference_id) Values (" . $this->getDatabase()->Quote($type) . "," . $this->getDatabase()->Quote(CBRequest::getVar('list_language', '*')) . ", " . $this->getDatabase()->Quote($sef) . ", " . $this->getDatabase()->Quote($item) . ", " . $this->getDatabase()->Quote($reference_id) . ")");
+                $this->getDatabase()->execute();
             } else {
-                $this->_db->setQuery("Update #__contentbuilder_records Set sef = " . $this->_db->Quote($sef) . ", lang_code = " . $this->_db->Quote(CBRequest::getVar('list_language', '*')) . " Where `type` = " . $this->_db->Quote($type) . " And `reference_id` = " . $this->_db->Quote($reference_id) . " And record_id = " . $this->_db->Quote($item));
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Update #__contentbuilder_records Set sef = " . $this->getDatabase()->Quote($sef) . ", lang_code = " . $this->getDatabase()->Quote(CBRequest::getVar('list_language', '*')) . " Where `type` = " . $this->getDatabase()->Quote($type) . " And `reference_id` = " . $this->getDatabase()->Quote($reference_id) . " And record_id = " . $this->getDatabase()->Quote($item));
+                $this->getDatabase()->execute();
             }
 
-            $this->_db->setQuery("Update #__contentbuilder_articles As articles, #__content As content Set content.language = " . $this->_db->Quote(CBRequest::getVar('list_language', '*')) . " Where ( content.state = 1 Or content.state = 0 ) And content.id = articles.article_id And articles.`type` = " . intval($type) . " And articles.reference_id = " . $this->_db->Quote($reference_id) . " And articles.record_id = " . $this->_db->Quote($item));
-            $this->_db->execute();
+            $this->getDatabase()->setQuery("Update #__contentbuilder_articles As articles, #__content As content Set content.language = " . $this->getDatabase()->Quote(CBRequest::getVar('list_language', '*')) . " Where ( content.state = 1 Or content.state = 0 ) And content.id = articles.article_id And articles.`type` = " . intval($type) . " And articles.reference_id = " . $this->getDatabase()->Quote($reference_id) . " And articles.record_id = " . $this->getDatabase()->Quote($item));
+            $this->getDatabase()->execute();
         }
 
         $cache = Factory::getCache('com_content');
@@ -2187,8 +2187,8 @@ var contentbuilder = new function(){
 
     function change_list_publish()
     {
-        $this->_db->setQuery('Select reference_id,`type` From #__contentbuilder_forms Where id = ' . intval($this->_id));
-        $typeref = $this->_db->loadAssoc();
+        $this->getDatabase()->setQuery('Select reference_id,`type` From #__contentbuilder_forms Where id = ' . intval($this->_id));
+        $typeref = $this->getDatabase()->loadAssoc();
 
         if (!is_array($typeref)) {
             return;
@@ -2199,59 +2199,59 @@ var contentbuilder = new function(){
 
         $items = CBRequest::getVar('cid', array(), 'request', 'array');
 
-        $this->_db->setQuery("SET @ids := null");
-        $this->_db->execute();
+        $this->getDatabase()->setQuery("SET @ids := null");
+        $this->getDatabase()->execute();
 
         $created_up = Factory::getDate();
         $created_up = $created_up->toSql();
 
         foreach ($items as $item) {
-            $this->_db->setQuery("Select id, publish_up From #__contentbuilder_records Where `type` = " . $this->_db->Quote($type) . " And `reference_id` = " . $this->_db->Quote($reference_id) . " And record_id = " . $this->_db->Quote($item));
-            $res = $this->_db->loadAssoc();
+            $this->getDatabase()->setQuery("Select id, publish_up From #__contentbuilder_records Where `type` = " . $this->getDatabase()->Quote($type) . " And `reference_id` = " . $this->getDatabase()->Quote($reference_id) . " And record_id = " . $this->getDatabase()->Quote($item));
+            $res = $this->getDatabase()->loadAssoc();
 
             if (!is_array($res)) {
-                $this->_db->setQuery("Insert Into #__contentbuilder_records (`type`,published, record_id, reference_id) Values (" . $this->_db->Quote($type) . "," . (CBRequest::getInt('list_publish', 0) ? 1 : 0) . ", " . $this->_db->Quote($item) . ", " . $this->_db->Quote($reference_id) . ")");
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (`type`,published, record_id, reference_id) Values (" . $this->getDatabase()->Quote($type) . "," . (CBRequest::getInt('list_publish', 0) ? 1 : 0) . ", " . $this->getDatabase()->Quote($item) . ", " . $this->getDatabase()->Quote($reference_id) . ")");
+                $this->getDatabase()->execute();
             } else {
                 $publish = CBRequest::getInt('list_publish', 0);
 
-                $this->_db->setQuery(
+                $this->getDatabase()->setQuery(
                     "UPDATE #__contentbuilder_records 
                     SET 
                         is_future = 0, 
-                        publish_up = " . ($publish ? $this->_db->Quote($created_up) : 'NULL') . ", 
+                        publish_up = " . ($publish ? $this->getDatabase()->Quote($created_up) : 'NULL') . ", 
                         publish_down = NULL, 
                         published = " . ($publish ? 1 : 0) . " 
-                    WHERE `type` = " . $this->_db->Quote($type) . " 
-                    AND `reference_id` = " . $this->_db->Quote($reference_id) . " 
-                    AND record_id = " . $this->_db->Quote($item)
+                    WHERE `type` = " . $this->getDatabase()->Quote($type) . " 
+                    AND `reference_id` = " . $this->getDatabase()->Quote($reference_id) . " 
+                    AND record_id = " . $this->getDatabase()->Quote($item)
                 );
-                $this->_db->execute();
+                $this->getDatabase()->execute();
             }
 
             $publish = CBRequest::getInt('list_publish', 0);
             $publishUpValue = $publish
-                ? $this->_db->Quote($created_up)
-                : $this->_db->Quote(is_array($res) ? $res['publish_up'] : $created_up);
+                ? $this->getDatabase()->Quote($created_up)
+                : $this->getDatabase()->Quote(is_array($res) ? $res['publish_up'] : $created_up);
 
-            $this->_db->setQuery(
+            $this->getDatabase()->setQuery(
                 "UPDATE #__contentbuilder_articles AS articles
                 INNER JOIN #__content AS content ON content.id = articles.article_id
                 SET 
                     content.publish_up = " . $publishUpValue . ",
                     content.publish_down = NULL,
                     content.state = " . ($publish ? 1 : 0) . "
-                WHERE articles.`type` = " . $this->_db->quote($type) . " 
-                AND articles.reference_id = " . $this->_db->Quote($reference_id) . " 
-                AND articles.record_id = " . $this->_db->Quote($item) . "
+                WHERE articles.`type` = " . $this->getDatabase()->quote($type) . " 
+                AND articles.reference_id = " . $this->getDatabase()->Quote($reference_id) . " 
+                AND articles.record_id = " . $this->getDatabase()->Quote($item) . "
                 AND (content.state = 0 OR content.state = 1)"
             );
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
-        $this->_db->setQuery("SELECT @ids");
-        $select_ids = $this->_db->loadResult();
+        $this->getDatabase()->setQuery("SELECT @ids");
+        $select_ids = $this->getDatabase()->loadResult();
         if ($select_ids) {
-            $affected_articles = explode(',', $this->_db->loadResult());
+            $affected_articles = explode(',', $this->getDatabase()->loadResult());
         }
         $cache = Factory::getCache('com_content');
         $cache->clean();

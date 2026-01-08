@@ -170,12 +170,12 @@ class DetailsModel extends ListModel
                     $data->labels = $data->form->getElementLabels();
                     $ids = array();
                     foreach ($data->labels as $reference_id => $label) {
-                        $ids[] = $this->_db->Quote($reference_id);
+                        $ids[] = $this->getDatabase()->Quote($reference_id);
                     }
 
                     if (count($ids)) {
-                        $this->_db->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
-                        $rows = $this->_db->loadAssocList();
+                        $this->getDatabase()->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval($this->_id) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
+                        $rows = $this->getDatabase()->loadAssocList();
                         $ids = array();
                         foreach ($rows as $row) {
                             $ids[] = $row['reference_id'];
@@ -240,8 +240,8 @@ class DetailsModel extends ListModel
 
                         if ($data->act_as_registration) {
                             $meta = $data->form->getRecordMetadata($this->_record_id);
-                            $this->_db->setQuery("Select * From #__users Where id = " . $meta->created_id);
-                            $user = $this->_db->loadObject();
+                            $this->getDatabase()->setQuery("Select * From #__users Where id = " . $meta->created_id);
+                            $user = $this->getDatabase()->loadObject();
                         }
 
                         $label = '';

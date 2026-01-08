@@ -122,7 +122,7 @@ Joomla.tableOrdering = function( order, dir, task ) {
                 $row = $this->items[$i];
                 $checked = HTMLHelper::_('grid.id', $i, $row->id);
                 $link = Route::_('index.php?option=com_contentbuilder&task=form.edit&id=' . $row->id);
-                $published = ContentbuilderHelper::listPublish($row, $i);
+                $published = ContentbuilderHelper::listPublish('forms', $row, $i);
                 ?>
                 <tr class="<?php echo "row$k"; ?>">
                     <td>

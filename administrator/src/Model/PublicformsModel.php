@@ -174,7 +174,7 @@ class PublicformsModel extends ListModel
         $filter_state = '';
 
         if ($this->getState('forms_filter_tag') != '') {
-            $filter_state .= ' And Lower(`tag`) Like ' . $this->_db->Quote(strtolower($this->getState('forms_filter_tag'))) . ' ';
+            $filter_state .= ' And Lower(`tag`) Like ' . $this->getDatabase()->Quote(strtolower($this->getState('forms_filter_tag'))) . ' ';
         }
 
         $in = '';
@@ -240,8 +240,8 @@ class PublicformsModel extends ListModel
 
     function getTags()
     {
-        $this->_db->setQuery("Select Distinct `tag` As `tag` From #__contentbuilder_forms Where published = 1 Order by `tag` Asc");
-        return $this->_db->loadObjectList();
+        $this->getDatabase()->setQuery("Select Distinct `tag` As `tag` From #__contentbuilder_forms Where published = 1 Order by `tag` Asc");
+        return $this->getDatabase()->loadObjectList();
     }
 
     /**

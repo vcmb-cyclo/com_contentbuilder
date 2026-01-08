@@ -106,10 +106,10 @@ class FormModel extends BaseDatabaseModel
     {
         switch ($name) {
             case 'Form':
-                return new FormTable($this->_db);
+                return new FormTable($this->getDatabase());
 
             case 'Elementoption':
-                return new ElementoptionTable($this->_db);
+                return new ElementoptionTable($this->getDatabase());
         }
 
         return parent::getTable($name, $prefix, $options);
@@ -139,9 +139,9 @@ class FormModel extends BaseDatabaseModel
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set editable = 1 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -150,9 +150,9 @@ class FormModel extends BaseDatabaseModel
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set list_include = 1 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -161,9 +161,9 @@ class FormModel extends BaseDatabaseModel
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set search_include = 1 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -172,9 +172,9 @@ class FormModel extends BaseDatabaseModel
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set linkable = 0 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -183,9 +183,9 @@ class FormModel extends BaseDatabaseModel
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set editable = 0 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -194,9 +194,9 @@ class FormModel extends BaseDatabaseModel
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set list_include = 0 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -205,9 +205,9 @@ class FormModel extends BaseDatabaseModel
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->_db->setQuery(' Update #__contentbuilder_elements ' .
+            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set search_include = 0 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
     }
 
@@ -270,7 +270,7 @@ class FormModel extends BaseDatabaseModel
             $this->setId((int) $pk);
         }
 
-        $db = $this->_db;
+        $db = $this->getDatabase();
         $query = $db->getQuery(true)
             ->select('*')
             ->from($db->quoteName('#__contentbuilder_forms'))
@@ -936,7 +936,7 @@ class FormModel extends BaseDatabaseModel
                 }
             }
         } else {
-            $form_id = $this->_db->insertid();
+            $form_id = $this->getDatabase()->insertid();
             foreach ($list_states as $item) {
                 $db->setQuery("Insert Into #__contentbuilder_list_states (form_id,`title`,color,action, published) Values ($form_id," . $db->Quote(stripslashes(strip_tags($item['title']))) . "," . $db->Quote($item['color']) . "," . $db->Quote($item['action']) . "," . $db->Quote(isset($item['published']) && $item['published'] ? 1 : 0) . ")");
                 $db->execute();
@@ -973,8 +973,8 @@ class FormModel extends BaseDatabaseModel
         ArrayHelper::toInteger($wordwrap);
         if (is_array($item_wrapper) || is_object($item_wrapper)) {
             foreach ($item_wrapper as $elementId => $value) {
-                $this->_db->setQuery("Update #__contentbuilder_elements Set `order_type` = " . $this->_db->Quote($order_types[$elementId]) . ", `label`= " . $this->_db->Quote($labels[$elementId]) . ", `wordwrap` = " . $this->_db->Quote($wordwrap[$elementId]) . ", `item_wrapper` =  " . $this->_db->Quote(trim($value)) . " Where form_id = $form_id And id = " . $elementId);
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Update #__contentbuilder_elements Set `order_type` = " . $this->getDatabase()->Quote($order_types[$elementId]) . ", `label`= " . $this->getDatabase()->Quote($labels[$elementId]) . ", `wordwrap` = " . $this->getDatabase()->Quote($wordwrap[$elementId]) . ", `item_wrapper` =  " . $this->getDatabase()->Quote(trim($value)) . " Where form_id = $form_id And id = " . $elementId);
+                $this->getDatabase()->execute();
             }
         }
 
@@ -1003,31 +1003,31 @@ class FormModel extends BaseDatabaseModel
         $row = $this->getTable('Form', '');
 
         foreach ($cids as $cid) {
-            $this->_db->setQuery("Select article.article_id From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.delete_articles > 0 And form.id = article.form_id And article.form_id = " . intval($cid));
+            $this->getDatabase()->setQuery("Select article.article_id From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.delete_articles > 0 And form.id = article.form_id And article.form_id = " . intval($cid));
             $articles = Factory::getContainer()->get(DatabaseInterface::class)->loadColumn();
             if (count($articles)) {
                 $article_items = array();
                 foreach ($articles as $article) {
-                    $article_items[] = $this->_db->Quote('com_content.article.' . $article);
+                    $article_items[] = $this->getDatabase()->Quote('com_content.article.' . $article);
                     $table = Table::getInstance('content');
                     // Trigger the onContentBeforeDelete event.
                     if (!$is15 && $table->load($article)) {
                         Factory::getApplication()->getDispatcher()->dispatch('onContentBeforeDelete', array('com_content.article', $table));
                     }
-                    $this->_db->setQuery("Delete From #__content Where id = " . intval($article));
-                    $this->_db->execute();
+                    $this->getDatabase()->setQuery("Delete From #__content Where id = " . intval($article));
+                    $this->getDatabase()->execute();
                     // Trigger the onContentAfterDelete event.
                     $table->reset();
                     if (!$is15) {
                         Factory::getApplication()->getDispatcher()->dispatch('onContentAfterDelete', array('com_content.article', $table));
                     }
                 }
-                $this->_db->setQuery("Delete From #__assets Where `name` In (" . implode(',', $article_items) . ")");
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Delete From #__assets Where `name` In (" . implode(',', $article_items) . ")");
+                $this->getDatabase()->execute();
             }
 
 
-            $this->_db->setQuery("
+            $this->getDatabase()->setQuery("
                 Delete
                     `elements`.*
                 From
@@ -1035,9 +1035,9 @@ class FormModel extends BaseDatabaseModel
                 Where
                     `elements`.form_id = " . $cid);
 
-            $this->_db->execute();
+            $this->getDatabase()->execute();
 
-            $this->_db->setQuery("
+            $this->getDatabase()->setQuery("
                 Delete
                     `states`.*
                 From
@@ -1045,9 +1045,9 @@ class FormModel extends BaseDatabaseModel
                 Where
                     `states`.form_id = " . $cid);
 
-            $this->_db->execute();
+            $this->getDatabase()->execute();
 
-            $this->_db->setQuery("
+            $this->getDatabase()->setQuery("
                 Delete
                     `records`.*
                 From
@@ -1055,9 +1055,9 @@ class FormModel extends BaseDatabaseModel
                 Where
                     `records`.form_id = " . $cid);
 
-            $this->_db->execute();
+            $this->getDatabase()->execute();
 
-            $this->_db->setQuery("
+            $this->getDatabase()->setQuery("
                 Delete
                     `access`.*
                 From
@@ -1065,9 +1065,9 @@ class FormModel extends BaseDatabaseModel
                 Where
                     `access`.form_id = " . $cid);
 
-            $this->_db->execute();
+            $this->getDatabase()->execute();
 
-            $this->_db->setQuery("
+            $this->getDatabase()->setQuery("
                 Delete
                     `users`.*
                 From
@@ -1075,9 +1075,9 @@ class FormModel extends BaseDatabaseModel
                 Where
                     `users`.form_id = " . $cid);
 
-            $this->_db->execute();
+            $this->getDatabase()->execute();
 
-            $this->_db->setQuery("
+            $this->getDatabase()->setQuery("
                 Delete
                     `users`.*
                 From
@@ -1085,17 +1085,17 @@ class FormModel extends BaseDatabaseModel
                 Where
                     `users`.form_id = " . $cid);
 
-            $this->_db->execute();
+            $this->getDatabase()->execute();
 
             $this->getTable('Elementoption')->reorder('form_id = ' . $cid);
 
-            $this->_db->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&view=list&id=" . intval($cid) . "'");
-            $this->_db->execute();
-            $this->_db->setQuery("Select count(id) From #__menu Where `link` Like 'index.php?option=com_contentbuilder&view=list&id=%'");
-            $amount = $this->_db->loadResult();
+            $this->getDatabase()->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&view=list&id=" . intval($cid) . "'");
+            $this->getDatabase()->execute();
+            $this->getDatabase()->setQuery("Select count(id) From #__menu Where `link` Like 'index.php?option=com_contentbuilder&view=list&id=%'");
+            $amount = $this->getDatabase()->loadResult();
             if (!$amount) {
-                $this->_db->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&viewcontainer=true'");
-                $this->_db->execute();
+                $this->getDatabase()->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&viewcontainer=true'");
+                $this->getDatabase()->execute();
             }
 
             if (!$row->delete($cid)) {
@@ -1107,37 +1107,37 @@ class FormModel extends BaseDatabaseModel
         $row->reorder();
 
         /*
-        $this->_db->setQuery("Select `reference_id` From #__contentbuilder_forms");
-        $references = $this->_db->loadResultArray();
+        $this->getDatabase()->setQuery("Select `reference_id` From #__contentbuilder_forms");
+        $references = $this->getDatabase()->loadResultArray();
 
         $cnt = count($references);
         if ($cnt) {
             $new_items = array();
             for ($i = 0; $i < $cnt; $i++) {
-                $new_items[] = $this->_db->Quote($references[$i]);
+                $new_items[] = $this->getDatabase()->Quote($references[$i]);
             }
-            $this->_db->setQuery("Delete From #__contentbuilder_records Where `reference_id` Not In (" . implode(',',$new_items) . ") ");
-            $this->_db->execute();
+            $this->getDatabase()->setQuery("Delete From #__contentbuilder_records Where `reference_id` Not In (" . implode(',',$new_items) . ") ");
+            $this->getDatabase()->execute();
         }else{
-            $this->_db->setQuery("Delete From #__contentbuilder_records");
-            $this->_db->execute();
+            $this->getDatabase()->setQuery("Delete From #__contentbuilder_records");
+            $this->getDatabase()->execute();
         }*/
 
         // article deletion if required
-        $this->_db->setQuery("Select `id` From #__contentbuilder_forms");
-        $references = $this->_db->loadColumn();
+        $this->getDatabase()->setQuery("Select `id` From #__contentbuilder_forms");
+        $references = $this->getDatabase()->loadColumn();
 
         $cnt = count($references);
         if ($cnt) {
             $new_items = array();
             for ($i = 0; $i < $cnt; $i++) {
-                $new_items[] = $this->_db->Quote($references[$i]);
+                $new_items[] = $this->getDatabase()->Quote($references[$i]);
             }
-            $this->_db->setQuery("Delete From #__contentbuilder_articles Where `form_id` Not In (" . implode(',', $new_items) . ") ");
-            $this->_db->execute();
+            $this->getDatabase()->setQuery("Delete From #__contentbuilder_articles Where `form_id` Not In (" . implode(',', $new_items) . ") ");
+            $this->getDatabase()->execute();
         } else {
-            $this->_db->setQuery("Delete From #__contentbuilder_articles");
-            $this->_db->execute();
+            $this->getDatabase()->setQuery("Delete From #__contentbuilder_articles");
+            $this->getDatabase()->execute();
         }
 
         return true;
@@ -1149,7 +1149,7 @@ class FormModel extends BaseDatabaseModel
         $cids = CBRequest::getVar('cid', array(0), 'post', 'array');
         ArrayHelper::toInteger($cids);
         foreach ($cids as $cid) {
-            $this->_db->setQuery("
+            $this->getDatabase()->setQuery("
                 Delete
                     `elements`.*
                 From
@@ -1157,7 +1157,7 @@ class FormModel extends BaseDatabaseModel
                 Where
                     `elements`.id = " . $cid);
 
-            $this->_db->execute();
+            $this->getDatabase()->execute();
             $this->getTable('Elementoption')->reorder('form_id = ' . $this->_id);
         }
     }*/
@@ -1278,7 +1278,7 @@ class FormModel extends BaseDatabaseModel
         ]);
 
         $value = (int) $value;
-        $db = $this->getDatabase(); // ou $this->_db si tu préfères rester cohérent
+        $db = $this->getDatabase(); // ou $this->getDatabase() si tu préfères rester cohérent
         $query = $db->getQuery(true)
             ->update($db->quoteName('#__contentbuilder_forms'))
             ->set($db->quoteName('published') . ' = ' . $value)
@@ -1328,9 +1328,9 @@ class FormModel extends BaseDatabaseModel
             return false;
 
         $table = $this->getTable('Form', '');
-        $this->_db->setQuery(' Select * From #__contentbuilder_forms ' .
+        $this->getDatabase()->setQuery(' Select * From #__contentbuilder_forms ' .
             '  Where id In ( ' . implode(',', $cids) . ')');
-        $result = $this->_db->loadObjectList();
+        $result = $this->getDatabase()->loadObjectList();
 
         foreach ($result as $obj) {
             $origId = $obj->id;
@@ -1338,27 +1338,27 @@ class FormModel extends BaseDatabaseModel
 
             $obj->name = 'Copy of ' . $obj->name;
             $obj->published = 0;
-            $this->_db->insertObject('#__contentbuilder_forms', $obj);
-            $insertId = $this->_db->insertid();
+            $this->getDatabase()->insertObject('#__contentbuilder_forms', $obj);
+            $insertId = $this->getDatabase()->insertid();
 
             // elements
-            $this->_db->setQuery(' Select * From #__contentbuilder_elements ' .
+            $this->getDatabase()->setQuery(' Select * From #__contentbuilder_elements ' .
                 '  Where form_id = ' . $origId);
-            $elements = $this->_db->loadObjectList();
+            $elements = $this->getDatabase()->loadObjectList();
             foreach ($elements as $element) {
                 unset($element->id);
                 $element->form_id = $insertId;
-                $this->_db->insertObject('#__contentbuilder_elements', $element);
+                $this->getDatabase()->insertObject('#__contentbuilder_elements', $element);
             }
 
             // list states
-            $this->_db->setQuery(' Select * From #__contentbuilder_list_states ' .
+            $this->getDatabase()->setQuery(' Select * From #__contentbuilder_list_states ' .
                 '  Where form_id = ' . $origId);
-            $elements = $this->_db->loadObjectList();
+            $elements = $this->getDatabase()->loadObjectList();
             foreach ($elements as $element) {
                 unset($element->id);
                 $element->form_id = $insertId;
-                $this->_db->insertObject('#__contentbuilder_list_states', $element);
+                $this->getDatabase()->insertObject('#__contentbuilder_list_states', $element);
             }
             // XDA-Gil fix 'Copy of Form' in Component Menu in Backen CB View
             // ContentbuilderLegacyHelper::createBackendMenuItem($insertId, $obj->name, true);

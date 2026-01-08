@@ -57,8 +57,8 @@ class VerifyModel extends BaseDatabaseModel
             $user_id = $this->mainframe->getIdentity()->get('id', 0);
             $setup = $this->mainframe->getSession()->get($plugin . $verification_name, '', 'com_contentbuilder.verify.' . $plugin . $verification_name);
         } else {
-            $this->_db->setQuery("Select `setup`,`user_id` From #__contentbuilder_verifications Where `verification_hash` = " . $this->_db->Quote($verification_id));
-            $setup = $this->_db->loadAssoc();
+            $this->getDatabase()->setQuery("Select `setup`,`user_id` From #__contentbuilder_verifications Where `verification_hash` = " . $this->getDatabase()->Quote($verification_id));
+            $setup = $this->getDatabase()->loadAssoc();
             if (is_array($setup)) {
                 $user_id = $setup['user_id'];
                 $setup = $setup['setup'];
@@ -91,17 +91,17 @@ class VerifyModel extends BaseDatabaseModel
 
         $_now = Factory::getDate();
 
-        //$this->_db->setQuery("Select count(id) From #__contentbuilder_verifications Where Timestampdiff(Second, `start_date`, '".strtotime($_now->toSQL())."') < 1 And ip = " . $this->_db->Quote($_SERVER['REMOTE_ADDR']));
-        //$ver = $this->_db->loadResult();
+        //$this->getDatabase()->setQuery("Select count(id) From #__contentbuilder_verifications Where Timestampdiff(Second, `start_date`, '".strtotime($_now->toSQL())."') < 1 And ip = " . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']));
+        //$ver = $this->getDatabase()->loadResult();
 
         //if($ver >= 5){
-        //    $this->_db->setQuery("Delete From #__contentbuilder_verifications Where `verification_date` IS NULL And ip = " . $this->_db->Quote($_SERVER['REMOTE_ADDR']));
-        //    $this->_db->execute();
+        //    $this->getDatabase()->setQuery("Delete From #__contentbuilder_verifications Where `verification_date` IS NULL And ip = " . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']));
+        //    $this->getDatabase()->execute();
         //    JError::raiseError(500, 'Penetration Denied');
         //}
 
-        //$this->_db->setQuery("Delete From #__contentbuilder_verifications Where Timestampdiff(Second, `start_date`, '".strtotime($_now->toSQL())."') > 86400 And `verification_date` IS NULL");
-        //$this->_db->execute();
+        //$this->getDatabase()->setQuery("Delete From #__contentbuilder_verifications Where Timestampdiff(Second, `start_date`, '".strtotime($_now->toSQL())."') > 86400 And `verification_date` IS NULL");
+        //$this->getDatabase()->execute();
 
         $rec = null;
         $redirect_view = '';
@@ -115,8 +115,8 @@ class VerifyModel extends BaseDatabaseModel
 
             $id = intval($out['require_view']);
 
-            $this->_db->setQuery("Select `type`, `reference_id`, `show_all_languages_fe` From #__contentbuilder_forms Where published = 1 And id = " . $id);
-            $formsettings = $this->_db->loadAssoc();
+            $this->getDatabase()->setQuery("Select `type`, `reference_id`, `show_all_languages_fe` From #__contentbuilder_forms Where published = 1 And id = " . $id);
+            $formsettings = $this->getDatabase()->loadAssoc();
 
             if (!is_array($formsettings)) {
                 throw new \Exception('Verification Setup failed. Reason: View id ' . $out['require_view'] . ' has been requested but is not available (not existent or unpublished). Please update your content template or publish the view.', 500);
@@ -162,7 +162,7 @@ class VerifyModel extends BaseDatabaseModel
             $___now = $_now->toSql();
 
             $verification_id = md5(uniqid("", true) . mt_rand(0, mt_getrandmax()) . $user_id);
-            $this->_db->setQuery("
+            $this->getDatabase()->setQuery("
                     Insert Into #__contentbuilder_verifications
                     (
                     `verification_hash`,
@@ -176,17 +176,17 @@ class VerifyModel extends BaseDatabaseModel
                     )
                     Values
                     (
-                    " . $this->_db->Quote($verification_id) . ",
-                    " . $this->_db->Quote($___now) . ",
-                    " . $this->_db->Quote('type=normal&' . $verification_data) . ",
+                    " . $this->getDatabase()->Quote($verification_id) . ",
+                    " . $this->getDatabase()->Quote($___now) . ",
+                    " . $this->getDatabase()->Quote('type=normal&' . $verification_data) . ",
                     " . $user_id . ",
-                    " . $this->_db->Quote($plugin) . ",
-                    " . $this->_db->Quote($_SERVER['REMOTE_ADDR']) . ",
-                    " . $this->_db->Quote($setup) . ",
+                    " . $this->getDatabase()->Quote($plugin) . ",
+                    " . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']) . ",
+                    " . $this->getDatabase()->Quote($setup) . ",
                     " . intval($out['client']) . "
                     )
             ");
-            $this->_db->execute();
+            $this->getDatabase()->execute();
         }
 
         /*
@@ -267,23 +267,23 @@ class VerifyModel extends BaseDatabaseModel
                                 }
                             }
 
-                            $this->_db->setQuery("Select id From #__contentbuilder_users Where userid = " . $this->_db->Quote($user_id) . " And form_id = " . intval($out['verify_view']));
-                            $usertableid = $this->_db->loadResult();
+                            $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where userid = " . $this->getDatabase()->Quote($user_id) . " And form_id = " . intval($out['verify_view']));
+                            $usertableid = $this->getDatabase()->loadResult();
 
                             $levels = explode(',', $out['verify_levels']);
                             $___now = $_now->toSql();
                             if ($usertableid) {
-                                $this->_db->setQuery("Update #__contentbuilder_users
+                                $this->getDatabase()->setQuery("Update #__contentbuilder_users
                                 Set
-                                " . (in_array('view', $levels) ? ' verified_view=1, verification_date_view=' . $this->_db->Quote($___now) . ", " : '') . "
-                                " . (in_array('new', $levels) ? ' verified_new=1, verification_date_new=' . $this->_db->Quote($___now) . ", " : '') . "
-                                " . (in_array('edit', $levels) ? ' verified_edit=1, verification_date_edit=' . $this->_db->Quote($___now) . ", " : '') . "
+                                " . (in_array('view', $levels) ? ' verified_view=1, verification_date_view=' . $this->getDatabase()->Quote($___now) . ", " : '') . "
+                                " . (in_array('new', $levels) ? ' verified_new=1, verification_date_new=' . $this->getDatabase()->Quote($___now) . ", " : '') . "
+                                " . (in_array('edit', $levels) ? ' verified_edit=1, verification_date_edit=' . $this->getDatabase()->Quote($___now) . ", " : '') . "
                                 published = 1
                                 Where id = $usertableid
                                 ");
-                                $this->_db->execute();
+                                $this->getDatabase()->execute();
                             } else {
-                                $this->_db->setQuery("
+                                $this->getDatabase()->setQuery("
                                 Insert Into #__contentbuilder_users
                                 (
                                 " . (in_array('view', $levels) ? 'verified_view, verification_date_view,' : '') . "
@@ -295,15 +295,15 @@ class VerifyModel extends BaseDatabaseModel
                                 )
                                 Values
                                 (
-                                " . (in_array('view', $levels) ? '1, ' . $this->_db->Quote($___now) . ',' : '') . "
-                                " . (in_array('new', $levels) ? '1, ' . $this->_db->Quote($___now) . ',' : '') . "
-                                " . (in_array('edit', $levels) ? '1, ' . $this->_db->Quote($___now) . ',' : '') . "
+                                " . (in_array('view', $levels) ? '1, ' . $this->getDatabase()->Quote($___now) . ',' : '') . "
+                                " . (in_array('new', $levels) ? '1, ' . $this->getDatabase()->Quote($___now) . ',' : '') . "
+                                " . (in_array('edit', $levels) ? '1, ' . $this->getDatabase()->Quote($___now) . ',' : '') . "
                                 1,
-                                " . $this->_db->Quote($user_id) . ",
+                                " . $this->getDatabase()->Quote($user_id) . ",
                                 " . intval($out['verify_view']) . "
                                 )
                                 ");
-                                $this->_db->execute();
+                                $this->getDatabase()->execute();
                             }
 
                             $verification_data = ($verification_data ? '&' : '') . '';
@@ -314,22 +314,22 @@ class VerifyModel extends BaseDatabaseModel
                                 $verification_data = rtrim($verification_data, '&');
                             }
 
-                            $this->_db->setQuery("
+                            $this->getDatabase()->setQuery("
                                 Update #__contentbuilder_verifications
                                 Set
                                 `verification_hash` = '',
                                 `is_test` = " . (isset($verify_result[0]['is_test']) ? intval(isset($verify_result[0]['is_test'])) : 0) . ",
-                                `verification_date` = " . $this->_db->Quote($___now) . " 
-                                " . ($verification_data ? ',verification_data = concat(verification_data, ' . $this->_db->Quote($verification_data) . ') ' : '') . "
+                                `verification_date` = " . $this->getDatabase()->Quote($___now) . " 
+                                " . ($verification_data ? ',verification_data = concat(verification_data, ' . $this->getDatabase()->Quote($verification_data) . ') ' : '') . "
                                 Where
-                                verification_hash = " . $this->_db->Quote($verification_id) . "
+                                verification_hash = " . $this->getDatabase()->Quote($verification_id) . "
                                 And
                                 verification_hash <> ''
                                 And
                                 `verification_date` IS NULL
                                 
                             ");
-                            $this->_db->execute();
+                            $this->getDatabase()->execute();
 
                             // token check if given
                             if (CBRequest::getVar('token', '')) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     ContentBuilder
  * @author      Markus Bopp / XDA + GIL
@@ -34,10 +35,10 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         Joomla.checkAll(n, 'form.listsaveorder');
 
         var form = document.adminForm;
-        
+
         // Ensure the task is set correctly
         // form.task.value = task || 'saveorder';
-        
+
 
         // Submit the form using Joomla's submitform
         // Joomla.submitform(form.task.value);
@@ -87,16 +88,18 @@ $___tableOrdering = "Joomla.tableOrdering = function";
     }
 
     function submitbutton(task) {
-      const form = document.getElementById('adminForm') || document.adminForm;
-      if (!form) return;
+        const form = document.getElementById('adminForm') || document.adminForm;
+        if (!form) return;
 
         if (task == 'form.remove') {
             task = 'form.listremove';
         }
 
-        
-      switch (task) {
+
+        switch (task) {
             case 'form.cancel':
+            case 'form.publish':
+            case 'form.unpublish':
             case 'form.listpublish':
             case 'form.listunpublish':
             case 'form.listorderdown':
@@ -121,16 +124,14 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 if (document.getElementById('name').value == '') {
                     error = true;
                     alert("<?php echo addslashes(Text::_('COM_CONTENTBUILDER_ERROR_ENTER_FORMNAME')); ?>");
-                }
-                else if (nodes) {
+                } else if (nodes) {
                     if (typeof nodes.value != 'undefined') {
                         if (nodes.checked && document.adminForm['elementLabels[' + nodes.value + ']'].value == '') {
                             error = true;
                             alert("<?php echo addslashes(Text::_('COM_CONTENTBUILDER_ERROR_ENTER_FORMNAME_ALL')); ?>");
                             break;
                         }
-                    }
-                    else {
+                    } else {
                         for (var i = 0; i < nodes.length; i++) {
                             if (nodes[i].checked && document.adminForm['elementLabels[' + nodes[i].value + ']'].value == '') {
                                 error = true;
@@ -205,7 +206,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 
                         <?php
                         if ($this->form->id < 1) {
-                            ?>
+                        ?>
                             <label for="types">
                                 <span class="editlinktip hasTip"
                                     title="<?php echo Text::_('COM_CONTENTBUILDER_TYPE_TIP'); ?>"><b>
@@ -216,11 +217,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 <?php
                                 foreach ($this->form->types as $type) {
                                     if (trim($type)) {
-                                        ?>
+                                ?>
                                         <option value="<?php echo $type ?>">
                                             <?php echo $type ?>
                                         </option>
-                                        <?php
+                                <?php
                                     }
                                 }
                                 ?>
@@ -231,9 +232,9 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 <?php echo Text::_('COM_CONTENTBUILDER_ADVANCED_OPTIONS'); ?>
                             </button>
 
-                            <?php
+                        <?php
                         } else {
-                            ?>
+                        ?>
                             <button type="button" class="btn-sm btn-primary"
                                 onclick="if(document.getElementById('advancedOptions').style.display == 'none'){document.getElementById('advancedOptions').style.display = '';}else{document.getElementById('advancedOptions').style.display = 'none';}">
                                 <?php echo Text::_('COM_CONTENTBUILDER_ADVANCED_OPTIONS'); ?>
@@ -251,25 +252,25 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 <?php
 
                                 if (!$this->form->reference_id) {
-                                    ?>
+                                ?>
                                     <select class="form-select-sm" name="reference_id" style="max-width: 200px;">
                                         <?php
                                         foreach ($this->form->forms as $reference_id => $title) {
-                                            ?>
+                                        ?>
                                             <option value="<?php echo $reference_id ?>">
                                                 <?php echo htmlentities($title ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                             </option>
-                                            <?php
+                                        <?php
                                         }
                                         ?>
                                     </select>
-                                    <?php
+                                <?php
                                 } else {
-                                    ?>
+                                ?>
                                     <?php echo htmlentities($this->form->form->getTitle() ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     <input type="hidden" name="reference_id"
                                         value="<?php echo $this->form->form->getReferenceId(); ?>" />
-                                    <?php
+                                <?php
                                 }
                                 ?>
 
@@ -285,17 +286,17 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     value="<?php echo isset($this->form->type_name) ? $this->form->type_name : ''; ?>" />
                                 <?php
                                 if ($this->form->type != 'com_contentbuilder') {
-                                    ?>
+                                ?>
                                     <input class="form-check-input" type="checkbox" id="edit_by_type" name="edit_by_type"
                                         value="1" <?php echo $this->form->edit_by_type ? ' checked="checked"' : '' ?> />
                                     <label for="edit_by_type">
                                         <?php echo Text::_('COM_CONTENTBUILDER_TYPE_EDIT'); ?>
                                     </label>
-                                    <?php
+                                <?php
                                 } else {
-                                    ?>
+                                ?>
                                     <input type="hidden" name="edit_by_type" value="0" />
-                                    <?php
+                                <?php
                                 }
                                 ?>
                                 <input class="form-check-input" type="checkbox" id="email_notifications"
@@ -313,7 +314,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 
                             <div></div>
 
-                            <?php
+                        <?php
                         }
                         ?>
 
@@ -349,11 +350,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 <select class="form-select-sm" name="theme_plugin" id="theme_plugin">
                                     <?php
                                     foreach ($this->theme_plugins as $theme_plugin) {
-                                        ?>
+                                    ?>
                                         <option value="<?php echo $theme_plugin; ?>" <?php echo $theme_plugin == $this->form->theme_plugin ? ' selected="selected"' : ''; ?>>
                                             <?php echo $theme_plugin; ?>
                                         </option>
-                                        <?php
+                                    <?php
                                     }
                                     ?>
                                 </select>
@@ -520,13 +521,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                         </option>
                                         <?php
                                         foreach ($this->elements as $sortable) {
-                                            ?>
+                                        ?>
                                             <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->initial_sort_order == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
                                                 <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 </value>
-                                                <?php
+                                            <?php
                                         }
-                                        ?>
+                                            ?>
                                     </select>
                                     <span id="randUpdate"
                                         style="display: <?php echo $this->form->initial_sort_order == 'Rand' ? 'block' : 'none' ?>;">
@@ -543,13 +544,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                         </option>
                                         <?php
                                         foreach ($this->elements as $sortable) {
-                                            ?>
+                                        ?>
                                             <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->initial_sort_order2 == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
                                                 <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 </value>
-                                                <?php
+                                            <?php
                                         }
-                                        ?>
+                                            ?>
                                     </select>
                                     <select class="form-select-sm" name="initial_sort_order3" id="initial_sort_order3"
                                         style="max-width: 200px;">
@@ -558,13 +559,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                         </option>
                                         <?php
                                         foreach ($this->elements as $sortable) {
-                                            ?>
+                                        ?>
                                             <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->initial_sort_order3 == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
                                                 <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 </value>
-                                                <?php
+                                            <?php
                                         }
-                                        ?>
+                                            ?>
                                     </select>
                                     <div></div>
                                     <input class="form-check-input" type="radio" name="initial_order_dir"
@@ -728,11 +729,12 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <th width="120">
                                 <?php if (!empty($this->elements) && is_array($this->elements)) : ?>
                                     <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'ordering', 'desc', @$this->lists['order'], 'edit'); ?>
-                                    <?php //TODO: dragndrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->elements );   ?>
+                                    <?php //TODO: dragndrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->elements );   
+                                    ?>
                                     <?php echo HTMLHelper::_('grid.order', $this->elements); ?>
                                 <?php endif; ?>
                             </th>
-                           
+
                         </tr>
                     </thead>
                     <?php
@@ -741,12 +743,12 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     for ($i = 0; $i < $n; $i++) {
                         $row = $this->elements[$i];
                         $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                        $published = ContentbuilderHelper::listPublish($row, $i);
-                        $list_include = ContentbuilderHelper::listIncludeInList($row, $i);
-                        $search_include = ContentbuilderHelper::listIncludeInSearch($row, $i);
-                        $linkable = ContentbuilderHelper::listLinkable($row, $i);
-                        $editable = ContentbuilderHelper::listEditable($row, $i);
-                        ?>
+                        $published = ContentbuilderHelper::listPublish('form', $row, $i);
+                        $list_include = ContentbuilderHelper::listIncludeInList('form', $row, $i);
+                        $search_include = ContentbuilderHelper::listIncludeInSearch('form', $row, $i);
+                        $linkable = ContentbuilderHelper::listLinkable('form', $row, $i);
+                        $editable = ContentbuilderHelper::listEditable('form', $row, $i);
+                    ?>
                         <tr class="<?php echo "row$k"; ?>">
                             <td valign="top">
                                 <?php echo $row->id; ?>
@@ -839,7 +841,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     style="text-align: center" />
                             </td>
                         </tr>
-                        <?php
+                    <?php
                         $k = 1 - $k;
                     }
                     ?>
@@ -848,13 +850,17 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <td colspan="11">
                                 <div class="pagination pagination-toolbar">
                                     <div class="cbPagesCounter">
-                                        <?php if (!empty($this->pagination)) {echo $this->pagination->getPagesCounter();} ?>
+                                        <?php if (!empty($this->pagination)) {
+                                            echo $this->pagination->getPagesCounter();
+                                        } ?>
                                         <?php
                                         echo '<span>' . Text::_('COM_CONTENTBUILDER_DISPLAY_NUM') . '&nbsp;</span>';
                                         echo '<div style="display:inline-block;">' . (empty($this->pagination) ? '' : $this->pagination->getLimitBox()) . '</div>';
                                         ?>
                                     </div>
-                                    <?php if (!empty($this->pagination)) {echo $this->pagination->getPagesLinks();} ?>
+                                    <?php if (!empty($this->pagination)) {
+                                        echo $this->pagination->getPagesLinks();
+                                    } ?>
                                 </div>
                             </td>
                         </tr>
@@ -898,7 +904,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
             <?php
             foreach ($this->form->list_states as $state) {
                 $k = 0;
-                ?>
+            ?>
                 <tr class="<?php echo "row$k"; ?>">
                     <td>
                         <input class="form-check-input" type="checkbox"
@@ -921,17 +927,17 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </option>
                             <?php
                             foreach ($this->list_states_action_plugins as $list_state_action_plugin) {
-                                ?>
+                            ?>
                                 <option value="<?php echo $list_state_action_plugin; ?>" <?php echo $list_state_action_plugin == $state['action'] ? ' selected="selected"' : ''; ?>>
                                     <?php echo $list_state_action_plugin; ?>
                                 </option>
-                                <?php
+                            <?php
                             }
                             ?>
                         </select>
                     </td>
                 </tr>
-                <?php
+            <?php
                 $k = 1 - $k;
             }
             ?>
@@ -987,13 +993,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     <select class="form-select-sm" name="title_field" id="title_field">
                         <?php
                         foreach ($this->all_elements as $sortable) {
-                            ?>
+                        ?>
                             <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->title_field == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
                                 <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                 </value>
-                                <?php
+                            <?php
                         }
-                        ?>
+                            ?>
                     </select>
                 </td>
                 <td width="20%">
@@ -1008,11 +1014,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     <select class="form-select-sm" id="default_category" name="sectioncategories">
                         <?php
                         foreach ($this->form->sectioncategories as $category) {
-                            ?>
+                        ?>
                             <option <?php echo $this->form->default_category == $category->value ? ' selected="selected"' : '' ?>value="<?php echo $category->value; ?>">
                                 <?php echo htmlentities($category->text ?? '', ENT_QUOTES, 'UTF-8'); ?>
                             </option>
-                            <?php
+                        <?php
                         }
                         ?>
                     </select>
@@ -1034,11 +1040,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </option>
                         <?php
                         foreach ($this->form->language_codes as $lang_code) {
-                            ?>
+                        ?>
                             <option value="<?php echo $lang_code ?>" <?php echo $lang_code == $this->form->default_lang_code ? ' selected="selected"' : ''; ?>>
                                 <?php echo $lang_code; ?>
                             </option>
-                            <?php
+                        <?php
                         }
                         ?>
                     </select>
@@ -1165,22 +1171,22 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 <td width="20%">
                     <?php
                     if ($this->form->edit_by_type && $this->form->type == 'com_breezingforms') {
-                        ?>
+                    ?>
                         <label for="protect_upload_directory"><span class="editlinktip hasTip"
                                 title="<?php echo Text::_('COM_CONTENTBUILDER_UPLOAD_DIRECTORY_TYPE_TIP'); ?>">
                                 <?php echo Text::_('COM_CONTENTBUILDER_PROTECT_UPLOAD_DIRECTORY'); ?>
                             </span></label>
-                        <?php
+                    <?php
                     }
                     ?>
                 </td>
                 <td>
                     <?php
                     if ($this->form->edit_by_type && $this->form->type == 'com_breezingforms') {
-                        ?>
+                    ?>
                         <input class="form-check-input" type="checkbox" value="1" name="protect_upload_directory"
                             id="protect_upload_directory" <?php echo trim($this->form->protect_upload_directory) ? ' checked="checked"' : ''; ?> />
-                        <?php
+                    <?php
                     }
                     ?>
                 </td>
@@ -1214,9 +1220,9 @@ $___tableOrdering = "Joomla.tableOrdering = function";
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
             echo '<input type="hidden" name="editable_template" value="{BreezingForms: ' . (isset($this->form->type_name) ? $this->form->type_name : '') . '}"/>';
             //echo '<input type="hidden" name="protect_upload_directory" value="'.(trim($this->form->protect_upload_directory) ? 1 : 0).'"/>'; 
-            echo '<input type="hidden" name="upload_directory" value="' . (trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE .'/media/contentbuilder/upload') . '"/>';
+            echo '<input type="hidden" name="upload_directory" value="' . (trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE . '/media/contentbuilder/upload') . '"/>';
         } else {
-            ?>
+        ?>
 
             <label for="upload_directory"><span class="editlinktip hasTip"
                     title="<?php echo Text::_('COM_CONTENTBUILDER_UPLOAD_DIRECTORY_TIP'); ?>">
@@ -1224,7 +1230,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 </span></label>
             <br />
             <input class="form-control form-control-sm" style="width: 50%;" type="text"
-                value="<?php echo trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE .'/media/contentbuilder/upload'; ?>"
+                value="<?php echo trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE . '/media/contentbuilder/upload'; ?>"
                 name="upload_directory" id="upload_directory" />
             <br />
             <br />
@@ -1240,7 +1246,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
             </label>
             <br />
             <br />
-            <?php
+        <?php
         }
 
         $editor = Editor::getInstance(Factory::getApplication()->get('editor'));
@@ -1286,13 +1292,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
             echo '<input type="hidden" name="email_recipients" value="' . htmlentities($this->form->email_recipients ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
             echo '<input type="hidden" name="email_recipients_attach_uploads" value="' . htmlentities($this->form->email_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
             echo '<input type="hidden" name="email_html" value="' . htmlentities($this->form->email_html ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-
-
         } else {
 
             $title = Text::_('COM_CONTENTBUILDER_EMAIL_ADMINS');
 
-            ?>
+        ?>
             <div id="email_admins" style="cursor:pointer; width: 100%; background-color: #ffffff;"
                 onclick="if(document.adminForm.email_admins.value=='none'){document.adminForm.email_admins.value='';document.getElementById('email_admins_div').style.display='';}else{document.adminForm.email_admins.value='none';document.getElementById('email_admins_div').style.display='none';}">
                 <h3>
@@ -1493,7 +1497,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 echo $editor->display('email_template', $this->form->email_template, '100%', '550', '75', '20', false, 'email_template', null, null, $params);
                 ?>
             </div>
-            <?php
+        <?php
         }
 
         echo HTMLHelper::_('uitab.endTab');
@@ -1603,7 +1607,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
             </tr>
             <?php
             if ($this->form->edit_by_type) {
-                ?>
+            ?>
                 <tr class="row0">
                     <td width="20%" align="right" class="key">
                         <label for="force_login">
@@ -1625,7 +1629,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             value="<?php echo htmlentities($this->form->force_url ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     </td>
                 </tr>
-                <?php
+            <?php
             }
             ?>
         </table>
@@ -1694,7 +1698,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
             <?php
             foreach ($this->gmap as $entry) {
                 $k = 0;
-                ?>
+            ?>
                 <tr class="<?php echo "row$k"; ?>">
                     <td>
                         <?php echo $entry->text; ?>
@@ -1726,7 +1730,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             name="perms_fe[<?php echo $entry->value; ?>][rating]" value="1" <?php echo isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['rating']) && $this->form->config['permissions_fe'][$entry->value]['rating'] ? ' checked="checked"' : ''; ?> />
                     </td>
                 </tr>
-                <?php
+            <?php
                 $k = 1 - $k;
             }
             ?>
@@ -2038,7 +2042,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
             </tr>
             <?php
             if (!$this->form->edit_by_type) {
-                ?>
+            ?>
                 <tr class="row0">
                     <td width="20%" align="right" class="key" valign="top">
                         <label for="act_as_registration">
@@ -2057,13 +2061,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </option>
                             <?php
                             foreach ($this->elements as $the_element) {
-                                ?>
+                            ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_name_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
-                                    <?php
+                                <?php
                             }
-                            ?>
+                                ?>
                         </select>
                         <br />
                         <br />
@@ -2074,13 +2078,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </option>
                             <?php
                             foreach ($this->elements as $the_element) {
-                                ?>
+                            ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_username_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
-                                    <?php
+                                <?php
                             }
-                            ?>
+                                ?>
                         </select>
                         <br />
                         <br />
@@ -2091,13 +2095,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </option>
                             <?php
                             foreach ($this->elements as $the_element) {
-                                ?>
+                            ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_email_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
-                                    <?php
+                                <?php
                             }
-                            ?>
+                                ?>
                         </select>
                         <br />
                         <br />
@@ -2108,13 +2112,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </option>
                             <?php
                             foreach ($this->elements as $the_element) {
-                                ?>
+                            ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_email_repeat_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
-                                    <?php
+                                <?php
                             }
-                            ?>
+                                ?>
                         </select>
                         <br />
                         <br />
@@ -2125,13 +2129,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </option>
                             <?php
                             foreach ($this->elements as $the_element) {
-                                ?>
+                            ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_password_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
-                                    <?php
+                                <?php
                             }
-                            ?>
+                                ?>
                         </select>
                         <br />
                         <br />
@@ -2143,13 +2147,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </option>
                             <?php
                             foreach ($this->elements as $the_element) {
-                                ?>
+                            ?>
                                 <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_password_repeat_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
-                                    <?php
+                                <?php
                             }
-                            ?>
+                                ?>
                         </select>
                         <br />
                         <br />
@@ -2178,11 +2182,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </option>
                             <?php
                             foreach ($this->verification_plugins as $registration_bypass_plugin) {
-                                ?>
+                            ?>
                                 <option value="<?php echo $registration_bypass_plugin; ?>" <?php echo $registration_bypass_plugin == $this->form->registration_bypass_plugin ? ' selected="selected"' : ''; ?>>
                                     <?php echo $registration_bypass_plugin; ?>
                                 </option>
-                                <?php
+                            <?php
                             }
                             ?>
                         </select>
@@ -2216,9 +2220,9 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             id="registration_bypass_plugin_params"><?php echo htmlentities($this->form->registration_bypass_plugin_params ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
                     </td>
                 </tr>
-                <?php
+            <?php
             } else {
-                ?>
+            ?>
                 <input type="hidden" name="act_as_registration"
                     value="<?php echo htmlentities($this->form->act_as_registration ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_name_field"
@@ -2241,7 +2245,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     value="<?php echo htmlentities($this->form->registration_bypass_verify_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                 <input type="hidden" name="registration_bypass_plugin_params"
                     value="<?php echo htmlentities($this->form->registration_bypass_plugin_params ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <?php
+            <?php
             }
             ?>
         </table>
@@ -2249,7 +2253,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         <?php
         echo HTMLHelper::_('uitab.endTab'); // ✅ ferme permtab2
         echo HTMLHelper::_('uitab.endTabSet'); // ✅ ferme perm-pane
- 
+
         echo HTMLHelper::_('uitab.endTab');     // ferme tab8 (Permissions)
         echo HTMLHelper::_('uitab.endTabSet');  // ferme view-pane
         ?>
@@ -2303,14 +2307,14 @@ $wa->useScript('jquery');
 
 <script>
     let textTypeModal = document.getElementById('text-type-modal');
-    textTypeModal.addEventListener('shown.bs.modal', function (event) {
+    textTypeModal.addEventListener('shown.bs.modal', function(event) {
         jQuery('.modal-body').css('display', 'none');
         jQuery('#text-type-modal').find('iframe').attr('src', event.relatedTarget.href);
         jQuery('.modal-body').css('display', 'flex');
     });
 
     let editModal = document.getElementById('edit-modal');
-    editModal.addEventListener('shown.bs.modal', function (event) {
+    editModal.addEventListener('shown.bs.modal', function(event) {
         console.log(event.relatedTarget.href);
         jQuery('.modal-body').css('display', 'none');
         jQuery('#edit-modal').find('iframe').attr('src', event.relatedTarget.href);
@@ -2318,85 +2322,88 @@ $wa->useScript('jquery');
     });
 
     (() => {
-    // Clés de stockage
-    const KEY_VIEW = 'cb_active_view_tab';
-    const KEY_PERM = 'cb_active_perm_tab';
+        // Clés de stockage
+        const KEY_VIEW = 'cb_active_view_tab';
+        const KEY_PERM = 'cb_active_perm_tab';
 
-    // Helpers
-    const $ = (sel, root = document) => root.querySelector(sel);
+        // Helpers
+        const $ = (sel, root = document) => root.querySelector(sel);
 
-    function setHidden(name, value) {
-        const el = document.querySelector(`input[name="${name}"]`);
-        if (el) el.value = value;
-    }
-
-    /**
-     * Persistance d'un joomla-tab (uitab)
-     * @param {string} tabsetId  ex: 'view-pane' ou 'perm-pane'
-     * @param {string} storageKey
-     * @param {(value:string)=>void} onSave  callback optionnel (ex: hidden input)
-     */
-    function persistJoomlaTabset(tabsetId, storageKey, onSave) {
-        const tabset = document.getElementById(tabsetId);
-        if (!tabset) return;
-
-        // Joomla génère souvent un <joomla-tab> avec des <button> ou des liens internes.
-        const jTab = tabset.matches('joomla-tab') ? tabset : tabset.querySelector('joomla-tab');
-        if (!jTab) return;
-
-        // Restauration : si on a une valeur stockée, on tente d'activer cet onglet
-        const saved = localStorage.getItem(storageKey);
-        if (saved) {
-        // 1) tente via API si dispo
-        if (typeof jTab.show === 'function') {
-            try { jTab.show(saved); } catch (e) {}
+        function setHidden(name, value) {
+            const el = document.querySelector(`input[name="${name}"]`);
+            if (el) el.value = value;
         }
 
-        // 2) fallback : cliquer un bouton correspondant
-        // Les boutons ont souvent aria-controls ou data-tab / data-target
-        const btn =
-            jTab.querySelector(`button[aria-controls="${saved}"]`) ||
-            jTab.querySelector(`button[data-tab="${saved}"]`) ||
-            jTab.querySelector(`button[data-target="#${saved}"]`) ||
-            jTab.querySelector(`a[aria-controls="${saved}"]`) ||
-            jTab.querySelector(`a[href="#${saved}"]`);
+        /**
+         * Persistance d'un joomla-tab (uitab)
+         * @param {string} tabsetId  ex: 'view-pane' ou 'perm-pane'
+         * @param {string} storageKey
+         * @param {(value:string)=>void} onSave  callback optionnel (ex: hidden input)
+         */
+        function persistJoomlaTabset(tabsetId, storageKey, onSave) {
+            const tabset = document.getElementById(tabsetId);
+            if (!tabset) return;
 
-        if (btn) {
-            btn.click();
-            btn.blur?.();
+            // Joomla génère souvent un <joomla-tab> avec des <button> ou des liens internes.
+            const jTab = tabset.matches('joomla-tab') ? tabset : tabset.querySelector('joomla-tab');
+            if (!jTab) return;
+
+            // Restauration : si on a une valeur stockée, on tente d'activer cet onglet
+            const saved = localStorage.getItem(storageKey);
+            if (saved) {
+                // 1) tente via API si dispo
+                if (typeof jTab.show === 'function') {
+                    try {
+                        jTab.show(saved);
+                    } catch (e) {}
+                }
+
+                // 2) fallback : cliquer un bouton correspondant
+                // Les boutons ont souvent aria-controls ou data-tab / data-target
+                const btn =
+                    jTab.querySelector(`button[aria-controls="${saved}"]`) ||
+                    jTab.querySelector(`button[data-tab="${saved}"]`) ||
+                    jTab.querySelector(`button[data-target="#${saved}"]`) ||
+                    jTab.querySelector(`a[aria-controls="${saved}"]`) ||
+                    jTab.querySelector(`a[href="#${saved}"]`);
+
+                if (btn) {
+                    btn.click();
+                    btn.blur?.();
+                }
+            }
+
+            // Sauvegarde : écouter les clics sur onglets
+            jTab.addEventListener('click', (ev) => {
+                const t = ev.target;
+
+                // Cherche un identifiant d'onglet stable
+                const id =
+                    t?.getAttribute?.('aria-controls') ||
+                    t?.getAttribute?.('data-tab') ||
+                    (t?.getAttribute?.('href')?.startsWith('#') ? t.getAttribute('href').slice(1) : null) ||
+                    (t?.getAttribute?.('data-target')?.startsWith('#') ? t.getAttribute('data-target').slice(1) : null);
+
+                if (!id) return;
+
+                localStorage.setItem(storageKey, id);
+                if (typeof onSave === 'function') onSave(id);
+            }, {
+                passive: true
+            });
         }
-        }
 
-        // Sauvegarde : écouter les clics sur onglets
-        jTab.addEventListener('click', (ev) => {
-        const t = ev.target;
+        // 1) onglets principaux view-pane (tab0, tab1, tab2…)
+        persistJoomlaTabset('view-pane', KEY_VIEW, (id) => {
+            // Optionnel : si tu veux continuer avec tabStartOffset
+            // Ici je stocke l'id, si tu veux l'index, dis-moi et je te donne la variante.
+            setHidden('tabStartOffset', id);
+        });
 
-        // Cherche un identifiant d'onglet stable
-        const id =
-            t?.getAttribute?.('aria-controls') ||
-            t?.getAttribute?.('data-tab') ||
-            (t?.getAttribute?.('href')?.startsWith('#') ? t.getAttribute('href').slice(1) : null) ||
-            (t?.getAttribute?.('data-target')?.startsWith('#') ? t.getAttribute('data-target').slice(1) : null);
-
-        if (!id) return;
-
-        localStorage.setItem(storageKey, id);
-        if (typeof onSave === 'function') onSave(id);
-        }, { passive: true });
-    }
-
-    // 1) onglets principaux view-pane (tab0, tab1, tab2…)
-    persistJoomlaTabset('view-pane', KEY_VIEW, (id) => {
-        // Optionnel : si tu veux continuer avec tabStartOffset
-        // Ici je stocke l'id, si tu veux l'index, dis-moi et je te donne la variante.
-        setHidden('tabStartOffset', id);
-    });
-
-    // 2) onglets internes permissions perm-pane (permtab1, permtab2…)
-    persistJoomlaTabset('perm-pane', KEY_PERM, (id) => {
-        setHidden('slideStartOffset', id);
-    });
+        // 2) onglets internes permissions perm-pane (permtab1, permtab2…)
+        persistJoomlaTabset('perm-pane', KEY_PERM, (id) => {
+            setHidden('slideStartOffset', id);
+        });
 
     })();
-
 </script>

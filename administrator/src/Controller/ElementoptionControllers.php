@@ -14,10 +14,10 @@ namespace CB\Component\Contentbuilder\Administrator\Controller;
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
-use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\MVC\Controller\AdminController;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
-class ElementoptionsController extends BaseController
+class ElementoptionsController extends AdminController
 {
     public function __construct($config = [])
     {

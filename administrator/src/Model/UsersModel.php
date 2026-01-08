@@ -94,15 +94,15 @@ class UsersModel extends ListModel
         $cids = CBRequest::getVar('cid', array(), '', 'array');
         ArrayHelper::toInteger($cids);
         foreach ($cids as $cid) {
-            $this->_db->setQuery("Select id From #__contentbuilder_users Where form_id = " . CBRequest::getInt('form_id', 0) . " And userid = " . $cid);
-            if (!$this->_db->loadResult() && CBRequest::getInt('form_id', 0) && $cid) {
-                $this->_db->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (" . CBRequest::getInt('form_id', 0) . ", $cid, 1)");
-                $this->_db->execute();
+            $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where form_id = " . CBRequest::getInt('form_id', 0) . " And userid = " . $cid);
+            if (!$this->getDatabase()->loadResult() && CBRequest::getInt('form_id', 0) && $cid) {
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (" . CBRequest::getInt('form_id', 0) . ", $cid, 1)");
+                $this->getDatabase()->execute();
             }
         }
-        $this->_db->setQuery(' Update #__contentbuilder_users ' .
+        $this->getDatabase()->setQuery(' Update #__contentbuilder_users ' .
             '  Set published = 1 Where form_id = ' . CBRequest::getInt('form_id', 0) . ' And userid In ( ' . implode(',', $cids) . ')');
-        $this->_db->execute();
+        $this->getDatabase()->execute();
 
     }
 
@@ -111,15 +111,15 @@ class UsersModel extends ListModel
         $cids = CBRequest::getVar('cid', array(), '', 'array');
         ArrayHelper::toInteger($cids);
         foreach ($cids as $cid) {
-            $this->_db->setQuery("Select id From #__contentbuilder_users Where form_id = " . CBRequest::getInt('form_id', 0) . " And userid = " . $cid);
-            if (!$this->_db->loadResult() && CBRequest::getInt('form_id', 0) && $cid) {
-                $this->_db->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (" . CBRequest::getInt('form_id', 0) . ", $cid, 1)");
-                $this->_db->execute();
+            $this->getDatabase()->setQuery("Select id From #__contentbuilder_users Where form_id = " . CBRequest::getInt('form_id', 0) . " And userid = " . $cid);
+            if (!$this->getDatabase()->loadResult() && CBRequest::getInt('form_id', 0) && $cid) {
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_users (form_id, userid, published) Values (" . CBRequest::getInt('form_id', 0) . ", $cid, 1)");
+                $this->getDatabase()->execute();
             }
         }
-        $this->_db->setQuery(' Update #__contentbuilder_users ' .
+        $this->getDatabase()->setQuery(' Update #__contentbuilder_users ' .
             '  Set published = 0 Where form_id = ' . CBRequest::getInt('form_id', 0) . ' And userid In ( ' . implode(',', $cids) . ')');
-        $this->_db->execute();
+        $this->getDatabase()->execute();
     }
 
     /**
@@ -131,7 +131,7 @@ class UsersModel extends ListModel
         $where = '';
 
         if (trim($this->getState('users_search')) != '') {
-            $where = ' Where users.email Like ' . $this->_db->Quote('%' . $this->getState('users_search') . '%') . ' Or users.id = ' . $this->_db->Quote(intval($this->getState('users_search'))) . ' Or users.username Like ' . $this->_db->Quote('%' . $this->getState('users_search') . '%') . ' Or users.`name` Like ' . $this->_db->Quote('%' . $this->getState('users_search') . '%') . ' ';
+            $where = ' Where users.email Like ' . $this->getDatabase()->Quote('%' . $this->getState('users_search') . '%') . ' Or users.id = ' . $this->getDatabase()->Quote(intval($this->getState('users_search'))) . ' Or users.username Like ' . $this->getDatabase()->Quote('%' . $this->getState('users_search') . '%') . ' Or users.`name` Like ' . $this->getDatabase()->Quote('%' . $this->getState('users_search') . '%') . ' ';
         }
 
         return 'Select SQL_CALC_FOUND_ROWS users.*, contentbuilder_users.verified_view, contentbuilder_users.verified_new, contentbuilder_users.verified_edit, contentbuilder_users.records, contentbuilder_users.published From #__users As users Left Join #__contentbuilder_users As contentbuilder_users On ( users.id = contentbuilder_users.userid And contentbuilder_users.form_id = ' . CBRequest::getInt('form_id', 0) . ' ) ' . $where . $this->buildOrderBy();
@@ -147,7 +147,7 @@ class UsersModel extends ListModel
         if (empty($this->_data)) {
             $query = $this->_buildQuery();
             $this->_data = $this->_getList($query, $this->getState('limitstart'), $this->getState('limit'));
-            echo $this->_db->getErrorMessage();
+            echo $this->getDatabase()->getErrorMessage();
         }
 
         return $this->_data;
