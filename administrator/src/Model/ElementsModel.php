@@ -66,8 +66,16 @@ class ElementsModel extends ListModel
 
         // Récupération du form_id depuis l'input (obligatoire pour cette vue)
         $formId = $app->input->getInt('id', 0);
+
+        // Fallback si on arrive sans id dans l'URL (cas après save)
+        if (!$formId) {
+            $jform = $app->input->post->get('jform', [], 'array');
+            $formId = (int) ($jform['id'] ?? 0);
+        }
+
         $this->setState('form.id', $formId);
         $this->formId = $formId;
+
 
         // Filtre sur published
         $published = $app->getUserStateFromRequest('com_contentbuilder.elements.filter.published', 'filter_published', '', 'string');

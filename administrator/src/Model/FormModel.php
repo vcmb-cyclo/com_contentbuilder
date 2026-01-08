@@ -99,9 +99,20 @@ class FormModel extends AdminModel
     {
         parent::populateState();
 
-        $app = Factory::getApplication();
-        $id  = $app->input->getInt('id', 0);
+        $app   = Factory::getApplication();
+        $input = $app->input;
 
+        // D'abord id explicite
+        $id = $input->getInt('id', 0);
+
+        // Dinon depuis le formulaire posté
+        if (!$id) {
+            $jform = $input->post->get('jform', [], 'array');
+            $id = (int) ($jform['id'] ?? 0);
+        }
+
+        // IMPORTANT: pour un FormModel, getName() renvoie souvent "Form"
+        // donc state = "form.id" si getName() est "form" (selon Joomla), sinon "Form.id".
         $this->setState($this->getName() . '.id', $id);
     }
 
@@ -289,7 +300,6 @@ class FormModel extends AdminModel
 
     public function getItem($pk = null)
     {
-
         if ($pk === null) {
             $pk = (int) $this->getState($this->getName() . '.id');
         }
@@ -549,13 +559,9 @@ class FormModel extends AdminModel
         return $options;
     }
 
-    public function save($data)
+    public function save($data): bool
     {
-        return $this->store();
-    }
 
-    public function store()
-    {
         $db = Factory::getContainer()->get(DatabaseInterface::class);
         error_log('MVCFactory=' . (is_object($this->getMVCFactory()) ? get_class($this->getMVCFactory()) : 'NULL'));
         error_log('getTable(Form) from ' . __METHOD__);
@@ -1015,7 +1021,22 @@ class FormModel extends AdminModel
             }
         }
 
-        return $form_id;
+        if ($form_id > 0) {
+            // ✅ 1) state du modèle (ce que le core utilise)
+            $this->setState($this->getName() . '.id', $form_id);
+
+            // ✅ 2) mettre à jour l'input aussi (utile pour ton getRedirectToItemAppend)
+            Factory::getApplication()->input->set('id', $form_id);
+
+            // ✅ 3) si tu veux que jform[id] ne reste pas à 0 (optionnel)
+            $jform = Factory::getApplication()->input->post->get('jform', [], 'array');
+            $jform['id'] = $form_id;
+            Factory::getApplication()->input->post->set('jform', $jform);
+        }
+
+        // ✅ IMPORTANT : respecter la signature attendue (bool)
+        return $form_id > 0;
+
     }
 
 

@@ -69,10 +69,11 @@ class FormController extends BaseFormController
         }
     }
 
+
     /**
      * Apply : sauvegarde et reste sur l'édition
      */
-    public function apply($key = null, $urlVar = null)
+    /*public function apply($key = null, $urlVar = null)
     {
         $model = $this->getModel('Form', '', ['ignore_request' => true]);
         if (!$model) {
@@ -112,7 +113,8 @@ class FormController extends BaseFormController
             return false;
         }
     }
-
+*/
+    /*
     public function save($key = null, $urlVar = null)
     {
         $model = $this->getModel('Form', '', ['ignore_request' => true]);
@@ -156,7 +158,43 @@ class FormController extends BaseFormController
             );
             return false;
         }
+    }*/
+
+
+    protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
+    {
+        // Si le core ne passe pas l'id, on tente de le retrouver
+        if (!$recordId) {
+            // 1) depuis jform (POST)
+            $jform = $this->input->post->get('jform', [], 'array');
+            $recordId = (int) ($jform[$urlVar] ?? 0);
+
+            // 2) depuis l'input (GET/POST)
+            if (!$recordId) {
+                $recordId = (int) $this->input->getInt($urlVar, 0);
+            }
+
+            // 3) depuis le model state (si dispo)
+            if (!$recordId) {
+                $model = $this->getModel($this->view_item, '', ['ignore_request' => true]);
+                if ($model) {
+                    $recordId = (int) $model->getState($model->getName() . '.id', 0);
+                }
+            }
+        }
+
+        // Appel au core pour conserver tmpl, return, etc.
+        $append = parent::getRedirectToItemAppend($recordId, $urlVar);
+
+        // Filet de sécurité : si le parent n’a pas ajouté id=...
+        if ($recordId && strpos($append, $urlVar . '=') === false) {
+            $append .= '&' . $urlVar . '=' . (int) $recordId;
+        }
+
+        return $append;
     }
+
+
 
     /**
      * Save & New : sauvegarde puis ouvre un nouvel item vide
@@ -232,7 +270,7 @@ class FormController extends BaseFormController
     }
 
     // Les tâches batch sur les éléments (linkable, editable, etc.)
-     public function linkable(): void
+    public function linkable(): void
     {
         $this->elementsUpdate('linkable', 1);
     }
@@ -305,7 +343,7 @@ class FormController extends BaseFormController
 
             if (empty($cids)) {
                 $this->setMessage(Text::_('JERROR_NO_ITEMS_SELECTED'), 'error');
-                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form'. '&id=' . $formId, false));
+                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form' . '&id=' . $formId, false));
                 return false;
             }
 
@@ -319,7 +357,7 @@ class FormController extends BaseFormController
             return true;
         } catch (\Throwable $e) {
             $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form'. '&id=' . $formId, false));
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form' . '&id=' . $formId, false));
             return false;
         }
     }
@@ -335,7 +373,7 @@ class FormController extends BaseFormController
 
             if (empty($cids)) {
                 $this->setMessage(Text::_('JERROR_NO_ITEMS_SELECTED'), 'error');
-                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form'. '&id=' .$formId, false));
+                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form' . '&id=' . $formId, false));
                 return false;
             }
 
@@ -343,7 +381,7 @@ class FormController extends BaseFormController
             $model->publish($cids, $state);
 
             $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' .$formId, false),
+                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . $formId, false),
                 Text::_($successMsgKey)
             );
 

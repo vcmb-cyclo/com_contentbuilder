@@ -31,6 +31,8 @@ class HtmlView extends BaseHtmlView
 
         // JS
         $wa = $app->getDocument()->getWebAssetManager();
+        // Important : rendre le fichier media/com_contentbuilder/joomla.asset.json visible au manager
+        $wa->getRegistry()->addExtensionRegistryFile('com_contentbuilder');
         $wa->useScript('com_contentbuilder.jscolor');
 
         $this->tables     = $this->get('DbTables');

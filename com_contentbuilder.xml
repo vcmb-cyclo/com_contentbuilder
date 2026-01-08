@@ -68,6 +68,7 @@
         <filename>index.html</filename>
         <filename>contentbuilder.php</filename>
         
+        <folder>forms</folder>
         <folder>languages</folder>
         <folder>librairies</folder>
         <folder>plugins</folder>

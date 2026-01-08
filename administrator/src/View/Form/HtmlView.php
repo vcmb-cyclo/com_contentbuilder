@@ -8,9 +8,6 @@
  */
 namespace CB\Component\Contentbuilder\Administrator\View\Form;
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
@@ -30,7 +27,7 @@ class HtmlView extends BaseHtmlView
         // JS
         $wa = $app->getDocument()->getWebAssetManager();
         $wa->useScript('com_contentbuilder.jscolor');
-
+  
         // Charge le form.
         $this->form = $this->getModel()->getItem();
 
