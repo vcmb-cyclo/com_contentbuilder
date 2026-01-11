@@ -21,7 +21,6 @@ namespace CB\Component\Contentbuilder\Administrator\Model;
 \defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\Folder;
@@ -53,46 +52,8 @@ class FormModel extends AdminModel
 
     public function __construct($config = [])
     {
-        $this->_db = Factory::getContainer()->get(DatabaseInterface::class);
         parent::__construct($config);
-
         $this->option = 'com_contentbuilder';
-
-        /*
-        $app   = Factory::getApplication();
-        $input = $app->input;
-
-        $cid = $input->get('cid', [0], 'array');
-        $id  = $input->getInt('id', 0);
-
-        $this->setId((int)($id ?: (int)reset($cid)));*/
-        /*
-        $mainframe = Factory::getApplication();
-        $option = 'com_contentbuilder';
-
-        $array = CBRequest::getVar('cid', 0, '', 'array');
-        $this->setId((int) $array[0]);
-        if (CBRequest::getInt('id', 0) > 0) {
-            $this->setId(CBRequest::getInt('id', 0));
-        }
-
-        $limit = $mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->get('list_limit'), 'int');
-        $limitstart = CBRequest::getVar('limitstart', 0, '', 'int');
-
-        // In case limit has been changed, adjust it
-        $limitstart = ($limit != 0 ? (floor($limitstart / $limit) * $limit) : 0);
-
-        $this->setState('limit', $limit);
-        $this->setState('limitstart', $limitstart);
-
-        $filter_order = $mainframe->getUserStateFromRequest($option . 'elements_filter_order', 'filter_order', 'ordering', 'cmd');
-        $filter_order_Dir = $mainframe->getUserStateFromRequest($option . 'elements_filter_order_Dir', 'filter_order_Dir', 'asc', 'word');
-
-        $this->setState('elements_filter_order', $filter_order);
-        $this->setState('elements_filter_order_Dir', $filter_order_Dir);
-
-        $filter_state = $mainframe->getUserStateFromRequest($option . 'elements_filter_state', 'filter_state', '', 'word');
-        $this->setState('elements_filter_state', $filter_state);*/
     }
 
     protected function populateState()
@@ -125,12 +86,13 @@ class FormModel extends AdminModel
 
     public function getTable($name = 'Form', $prefix = 'Contentbuilder', $options = [])
     {
+        $db = $this->getDatabase();
         switch ($name) {
             case 'Form':
-                return new FormTable($this->getDatabase());
+                return new FormTable($db);
 
             case 'Elementoption':
-                return new ElementoptionTable($this->getDatabase());
+                return new ElementoptionTable($db);
         }
 
         return parent::getTable($name, $prefix, $options);
@@ -171,95 +133,102 @@ class FormModel extends AdminModel
 
     function setListEditable()
     {
+        $db = $this->getDatabase();
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
+            $db->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set editable = 1 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->getDatabase()->execute();
+            $db->execute();
         }
     }
 
     function setListListInclude()
     {
+        $db = $this->getDatabase();
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
+            $db->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set list_include = 1 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->getDatabase()->execute();
+            $db->execute();
         }
     }
 
     function setListSearchInclude()
     {
+        $db = $this->getDatabase();
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
+            $db->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set search_include = 1 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->getDatabase()->execute();
+            $db->execute();
         }
     }
 
     function setListNotLinkable()
     {
+        $db = $this->getDatabase();
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
+            $db->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set linkable = 0 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->getDatabase()->execute();
+            $db->execute();
         }
     }
 
     function setListNotEditable()
     {
+        $db = $this->getDatabase();
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
+            $db->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set editable = 0 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->getDatabase()->execute();
+            $db->execute();
         }
     }
 
     function setListNoListInclude()
     {
+        $db = $this->getDatabase();
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
+            $db->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set list_include = 0 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->getDatabase()->execute();
+            $db->execute();
         }
     }
 
     function setListNoSearchInclude()
     {
+        $db = $this->getDatabase();
         $items = CBRequest::getVar('cid', array(), 'post', 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
-            $this->getDatabase()->setQuery(' Update #__contentbuilder_elements ' .
+            $db->setQuery(' Update #__contentbuilder_elements ' .
                 '  Set search_include = 0 Where form_id = ' . $this->_id . ' And id In ( ' . implode(',', $items) . ')');
-            $this->getDatabase()->execute();
+            $db->execute();
         }
     }
 
     function getListStatesActionPlugins()
     {
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $db = $this->getDatabase();
         $db->setQuery("Select `element` From #__extensions Where `folder` = 'contentbuilder_listaction' And `enabled` = 1");
-        $res = Factory::getContainer()->get(DatabaseInterface::class)->loadColumn();
+        $res = $db->loadColumn();
         return $res;
     }
 
     function getThemePlugins()
     {
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $db = $this->getDatabase();
 
         $db->setQuery("Select `element` From #__extensions Where `folder` = 'contentbuilder_themes' And `enabled` = 1");
-        $res = Factory::getContainer()->get(DatabaseInterface::class)->loadColumn();
+        $res = $db->loadColumn();
 
         $i = 0;
         foreach ($res as $theme) {
@@ -276,9 +245,9 @@ class FormModel extends AdminModel
 
     function getVerificationPlugins()
     {
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $db = $this->getDatabase();
         $db->setQuery("Select `element` From #__extensions Where `folder` = 'contentbuilder_verify' And `enabled` = 1");
-        $res = Factory::getContainer()->get(DatabaseInterface::class)->loadColumn();
+        $res = $db->loadColumn();
         return $res;
     }
 
@@ -481,7 +450,6 @@ class FormModel extends AdminModel
             }
         }
 
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $db->setQuery(
             $db->getQuery(true)
                 ->select('*')
@@ -513,7 +481,7 @@ class FormModel extends AdminModel
         // Initialise variables.
         $options = array();
 
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $db = $this->getDatabase();
         $query = $db->getQuery(true);
 
         $query->select('a.id AS value, a.title AS text, a.level');
@@ -561,33 +529,46 @@ class FormModel extends AdminModel
 
     public function save($data): bool
     {
-
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $app = Factory::getApplication();
+        $db = $this->getDatabase();
         error_log('MVCFactory=' . (is_object($this->getMVCFactory()) ? get_class($this->getMVCFactory()) : 'NULL'));
         error_log('getTable(Form) from ' . __METHOD__);
 
         $row = $this->getTable('Form', '');
         $form_id = 0;
 
-        $data = CBRequest::get('post');
-
-        $input = Factory::getApplication()->getInput();
-        $id    = $input->getInt('id', 0);
+        // $data = CBRequest::get('post');
+        $input = $app->getInput();
+        $id = $input->getInt('id');
 
         $form  = $this->getItem($id);
 
-        $data['details_template'] = CBRequest::getVar('details_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-        $data['editable_template'] = CBRequest::getVar('editable_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-        $data['details_prepare'] = CBRequest::getVar('details_prepare', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-        $data['editable_prepare'] = CBRequest::getVar('editable_prepare', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-        $data['intro_text'] = CBRequest::getVar('intro_text', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
-        $data['editable'] = CBRequest::getVar('editable', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
-        $data['email_admin_template'] = CBRequest::getVar('email_admin_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-        $data['email_template'] = CBRequest::getVar('email_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
+        $jform    = (array) $app->input->post->get('jform', [], 'array');
+        $jformRaw = (array) $app->input->post->getRaw('jform');
+        $jformHtml= (array) $app->input->post->getHtml('jform');
+
+        // Override champs sensibles
+        $jform['details_template']     = $jformRaw['details_template'] ?? '';
+        $jform['editable_template']    = $jformRaw['editable_template'] ?? '';
+        $jform['details_prepare']      = $jformRaw['details_prepare'] ?? '';
+        $jform['editable_prepare']     = $jformRaw['editable_prepare'] ?? '';
+        $jform['email_admin_template'] = $jformRaw['email_admin_template'] ?? '';
+        $jform['email_template']       = $jformRaw['email_template'] ?? '';
+        
+        $jform['intro_text']           = $jformHtml['intro_text'] ?? '';
+        $jform['editable']             = $jformHtml['editable'] ?? '';
+               
+        $data = $jform;
 
         #### SETTINGS
-        $data['create_articles'] = CBRequest::getInt('create_articles', 0);
-        $data['protect_upload_directory'] = CBRequest::getInt('protect_upload_directory', 0);
+        $data['protect_upload_directory'] = !empty($jform['protect_upload_directory']) ? 1 : 0;
+        $data['create_articles']          = !empty($jform['create_articles']) ? 1 : 0;
+
+        ####### PERMISSIONS
+        $data['own']      = (array) ($jform['own'] ?? []);
+        $data['own_fe']   = (array) ($jform['own_fe'] ?? []);
+        $data['perms']    = (array) ($jform['perms'] ?? []);
+        $data['perms_fe'] = (array) ($jform['perms_fe'] ?? []);
 
         //$data['upload_directory'] = JPATH_SITE .'/media/contentbuilder/upload';
         //$data['protect_upload_directory'] = 1;
@@ -654,12 +635,13 @@ class FormModel extends AdminModel
         $data['upload_directory'] = $tmp_upload_directory . $tokens;
 
         #### USERS
-        $data['verification_required_view'] = CBRequest::getInt('verification_required_view', 0);
-        $data['verification_required_new'] = CBRequest::getInt('verification_required_new', 0);
-        $data['verification_required_edit'] = CBRequest::getInt('verification_required_edit', 0);
+        $data['verification_required_view'] = !empty($jform['verification_required_view']) ? 1 : 0;
+        $data['verification_required_new']  = !empty($jform['verification_required_new']) ? 1 : 0;
+        $data['verification_required_edit'] = !empty($jform['verification_required_edit']) ? 1 : 0;
 
         #### MISC
-        $data['show_all_languages_fe'] = CBRequest::getInt('show_all_languages_fe', 0);
+        $data['show_all_languages_fe'] = !empty($jform['show_all_languages_fe']) ? 1 : 0;
+        $data['default_lang_code_ignore'] = !empty($jform['default_lang_code_ignore']) ? 1 : 0;
 
         if (!$data['show_all_languages_fe'] && !$data['default_lang_code_ignore']) {
             Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_LANGUAGE_WARNING'), 'warning');
@@ -737,7 +719,6 @@ class FormModel extends AdminModel
             $config['own_fe']['rating'] = true;
         }
 
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
         $query = 'SELECT CONCAT( REPEAT(\'..\', COUNT(parent.id) - 1), node.title) as text, node.id as value'
             . ' FROM #__usergroups AS node, #__usergroups AS parent'
             . ' WHERE node.lft BETWEEN parent.lft AND parent.rgt'
@@ -829,19 +810,20 @@ class FormModel extends AdminModel
 
         ### PERMISSIONS END
 
+        $data['list_states'] = (array) ($jform['list_states'] ?? []);
         $list_states = $data['list_states'];
         unset($data['list_states']);
 
-        $data['default_category'] = CBRequest::getInt('sectioncategories', 0);
+        $data['default_category'] = (int) ($jform['sectioncategories'] ?? 0);
 
-        $data['edit_by_type'] = CBRequest::getInt('edit_by_type', 0);
+        $data['edit_by_type']        = !empty($jform['edit_by_type']) ? 1 : 0;
         if ($data['edit_by_type'] && $data['type'] == 'com_breezingforms') {
             if (isset($data['type_name'])) {
                 $data['editable_template'] = "{BreezingForms: " . $data['type_name'] . "}";
             }
         }
 
-        $data['act_as_registration'] = CBRequest::getInt('act_as_registration', 0);
+        $data['act_as_registration'] = !empty($jform['act_as_registration']) ? 1 : 0;
         if ($data['edit_by_type'] && $data['act_as_registration']) {
             $data['act_as_registration'] = 0;
             Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_ACT_AS_REGISTRATION_WARNING'), 'warning');
@@ -860,58 +842,51 @@ class FormModel extends AdminModel
             Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_ACT_AS_REGISTRATION_MISSING_FIELDS_WARNING'), 'warning');
         }
 
-        $data['email_notifications'] = CBRequest::getInt('email_notifications', 0);
+        $data['email_notifications'] = !empty($jform['email_notifications']) ? 1 : 0;
+        $data['limited_article_options']    = !empty($jform['limited_article_options']) ? 1 : 0;
+        $data['limited_article_options_fe'] = !empty($jform['limited_article_options_fe']) ? 1 : 0;
 
-        $data['limited_article_options'] = CBRequest::getInt('limited_article_options', 0);
-        $data['limited_article_options_fe'] = CBRequest::getInt('limited_article_options_fe', 0);
-
-        $data['own_only'] = CBRequest::getInt('own_only', 0);
-        $data['own_only_fe'] = CBRequest::getInt('own_only_fe', 0);
+        $data['own_only']    = !empty($jform['own_only']) ? 1 : 0;
+        $data['own_only_fe'] = !empty($jform['own_only_fe']) ? 1 : 0;
 
         $data['config'] = base64_encode(serialize($config));
 
         //ContentbuilderLegacyHelper::createBackendMenuItem($form->id, $form->name, CBRequest::getInt('display_in',0));
 
-        if (CBRequest::getBool('create_sample', false)) {
+        if (!empty($jform['create_sample'])) {
             $data['details_template'] .= ContentbuilderLegacyHelper::createDetailsSample($form->id, $form->form, $data['theme_plugin']);
         }
 
-        if (CBRequest::getBool('create_editable_sample', false)) {
+        if (!empty($jform['create_editable_sample'])) {
             $data['editable_template'] .= ContentbuilderLegacyHelper::createEditableSample($form->id, $form->form, $data['theme_plugin']);
         }
 
-        if (CBRequest::getBool('email_admin_create_sample', false)) {
-            $data['email_admin_template'] .= ContentbuilderLegacyHelper::createEmailSample($form->id, $form->form, CBRequest::getBool('email_admin_html', false));
+        if (!empty($jform['email_admin_create_sample'])) {
+            $data['email_admin_template'] .= ContentbuilderLegacyHelper::createEmailSample(
+                $form->id,
+                $form->form,
+                !empty($jform['email_admin_html'])
+            );
         }
 
-        if (CBRequest::getBool('email_create_sample', false)) {
-            $data['email_template'] .= ContentbuilderLegacyHelper::createEmailSample($form->id, $form->form, CBRequest::getBool('email_html', false));
+        if (!empty($jform['email_create_sample'])) {
+            $data['email_template'] .= ContentbuilderLegacyHelper::createEmailSample(
+                $form->id,
+                $form->form,
+                !empty($jform['email_html'])
+            );
         }
 
-        $data['email_html'] = CBRequest::getBool('email_html', false) ? 1 : 0;
-        $data['email_admin_html'] = CBRequest::getBool('email_admin_html', false) ? 1 : 0;
+        $data['email_html']            = !empty($jform['email_html']) ? 1 : 0;
+        $data['email_admin_html']      = !empty($jform['email_admin_html']) ? 1 : 0;
 
-        if (!CBRequest::getBool('show_filter', false)) {
-            $data['show_filter'] = 0;
-        }
+        $data['show_filter']           = !empty($jform['show_filter']) ? 1 : 0;
+        $data['show_records_per_page'] = !empty($jform['show_records_per_page']) ? 1 : 0;
+        $data['metadata']              = !empty($jform['metadata']) ? 1 : 0;
+        $data['export_xls']            = !empty($jform['export_xls']) ? 1 : 0;
+        $data['print_button']          = !empty($jform['print_button']) ? 1 : 0;
 
-        if (!CBRequest::getBool('show_records_per_page', false)) {
-            $data['show_records_per_page'] = 0;
-        }
-
-        if (!CBRequest::getBool('metadata', false)) {
-            $data['metadata'] = 0;
-        }
-
-        if (!CBRequest::getBool('export_xls', false)) {
-            $data['export_xls'] = 0;
-        }
-
-        if (!CBRequest::getBool('print_button', false)) {
-            $data['print_button'] = 0;
-        }
-
-        if (CBRequest::getVar('tag', '') == '') {
+        if (empty($jform['tag'])) {
             $data['tag'] = 'default';
         }
 
@@ -979,7 +954,7 @@ class FormModel extends AdminModel
                 }
             }
         } else {
-            $form_id = $this->getDatabase()->insertid();
+            $form_id = $db->insertid();
             foreach ($list_states as $item) {
                 $db->setQuery("Insert Into #__contentbuilder_list_states (form_id,`title`,color,action, published) Values ($form_id," . $db->Quote(stripslashes(strip_tags($item['title']))) . "," . $db->Quote($item['color']) . "," . $db->Quote($item['action']) . "," . $db->Quote(isset($item['published']) && $item['published'] ? 1 : 0) . ")");
                 $db->execute();
@@ -1008,31 +983,60 @@ class FormModel extends AdminModel
 
         $row->reorder();
 
+        $item_wrapper = (array) ($jformRaw['itemWrapper'] ?? []);    // wrapper peut être vide
 
-        $item_wrapper = CBRequest::getVar('itemWrapper', '', 'POST', 'ARRAY', CBREQUEST_ALLOWRAW);
-        $wordwrap = CBRequest::getVar('itemWordwrap', array(), 'post', 'array');
-        $labels = CBRequest::getVar('itemLabels', array(), 'post', 'array');
-        $order_types = CBRequest::getVar('itemOrderTypes', array(), 'post', 'array');
+        $wordwrap     = (array) ($jform['itemWordwrap'] ?? []);
+        $labels       = (array) ($jform['itemLabels'] ?? []);
+        $order_types  = (array) ($jform['itemOrderTypes'] ?? []);
+        $order        = (array) ($jform['order'] ?? []);
+
+        // ✅ union de toutes les clés possibles
+        $elementIds = array_unique(array_merge(
+            array_keys($labels),
+            array_keys($wordwrap),
+            array_keys($order_types),
+            array_keys($item_wrapper),
+            array_keys($order)
+        ));
+
         ArrayHelper::toInteger($wordwrap);
-        if (is_array($item_wrapper) || is_object($item_wrapper)) {
-            foreach ($item_wrapper as $elementId => $value) {
-                $this->getDatabase()->setQuery("Update #__contentbuilder_elements Set `order_type` = " . $this->getDatabase()->Quote($order_types[$elementId]) . ", `label`= " . $this->getDatabase()->Quote($labels[$elementId]) . ", `wordwrap` = " . $this->getDatabase()->Quote($wordwrap[$elementId]) . ", `item_wrapper` =  " . $this->getDatabase()->Quote(trim($value)) . " Where form_id = $form_id And id = " . $elementId);
-                $this->getDatabase()->execute();
+
+        foreach ($elementIds as $elementId) {
+            $elementId = (int) $elementId;
+            if ($elementId <= 0) {
+                continue;
             }
+
+            $label     = $labels[$elementId]      ?? '';
+            $wrap      = $wordwrap[$elementId]    ?? 0;
+            $otype     = $order_types[$elementId] ?? '';
+            $wrapper   = $item_wrapper[$elementId] ?? ''; // peut ne pas exister
+
+            // ⚠️ si tu veux "ne pas écraser" wrapper quand il manque :
+            // - soit tu laisses la ligne item_wrapper hors UPDATE
+            // - soit tu gardes wrapper actuel via une requête préalable
+            // Ici on écrase avec '' si absent (comportement simple).
+            $db->setQuery(
+                "UPDATE #__contentbuilder_elements
+                SET `order_type` = " . $db->quote($otype) . ",
+                    `label`      = " . $db->quote($label) . ",
+                    `wordwrap`   = " . (int) $wrap . ",
+                    `item_wrapper` = " . $db->quote(trim($wrapper)) . "
+                WHERE form_id = " . (int) $form_id . "
+                AND id = " . (int) $elementId
+            );
+            $db->execute();
         }
+
 
         if ($form_id > 0) {
-            // ✅ 1) state du modèle (ce que le core utilise)
             $this->setState($this->getName() . '.id', $form_id);
+            $app->input->set('id', $form_id);
 
-            // ✅ 2) mettre à jour l'input aussi (utile pour ton getRedirectToItemAppend)
-            Factory::getApplication()->input->set('id', $form_id);
-
-            // ✅ 3) si tu veux que jform[id] ne reste pas à 0 (optionnel)
-            $jform = Factory::getApplication()->input->post->get('jform', [], 'array');
             $jform['id'] = $form_id;
-            Factory::getApplication()->input->post->set('jform', $jform);
+            $app->input->post->set('jform', $jform);
         }
+
 
         // ✅ IMPORTANT : respecter la signature attendue (bool)
         return $form_id > 0;
@@ -1059,33 +1063,34 @@ class FormModel extends AdminModel
         $is15 = false;
 
         $row = $this->getTable('Form', '');
+        $db = $this->getDatabase();
 
         foreach ($cids as $cid) {
-            $this->getDatabase()->setQuery("Select article.article_id From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.delete_articles > 0 And form.id = article.form_id And article.form_id = " . intval($cid));
-            $articles = Factory::getContainer()->get(DatabaseInterface::class)->loadColumn();
+            $db->setQuery("Select article.article_id From #__contentbuilder_articles As article, #__contentbuilder_forms As form Where form.delete_articles > 0 And form.id = article.form_id And article.form_id = " . intval($cid));
+            $articles = $db->loadColumn();
             if (count($articles)) {
                 $article_items = array();
                 foreach ($articles as $article) {
-                    $article_items[] = $this->getDatabase()->Quote('com_content.article.' . $article);
+                    $article_items[] = $db->Quote('com_content.article.' . $article);
                     $table = Table::getInstance('content');
                     // Trigger the onContentBeforeDelete event.
                     if (!$is15 && $table->load($article)) {
                         Factory::getApplication()->getDispatcher()->dispatch('onContentBeforeDelete', array('com_content.article', $table));
                     }
-                    $this->getDatabase()->setQuery("Delete From #__content Where id = " . intval($article));
-                    $this->getDatabase()->execute();
+                    $db->setQuery("Delete From #__content Where id = " . intval($article));
+                    $db->execute();
                     // Trigger the onContentAfterDelete event.
                     $table->reset();
                     if (!$is15) {
                         Factory::getApplication()->getDispatcher()->dispatch('onContentAfterDelete', array('com_content.article', $table));
                     }
                 }
-                $this->getDatabase()->setQuery("Delete From #__assets Where `name` In (" . implode(',', $article_items) . ")");
-                $this->getDatabase()->execute();
+                $db->setQuery("Delete From #__assets Where `name` In (" . implode(',', $article_items) . ")");
+                $db->execute();
             }
 
 
-            $this->getDatabase()->setQuery("
+            $db->setQuery("
                 Delete
                     `elements`.*
                 From
@@ -1093,9 +1098,9 @@ class FormModel extends AdminModel
                 Where
                     `elements`.form_id = " . $cid);
 
-            $this->getDatabase()->execute();
+            $db->execute();
 
-            $this->getDatabase()->setQuery("
+            $db->setQuery("
                 Delete
                     `states`.*
                 From
@@ -1103,9 +1108,9 @@ class FormModel extends AdminModel
                 Where
                     `states`.form_id = " . $cid);
 
-            $this->getDatabase()->execute();
+            $db->execute();
 
-            $this->getDatabase()->setQuery("
+            $db->setQuery("
                 Delete
                     `records`.*
                 From
@@ -1113,9 +1118,9 @@ class FormModel extends AdminModel
                 Where
                     `records`.form_id = " . $cid);
 
-            $this->getDatabase()->execute();
+            $db->execute();
 
-            $this->getDatabase()->setQuery("
+            $db->setQuery("
                 Delete
                     `access`.*
                 From
@@ -1123,9 +1128,9 @@ class FormModel extends AdminModel
                 Where
                     `access`.form_id = " . $cid);
 
-            $this->getDatabase()->execute();
+            $db->execute();
 
-            $this->getDatabase()->setQuery("
+            $db->setQuery("
                 Delete
                     `users`.*
                 From
@@ -1133,9 +1138,9 @@ class FormModel extends AdminModel
                 Where
                     `users`.form_id = " . $cid);
 
-            $this->getDatabase()->execute();
+            $db->execute();
 
-            $this->getDatabase()->setQuery("
+            $db->setQuery("
                 Delete
                     `users`.*
                 From
@@ -1143,17 +1148,17 @@ class FormModel extends AdminModel
                 Where
                     `users`.form_id = " . $cid);
 
-            $this->getDatabase()->execute();
+            $db->execute();
 
             $this->getTable('Elementoption')->reorder('form_id = ' . $cid);
 
-            $this->getDatabase()->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&view=list&id=" . intval($cid) . "'");
-            $this->getDatabase()->execute();
-            $this->getDatabase()->setQuery("Select count(id) From #__menu Where `link` Like 'index.php?option=com_contentbuilder&view=list&id=%'");
-            $amount = $this->getDatabase()->loadResult();
+            $db->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&view=list&id=" . intval($cid) . "'");
+            $db->execute();
+            $db->setQuery("Select count(id) From #__menu Where `link` Like 'index.php?option=com_contentbuilder&view=list&id=%'");
+            $amount = $db->loadResult();
             if (!$amount) {
-                $this->getDatabase()->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&viewcontainer=true'");
-                $this->getDatabase()->execute();
+                $db->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&viewcontainer=true'");
+                $db->execute();
             }
 
             if (!$row->delete($cid)) {
@@ -1164,66 +1169,29 @@ class FormModel extends AdminModel
 
         $row->reorder();
 
-        /*
-        $this->getDatabase()->setQuery("Select `reference_id` From #__contentbuilder_forms");
-        $references = $this->getDatabase()->loadResultArray();
-
-        $cnt = count($references);
-        if ($cnt) {
-            $new_items = array();
-            for ($i = 0; $i < $cnt; $i++) {
-                $new_items[] = $this->getDatabase()->Quote($references[$i]);
-            }
-            $this->getDatabase()->setQuery("Delete From #__contentbuilder_records Where `reference_id` Not In (" . implode(',',$new_items) . ") ");
-            $this->getDatabase()->execute();
-        }else{
-            $this->getDatabase()->setQuery("Delete From #__contentbuilder_records");
-            $this->getDatabase()->execute();
-        }*/
-
         // article deletion if required
-        $this->getDatabase()->setQuery("Select `id` From #__contentbuilder_forms");
-        $references = $this->getDatabase()->loadColumn();
+        $db->setQuery("Select `id` From #__contentbuilder_forms");
+        $references = $db->loadColumn();
 
         $cnt = count($references);
         if ($cnt) {
             $new_items = array();
             for ($i = 0; $i < $cnt; $i++) {
-                $new_items[] = $this->getDatabase()->Quote($references[$i]);
+                $new_items[] = $db->Quote($references[$i]);
             }
-            $this->getDatabase()->setQuery("Delete From #__contentbuilder_articles Where `form_id` Not In (" . implode(',', $new_items) . ") ");
-            $this->getDatabase()->execute();
+            $db->setQuery("Delete From #__contentbuilder_articles Where `form_id` Not In (" . implode(',', $new_items) . ") ");
+            $db->execute();
         } else {
-            $this->getDatabase()->setQuery("Delete From #__contentbuilder_articles");
-            $this->getDatabase()->execute();
+            $db->setQuery("Delete From #__contentbuilder_articles");
+            $db->execute();
         }
 
         return true;
     }
 
-    /*
-    function listDelete()
-    {
-        $cids = CBRequest::getVar('cid', array(0), 'post', 'array');
-        ArrayHelper::toInteger($cids);
-        foreach ($cids as $cid) {
-            $this->getDatabase()->setQuery("
-                Delete
-                    `elements`.*
-                From
-                    #__contentbuilder_elements As `elements`
-                Where
-                    `elements`.id = " . $cid);
-
-            $this->getDatabase()->execute();
-            $this->getTable('Elementoption')->reorder('form_id = ' . $this->_id);
-        }
-    }*/
-
     function move($direction)
     {
-
-        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $db = $this->getDatabase();
         $mainframe = Factory::getApplication();
 
         $row = $this->getTable('Form', '');
@@ -1241,82 +1209,6 @@ class FormModel extends AdminModel
         return true;
     }
 
-    /*
-    function listMove($direction)
-    {
-        $mainframe = Factory::getApplication();
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
-        ArrayHelper::toInteger($items);
-
-        if (count($items)) {
-            $db = Factory::getContainer()->get(DatabaseInterface::class);
-            $row = $this->getTable('Elementoptions);
-
-            if (!$row->load($items[0])) {
-                $this->setError($db->getErrorMessage());
-                return false;
-            }
-
-            if (!$row->move($direction, 'form_id=' . $this->_id)) {
-                $this->setError($db->getErrorMessage());
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    /**
-     * Publie ou dépublie plusieurs formulaires
-     */
-    /*
-    public function publish(array $pks, int $value = 1): bool
-    {
-        $pks = (array) $pks;
-
-        if (empty($pks)) {
-            throw new \RuntimeException(
-              Text::_('JLIB_DATABASE_ERROR_NO_ROWS_SELECTED')
-            );
-        }
-
-        ArrayHelper::toInteger($pks);
-        $pks = array_filter($pks);
-
-        Logger::info('DB publish', [
-            'value' => $value,
-            'pks'   => $pks,
-        ]);
-
-        $value = (int) $value;
-        $db = $this->getDatabase(); // ou $this->getDatabase() si tu préfères rester cohérent
-        $query = $db->getQuery(true)
-            ->update($db->quoteName('#__contentbuilder_forms'))
-            ->set($db->quoteName('published') . ' = ' . $value)
-            ->where($db->quoteName('id') . ' IN (' . implode(',', $pks) . ')');
-
-        $db->setQuery($query);
-
-        try {
-            $db->execute();
-        } catch (\Throwable $e) {
-            Logger::exception($e);
-            $this->setError($e->getMessage());
-            return false;
-        }
-
-        // Optionnel mais OK
-        try {
-            $table = $this->getTable('Form', '');
-            $table->reorder();
-        } catch (\Throwable $e) {
-            Logger::exception($e);
-            // pas bloquant
-        }
-
-        return true;
-    }*/
 
     public function copy(array $pks): bool
     {
@@ -1339,10 +1231,11 @@ class FormModel extends AdminModel
         if (!count($cids))
             return false;
 
+        $db = $this->getDatabase();
         $table = $this->getTable('Form', '');
-        $this->getDatabase()->setQuery(' Select * From #__contentbuilder_forms ' .
+        $db->setQuery(' Select * From #__contentbuilder_forms ' .
             '  Where id In ( ' . implode(',', $cids) . ')');
-        $result = $this->getDatabase()->loadObjectList();
+        $result = $db->loadObjectList();
 
         foreach ($result as $obj) {
             $origId = $obj->id;
@@ -1350,27 +1243,27 @@ class FormModel extends AdminModel
 
             $obj->name = 'Copy of ' . $obj->name;
             $obj->published = 0;
-            $this->getDatabase()->insertObject('#__contentbuilder_forms', $obj);
-            $insertId = $this->getDatabase()->insertid();
+            $db->insertObject('#__contentbuilder_forms', $obj);
+            $insertId = $db->insertid();
 
             // elements
-            $this->getDatabase()->setQuery(' Select * From #__contentbuilder_elements ' .
+            $db->setQuery(' Select * From #__contentbuilder_elements ' .
                 '  Where form_id = ' . $origId);
-            $elements = $this->getDatabase()->loadObjectList();
+            $elements = $db->loadObjectList();
             foreach ($elements as $element) {
                 unset($element->id);
                 $element->form_id = $insertId;
-                $this->getDatabase()->insertObject('#__contentbuilder_elements', $element);
+                $db->insertObject('#__contentbuilder_elements', $element);
             }
 
             // list states
-            $this->getDatabase()->setQuery(' Select * From #__contentbuilder_list_states ' .
+            $db->setQuery(' Select * From #__contentbuilder_list_states ' .
                 '  Where form_id = ' . $origId);
-            $elements = $this->getDatabase()->loadObjectList();
+            $elements = $db->loadObjectList();
             foreach ($elements as $element) {
                 unset($element->id);
                 $element->form_id = $insertId;
-                $this->getDatabase()->insertObject('#__contentbuilder_list_states', $element);
+                $db->insertObject('#__contentbuilder_list_states', $element);
             }
             // XDA-Gil fix 'Copy of Form' in Component Menu in Backen CB View
             // ContentbuilderLegacyHelper::createBackendMenuItem($insertId, $obj->name, true);

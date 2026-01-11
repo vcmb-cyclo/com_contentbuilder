@@ -1,12 +1,19 @@
 <?php
 
 /**
+ * ContentBuilder Storage Model.
+ *
+ * Handles CRUD and publish state for storage in the admin interface.
+ *
  * @package     ContentBuilder
- * @author      Markus Bopp / XDA + GIL
+ * @subpackage  Administrator.Model
+ * @author      Markus Bopp / XDA+GIL
+ * @copyright   Copyright (C) 2011–2026 by XDA+GIL
+ * @license     GNU/GPL v2 or later
  * @link        https://breezingforms.vcmb.fr
- * @copyright   Copyright (C) 2026 by XDA+GIL * 
- * @license     GNU/GPL
+ * @since       6.0.0  Joomla 6 compatibility rewrite.
  */
+
 
 namespace CB\Component\Contentbuilder\Administrator\Model;
 
@@ -19,12 +26,12 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Pagination\Pagination;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\CMS\Table\Table;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\Logger;
 
-class StorageModel extends BaseDatabaseModel
+class StorageModel extends AdminModel
 {
     private $_storage_data = null;
     protected DatabaseInterface $_db;
@@ -41,57 +48,62 @@ class StorageModel extends BaseDatabaseModel
         return Table::getInstance($type, $prefix, $config);
     }
 
-
-    public function __construct($config = [])
+    /**
+     * Retourne le JForm pour l’édition d’un storage
+     */
+    public function getForm($data = [], $loadData = true)
     {
-        parent::__construct($config);
+        // form name = storage -> fichier: administrator/components/com_contentbuilder/forms/storage.xml
+        $form = $this->loadForm(
+            $this->option . '.storage', // ex: com_contentbuilder.storage
+            'storage',                  // storage.xml
+            [
+                'control'   => 'jform',
+                'load_data' => $loadData,
+            ]
+        );
 
-        $this->_db = Factory::getContainer()->get(DatabaseInterface::class);
-
-        $mainframe = Factory::getApplication();
-        $option = 'com_contentbuilder';
-
-        $array = CBRequest::getVar('cid', 0, '', 'array');
-        $this->setId((int) $array[0]);
-        if (CBRequest::getInt('id', 0) > 0) {
-            $this->setId(CBRequest::getInt('id', 0));
+        if (empty($form)) {
+            return false;
         }
 
-        $limit = $mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->get('list_limit'), 'int');
-        $limitstart = CBRequest::getVar('limitstart', 0, '', 'int');
-
-        // In case limit has been changed, adjust it
-        $limitstart = ($limit != 0 ? (floor($limitstart / $limit) * $limit) : 0);
-
-        $this->setState('limit', $limit);
-        $this->setState('limitstart', $limitstart);
-
-        $filter_order = $mainframe->getUserStateFromRequest($option . 'fields_filter_order', 'filter_order', 'ordering', 'cmd');
-        $filter_order_Dir = $mainframe->getUserStateFromRequest($option . 'fields_filter_order_Dir', 'filter_order_Dir', 'asc', 'word');
-
-        $this->setState('fields_filter_order', $filter_order);
-        $this->setState('fields_filter_order_Dir', $filter_order_Dir);
-
-        $filter_state = $mainframe->getUserStateFromRequest($option . 'fields_filter_state', 'filter_state', '', 'word');
-        $this->setState('fields_filter_state', $filter_state);
+        return $form;
     }
 
-    function setPublished()
+    /**
+     * Données injectées dans le formulaire quand on édite
+     */
+    protected function loadFormData()
     {
-        if (empty($this->_data)) {
-            $this->getDatabase()->setQuery(' Update #__contentbuilder_storages ' .
-                '  Set published = 1 Where id = ' . $this->_id);
-            $this->getDatabase()->execute();
-        }
+        $data = $this->getItem();
+
+        // Permet d’injecter aussi une session “edit.storage.data” si tu en as
+        $app  = \Joomla\CMS\Factory::getApplication();
+        $data = $app->getUserState($this->option . '.edit.storage.data', $data);
+
+        return $data;
     }
 
-    function setUnpublished()
+
+    protected function populateState()
     {
-        if (empty($this->_data)) {
-            $this->getDatabase()->setQuery(' Update #__contentbuilder_storages ' .
-                '  Set published = 0 Where id = ' . $this->_id);
-            $this->getDatabase()->execute();
+        parent::populateState();
+
+        $app   = Factory::getApplication();
+        $input = $app->input;
+
+        // D'abord id explicite
+        $id = $input->getInt('id', 0);
+
+        // Dinon depuis le formulaire posté
+        if (!$id) {
+            $jform = $input->post->get('jform', [], 'array');
+            $id = (int) ($jform['id'] ?? 0);
         }
+
+        // IMPORTANT: pour un FormModel, getName() renvoie souvent "Form"
+        // donc state = "form.id" si getName() est "form" (selon Joomla), sinon "Form.id".
+        $this->setState($this->getName() . '.id', $id);
     }
 
     function setListPublished()
@@ -160,6 +172,7 @@ class StorageModel extends BaseDatabaseModel
         return $data;
     }
 
+    /*
     function getFields()
     {
         $query = ' Select * From #__contentbuilder_storage_fields ' .
@@ -180,8 +193,8 @@ class StorageModel extends BaseDatabaseModel
         }
 
         return $data;
-    }
-
+    }*/
+    /*
     private function buildOrderBy()
     {
         $mainframe = Factory::getApplication();
@@ -191,7 +204,7 @@ class StorageModel extends BaseDatabaseModel
         $filter_order = $this->getState('fields_filter_order');
         $filter_order_Dir = $this->getState('fields_filter_order_Dir');
 
-        /* Error handling is never a bad thing*/
+        // Error handling is never a bad thing.
         if (!empty($filter_order) && !empty($filter_order_Dir)) {
             $orderby = ' ORDER BY ' . $filter_order . ' ' . $filter_order_Dir . ' , ordering ';
         } else {
@@ -199,9 +212,9 @@ class StorageModel extends BaseDatabaseModel
         }
 
         return $orderby;
-    }
+    } */
 
-
+    /*
     function _buildQuery()
     {
         $filter_state = '';
@@ -222,7 +235,7 @@ class StorageModel extends BaseDatabaseModel
         $this->getDatabase()->setQuery($this->_buildQuery(), $this->getState('limitstart'), $this->getState('limit'));
         $entries = $this->getDatabase()->loadObjectList();
         return $entries;
-    }
+    }*/
 
     function storeCsv($file)
     {
@@ -895,6 +908,7 @@ class StorageModel extends BaseDatabaseModel
         return true;
     }
 
+    /*
     function getTotal()
     {
         // Load the content if it doesn't already exist
@@ -912,7 +926,7 @@ class StorageModel extends BaseDatabaseModel
             $this->_pagination = new Pagination($this->getTotal(), $this->getState('limitstart'), $this->getState('limit'));
         }
         return $this->_pagination;
-    }
+    }*/
 
     function listSaveOrder()
     {

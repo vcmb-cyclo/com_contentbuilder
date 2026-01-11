@@ -169,7 +169,7 @@ class plgContentContentbuilder_verify extends CMSPlugin
 
                     $link = Uri::root(true) . '/index.php?option=com_contentbuilder&view=verify&plugin=' . urlencode($plugin) . '&verification_name=' . urlencode($verification_name) . '&format=raw';
                     PluginHelper::importPlugin('contentbuilder_verify', $plugin);
-                    $eventResult = $this->app->getDispatcher()->dispatch('onViewport', new Joomla\Event\Event('onVerify', array($link, $plugin_settings)));
+                    $eventResult = $this->app->getDispatcher()->dispatch('onViewport', new \Joomla\Event\Event('onVerify', array($link, $plugin_settings)));
                     $results = $eventResult->getArgument('result') ?: [];
                     $viewport_result = implode('', $results);
 

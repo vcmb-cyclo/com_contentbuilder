@@ -1,5 +1,4 @@
 <?php
-
 /**
  * ContentBuilder Form controller.
  *

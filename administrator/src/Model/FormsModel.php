@@ -1,10 +1,17 @@
 <?php
+
 /**
+ * ContentBuilder Forms Model (List).
+ *
+ * Handles CRUD and publish state for form in the admin interface.
+ *
  * @package     ContentBuilder
- * @author      Markus Bopp
+ * @subpackage  Administrator.Model
+ * @author      Markus Bopp / XDA+GIL
+ * @copyright   Copyright (C) 2011–2026 by XDA+GIL
+ * @license     GNU/GPL v2 or later
  * @link        https://breezingforms.vcmb.fr
- * @copyright   Copyright (C) 2026 by XDA+GIL
- * @license     GNU/GPL
+ * @since       6.0.0  Joomla 6 compatibility rewrite.
  */
 
 namespace CB\Component\Contentbuilder\Administrator\Model;
@@ -12,29 +19,34 @@ namespace CB\Component\Contentbuilder\Administrator\Model;
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
 use Joomla\Database\QueryInterface;
+use Joomla\Utilities\ArrayHelper;
 
 class FormsModel extends ListModel
 {
+    // Optionnel mais recommandé : définir le nom de la table (sans postfix)
+    protected $table = 'Form';
 
-    // Optionnel mais recommandé : définir le nom de la table
-    protected $table = 'Form'; // Nom de la classe Table (sans prefix)
-    
     public function __construct($config = [])
     {
         if (empty($config['filter_fields'])) {
             $config['filter_fields'] = [
-                'a.id', 'id',
-                'a.name', 'name',
-                'a.tag', 'tag',
-                'a.title', 'title',
-                'a.type', 'type',
-                'a.display_in', 'display_in',
-                'a.published', 'published'
+                'a.id',
+                'id',
+                'a.name',
+                'name',
+                'a.tag',
+                'tag',
+                'a.title',
+                'title',
+                'a.type',
+                'type',
+                'a.display_in',
+                'display_in',
+                'a.published',
+                'published'
             ];
         }
 
@@ -58,46 +70,45 @@ class FormsModel extends ListModel
 
     protected function getListQuery(): QueryInterface
     {
-        $db = $this->getDatabase();
-        $query = $db->getQuery(true)
-            ->select('a.*')
+        $db    = $this->getDatabase();          // Joomla 4/5/6
+        $query = $db->getQuery(true);
+
+        // Base query
+        $query->select('a.*')
             ->from($db->quoteName('#__contentbuilder_forms', 'a'));
 
-        // Filtre published
-        $filterState = (string) $this->getState('filter.state', '');
-        if ($filterState === 'P') {
-            $query->where($db->quoteName('a.published') . ' = 1');
-        } elseif ($filterState === 'U') {
-            $query->where($db->quoteName('a.published') . ' = 0');
+        // Published filter (forms_filter_state: 'P' or 'U')
+        $filterState = (string) $this->getState('forms_filter_state');
+
+        if ($filterState === 'P' || $filterState === 'U')
+        {
+            $published = ($filterState === 'P') ? 1 : 0;
+            $query->where($db->quoteName('a.published') . ' = ' . (int) $published);
         }
 
-        // Filtre tag
-        $tag = (string) $this->getState('filter.tag', '');
-        if ($tag !== '') {
-            $query->where('LOWER(' . $db->quoteName('a.tag') . ') LIKE ' . $db->quote('%' . strtolower($tag) . '%'));
+        // Ordering (equivalent à ton buildOrderBy())
+        $ordering  = (string) $this->getState('list.ordering', 'a.id');
+        $direction = strtoupper((string) $this->getState('list.direction', 'DESC'));
+
+        // Petite sécurité sur la direction
+        if (!in_array($direction, ['ASC', 'DESC'], true))
+        {
+            $direction = 'DESC';
         }
 
-        // ✅ tri standard piloté par list.ordering/list.direction
-        $orderCol  = (string) $this->getState('list.ordering', 'a.ordering');
-        $orderDir = strtoupper((string) $this->getState('list.direction', 'ASC'));
-
-        // Sécurise la direction
-        if (!in_array($orderDir, ['ASC', 'DESC'], true)) {
-            $orderDir = 'ASC';
+        // Optionnel : whitelist rapide des colonnes triables
+        $allowedOrdering = ['a.id', 'a.title', 'a.published', 'a.created', 'a.ordering'];
+        if (!in_array($ordering, $allowedOrdering, true))
+        {
+            $ordering = 'a.id';
         }
 
-        // Sécurise la colonne (Joomla la valide via filter_fields, mais on recheck)
-        $allowed = $this->filter_fields ?? [];
-        if (!in_array($orderCol, $allowed, true)) {
-            $orderCol = 'a.ordering';
-        }
-
-        $query->order($db->escape($orderCol) . ' ' . $orderDir);
+        $query->order($db->escape($ordering . ' ' . $direction));
 
         return $query;
     }
 
-    
+
     /**
      * Supprime plusieurs formulaires
      * Appelée automatiquement par AdminController
@@ -107,21 +118,30 @@ class FormsModel extends ListModel
         $pks = (array) $pks;
         ArrayHelper::toInteger($pks);
 
-        if (empty($pks)) {
+        $pks = array_values(array_filter($pks));
+        if (!$pks) {
             return false;
         }
 
-        $model = $this->getModel('Form', 'Contentbuilder'); // utilise FormModel pour la suppression complète
+        $factory = Factory::getApplication()
+            ->bootComponent('com_contentbuilder')
+            ->getMVCFactory();
 
-        foreach ($pks as $pk) {
-            if (!$model->delete([$pk])) {
-                $this->setError($model->getError());
-                return false;
-            }
+        $formModel = $factory->createModel('form', 'Administrator', ['ignore_request' => true]);
+
+        if (!$formModel) {
+            $this->setError('Unable to create Form model');
+            return false;
+        }
+
+        if (!$formModel->delete($pks)) {
+            $this->setError($formModel->getError());
+            return false;
         }
 
         return true;
     }
+
 
     /*
      *
@@ -129,40 +149,11 @@ class FormsModel extends ListModel
      * 
      */
 
-
-    public function saveOrder()
-    {
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
-        ArrayHelper::toInteger($items);
-
-        $total = count($items);
-        $row = $this->getTable('Form', '');
-        $groupings = array();
-
-        $order = CBRequest::getVar('order', array(), 'post', 'array');
-        ArrayHelper::toInteger($order);
-
-        // update ordering values
-        for ($i = 0; $i < $total; $i++) {
-            $row->load($items[$i]);
-            if ($row->ordering != $order[$i]) {
-                $row->ordering = $order[$i];
-                if (!$row->store()) {
-                    $this->setError($row->getError());
-                    return false;
-                }
-            } // if
-        } // for
-
-
-        $row->reorder();
-    }
-
     // Tag non standard.
     public function getTags()
     {
         $db = $this->getDatabase();
-        
+
         $query = $db->getQuery(true)
             ->select('DISTINCT tag AS tag')
             ->from('#__contentbuilder_forms')
@@ -172,5 +163,3 @@ class FormsModel extends ListModel
         return $db->loadObjectList();
     }
 }
-
-

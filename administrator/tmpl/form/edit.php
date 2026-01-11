@@ -176,9 +176,9 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     <?php echo Text::_('COM_CONTENTBUILDER_NAME'); ?>:
                                 </b></span>
                         </label>
-                        <input class="form-control form-control-sm" type="text" name="name" id="name" size="32"
+                        <input class="form-control form-control-sm" type="text" name="jform[name]" id="name" size="32"
                             style="width: 200px;" maxlength="255"
-                            value="<?php echo htmlentities($this->form->name ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                            value="<?php echo htmlentities($this->item->name ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
 
                         <label for="tag">
                             <span class="editlinktip hasTip"
@@ -186,12 +186,12 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     <?php echo Text::_('COM_CONTENTBUILDER_TAG'); ?>:
                                 </b></span>
                         </label>
-                        <input class="form-control form-control-sm" type="text" name="tag" id="tag" size="32"
+                        <input class="form-control form-control-sm" type="text" name="jform[tag]" id="tag" size="32"
                             style="width: 200px;" maxlength="255"
-                            value="<?php echo htmlentities($this->form->tag ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                            value="<?php echo htmlentities($this->item->tag ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
 
                         <?php
-                        if ($this->form->id < 1) {
+                        if ($this->item->id < 1) {
                         ?>
                             <label for="types">
                                 <span class="editlinktip hasTip"
@@ -199,9 +199,9 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                         <?php echo Text::_('COM_CONTENTBUILDER_TYPE'); ?>:
                                     </b></span>
                             </label>
-                            <select class="form-select-sm" name="type">
+                            <select class="form-select-sm" name="jform[type]">
                                 <?php
-                                foreach ($this->form->types as $type) {
+                                foreach ($this->item->types as $type) {
                                     if (trim($type)) {
                                 ?>
                                         <option value="<?php echo $type ?>">
@@ -236,11 +236,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 </label>
                                 <?php
 
-                                if (!$this->form->reference_id) {
+                                if (!$this->item->reference_id) {
                                 ?>
-                                    <select class="form-select-sm" name="reference_id" style="max-width: 200px;">
+                                    <select class="form-select-sm" name="jform[reference_id]" style="max-width: 200px;">
                                         <?php
-                                        foreach ($this->form->forms as $reference_id => $title) {
+                                        foreach ($this->item->forms as $reference_id => $title) {
                                         ?>
                                             <option value="<?php echo $reference_id ?>">
                                                 <?php echo htmlentities($title ?? '', ENT_QUOTES, 'UTF-8'); ?>
@@ -252,9 +252,9 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 <?php
                                 } else {
                                 ?>
-                                    <?php echo htmlentities($this->form->form->getTitle() ?? '', ENT_QUOTES, 'UTF-8'); ?>
-                                    <input type="hidden" name="reference_id"
-                                        value="<?php echo $this->form->form->getReferenceId(); ?>" />
+                                    <?php echo htmlentities($this->item->form->getTitle() ?? '', ENT_QUOTES, 'UTF-8'); ?>
+                                    <input type="hidden" name="jform[reference_id]"
+                                        value="<?php echo $this->item->form->getReferenceId(); ?>" />
                                 <?php
                                 }
                                 ?>
@@ -265,32 +265,32 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                             <?php echo Text::_('COM_CONTENTBUILDER_TYPE'); ?>:
                                         </b></span>
                                 </label>
-                                <?php echo $this->form->type ?>
-                                <input type="hidden" name="type" value="<?php echo $this->form->type ?>" />
-                                <input type="hidden" name="type_name"
-                                    value="<?php echo isset($this->form->type_name) ? $this->form->type_name : ''; ?>" />
+                                <?php echo $this->item->type ?>
+                                <input type="hidden" name="jform[type]" value="<?php echo $this->item->type ?>" />
+                                <input type="hidden" name="jform[type_name]"
+                                    value="<?php echo isset($this->item->type_name) ? $this->item->type_name : ''; ?>" />
                                 <?php
-                                if ($this->form->type != 'com_contentbuilder') {
+                                if ($this->item->type != 'com_contentbuilder') {
                                 ?>
-                                    <input class="form-check-input" type="checkbox" id="edit_by_type" name="edit_by_type"
-                                        value="1" <?php echo $this->form->edit_by_type ? ' checked="checked"' : '' ?> />
+                                    <input class="form-check-input" type="checkbox" id="edit_by_type" name="jform[edit_by_type]"
+                                        value="1" <?php echo $this->item->edit_by_type ? ' checked="checked"' : '' ?> />
                                     <label for="edit_by_type">
                                         <?php echo Text::_('COM_CONTENTBUILDER_TYPE_EDIT'); ?>
                                     </label>
                                 <?php
                                 } else {
                                 ?>
-                                    <input type="hidden" name="edit_by_type" value="0" />
+                                    <input type="hidden" name="jform[edit_by_type]" value="0" />
                                 <?php
                                 }
                                 ?>
                                 <input class="form-check-input" type="checkbox" id="email_notifications"
-                                    name="email_notifications" value="1" <?php echo $this->form->email_notifications ? ' checked="checked"' : '' ?> />
+                                    name="jform[email_notifications]" value="1" <?php echo $this->item->email_notifications ? ' checked="checked"' : '' ?> />
                                 <label for="email_notifications">
                                     <?php echo Text::_('COM_CONTENTBUILDER_TYPE_EMAIL_NOTIFICATIONS'); ?>
                                 </label>
                                 <input class="form-check-input" type="checkbox" id="email_update_notifications"
-                                    name="email_update_notifications" value="1" <?php echo $this->form->email_update_notifications ? ' checked="checked"' : '' ?> />
+                                    name="jform[email_update_notifications]" value="1" <?php echo $this->item->email_update_notifications ? ' checked="checked"' : '' ?> />
                                 <label for="email_update_notifications">
                                     <?php echo Text::_('COM_CONTENTBUILDER_TYPE_EMAIL_UPDATE_NOTIFICATIONS'); ?>
                                 </label>
@@ -314,14 +314,14 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 </legend>
 
 
-                                <select class="form-select-sm" name="display_in">
-                                    <option value="0" <?php echo $this->form->display_in == 0 ? ' selected="selected"' : '' ?>>
+                                <select class="form-select-sm" name="jform[display_in]">
+                                    <option value="0" <?php echo $this->item->display_in == 0 ? ' selected="selected"' : '' ?>>
                                         <?php echo Text::_('COM_CONTENTBUILDER_DISPLAY_FRONTEND') ?>
                                     </option>
-                                    <option value="1" <?php echo $this->form->display_in == 1 ? ' selected="selected"' : '' ?>>
+                                    <option value="1" <?php echo $this->item->display_in == 1 ? ' selected="selected"' : '' ?>>
                                         <?php echo Text::_('COM_CONTENTBUILDER_DISPLAY_BACKEND') ?>
                                     </option>
-                                    <option value="2" <?php echo $this->form->display_in == 2 ? ' selected="selected"' : '' ?>>
+                                    <option value="2" <?php echo $this->item->display_in == 2 ? ' selected="selected"' : '' ?>>
                                         <?php echo Text::_('COM_CONTENTBUILDER_DISPLAY_BOTH') ?>
                                     </option>
                                 </select>
@@ -332,11 +332,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                             <?php echo Text::_('COM_CONTENTBUILDER_THEME_PLUGIN'); ?>:
                                         </b></span>
                                 </label>
-                                <select class="form-select-sm" name="theme_plugin" id="theme_plugin">
+                                <select class="form-select-sm" name="jform[theme_plugin]" id="theme_plugin">
                                     <?php
                                     foreach ($this->theme_plugins as $theme_plugin) {
                                     ?>
-                                        <option value="<?php echo $theme_plugin; ?>" <?php echo $theme_plugin == $this->form->theme_plugin ? ' selected="selected"' : ''; ?>>
+                                        <option value="<?php echo $theme_plugin; ?>" <?php echo $theme_plugin == $this->item->theme_plugin ? ' selected="selected"' : ''; ?>>
                                             <?php echo $theme_plugin; ?>
                                         </option>
                                     <?php
@@ -358,49 +358,49 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 
 
                                 <input class="form-check-input" type="checkbox" id="show_id_column"
-                                    name="show_id_column" value="1" <?php echo $this->form->show_id_column ? ' checked="checked"' : '' ?> /> <label for="show_id_column">
+                                    name="jform[show_id_column]" value="1" <?php echo $this->item->show_id_column ? ' checked="checked"' : '' ?> /> <label for="show_id_column">
                                     <?php echo Text::_('COM_CONTENTBUILDER_ID_COLUMN'); ?>
                                 </label>
-                                <input class="form-check-input" type="checkbox" id="select_column" name="select_column"
-                                    value="1" <?php echo $this->form->select_column ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" id="select_column" name="jform[select_column]"
+                                    value="1" <?php echo $this->item->select_column ? ' checked="checked"' : '' ?> />
                                 <label for="select_column">
                                     <?php echo Text::_('COM_CONTENTBUILDER_SELECT_COLUMN'); ?>
                                 </label>
-                                <input class="form-check-input" type="checkbox" id="list_state" name="list_state"
-                                    value="1" <?php echo $this->form->list_state ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" id="list_state" name="jform[list_state]"
+                                    value="1" <?php echo $this->item->list_state ? ' checked="checked"' : '' ?> />
                                 <label for="list_state">
                                     <?php echo Text::_('COM_CONTENTBUILDER_EDIT_STATE'); ?>
                                 </label>
-                                <input class="form-check-input" type="checkbox" id="edit_button" name="edit_button"
-                                    value="1" <?php echo $this->form->edit_button ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" id="edit_button" name="jform[edit_button]"
+                                    value="1" <?php echo $this->item->edit_button ? ' checked="checked"' : '' ?> />
                                 <label for="edit_button">
                                     <?php echo Text::_('COM_CONTENTBUILDER_EDIT_BUTTON'); ?>
                                 </label>
-                                <input class="form-check-input" type="checkbox" id="list_publish" name="list_publish"
-                                    value="1" <?php echo $this->form->list_publish ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" id="list_publish" name="jform[list_publish]"
+                                    value="1" <?php echo $this->item->list_publish ? ' checked="checked"' : '' ?> />
                                 <label for="list_publish">
                                     <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH'); ?>
                                 </label>
-                                <input class="form-check-input" type="checkbox" id="list_language" name="list_language"
-                                    value="1" <?php echo $this->form->list_language ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" id="list_language" name="jform[list_language]"
+                                    value="1" <?php echo $this->item->list_language ? ' checked="checked"' : '' ?> />
                                 <label for="list_language">
                                     <?php echo Text::_('COM_CONTENTBUILDER_LANGUAGE'); ?>
                                 </label>
-                                <input class="form-check-input" type="checkbox" id="list_article" name="list_article"
-                                    value="1" <?php echo $this->form->list_article ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" id="list_article" name="jform[list_article]"
+                                    value="1" <?php echo $this->item->list_article ? ' checked="checked"' : '' ?> />
                                 <label for="list_article">
                                     <?php echo Text::_('COM_CONTENTBUILDER_ARTICLE'); ?>
                                 </label>
-                                <input class="form-check-input" type="checkbox" id="list_author" name="list_author"
-                                    value="1" <?php echo $this->form->list_author ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" id="list_author" name="jform[list_author]"
+                                    value="1" <?php echo $this->item->list_author ? ' checked="checked"' : '' ?> />
                                 <label for="list_author">
                                     <?php echo Text::_('COM_CONTENTBUILDER_AUTHOR'); ?>
                                 </label>
 
 
 
-                                <input class="form-check-input" type="checkbox" name="export_xls" id="export_xls"
-                                    value="1" <?php echo $this->form->export_xls ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" name="jform[export_xls]" id="export_xls"
+                                    value="1" <?php echo $this->item->export_xls ? ' checked="checked"' : '' ?> />
                                 <label for="export_xls">
                                     <span class="editlinktip hasTip"
                                         title="<?php echo Text::_('COM_CONTENTBUILDER_SHOW_XLSEXPORT_TIP'); ?>">
@@ -408,8 +408,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     </span>
                                 </label>
 
-                                <input class="form-check-input" type="checkbox" name="print_button" id="print_button"
-                                    value="1" <?php echo $this->form->print_button ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" name="jform[print_button]" id="print_button"
+                                    value="1" <?php echo $this->item->print_button ? ' checked="checked"' : '' ?> />
                                 <label for="print_button">
                                     <span class="editlinktip hasTip"
                                         title="<?php echo Text::_('COM_CONTENTBUILDER_SHOW_PRINTBUTTON_TIP'); ?>">
@@ -417,8 +417,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     </span>
                                 </label>
 
-                                <input class="form-check-input" type="checkbox" name="metadata" id="metadata" value="1"
-                                    <?php echo $this->form->metadata ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" name="jform[metadata]" id="metadata" value="1"
+                                    <?php echo $this->item->metadata ? ' checked="checked"' : '' ?> />
                                 <label for="metadata">
                                     <span class="editlinktip hasTip"
                                         title="<?php echo Text::_('COM_CONTENTBUILDER_SHOW_METADATA_TIP'); ?>">
@@ -426,8 +426,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     </span>
                                 </label>
 
-                                <input class="form-check-input" type="checkbox" name="show_filter" id="show_filter"
-                                    value="1" <?php echo $this->form->show_filter ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" name="jform[show_filter]" id="show_filter"
+                                    value="1" <?php echo $this->item->show_filter ? ' checked="checked"' : '' ?> />
                                 <label for="show_filter">
                                     <span class="editlinktip hasTip"
                                         title="<?php echo Text::_('COM_CONTENTBUILDER_SHOW_FILTER_TIP'); ?>">
@@ -435,8 +435,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     </span>
                                 </label>
 
-                                <input class="form-check-input" type="checkbox" name="show_records_per_page"
-                                    id="show_records_per_page" value="1" <?php echo $this->form->show_records_per_page ? ' checked="checked"' : '' ?> />
+                                <input class="form-check-input" type="checkbox" name="jform[show_records_per_page]"
+                                    id="show_records_per_page" value="1" <?php echo $this->item->show_records_per_page ? ' checked="checked"' : '' ?> />
                                 <label for="show_records_per_page">
                                     <span class="editlinktip hasTip"
                                         title="<?php echo Text::_('COM_CONTENTBUILDER_SHOW_RECORDS_PER_PAGE_TIP'); ?>">
@@ -455,18 +455,18 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     </h3>
                                 </legend>
                                 <div class="alert">
-                                    <input class="form-check-input" type="checkbox" id="list_rating" name="list_rating"
-                                        value="1" <?php echo $this->form->list_rating ? ' checked="checked"' : '' ?> />
+                                    <input class="form-check-input" type="checkbox" id="list_rating" name="jform[list_rating]"
+                                        value="1" <?php echo $this->item->list_rating ? ' checked="checked"' : '' ?> />
                                     <label for="list_rating">
                                         <?php echo Text::_('COM_CONTENTBUILDER_RATING'); ?>
                                     </label>
 
-                                    <select class="form-select-sm" name="rating_slots" id="rating_slots">
-                                        <option value="1" <?php echo $this->form->rating_slots == 1 ? ' selected="selected"' : ''; ?>>1</option>
-                                        <option value="2" <?php echo $this->form->rating_slots == 2 ? ' selected="selected"' : ''; ?>>2</option>
-                                        <option value="3" <?php echo $this->form->rating_slots == 3 ? ' selected="selected"' : ''; ?>>3</option>
-                                        <option value="4" <?php echo $this->form->rating_slots == 4 ? ' selected="selected"' : ''; ?>>4</option>
-                                        <option value="5" <?php echo $this->form->rating_slots == 5 ? ' selected="selected"' : ''; ?>>5</option>
+                                    <select class="form-select-sm" name="jform[rating_slots]" id="rating_slots">
+                                        <option value="1" <?php echo $this->item->rating_slots == 1 ? ' selected="selected"' : ''; ?>>1</option>
+                                        <option value="2" <?php echo $this->item->rating_slots == 2 ? ' selected="selected"' : ''; ?>>2</option>
+                                        <option value="3" <?php echo $this->item->rating_slots == 3 ? ' selected="selected"' : ''; ?>>3</option>
+                                        <option value="4" <?php echo $this->item->rating_slots == 4 ? ' selected="selected"' : ''; ?>>4</option>
+                                        <option value="5" <?php echo $this->item->rating_slots == 5 ? ' selected="selected"' : ''; ?>>5</option>
                                     </select>
                                     <label for="rating_slots">
                                         <?php echo Text::_('COM_CONTENTBUILDER_RATING_SLOTS'); ?>
@@ -491,23 +491,23 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     </label>
                                     <select class="form-select-sm"
                                         onchange="if(this.selectedIndex == 3) { document.getElementById('randUpdate').style.display='block'; } else { document.getElementById('randUpdate').style.display='none'; } "
-                                        name="initial_sort_order" id="initial_sort_order" style="max-width: 200px;">
+                                        name="jform[initial_sort_order]" id="initial_sort_order" style="max-width: 200px;">
                                         <option value="-1">
                                             <?php echo Text::_('COM_CONTENTBUILDER_INITIAL_SORT_ORDER_BY_ID'); ?>
                                         </option>
-                                        <option value="Rating" <?php echo $this->form->initial_sort_order == 'Rating' ? ' selected="selected"' : ''; ?>>
+                                        <option value="Rating" <?php echo $this->item->initial_sort_order == 'Rating' ? ' selected="selected"' : ''; ?>>
                                             <?php echo Text::_('COM_CONTENTBUILDER_RATING'); ?>
                                         </option>
-                                        <option value="RatingCount" <?php echo $this->form->initial_sort_order == 'RatingCount' ? ' selected="selected"' : ''; ?>>
+                                        <option value="RatingCount" <?php echo $this->item->initial_sort_order == 'RatingCount' ? ' selected="selected"' : ''; ?>>
                                             <?php echo Text::_('COM_CONTENTBUILDER_RATING_COUNT'); ?>
                                         </option>
-                                        <option value="Rand" <?php echo $this->form->initial_sort_order == 'Rand' ? ' selected="selected"' : ''; ?>>
+                                        <option value="Rand" <?php echo $this->item->initial_sort_order == 'Rand' ? ' selected="selected"' : ''; ?>>
                                             <?php echo Text::_('COM_CONTENTBUILDER_INITIAL_SORT_ORDER_RAND'); ?>
                                         </option>
                                         <?php
                                         foreach ($this->elements as $sortable) {
                                         ?>
-                                            <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->initial_sort_order == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
+                                            <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->item->initial_sort_order == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
                                                 <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 </value>
                                             <?php
@@ -515,14 +515,14 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                             ?>
                                     </select>
                                     <span id="randUpdate"
-                                        style="display: <?php echo $this->form->initial_sort_order == 'Rand' ? 'block' : 'none' ?>;">
+                                        style="display: <?php echo $this->item->initial_sort_order == 'Rand' ? 'block' : 'none' ?>;">
                                         <b>
                                             <?php echo Text::_('COM_CONTENTBUILDER_RAND_UPDATE'); ?>:
                                         </b>
-                                        <input class="form-control form-control-sm" type="text" name="rand_update"
-                                            value="<?php echo $this->form->rand_update; ?>" />
+                                        <input class="form-control form-control-sm" type="text" name="jform[rand_update]"
+                                            value="<?php echo $this->item->rand_update; ?>" />
                                     </span>
-                                    <select class="form-select-sm" name="initial_sort_order2" id="initial_sort_order2"
+                                    <select class="form-select-sm" name="jform[initial_sort_order2]" id="initial_sort_order2"
                                         style="max-width: 200px;">
                                         <option value="-1">
                                             <?php echo Text::_('COM_CONTENTBUILDER_NONE'); ?>
@@ -530,14 +530,14 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                         <?php
                                         foreach ($this->elements as $sortable) {
                                         ?>
-                                            <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->initial_sort_order2 == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
+                                            <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->item->initial_sort_order2 == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
                                                 <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 </value>
                                             <?php
                                         }
                                             ?>
                                     </select>
-                                    <select class="form-select-sm" name="initial_sort_order3" id="initial_sort_order3"
+                                    <select class="form-select-sm" name="jform[initial_sort_order3]" id="initial_sort_order3"
                                         style="max-width: 200px;">
                                         <option value="-1">
                                             <?php echo Text::_('COM_CONTENTBUILDER_NONE'); ?>
@@ -545,7 +545,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                         <?php
                                         foreach ($this->elements as $sortable) {
                                         ?>
-                                            <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->initial_sort_order3 == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
+                                            <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->item->initial_sort_order3 == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
                                                 <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                                 </value>
                                             <?php
@@ -553,13 +553,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                             ?>
                                     </select>
                                     <div></div>
-                                    <input class="form-check-input" type="radio" name="initial_order_dir"
-                                        id="initial_order_dir" value="asc" <?php echo $this->form->initial_order_dir == 'asc' ? ' checked="checked"' : ''; ?> /> <label
+                                    <input class="form-check-input" type="radio" name="jform[initial_order_dir]"
+                                        id="initial_order_dir" value="asc" <?php echo $this->item->initial_order_dir == 'asc' ? ' checked="checked"' : ''; ?> /> <label
                                         for="initial_order_dir">
                                         <?php echo Text::_('COM_CONTENTBUILDER_INITIAL_SORT_ORDER_ASC'); ?>
                                     </label>
-                                    <input class="form-check-input" type="radio" name="initial_order_dir"
-                                        id="initial_order_dir_desc" value="desc" <?php echo $this->form->initial_order_dir == 'desc' ? ' checked="checked"' : ''; ?> /> <label
+                                    <input class="form-check-input" type="radio" name="jform[initial_order_dir]"
+                                        id="initial_order_dir_desc" value="desc" <?php echo $this->item->initial_order_dir == 'desc' ? ' checked="checked"' : ''; ?> /> <label
                                         for="initial_order_dir_desc">
                                         <?php echo Text::_('COM_CONTENTBUILDER_INITIAL_SORT_ORDER_DESC'); ?>
                                     </label>
@@ -582,8 +582,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                             </b></span>
                                     </label>
                                     <input class="form-control form-control-sm" type="text" id="save_button_title"
-                                        name="save_button_title"
-                                        value="<?php echo htmlentities($this->form->save_button_title ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                        name="jform[save_button_title]"
+                                        value="<?php echo htmlentities($this->item->save_button_title ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
 
                                     <label for="apply_button_title">
                                         <span class="editlinktip hasTip"
@@ -592,8 +592,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                             </b></span>
                                     </label>
                                     <input class="form-control form-control-sm" type="text" id="apply_button_title"
-                                        name="apply_button_title"
-                                        value="<?php echo htmlentities($this->form->apply_button_title ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                        name="jform[apply_button_title]"
+                                        value="<?php echo htmlentities($this->item->apply_button_title ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                                 </div>
                             </fieldset>
 
@@ -607,7 +607,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 </legend>
                                 <div class="alert">
                                     <input class="form-check-input" id="filter_exact_match" type="checkbox"
-                                        name="filter_exact_match" value="1" <?php echo $this->form->filter_exact_match ? ' checked="checked"' : '' ?> />
+                                        name="jform[filter_exact_match]" value="1" <?php echo $this->item->filter_exact_match ? ' checked="checked"' : '' ?> />
                                     <label for="filter_exact_match">
                                         <span class="editlinktip hasTip"
                                             title="<?php echo Text::_('COM_CONTENTBUILDER_FILTER_EXACT_MATCH_TIP'); ?>">
@@ -616,7 +616,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     </label>
 
                                     <input class="form-check-input" id="use_view_name_as_title" type="checkbox"
-                                        name="use_view_name_as_title" value="1" <?php echo $this->form->use_view_name_as_title ? ' checked="checked"' : '' ?> />
+                                        name="jform[use_view_name_as_title]" value="1" <?php echo $this->item->use_view_name_as_title ? ' checked="checked"' : '' ?> />
                                     <label for="use_view_name_as_title">
                                         <span class="editlinktip hasTip"
                                             title="<?php echo Text::_('COM_CONTENTBUILDER_USE_VIEW_NAME_AS_TITLE_TIP'); ?>">
@@ -625,7 +625,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     </label>
 
                                     <input class="form-check-input" id="published_only" type="checkbox"
-                                        name="published_only" value="1" <?php echo $this->form->published_only ? ' checked="checked"' : '' ?> />
+                                        name="jform[published_only]" value="1" <?php echo $this->item->published_only ? ' checked="checked"' : '' ?> />
                                     <label for="published_only">
                                         <span class="editlinktip hasTip"
                                             title="<?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED_ONLY_TIP'); ?>">
@@ -634,7 +634,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                     </label>
 
                                     <input class="form-check-input" type="checkbox" id="allow_external_filter"
-                                        name="allow_external_filter" value="1" <?php echo $this->form->allow_external_filter ? ' checked="checked"' : '' ?> />
+                                        name="jform[allow_external_filter]" value="1" <?php echo $this->item->allow_external_filter ? ' checked="checked"' : '' ?> />
                                     <label for="allow_external_filter">
                                         <span class="editlinktip hasTip"
                                             title="<?php echo Text::_('COM_CONTENTBUILDER_ALLOW_EXTERNAL_FILTER_TIP'); ?>">
@@ -663,7 +663,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 <?php echo Text::_('COM_CONTENTBUILDER_ID'); ?>
                             </th>
                             <th width="20">
-                                <input class="form-check-input" type="checkbox" name="toggle" value=""
+                                <input class="form-check-input" type="checkbox" name="jform[toggle]" value=""
                                     onclick="Joomla.checkAll(this);" />
                             </th>
                             <th>
@@ -752,13 +752,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 <input class="form-control form-control-sm"
                                     onblur="if(this.value=='') {this.value = 'Unnamed';} this.style.display='none';document.getElementById('itemLabels_<?php echo $row->id ?>').innerHTML='<b>'+this.value+'<b/>';document.getElementById('itemLabels_<?php echo $row->id ?>').style.display='block';"
                                     id="itemLabels<?php echo $row->id ?>" type="text" style="display:none; width: 100%;"
-                                    name="itemLabels[<?php echo $row->id ?>]"
+                                    name="jform[itemLabels][<?php echo $row->id ?>]"
                                     value="<?php echo htmlentities($row->label ?? '', ENT_QUOTES, 'UTF-8') ?>" />
 
                                 <br />
 
                                 <select class="form-select-sm" style="max-width: 125px;"
-                                    id="itemOrderTypes<?php echo $row->id ?>" name="itemOrderTypes[<?php echo $row->id ?>]">
+                                    id="itemOrderTypes<?php echo $row->id ?>" name="jform[itemOrderTypes][<?php echo $row->id ?>]">
                                     <option value=""> -
                                         <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES'); ?> -
                                     </option>
@@ -795,19 +795,19 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <td valign="top">
                                 <?php echo $editable; ?>
                                 <?php
-                                if ($row->editable && !$this->form->edit_by_type) {
-                                    echo '<br/><br/>[<a href="index.php?option=com_contentbuilder&amp;view=elementoptions&amp;tmpl=component&amp;element_id=' . $row->id . '&amp;id=' . $this->form->id . '" title="" data-bs-toggle="modal" data-bs-target="#text-type-modal">' . $row->type . '</a>]';
+                                if ($row->editable && !$this->item->edit_by_type) {
+                                    echo '<br/><br/>[<a href="index.php?option=com_contentbuilder&amp;view=elementoptions&amp;tmpl=component&amp;element_id=' . $row->id . '&amp;id=' . $this->item->id . '" title="" data-bs-toggle="modal" data-bs-target="#text-type-modal">' . $row->type . '</a>]';
                                 }
                                 ?>
                             </td>
                             <td valign="top">
                                 <input class="form-control form-control-sm w-100" type="text" style="width: 20px;"
-                                    name="itemWordwrap[<?php echo $row->id ?>]"
+                                    name="jform[itemWordwrap][<?php echo $row->id ?>]"
                                     value="<?php echo htmlentities($row->wordwrap ?? '', ENT_QUOTES, 'UTF-8') ?>" />
                             </td>
                             <td valign="top">
                                 <input class="form-control form-control-sm w-100" style="width: 150px;" type="text"
-                                    name="itemWrapper[<?php echo $row->id ?>]"
+                                    name="jform[itemWrapper][<?php echo $row->id ?>]"
                                     value="<?php echo htmlentities($row->item_wrapper ?? '', ENT_QUOTES, 'UTF-8') ?>" />
                             </td>
                             <td valign="top">
@@ -823,7 +823,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                                 <?php $disabled = $this->ordering ? '' : 'disabled="disabled"'; ?>
                                 <input
                                     type="text"
-                                    name="order[<?php echo (int) $row->id; ?>]"
+                                    name="jform[order][<?php echo (int) $row->id; ?>]"
                                     size="3"
                                     style="width:30px;text-align:center"
                                     value="<?php echo (int) $row->ordering; ?>"
@@ -866,8 +866,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         <?php
         echo HTMLHelper::_('uitab.endTab');
         echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab2', Text::_('COM_CONTENTBUILDER_LIST_INTRO_TEXT'));
-        $editor = Editor::getInstance(Factory::getApplication()->get('editor'));
-        echo $editor->display('intro_text', $this->form->intro_text, '100%', '550', '75', '20', true, 'intro_text');
+        echo $this->form->renderField('intro_text');
         ?>
 
         <?php
@@ -892,26 +891,26 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 </tr>
             </thead>
             <?php
-            foreach ($this->form->list_states as $state) {
+            foreach ($this->item->list_states as $state) {
                 $k = 0;
             ?>
                 <tr class="<?php echo "row$k"; ?>">
                     <td>
                         <input class="form-check-input" type="checkbox"
-                            name="list_states[<?php echo $state['id']; ?>][published]" value="1" <?php echo $state['published'] ? ' checked="checked"' : '' ?> />
+                            name="jform[list_states][<?php echo $state['id']; ?>][published]" value="1" <?php echo $state['published'] ? ' checked="checked"' : '' ?> />
                     </td>
                     <td>
                         <input class="form-control form-control-sm w-100" type="text"
-                            name="list_states[<?php echo $state['id']; ?>][title]"
+                            name="jform[list_states][<?php echo $state['id']; ?>][title]"
                             value="<?php echo htmlentities($state['title'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     </td>
                     <td>
                         <input class="form-control form-control-sm w-100 color" type="text"
                             value="<?php echo $state['color']; ?>"
-                            name="list_states[<?php echo $state['id']; ?>][color]" /><br />
+                            name="jform[list_states][<?php echo $state['id']; ?>][color]" /><br />
                     </td>
                     <td>
-                        <select class="form-select-sm" name="list_states[<?php echo $state['id']; ?>][action]">
+                        <select class="form-select-sm" name="jform[list_states][<?php echo $state['id']; ?>][action]">
                             <option value=""> -
                                 <?php echo Text::_('COM_CONTENTBUILDER_NONE'); ?> -
                             </option>
@@ -945,11 +944,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <?php echo Text::_('COM_CONTENTBUILDER_CREATE'); ?><span></label>
                 </td>
                 <td>
-                    <input class="form-check-input" id="create_sample" type="checkbox" name="create_sample" value="1" />
+                    <input class="form-check-input" id="create_sample" type="checkbox" name="jform[create_sample]" value="1" />
                     <label for="create_sample">
                         <?php echo Text::_('COM_CONTENTBUILDER_CREATE_SAMPLE'); ?>
                     </label>
-                    <input class="form-check-input" <?php echo $this->form->create_articles == 1 ? ' checked="checked"' : '' ?>type="checkbox" name="create_articles" id="create_articles" value="1" /><label
+                    <input class="form-check-input" <?php echo $this->item->create_articles == 1 ? ' checked="checked"' : '' ?>type="checkbox" name="jform[create_articles]" id="create_articles" value="1" /><label
                         for="create_articles">
                         <?php echo Text::_('COM_CONTENTBUILDER_CREATE_ARTICLES'); ?>
                     </label>
@@ -961,13 +960,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </span></label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="radio" value="1" name="delete_articles" id="delete_articles"
-                        <?php echo $this->form->delete_articles ? ' checked="checked"' : '' ?> /> <label
+                    <input class="form-check-input" type="radio" value="1" name="jform[delete_articles]" id="delete_articles"
+                        <?php echo $this->item->delete_articles ? ' checked="checked"' : '' ?> /> <label
                         for="delete_articles">
                         <?php echo Text::_('COM_CONTENTBUILDER_YES'); ?>
                     </label>
-                    <input class="form-check-input" type="radio" value="0" name="delete_articles"
-                        id="delete_articles_no" <?php echo !$this->form->delete_articles ? ' checked="checked"' : '' ?> /> <label for="delete_articles_no">
+                    <input class="form-check-input" type="radio" value="0" name="jform[delete_articles]"
+                        id="delete_articles_no" <?php echo !$this->item->delete_articles ? ' checked="checked"' : '' ?> /> <label for="delete_articles_no">
                         <?php echo Text::_('COM_CONTENTBUILDER_NO'); ?>
                     </label>
                 </td>
@@ -980,11 +979,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </span></label>
                 </td>
                 <td>
-                    <select class="form-select-sm" name="title_field" id="title_field">
+                    <select class="form-select-sm" name="jform[title_field]" id="title_field">
                         <?php
                         foreach ($this->all_elements as $sortable) {
                         ?>
-                            <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->form->title_field == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
+                            <option value="<?php echo $sortable->reference_id; ?>" <?php echo $this->item->title_field == $sortable->reference_id ? ' selected="selected"' : ''; ?>>
                                 <?php echo htmlentities($sortable->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                 </value>
                             <?php
@@ -1001,11 +1000,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 <td>
                     <?php
                     ?>
-                    <select class="form-select-sm" id="default_category" name="sectioncategories">
+                    <select class="form-select-sm" id="default_category" name="jform[sectioncategories]">
                         <?php
-                        foreach ($this->form->sectioncategories as $category) {
+                        foreach ($this->item->sectioncategories as $category) {
                         ?>
-                            <option <?php echo $this->form->default_category == $category->value ? ' selected="selected"' : '' ?>value="<?php echo $category->value; ?>">
+                            <option <?php echo $this->item->default_category == $category->value ? ' selected="selected"' : '' ?>value="<?php echo $category->value; ?>">
                                 <?php echo htmlentities($category->text ?? '', ENT_QUOTES, 'UTF-8'); ?>
                             </option>
                         <?php
@@ -1024,14 +1023,14 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </span></label>
                 </td>
                 <td valign="top">
-                    <select class="form-select-sm" name="default_lang_code" id="default_lang_code">
+                    <select class="form-select-sm" name="jform[default_lang_code]" id="default_lang_code">
                         <option value="*">
                             <?php echo Text::_('COM_CONTENTBUILDER_ANY'); ?>
                         </option>
                         <?php
-                        foreach ($this->form->language_codes as $lang_code) {
+                        foreach ($this->item->language_codes as $lang_code) {
                         ?>
-                            <option value="<?php echo $lang_code ?>" <?php echo $lang_code == $this->form->default_lang_code ? ' selected="selected"' : ''; ?>>
+                            <option value="<?php echo $lang_code ?>" <?php echo $lang_code == $this->item->default_lang_code ? ' selected="selected"' : ''; ?>>
                                 <?php echo $lang_code; ?>
                             </option>
                         <?php
@@ -1043,12 +1042,12 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             title="<?php echo Text::_('COM_CONTENTBUILDER_ARTICLE_RECORD_IMPACT_TIP'); ?>">
                             <?php echo Text::_('COM_CONTENTBUILDER_ARTICLE_RECORD_IMPACT'); ?>
                         </span></label>
-                    <input class="form-check-input" <?php echo $this->form->article_record_impact_language ? 'checked="checked" ' : '' ?>type="radio" name="article_record_impact_language"
+                    <input class="form-check-input" <?php echo $this->item->article_record_impact_language ? 'checked="checked" ' : '' ?>type="radio" name="jform[article_record_impact_language]"
                         id="article_record_impact_language" value="1" />
                     <label for="article_record_impact_language_yes">
                         <?php echo Text::_('COM_CONTENTBUILDER_YES'); ?>
                     </label>
-                    <input class="form-check-input" <?php echo !$this->form->article_record_impact_language ? 'checked="checked" ' : '' ?>type="radio" name="article_record_impact_language"
+                    <input class="form-check-input" <?php echo !$this->item->article_record_impact_language ? 'checked="checked" ' : '' ?>type="radio" name="jform[article_record_impact_language]"
                         id="article_record_impact_language_no" value="0" />
                     <label for="article_record_impact_language_no">
                         <?php echo Text::_('COM_CONTENTBUILDER_NO'); ?>
@@ -1061,13 +1060,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </span></label>
                 </td>
                 <td valign="top">
-                    <input class="form-check-input" <?php echo $this->form->default_lang_code_ignore ? 'checked="checked" ' : '' ?>type="radio" name="default_lang_code_ignore"
+                    <input class="form-check-input" <?php echo $this->item->default_lang_code_ignore ? 'checked="checked" ' : '' ?>type="radio" name="jform[default_lang_code_ignore]"
                         id="default_lang_code_ignore_yes" value="1" />
                     <label for="default_lang_code_ignore_yes">
                         <?php echo Text::_('COM_CONTENTBUILDER_YES'); ?>
                     </label>
 
-                    <input class="form-check-input" <?php echo !$this->form->default_lang_code_ignore ? 'checked="checked" ' : '' ?>type="radio" name="default_lang_code_ignore"
+                    <input class="form-check-input" <?php echo !$this->item->default_lang_code_ignore ? 'checked="checked" ' : '' ?>type="radio" name="jform[default_lang_code_ignore]"
                         id="default_lang_code_ignore_no" value="0" />
                     <label for="default_lang_code_ignore_no">
                         <?php echo Text::_('COM_CONTENTBUILDER_NO'); ?>
@@ -1082,19 +1081,19 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </span></label>
                 </td>
                 <td valign="top">
-                    <input class="form-control form-control-sm w-100" type="text" name="default_publish_up_days"
-                        id="default_publish_up_days" value="<?php echo $this->form->default_publish_up_days; ?>" />
+                    <input class="form-control form-control-sm w-100" type="text" name="jform[default_publish_up_days]"
+                        id="default_publish_up_days" value="<?php echo $this->item->default_publish_up_days; ?>" />
                     <br /><br />
                     <label for="article_record_impact_publish"><span class="editlinktip hasTip"
                             title="<?php echo Text::_('COM_CONTENTBUILDER_ARTICLE_RECORD_PUBLISH_IMPACT_TIP'); ?>">
                             <?php echo Text::_('COM_CONTENTBUILDER_ARTICLE_RECORD_PUBLISH_IMPACT'); ?>
                         </span></label>
-                    <input class="form-check-input" <?php echo $this->form->article_record_impact_publish ? 'checked="checked" ' : '' ?>type="radio" name="article_record_impact_publish"
+                    <input class="form-check-input" <?php echo $this->item->article_record_impact_publish ? 'checked="checked" ' : '' ?>type="radio" name="jform[article_record_impact_publish]"
                         id="article_record_impact_publish" value="1" />
                     <label for="article_record_impact_publish_yes">
                         <?php echo Text::_('COM_CONTENTBUILDER_YES'); ?>
                     </label>
-                    <input class="form-check-input" <?php echo !$this->form->article_record_impact_publish ? 'checked="checked" ' : '' ?>type="radio" name="article_record_impact_publish"
+                    <input class="form-check-input" <?php echo !$this->item->article_record_impact_publish ? 'checked="checked" ' : '' ?>type="radio" name="jform[article_record_impact_publish]"
                         id="article_record_impact_publish_no" value="0" />
                     <label for="article_record_impact_publish_no">
                         <?php echo Text::_('COM_CONTENTBUILDER_NO'); ?>
@@ -1108,8 +1107,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </span></label>
                 </td>
                 <td valign="top">
-                    <input class="form-control form-control-sm w-100" type="text" name="default_publish_down_days"
-                        id="default_publish_down_days" value="<?php echo $this->form->default_publish_down_days; ?>" />
+                    <input class="form-control form-control-sm w-100" type="text" name="jform[default_publish_down_days]"
+                        id="default_publish_down_days" value="<?php echo $this->item->default_publish_down_days; ?>" />
                 </td>
 
             </tr>
@@ -1123,7 +1122,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 <td>
                     <?php
                     ?>
-                    <?php echo HTMLHelper::_('access.level', 'default_access', $this->form->default_access, '', array(), 'default_access'); ?>
+                    <?php echo HTMLHelper::_('access.level', 'default_access', $this->item->default_access, '', array(), 'default_access'); ?>
                     <?php
                     ?>
                 </td>
@@ -1134,13 +1133,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </span></label>
                 </td>
                 <td>
-                    <input class="form-check-input" class="form-check-input" <?php echo $this->form->default_featured ? 'checked="checked" ' : '' ?>type="radio" name="default_featured" id="default_featured"
+                    <input class="form-check-input" class="form-check-input" <?php echo $this->item->default_featured ? 'checked="checked" ' : '' ?>type="radio" name="jform[default_featured]" id="default_featured"
                         value="1" />
                     <label for="default_featured">
                         <?php echo Text::_('COM_CONTENTBUILDER_YES'); ?>
                     </label>
 
-                    <input class="form-check-input" class="form-check-input" <?php echo !$this->form->default_featured ? 'checked="checked" ' : '' ?>type="radio" name="default_featured" id="default_featured_no"
+                    <input class="form-check-input" class="form-check-input" <?php echo !$this->item->default_featured ? 'checked="checked" ' : '' ?>type="radio" name="jform[default_featured]" id="default_featured_no"
                         value="0" />
                     <label for="default_featured_no">
                         <?php echo Text::_('COM_CONTENTBUILDER_NO'); ?>
@@ -1156,11 +1155,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </span></label>
                 </td>
                 <td>
-                    <input class="form-check-input" <?php echo $this->form->auto_publish == 1 ? ' checked="checked"' : '' ?>type="checkbox" name="auto_publish" id="auto_publish" value="1" />
+                    <input class="form-check-input" <?php echo $this->item->auto_publish == 1 ? ' checked="checked"' : '' ?>type="checkbox" name="jform[auto_publish]" id="auto_publish" value="1" />
                 </td>
                 <td width="20%">
                     <?php
-                    if ($this->form->edit_by_type && $this->form->type == 'com_breezingforms') {
+                    if ($this->item->edit_by_type && $this->item->type == 'com_breezingforms') {
                     ?>
                         <label for="protect_upload_directory"><span class="editlinktip hasTip"
                                 title="<?php echo Text::_('COM_CONTENTBUILDER_UPLOAD_DIRECTORY_TYPE_TIP'); ?>">
@@ -1172,10 +1171,10 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 </td>
                 <td>
                     <?php
-                    if ($this->form->edit_by_type && $this->form->type == 'com_breezingforms') {
+                    if ($this->item->edit_by_type && $this->item->type == 'com_breezingforms') {
                     ?>
-                        <input class="form-check-input" type="checkbox" value="1" name="protect_upload_directory"
-                            id="protect_upload_directory" <?php echo trim($this->form->protect_upload_directory) ? ' checked="checked"' : ''; ?> />
+                        <input class="form-check-input" type="checkbox" value="1" name="jform[protect_upload_directory]"
+                            id="protect_upload_directory" <?php echo trim($this->item->protect_upload_directory) ? ' checked="checked"' : ''; ?> />
                     <?php
                     }
                     ?>
@@ -1184,33 +1183,34 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         </table>
 
         <?php
-        $editor = Editor::getInstance(Factory::getApplication()->get('editor'));
-        echo $editor->display('details_template', $this->form->details_template, '100%', '550', '75', '20', true, 'details_template');
+        echo $this->form->renderField('details_template');
+//        $editor = Editor::getInstance(Factory::getApplication()->get('editor'));
+//        echo $editor->display('details_template', $this->item->details_template, '100%', '550', '75', '20', true, 'details_template');
 
         echo HTMLHelper::_('uitab.endTab');
         echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab4', Text::_('COM_CONTENTBUILDER_DETAILS_PREPARE'));
-        if (trim($this->form->details_prepare ?? '') == '') {
-            $this->form->details_prepare = '// Here you may alter labels and values for each item before it gets rendered through your details template.' . "\n";
-            $this->form->details_prepare .= '// For example:' . "\n";
-            $this->form->details_prepare .= '// $items["ITEMNAME"]["value"] = "<b>".$items["ITEMNAME"]["value"]."</b>";' . "\n";
-            $this->form->details_prepare .= '// $items["ITEMNAME"]["label"] = "<i>".$items["ITEMNAME"]["label"]."</i>";' . "\n";
+        if (trim($this->item->details_prepare ?? '') == '') {
+            $this->item->details_prepare = '// Here you may alter labels and values for each item before it gets rendered through your details template.' . "\n";
+            $this->item->details_prepare .= '// For example:' . "\n";
+            $this->item->details_prepare .= '// $items["ITEMNAME"]["value"] = "<b>".$items["ITEMNAME"]["value"]."</b>";' . "\n";
+            $this->item->details_prepare .= '// $items["ITEMNAME"]["label"] = "<i>".$items["ITEMNAME"]["label"]."</i>";' . "\n";
         }
 
         $params = array('syntax' => 'php');
         $editor = Editor::getInstance('codemirror');
-        echo $editor->display("details_prepare", $this->form->details_prepare, '100%', '550', '75', '20', false, 'details_prepare', null, null, $params);
+        echo $editor->display("details_prepare", $this->item->details_prepare, '100%', '550', '75', '20', false, 'details_prepare', null, null, $params);
 
-        //echo '<textarea name="details_prepare" style="width:100%;height: 500px;">'.htmlentities($this->form->details_prepare, ENT_QUOTES, 'UTF-8').'</textarea>';
+        //echo '<textarea name="jform[details_prepare]" style="width:100%;height: 500px;">'.htmlentities($this->item->details_prepare, ENT_QUOTES, 'UTF-8').'</textarea>';
         ?>
         <?php
         echo HTMLHelper::_('uitab.endTab');
         echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab5', Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE'));
 
-        if ($this->form->edit_by_type && $this->form->type == 'com_breezingforms') {
+        if ($this->item->edit_by_type && $this->item->type == 'com_breezingforms') {
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
-            echo '<input type="hidden" name="editable_template" value="{BreezingForms: ' . (isset($this->form->type_name) ? $this->form->type_name : '') . '}"/>';
-            //echo '<input type="hidden" name="protect_upload_directory" value="'.(trim($this->form->protect_upload_directory) ? 1 : 0).'"/>'; 
-            echo '<input type="hidden" name="upload_directory" value="' . (trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE . '/media/contentbuilder/upload') . '"/>';
+            echo '<input type="hidden" name="jform[editable_template]" value="{BreezingForms: ' . (isset($this->item->type_name) ? $this->item->type_name : '') . '}"/>';
+            //echo '<input type="hidden" name="jform[protect_upload_directory]" value="'.(trim($this->item->protect_upload_directory) ? 1 : 0).'"/>'; 
+            echo '<input type="hidden" name="jform[upload_directory]" value="' . (trim($this->item->upload_directory) ? trim($this->item->upload_directory) : JPATH_SITE . '/media/contentbuilder/upload') . '"/>';
         } else {
         ?>
 
@@ -1220,17 +1220,17 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 </span></label>
             <br />
             <input class="form-control form-control-sm" style="width: 50%;" type="text"
-                value="<?php echo trim($this->form->upload_directory) ? trim($this->form->upload_directory) : JPATH_SITE . '/media/contentbuilder/upload'; ?>"
-                name="upload_directory" id="upload_directory" />
+                value="<?php echo trim($this->item->upload_directory) ? trim($this->item->upload_directory) : JPATH_SITE . '/media/contentbuilder/upload'; ?>"
+                name="jform[upload_directory]" id="upload_directory" />
             <br />
             <br />
-            <input class="form-check-input" type="checkbox" value="1" name="protect_upload_directory"
-                id="protect_upload_directory" <?php echo trim($this->form->protect_upload_directory) ? ' checked="checked"' : ''; ?> /> <label for="protect_upload_directory">
+            <input class="form-check-input" type="checkbox" value="1" name="jform[protect_upload_directory]"
+                id="protect_upload_directory" <?php echo trim($this->item->protect_upload_directory) ? ' checked="checked"' : ''; ?> /> <label for="protect_upload_directory">
                 <?php echo Text::_('COM_CONTENTBUILDER_PROTECT_UPLOAD_DIRECTORY'); ?>
             </label>
             <br />
             <br />
-            <input class="form-check-input" type="checkbox" name="create_editable_sample" id="editable_sample" value="1" />
+            <input class="form-check-input" type="checkbox" name="jform[create_editable_sample]" id="editable_sample" value="1" />
             <label for="editable_sample">
                 <?php echo Text::_('COM_CONTENTBUILDER_CREATE_EDITABLE_SAMPLE'); ?>
             </label>
@@ -1240,48 +1240,48 @@ $___tableOrdering = "Joomla.tableOrdering = function";
         }
 
         $editor = Editor::getInstance(Factory::getApplication()->get('editor'));
-        echo $editor->display('editable_template', $this->form->editable_template, '100%', '550', '75', '20', true, 'editable_template');
+        echo $editor->display('editable_template', $this->item->editable_template, '100%', '550', '75', '20', true, 'editable_template');
         ?>
         <?php
         echo HTMLHelper::_('uitab.endTab');
         echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab6', Text::_('COM_CONTENTBUILDER_EDITABLE_PREPARE'));
 
-        if ($this->form->edit_by_type) {
+        if ($this->item->edit_by_type) {
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
-            echo '<input type="hidden" name="editable_prepare" value="' . htmlentities($this->form->editable_prepare ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[editable_prepare]" value="' . htmlentities($this->item->editable_prepare ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
         } else {
-            if (trim($this->form->editable_prepare ?? '') == '') {
-                $this->form->editable_prepare = '// Here you may alter labels and values for each item before it gets rendered through your editable template.' . "\n";
-                $this->form->editable_prepare .= '// For example:' . "\n";
-                $this->form->editable_prepare .= '// $items["ITEMNAME"]["value"] = $items["ITEMNAME"]["value"];' . "\n";
-                $this->form->editable_prepare .= '// $items["ITEMNAME"]["label"] = "<i>".$items["ITEMNAME"]["label"]."</i>";' . "\n";
+            if (trim($this->item->editable_prepare ?? '') == '') {
+                $this->item->editable_prepare = '// Here you may alter labels and values for each item before it gets rendered through your editable template.' . "\n";
+                $this->item->editable_prepare .= '// For example:' . "\n";
+                $this->item->editable_prepare .= '// $items["ITEMNAME"]["value"] = $items["ITEMNAME"]["value"];' . "\n";
+                $this->item->editable_prepare .= '// $items["ITEMNAME"]["label"] = "<i>".$items["ITEMNAME"]["label"]."</i>";' . "\n";
             }
 
             $params = array('syntax' => 'php');
             $editor = Editor::getInstance('codemirror');
-            echo $editor->display('editable_prepare', $this->form->editable_prepare, '100%', '550', '75', '20', false, 'editable_prepare', null, null, $params);
+            echo $editor->display('editable_prepare', $this->item->editable_prepare, '100%', '550', '75', '20', false, 'editable_prepare', null, null, $params);
         }
 
         echo HTMLHelper::_('uitab.endTab');
         echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab7', Text::_('COM_CONTENTBUILDER_EMAIL_TEMPLATES'));
 
-        if ($this->form->edit_by_type) {
+        if ($this->item->edit_by_type) {
             echo Text::_('COM_CONTENTBUILDER_EDITABLE_TEMPLATE_PROVIDED_BY_BREEZINGFORMS');
-            echo '<input type="hidden" name="email_admin_template" value="' . htmlentities($this->form->email_admin_template ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_template" value="' . htmlentities($this->form->email_template ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_subject" value="' . htmlentities($this->form->email_admin_subject ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_alternative_from" value="' . htmlentities($this->form->email_admin_alternative_from ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_alternative_fromname" value="' . htmlentities($this->form->email_admin_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_recipients" value="' . htmlentities($this->form->email_admin_recipients ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_recipients_attach_uploads" value="' . htmlentities($this->form->email_admin_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_admin_html" value="' . htmlentities($this->form->email_admin_html ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_admin_template]" value="' . htmlentities($this->item->email_admin_template ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_template]" value="' . htmlentities($this->item->email_template ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_admin_subject]" value="' . htmlentities($this->item->email_admin_subject ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_admin_alternative_from]" value="' . htmlentities($this->item->email_admin_alternative_from ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_admin_alternative_fromname]" value="' . htmlentities($this->item->email_admin_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_admin_recipients]" value="' . htmlentities($this->item->email_admin_recipients ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_admin_recipients_attach_uploads]" value="' . htmlentities($this->item->email_admin_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_admin_html]" value="' . htmlentities($this->item->email_admin_html ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
 
-            echo '<input type="hidden" name="email_subject" value="' . htmlentities($this->form->email_subject ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_alternative_from" value="' . htmlentities($this->form->email_alternative_from ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_alternative_fromname" value="' . htmlentities($this->form->email_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_recipients" value="' . htmlentities($this->form->email_recipients ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_recipients_attach_uploads" value="' . htmlentities($this->form->email_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
-            echo '<input type="hidden" name="email_html" value="' . htmlentities($this->form->email_html ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_subject]" value="' . htmlentities($this->item->email_subject ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_alternative_from]" value="' . htmlentities($this->item->email_alternative_from ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_alternative_fromname]" value="' . htmlentities($this->item->email_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_recipients]" value="' . htmlentities($this->item->email_recipients ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_recipients_attach_uploads]" value="' . htmlentities($this->item->email_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
+            echo '<input type="hidden" name="jform[email_html]" value="' . htmlentities($this->item->email_html ?? '', ENT_QUOTES, 'UTF-8') . '"/>';
         } else {
 
             $title = Text::_('COM_CONTENTBUILDER_EMAIL_ADMINS');
@@ -1305,8 +1305,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_subject" type="text"
-                                name="email_admin_subject"
-                                value="<?php echo htmlentities($this->form->email_admin_subject ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                name="jform[email_admin_subject]"
+                                value="<?php echo htmlentities($this->item->email_admin_subject ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_admin_alternative_from">
@@ -1315,8 +1315,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_alternative_from" type="text"
-                                name="email_admin_alternative_from"
-                                value="<?php echo htmlentities($this->form->email_admin_alternative_from ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                name="jform[email_admin_alternative_from]"
+                                value="<?php echo htmlentities($this->item->email_admin_alternative_from ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                     </tr>
                     <tr>
@@ -1327,8 +1327,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_alternative_fromname"
-                                type="text" name="email_admin_alternative_fromname"
-                                value="<?php echo htmlentities($this->form->email_admin_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                type="text" name="jform[email_admin_alternative_fromname]"
+                                value="<?php echo htmlentities($this->item->email_admin_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_admin_recipients"><span class="editlinktip hasTip"
@@ -1338,8 +1338,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_recipients" type="text"
-                                name="email_admin_recipients"
-                                value="<?php echo htmlentities($this->form->email_admin_recipients ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                name="jform[email_admin_recipients]"
+                                value="<?php echo htmlentities($this->item->email_admin_recipients ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                     </tr>
                     <tr>
@@ -1351,8 +1351,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_admin_recipients_attach_uploads"
-                                type="text" name="email_admin_recipients_attach_uploads"
-                                value="<?php echo htmlentities($this->form->email_admin_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                type="text" name="jform[email_admin_recipients_attach_uploads]"
+                                value="<?php echo htmlentities($this->item->email_admin_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_admin_html">
@@ -1360,8 +1360,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </label>
                         </td>
                         <td>
-                            <input class="form-check-input" id="email_admin_html" type="checkbox" name="email_admin_html"
-                                value="1" <?php echo $this->form->email_admin_html ? ' checked="checked"' : ''; ?> />
+                            <input class="form-check-input" id="email_admin_html" type="checkbox" name="jform[email_admin_html]"
+                                value="1" <?php echo $this->item->email_admin_html ? ' checked="checked"' : ''; ?> />
                         </td>
                     </tr>
                     <tr>
@@ -1372,7 +1372,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-check-input" id="email_admin_create_sample" type="checkbox"
-                                name="email_admin_create_sample" value="1" />
+                                name="jform[email_admin_create_sample]" value="1" />
                         </td>
                         <td width="20%">
                         </td>
@@ -1384,7 +1384,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 <?php
                 $params = array('syntax' => 'html');
                 $editor = Editor::getInstance('codemirror');
-                echo $editor->display('email_admin_template', $this->form->email_admin_template, '100%', '550', '75', '20', false, 'email_admin_template', null, null, $params);
+                echo $editor->display('email_admin_template', $this->item->email_admin_template, '100%', '550', '75', '20', false, 'email_admin_template', null, null, $params);
                 ?>
             </div>
             <?php
@@ -1407,8 +1407,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_subject" type="text"
-                                name="email_subject"
-                                value="<?php echo htmlentities($this->form->email_subject ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                name="jform[email_subject]"
+                                value="<?php echo htmlentities($this->item->email_subject ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_alternative_from">
@@ -1417,8 +1417,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_alternative_from" type="text"
-                                name="email_alternative_from"
-                                value="<?php echo htmlentities($this->form->email_alternative_from ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                name="jform[email_alternative_from]"
+                                value="<?php echo htmlentities($this->item->email_alternative_from ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                     </tr>
                     <tr>
@@ -1429,8 +1429,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_alternative_fromname" type="text"
-                                name="email_alternative_fromname"
-                                value="<?php echo htmlentities($this->form->email_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                name="jform[email_alternative_fromname]"
+                                value="<?php echo htmlentities($this->item->email_alternative_fromname ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_recipients">
@@ -1439,8 +1439,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_recipients" type="text"
-                                name="email_recipients"
-                                value="<?php echo htmlentities($this->form->email_recipients ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                name="jform[email_recipients]"
+                                value="<?php echo htmlentities($this->item->email_recipients ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                     </tr>
                     <tr>
@@ -1451,8 +1451,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-control form-control-sm w-100" id="email_recipients_attach_uploads"
-                                type="text" name="email_recipients_attach_uploads"
-                                value="<?php echo htmlentities($this->form->email_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                                type="text" name="jform[email_recipients_attach_uploads]"
+                                value="<?php echo htmlentities($this->item->email_recipients_attach_uploads ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         </td>
                         <td width="20%">
                             <label for="email_html">
@@ -1460,8 +1460,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             </label>
                         </td>
                         <td>
-                            <input class="form-check-input" id="email_html" type="checkbox" name="email_html" value="1"
-                                <?php echo $this->form->email_html ? ' checked="checked"' : ''; ?> />
+                            <input class="form-check-input" id="email_html" type="checkbox" name="jform[email_html]" value="1"
+                                <?php echo $this->item->email_html ? ' checked="checked"' : ''; ?> />
                         </td>
                     </tr>
                     <tr>
@@ -1472,7 +1472,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </td>
                         <td>
                             <input class="form-check-input" id="email_create_sample" type="checkbox"
-                                name="email_create_sample" value="1" />
+                                name="jform[email_create_sample]" value="1" />
                         </td>
                         <td width="20%">
                         </td>
@@ -1484,7 +1484,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                 <?php
                 $params = array('syntax' => 'html');
                 $editor = Editor::getInstance('codemirror');
-                echo $editor->display('email_template', $this->form->email_template, '100%', '550', '75', '20', false, 'email_template', null, null, $params);
+                echo $editor->display('email_template', $this->item->email_template, '100%', '550', '75', '20', false, 'email_template', null, null, $params);
                 ?>
             </div>
         <?php
@@ -1512,7 +1512,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="own_only_fe" id="own_only_fe" value="1" <?php echo $this->form->own_only_fe ? ' checked="checked"' : ''; ?> />
+                    <input class="form-check-input" type="checkbox" name="jform[own_only_fe]" id="own_only_fe" value="1" <?php echo $this->item->own_only_fe ? ' checked="checked"' : ''; ?> />
                 </td>
             </tr>
             <tr class="row0">
@@ -1525,8 +1525,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="limited_article_options_fe"
-                        id="limited_article_options_fe" value="1" <?php echo $this->form->limited_article_options_fe ? ' checked="checked"' : ''; ?> />
+                    <input class="form-check-input" type="checkbox" name="jform[limited_article_options_fe]"
+                        id="limited_article_options_fe" value="1" <?php echo $this->item->limited_article_options_fe ? ' checked="checked"' : ''; ?> />
                 </td>
             </tr>
             <tr class="row0">
@@ -1539,44 +1539,44 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="own_fe[listaccess]" id="own_fe_listaccess"
-                        value="1" <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['listaccess']) && $this->form->config['own_fe']['listaccess'] ? ' checked="checked"' : ''; ?> /> <label
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][listaccess]" id="own_fe_listaccess"
+                        value="1" <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['listaccess']) && $this->item->config['own_fe']['listaccess'] ? ' checked="checked"' : ''; ?> /> <label
                         for="own_fe_listaccess">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_LIST_ACCESS'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own_fe[view]" id="own_fe_view" value="1" <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['view']) && $this->form->config['own_fe']['view'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_view">
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][view]" id="own_fe_view" value="1" <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['view']) && $this->item->config['own_fe']['view'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_view">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VIEW'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own_fe[new]" id="own_fe_new" value="1" <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['new']) && $this->form->config['own_fe']['new'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_new">
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][new]" id="own_fe_new" value="1" <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['new']) && $this->item->config['own_fe']['new'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_new">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_NEW'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own_fe[edit]" id="own_fe_edit" value="1" <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['edit']) && $this->form->config['own_fe']['edit'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_edit">
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][edit]" id="own_fe_edit" value="1" <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['edit']) && $this->item->config['own_fe']['edit'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_edit">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_EDIT'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own_fe[delete]" id="own_fe_delete" value="1"
-                        <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['delete']) && $this->form->config['own_fe']['delete'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_delete">
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][delete]" id="own_fe_delete" value="1"
+                        <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['delete']) && $this->item->config['own_fe']['delete'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_delete">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_DELETE'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own_fe[state]" id="own_fe_state" value="1"
-                        <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['state']) && $this->form->config['own_fe']['state'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_state">
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][state]" id="own_fe_state" value="1"
+                        <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['state']) && $this->item->config['own_fe']['state'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_state">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_STATE'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own_fe[publish]" id="own_fe_publish" value="1"
-                        <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['publish']) && $this->form->config['own_fe']['publish'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_publish">
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][publish]" id="own_fe_publish" value="1"
+                        <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['publish']) && $this->item->config['own_fe']['publish'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_publish">
                         <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own_fe[fullarticle]" id="own_fe_fullarticle"
-                        value="1" <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['fullarticle']) && $this->form->config['own_fe']['fullarticle'] ? ' checked="checked"' : ''; ?> /> <label
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][fullarticle]" id="own_fe_fullarticle"
+                        value="1" <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['fullarticle']) && $this->item->config['own_fe']['fullarticle'] ? ' checked="checked"' : ''; ?> /> <label
                         for="own_fe_fullarticle">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_FULL_ARTICLE'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own_fe[language]" id="own_fe_language"
-                        value="1" <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['language']) && $this->form->config['own_fe']['language'] ? ' checked="checked"' : ''; ?> /> <label
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][language]" id="own_fe_language"
+                        value="1" <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['language']) && $this->item->config['own_fe']['language'] ? ' checked="checked"' : ''; ?> /> <label
                         for="own_fe_language">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_CHANGE_LANGUAGE'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own_fe[rating]" id="own_fe_rating" value="1"
-                        <?php echo isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']) && isset($this->form->config['own_fe']['rating']) && $this->form->config['own_fe']['rating'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_rating">
+                    <input class="form-check-input" type="checkbox" name="jform[own_fe][rating]" id="own_fe_rating" value="1"
+                        <?php echo isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']) && isset($this->item->config['own_fe']['rating']) && $this->item->config['own_fe']['rating'] ? ' checked="checked"' : ''; ?> /> <label for="own_fe_rating">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_RATING'); ?>
                     </label>
                 </td>
@@ -1591,12 +1591,12 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="show_all_languages_fe"
-                        id="show_all_languages_fe" value="1" <?php echo $this->form->show_all_languages_fe ? ' checked="checked"' : ''; ?> />
+                    <input class="form-check-input" type="checkbox" name="jform[show_all_languages_fe]"
+                        id="show_all_languages_fe" value="1" <?php echo $this->item->show_all_languages_fe ? ' checked="checked"' : ''; ?> />
                 </td>
             </tr>
             <?php
-            if ($this->form->edit_by_type) {
+            if ($this->item->edit_by_type) {
             ?>
                 <tr class="row0">
                     <td width="20%" align="right" class="key">
@@ -1605,7 +1605,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </label>
                     </td>
                     <td>
-                        <input class="form-check-input" type="checkbox" name="force_login" id="force_login" value="1" <?php echo $this->form->force_login ? ' checked="checked"' : '' ?> />
+                        <input class="form-check-input" type="checkbox" name="jform[force_login]" id="force_login" value="1" <?php echo $this->item->force_login ? ' checked="checked"' : '' ?> />
                     </td>
                 </tr>
                 <tr class="row0">
@@ -1615,8 +1615,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </label>
                     </td>
                     <td>
-                        <input style="width: 100%;" id="force_url" name="force_url" type="text"
-                            value="<?php echo htmlentities($this->form->force_url ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                        <input style="width: 100%;" id="force_url" name="jform[force_url]" type="text"
+                            value="<?php echo htmlentities($this->item->force_url ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     </td>
                 </tr>
             <?php
@@ -1694,30 +1694,30 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         <?php echo $entry->text; ?>
                     </td>
                     <td><input class="form-check-input" type="checkbox"
-                            name="perms_fe[<?php echo $entry->value; ?>][listaccess]" value="1" <?php echo !$this->form->id ? ' checked="checked"' : (isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['listaccess']) && $this->form->config['permissions_fe'][$entry->value]['listaccess'] ? ' checked="checked"' : ''); ?> /></td>
-                    <td><input class="form-check-input" type="checkbox" name="perms_fe[<?php echo $entry->value; ?>][view]"
-                            value="1" <?php echo !$this->form->id ? ' checked="checked"' : (isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['view']) && $this->form->config['permissions_fe'][$entry->value]['view'] ? ' checked="checked"' : ''); ?> />
+                            name="jform[perms_fe][<?php echo $entry->value; ?>][listaccess]" value="1" <?php echo !$this->item->id ? ' checked="checked"' : (isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['listaccess']) && $this->item->config['permissions_fe'][$entry->value]['listaccess'] ? ' checked="checked"' : ''); ?> /></td>
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms_fe][<?php echo $entry->value; ?>][view]"
+                            value="1" <?php echo !$this->item->id ? ' checked="checked"' : (isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['view']) && $this->item->config['permissions_fe'][$entry->value]['view'] ? ' checked="checked"' : ''); ?> />
                     </td>
-                    <td><input class="form-check-input" type="checkbox" name="perms_fe[<?php echo $entry->value; ?>][new]"
-                            value="1" <?php echo isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['new']) && $this->form->config['permissions_fe'][$entry->value]['new'] ? ' checked="checked"' : ''; ?> />
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms_fe][<?php echo $entry->value; ?>][new]"
+                            value="1" <?php echo isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['new']) && $this->item->config['permissions_fe'][$entry->value]['new'] ? ' checked="checked"' : ''; ?> />
                     </td>
-                    <td><input class="form-check-input" type="checkbox" name="perms_fe[<?php echo $entry->value; ?>][edit]"
-                            value="1" <?php echo isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['edit']) && $this->form->config['permissions_fe'][$entry->value]['edit'] ? ' checked="checked"' : ''; ?> />
-                    </td>
-                    <td><input class="form-check-input" type="checkbox"
-                            name="perms_fe[<?php echo $entry->value; ?>][delete]" value="1" <?php echo isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['delete']) && $this->form->config['permissions_fe'][$entry->value]['delete'] ? ' checked="checked"' : ''; ?> />
-                    </td>
-                    <td><input class="form-check-input" type="checkbox" name="perms_fe[<?php echo $entry->value; ?>][state]"
-                            value="1" <?php echo isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['state']) && $this->form->config['permissions_fe'][$entry->value]['state'] ? ' checked="checked"' : ''; ?> />
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms_fe][<?php echo $entry->value; ?>][edit]"
+                            value="1" <?php echo isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['edit']) && $this->item->config['permissions_fe'][$entry->value]['edit'] ? ' checked="checked"' : ''; ?> />
                     </td>
                     <td><input class="form-check-input" type="checkbox"
-                            name="perms_fe[<?php echo $entry->value; ?>][publish]" value="1" <?php echo isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['publish']) && $this->form->config['permissions_fe'][$entry->value]['publish'] ? ' checked="checked"' : ''; ?> /></td>
+                            name="jform[perms_fe][<?php echo $entry->value; ?>][delete]" value="1" <?php echo isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['delete']) && $this->item->config['permissions_fe'][$entry->value]['delete'] ? ' checked="checked"' : ''; ?> />
+                    </td>
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms_fe][<?php echo $entry->value; ?>][state]"
+                            value="1" <?php echo isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['state']) && $this->item->config['permissions_fe'][$entry->value]['state'] ? ' checked="checked"' : ''; ?> />
+                    </td>
                     <td><input class="form-check-input" type="checkbox"
-                            name="perms_fe[<?php echo $entry->value; ?>][fullarticle]" value="1" <?php echo isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['fullarticle']) && $this->form->config['permissions_fe'][$entry->value]['fullarticle'] ? ' checked="checked"' : ''; ?> /></td>
+                            name="jform[perms_fe][<?php echo $entry->value; ?>][publish]" value="1" <?php echo isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['publish']) && $this->item->config['permissions_fe'][$entry->value]['publish'] ? ' checked="checked"' : ''; ?> /></td>
                     <td><input class="form-check-input" type="checkbox"
-                            name="perms_fe[<?php echo $entry->value; ?>][language]" value="1" <?php echo isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['language']) && $this->form->config['permissions_fe'][$entry->value]['language'] ? ' checked="checked"' : ''; ?> /></td>
+                            name="jform[perms_fe][<?php echo $entry->value; ?>][fullarticle]" value="1" <?php echo isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['fullarticle']) && $this->item->config['permissions_fe'][$entry->value]['fullarticle'] ? ' checked="checked"' : ''; ?> /></td>
                     <td><input class="form-check-input" type="checkbox"
-                            name="perms_fe[<?php echo $entry->value; ?>][rating]" value="1" <?php echo isset($this->form->config['permissions_fe']) && isset($this->form->config['permissions_fe'][$entry->value]) && isset($this->form->config['permissions_fe'][$entry->value]['rating']) && $this->form->config['permissions_fe'][$entry->value]['rating'] ? ' checked="checked"' : ''; ?> />
+                            name="jform[perms_fe][<?php echo $entry->value; ?>][language]" value="1" <?php echo isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['language']) && $this->item->config['permissions_fe'][$entry->value]['language'] ? ' checked="checked"' : ''; ?> /></td>
+                    <td><input class="form-check-input" type="checkbox"
+                            name="jform[perms_fe][<?php echo $entry->value; ?>][rating]" value="1" <?php echo isset($this->item->config['permissions_fe']) && isset($this->item->config['permissions_fe'][$entry->value]) && isset($this->item->config['permissions_fe'][$entry->value]['rating']) && $this->item->config['permissions_fe'][$entry->value]['rating'] ? ' checked="checked"' : ''; ?> />
                     </td>
                 </tr>
             <?php
@@ -1746,7 +1746,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="own_only" id="own_only" value="1" <?php echo $this->form->own_only ? ' checked="checked"' : ''; ?> />
+                    <input class="form-check-input" type="checkbox" name="jform[own_only]" id="own_only" value="1" <?php echo $this->item->own_only ? ' checked="checked"' : ''; ?> />
                 </td>
             </tr>
             <tr class="row0">
@@ -1759,8 +1759,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="limited_article_options"
-                        id="limited_article_options" value="1" <?php echo $this->form->limited_article_options ? ' checked="checked"' : ''; ?> />
+                    <input class="form-check-input" type="checkbox" name="jform[limited_article_options]"
+                        id="limited_article_options" value="1" <?php echo $this->item->limited_article_options ? ' checked="checked"' : ''; ?> />
                 </td>
             </tr>
             <tr class="row0">
@@ -1773,37 +1773,37 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="own[listaccess]" id="own_listaccess" value="1"
-                        <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['listaccess']) && $this->form->config['own']['listaccess'] ? ' checked="checked"' : ''; ?> /><label for="own_listaccess">
+                    <input class="form-check-input" type="checkbox" name="jform[own][listaccess]" id="own_listaccess" value="1"
+                        <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['listaccess']) && $this->item->config['own']['listaccess'] ? ' checked="checked"' : ''; ?> /><label for="own_listaccess">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_LIST_ACCESS'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own[view]" id="own_view" value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['view']) && $this->form->config['own']['view'] ? ' checked="checked"' : ''; ?> /><label for="own_view">
+                    <input class="form-check-input" type="checkbox" name="jform[own][view]" id="own_view" value="1" <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['view']) && $this->item->config['own']['view'] ? ' checked="checked"' : ''; ?> /><label for="own_view">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VIEW'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own[new]" id="own_new" value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['new']) && $this->form->config['own']['new'] ? ' checked="checked"' : ''; ?> /><label for="own_new">
+                    <input class="form-check-input" type="checkbox" name="jform[own][new]" id="own_new" value="1" <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['new']) && $this->item->config['own']['new'] ? ' checked="checked"' : ''; ?> /><label for="own_new">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_NEW'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own[edit]" id="own_edit" value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['edit']) && $this->form->config['own']['edit'] ? ' checked="checked"' : ''; ?> /><label for="own_edit">
+                    <input class="form-check-input" type="checkbox" name="jform[own][edit]" id="own_edit" value="1" <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['edit']) && $this->item->config['own']['edit'] ? ' checked="checked"' : ''; ?> /><label for="own_edit">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_EDIT'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own[delete]" id="own_delete" value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['delete']) && $this->form->config['own']['delete'] ? ' checked="checked"' : ''; ?> /> <label for="own_delete">
+                    <input class="form-check-input" type="checkbox" name="jform[own][delete]" id="own_delete" value="1" <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['delete']) && $this->item->config['own']['delete'] ? ' checked="checked"' : ''; ?> /> <label for="own_delete">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_DELETE'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own[state]" id="own_state" value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['state']) && $this->form->config['own']['state'] ? ' checked="checked"' : ''; ?> /> <label for="own_state">
+                    <input class="form-check-input" type="checkbox" name="jform[own][state]" id="own_state" value="1" <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['state']) && $this->item->config['own']['state'] ? ' checked="checked"' : ''; ?> /> <label for="own_state">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_STATE'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own[publish]" id="own_publish" value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['publish']) && $this->form->config['own']['publish'] ? ' checked="checked"' : ''; ?> /> <label for="own_publish">
+                    <input class="form-check-input" type="checkbox" name="jform[own][publish]" id="own_publish" value="1" <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['publish']) && $this->item->config['own']['publish'] ? ' checked="checked"' : ''; ?> /> <label for="own_publish">
                         <?php echo Text::_('COM_CONTENTBUILDER_PUBLISH'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own[fullarticle]" id="own_fullarticle"
-                        value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['fullarticle']) && $this->form->config['own']['fullarticle'] ? ' checked="checked"' : ''; ?> /> <label for="own_fullarticle">
+                    <input class="form-check-input" type="checkbox" name="jform[own][fullarticle]" id="own_fullarticle"
+                        value="1" <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['fullarticle']) && $this->item->config['own']['fullarticle'] ? ' checked="checked"' : ''; ?> /> <label for="own_fullarticle">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_FULL_ARTICLE'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own[language]" id="own_language" value="1"
-                        <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['language']) && $this->form->config['own']['language'] ? ' checked="checked"' : ''; ?> /> <label for="own_language">
+                    <input class="form-check-input" type="checkbox" name="jform[own][language]" id="own_language" value="1"
+                        <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['language']) && $this->item->config['own']['language'] ? ' checked="checked"' : ''; ?> /> <label for="own_language">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_CHANGE_LANGUAGE'); ?>
                     </label>
-                    <input class="form-check-input" type="checkbox" name="own[rating]" id="own_rating" value="1" <?php echo isset($this->form->config['own']) && isset($this->form->config['own']) && isset($this->form->config['own']['rating']) && $this->form->config['own']['rating'] ? ' checked="checked"' : ''; ?> /> <label for="own_rating">
+                    <input class="form-check-input" type="checkbox" name="jform[own][rating]" id="own_rating" value="1" <?php echo isset($this->item->config['own']) && isset($this->item->config['own']) && isset($this->item->config['own']['rating']) && $this->item->config['own']['rating'] ? ' checked="checked"' : ''; ?> /> <label for="own_rating">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_RATING'); ?>
                     </label>
                 </td>
@@ -1881,30 +1881,30 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         <?php echo $entry->text; ?>
                     </td>
                     <td><input class="form-check-input" type="checkbox"
-                            name="perms[<?php echo $entry->value; ?>][listaccess]" value="1" <?php echo !$this->form->id ? ' checked="checked"' : (isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['listaccess']) && $this->form->config['permissions'][$entry->value]['listaccess'] ? ' checked="checked"' : ''); ?> /></td>
-                    <td><input class="form-check-input" type="checkbox" name="perms[<?php echo $entry->value; ?>][view]"
-                            value="1" <?php echo !$this->form->id ? ' checked="checked"' : (isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['view']) && $this->form->config['permissions'][$entry->value]['view'] ? ' checked="checked"' : ''); ?> />
+                            name="jform[perms][<?php echo $entry->value; ?>][listaccess]" value="1" <?php echo !$this->item->id ? ' checked="checked"' : (isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['listaccess']) && $this->item->config['permissions'][$entry->value]['listaccess'] ? ' checked="checked"' : ''); ?> /></td>
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms][<?php echo $entry->value; ?>][view]"
+                            value="1" <?php echo !$this->item->id ? ' checked="checked"' : (isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['view']) && $this->item->config['permissions'][$entry->value]['view'] ? ' checked="checked"' : ''); ?> />
                     </td>
-                    <td><input class="form-check-input" type="checkbox" name="perms[<?php echo $entry->value; ?>][new]"
-                            value="1" <?php echo isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['new']) && $this->form->config['permissions'][$entry->value]['new'] ? ' checked="checked"' : ''; ?> /></td>
-                    <td><input class="form-check-input" type="checkbox" name="perms[<?php echo $entry->value; ?>][edit]"
-                            value="1" <?php echo isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['edit']) && $this->form->config['permissions'][$entry->value]['edit'] ? ' checked="checked"' : ''; ?> /></td>
-                    <td><input class="form-check-input" type="checkbox" name="perms[<?php echo $entry->value; ?>][delete]"
-                            value="1" <?php echo isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['delete']) && $this->form->config['permissions'][$entry->value]['delete'] ? ' checked="checked"' : ''; ?> />
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms][<?php echo $entry->value; ?>][new]"
+                            value="1" <?php echo isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['new']) && $this->item->config['permissions'][$entry->value]['new'] ? ' checked="checked"' : ''; ?> /></td>
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms][<?php echo $entry->value; ?>][edit]"
+                            value="1" <?php echo isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['edit']) && $this->item->config['permissions'][$entry->value]['edit'] ? ' checked="checked"' : ''; ?> /></td>
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms][<?php echo $entry->value; ?>][delete]"
+                            value="1" <?php echo isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['delete']) && $this->item->config['permissions'][$entry->value]['delete'] ? ' checked="checked"' : ''; ?> />
                     </td>
-                    <td><input class="form-check-input" type="checkbox" name="perms[<?php echo $entry->value; ?>][state]"
-                            value="1" <?php echo isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['state']) && $this->form->config['permissions'][$entry->value]['state'] ? ' checked="checked"' : ''; ?> />
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms][<?php echo $entry->value; ?>][state]"
+                            value="1" <?php echo isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['state']) && $this->item->config['permissions'][$entry->value]['state'] ? ' checked="checked"' : ''; ?> />
                     </td>
-                    <td><input class="form-check-input" type="checkbox" name="perms[<?php echo $entry->value; ?>][publish]"
-                            value="1" <?php echo isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['publish']) && $this->form->config['permissions'][$entry->value]['publish'] ? ' checked="checked"' : ''; ?> />
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms][<?php echo $entry->value; ?>][publish]"
+                            value="1" <?php echo isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['publish']) && $this->item->config['permissions'][$entry->value]['publish'] ? ' checked="checked"' : ''; ?> />
                     </td>
                     <td><input class="form-check-input" type="checkbox"
-                            name="perms[<?php echo $entry->value; ?>][fullarticle]" value="1" <?php echo isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['fullarticle']) && $this->form->config['permissions'][$entry->value]['fullarticle'] ? ' checked="checked"' : ''; ?> /></td>
-                    <td><input class="form-check-input" type="checkbox" name="perms[<?php echo $entry->value; ?>][language]"
-                            value="1" <?php echo isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['language']) && $this->form->config['permissions'][$entry->value]['language'] ? ' checked="checked"' : ''; ?> />
+                            name="jform[perms][<?php echo $entry->value; ?>][fullarticle]" value="1" <?php echo isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['fullarticle']) && $this->item->config['permissions'][$entry->value]['fullarticle'] ? ' checked="checked"' : ''; ?> /></td>
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms][<?php echo $entry->value; ?>][language]"
+                            value="1" <?php echo isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['language']) && $this->item->config['permissions'][$entry->value]['language'] ? ' checked="checked"' : ''; ?> />
                     </td>
-                    <td><input class="form-check-input" type="checkbox" name="perms[<?php echo $entry->value; ?>][rating]"
-                            value="1" <?php echo isset($this->form->config['permissions']) && isset($this->form->config['permissions'][$entry->value]) && isset($this->form->config['permissions'][$entry->value]['rating']) && $this->form->config['permissions'][$entry->value]['rating'] ? ' checked="checked"' : ''; ?> />
+                    <td><input class="form-check-input" type="checkbox" name="jform[perms][<?php echo $entry->value; ?>][rating]"
+                            value="1" <?php echo isset($this->item->config['permissions']) && isset($this->item->config['permissions'][$entry->value]) && isset($this->item->config['permissions'][$entry->value]['rating']) && $this->item->config['permissions'][$entry->value]['rating'] ? ' checked="checked"' : ''; ?> />
                     </td>
                 </tr>
                 <?php
@@ -1930,8 +1930,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-control form-control-sm w-100" id="limit_add" name="limit_add" type="text"
-                        value="<?php echo $this->form->limit_add; ?>" />
+                    <input class="form-control form-control-sm w-100" id="limit_add" name="jform[limit_add]" type="text"
+                        value="<?php echo $this->item->limit_add; ?>" />
                 </td>
             </tr>
             <tr class="row0">
@@ -1941,8 +1941,8 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-control form-control-sm w-100" id="limit_edit" name="limit_edit" type="text"
-                        value="<?php echo $this->form->limit_edit; ?>" />
+                    <input class="form-control form-control-sm w-100" id="limit_edit" name="jform[limit_edit]" type="text"
+                        value="<?php echo $this->item->limit_edit; ?>" />
                 </td>
             </tr>
             <tr class="row0">
@@ -1952,19 +1952,19 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="verification_required_view"
-                        id="verification_required_view" value="1" <?php echo $this->form->verification_required_view ? ' checked="checked"' : '' ?> /><label for="verification_required_view">
+                    <input class="form-check-input" type="checkbox" name="jform[verification_required_view]"
+                        id="verification_required_view" value="1" <?php echo $this->item->verification_required_view ? ' checked="checked"' : '' ?> /><label for="verification_required_view">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_REQUIRED'); ?>
                     </label>
                     <input class="form-control form-control-sm" style="width: 50px;" id="verification_days_view"
-                        name="verification_days_view" type="text"
-                        value="<?php echo $this->form->verification_days_view; ?>" /> <label
+                        name="jform[verification_days_view]" type="text"
+                        value="<?php echo $this->item->verification_days_view; ?>" /> <label
                         for="verification_days_view">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_DAYS'); ?>
                     </label>
                     <input class="form-control form-control-sm" style="width: 300px;" id="verification_url_view"
-                        name="verification_url_view" type="text"
-                        value="<?php echo htmlentities($this->form->verification_url_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                        name="jform[verification_url_view]" type="text"
+                        value="<?php echo htmlentities($this->item->verification_url_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     <label for="verification_url_view">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_URL'); ?>
                     </label>
@@ -1977,18 +1977,18 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="verification_required_new"
-                        id="verification_required_new" value="1" <?php echo $this->form->verification_required_new ? ' checked="checked"' : '' ?> /><label for="verification_required_new">
+                    <input class="form-check-input" type="checkbox" name="jform[verification_required_new]"
+                        id="verification_required_new" value="1" <?php echo $this->item->verification_required_new ? ' checked="checked"' : '' ?> /><label for="verification_required_new">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_REQUIRED'); ?>
                     </label>
                     <input class="form-control form-control-sm" style="width: 50px;" id="verification_days_new"
-                        name="verification_days_new" type="text"
-                        value="<?php echo $this->form->verification_days_new; ?>" /> <label for="verification_days_new">
+                        name="jform[verification_days_new]" type="text"
+                        value="<?php echo $this->item->verification_days_new; ?>" /> <label for="verification_days_new">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_DAYS'); ?>
                     </label>
                     <input class="form-control form-control-sm" style="width: 300px;" id="verification_url_new"
-                        name="verification_url_new" type="text"
-                        value="<?php echo htmlentities($this->form->verification_url_new ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                        name="jform[verification_url_new]" type="text"
+                        value="<?php echo htmlentities($this->item->verification_url_new ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     <label for="verification_url_new">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_URL'); ?>
                     </label>
@@ -2001,19 +2001,19 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <input class="form-check-input" type="checkbox" name="verification_required_edit"
-                        id="verification_required_edit" value="1" <?php echo $this->form->verification_required_edit ? ' checked="checked"' : '' ?> /><label for="verification_required_edit">
+                    <input class="form-check-input" type="checkbox" name="jform[verification_required_edit]"
+                        id="verification_required_edit" value="1" <?php echo $this->item->verification_required_edit ? ' checked="checked"' : '' ?> /><label for="verification_required_edit">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_REQUIRED'); ?>
                     </label>
                     <input class="form-control form-control-sm" style="width: 50px;" id="verification_days_edit"
-                        name="verification_days_edit" type="text"
-                        value="<?php echo $this->form->verification_days_edit; ?>" /> <label
+                        name="jform[verification_days_edit]" type="text"
+                        value="<?php echo $this->item->verification_days_edit; ?>" /> <label
                         for="verification_days_edit">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_DAYS'); ?>
                     </label>
                     <input class="form-control form-control-sm" style="width: 300px;" id="verification_url_new"
-                        name="verification_url_edit" type="text"
-                        value="<?php echo htmlentities($this->form->verification_url_edit ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                        name="jform[verification_url_edit]" type="text"
+                        value="<?php echo htmlentities($this->item->verification_url_edit ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                     <label for="verification_url_edit">
                         <?php echo Text::_('COM_CONTENTBUILDER_PERM_VERIFICATION_URL'); ?>
                     </label>
@@ -2026,12 +2026,12 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                     </label>
                 </td>
                 <td>
-                    <?php echo '[<a href="index.php?option=com_contentbuilder&amp;view=users&amp;tmpl=component&amp;form_id=' . $this->form->id . '" title="" data-bs-toggle="modal" data-bs-target="#edit-modal">' . Text::_('COM_CONTENTBUILDER_EDIT') . '</a>]'; ?>
+                    <?php echo '[<a href="index.php?option=com_contentbuilder&amp;view=users&amp;tmpl=component&amp;form_id=' . $this->item->id . '" title="" data-bs-toggle="modal" data-bs-target="#edit-modal">' . Text::_('COM_CONTENTBUILDER_EDIT') . '</a>]'; ?>
 
                 </td>
             </tr>
             <?php
-            if (!$this->form->edit_by_type) {
+            if (!$this->item->edit_by_type) {
             ?>
                 <tr class="row0">
                     <td width="20%" align="right" class="key" valign="top">
@@ -2040,11 +2040,11 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </label>
                     </td>
                     <td>
-                        <input class="form-check-input" type="checkbox" name="act_as_registration" id="act_as_registration"
-                            value="1" <?php echo $this->form->act_as_registration ? ' checked="checked"' : '' ?> />
+                        <input class="form-check-input" type="checkbox" name="jform[act_as_registration]" id="act_as_registration"
+                            value="1" <?php echo $this->item->act_as_registration ? ' checked="checked"' : '' ?> />
                         <br />
                         <br />
-                        <select class="form-select-sm" name="registration_name_field" id="registration_name_field"
+                        <select class="form-select-sm" name="jform[registration_name_field]" id="registration_name_field"
                             style="max-width: 200px;">
                             <option value=""> -
                                 <?php echo Text::_('COM_CONTENTBUILDER_PERM_ACT_AS_REGISTRATION_NAME_FIELD'); ?> -
@@ -2052,7 +2052,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <?php
                             foreach ($this->elements as $the_element) {
                             ?>
-                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_name_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
+                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->item->registration_name_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                 <?php
@@ -2061,7 +2061,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </select>
                         <br />
                         <br />
-                        <select class="form-select-sm" name="registration_username_field" id="registration_username_field"
+                        <select class="form-select-sm" name="jform[registration_username_field]" id="registration_username_field"
                             style="max-width: 200px;">
                             <option value=""> -
                                 <?php echo Text::_('COM_CONTENTBUILDER_PERM_ACT_AS_REGISTRATION_USERNAME_FIELD'); ?> -
@@ -2069,7 +2069,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <?php
                             foreach ($this->elements as $the_element) {
                             ?>
-                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_username_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
+                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->item->registration_username_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                 <?php
@@ -2078,7 +2078,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </select>
                         <br />
                         <br />
-                        <select class="form-select-sm" name="registration_email_field" id="registration_email_field"
+                        <select class="form-select-sm" name="jform[registration_email_field]" id="registration_email_field"
                             style="max-width: 200px;">
                             <option value=""> -
                                 <?php echo Text::_('COM_CONTENTBUILDER_PERM_ACT_AS_REGISTRATION_EMAIL_FIELD'); ?> -
@@ -2086,7 +2086,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <?php
                             foreach ($this->elements as $the_element) {
                             ?>
-                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_email_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
+                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->item->registration_email_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                 <?php
@@ -2095,7 +2095,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </select>
                         <br />
                         <br />
-                        <select class="form-select-sm" name="registration_email_repeat_field"
+                        <select class="form-select-sm" name="jform[registration_email_repeat_field]"
                             id="registration_email_repeat_field" style="max-width: 200px;">
                             <option value=""> -
                                 <?php echo Text::_('COM_CONTENTBUILDER_PERM_ACT_AS_REGISTRATION_EMAIL_REPEAT_FIELD'); ?> -
@@ -2103,7 +2103,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <?php
                             foreach ($this->elements as $the_element) {
                             ?>
-                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_email_repeat_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
+                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->item->registration_email_repeat_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                 <?php
@@ -2112,7 +2112,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </select>
                         <br />
                         <br />
-                        <select class="form-select-sm" name="registration_password_field" id="registration_password_field"
+                        <select class="form-select-sm" name="jform[registration_password_field]" id="registration_password_field"
                             style="max-width: 200px;">
                             <option value=""> -
                                 <?php echo Text::_('COM_CONTENTBUILDER_PERM_ACT_AS_REGISTRATION_PASSWORD_FIELD'); ?> -
@@ -2120,7 +2120,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <?php
                             foreach ($this->elements as $the_element) {
                             ?>
-                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_password_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
+                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->item->registration_password_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                 <?php
@@ -2129,7 +2129,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </select>
                         <br />
                         <br />
-                        <select class="form-select-sm" name="registration_password_repeat_field"
+                        <select class="form-select-sm" name="jform[registration_password_repeat_field]"
                             id="registration_password_repeat_field" style="max-width: 200px;">
                             <option value=""> -
                                 <?php echo Text::_('COM_CONTENTBUILDER_PERM_ACT_AS_REGISTRATION_PASSWORD_REPEAT_FIELD'); ?>
@@ -2138,7 +2138,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <?php
                             foreach ($this->elements as $the_element) {
                             ?>
-                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->form->registration_password_repeat_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
+                                <option value="<?php echo $the_element->reference_id; ?>" <?php echo $this->item->registration_password_repeat_field == $the_element->reference_id ? ' selected="selected"' : ''; ?>>
                                     <?php echo htmlentities($the_element->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
                                     </value>
                                 <?php
@@ -2151,29 +2151,29 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <?php echo Text::_('COM_CONTENTBUILDER_PERM_FORCE_LOGIN'); ?>
                         </label>
                         <br />
-                        <input class="form-check-input" type="checkbox" name="force_login" id="force_login" value="1" <?php echo $this->form->force_login ? ' checked="checked"' : '' ?> />
+                        <input class="form-check-input" type="checkbox" name="jform[force_login]" id="force_login" value="1" <?php echo $this->item->force_login ? ' checked="checked"' : '' ?> />
                         <br />
                         <br />
                         <label for="force_url">
                             <?php echo Text::_('COM_CONTENTBUILDER_PERM_FORCE_URL'); ?>
                         </label>
                         <br />
-                        <input class="form-control form-control-sm" id="force_url" name="force_url" type="text"
-                            value="<?php echo htmlentities($this->form->force_url ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                        <input class="form-control form-control-sm" id="force_url" name="jform[force_url]" type="text"
+                            value="<?php echo htmlentities($this->item->force_url ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         <br />
                         <br />
                         <label for="registration_bypass_plugin">
                             <?php echo Text::_('COM_CONTENTBUILDER_PERM_REGISTRATION_BYPASS_PLUGIN'); ?>
                         </label>
                         <br />
-                        <select class="form-select-sm" name="registration_bypass_plugin" id="registration_bypass_plugin">
+                        <select class="form-select-sm" name="jform[registration_bypass_plugin]" id="registration_bypass_plugin">
                             <option value=""> -
                                 <?php echo Text::_('COM_CONTENTBUILDER_NONE'); ?> -
                             </option>
                             <?php
                             foreach ($this->verification_plugins as $registration_bypass_plugin) {
                             ?>
-                                <option value="<?php echo $registration_bypass_plugin; ?>" <?php echo $registration_bypass_plugin == $this->form->registration_bypass_plugin ? ' selected="selected"' : ''; ?>>
+                                <option value="<?php echo $registration_bypass_plugin; ?>" <?php echo $registration_bypass_plugin == $this->item->registration_bypass_plugin ? ' selected="selected"' : ''; ?>>
                                     <?php echo $registration_bypass_plugin; ?>
                                 </option>
                             <?php
@@ -2186,18 +2186,18 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                             <?php echo Text::_('COM_CONTENTBUILDER_PERM_REGISTRATION_BYPASS_VERIFICATION_NAME'); ?>
                         </label>
                         <br />
-                        <input class="form-control form-control-sm" type="text" name="registration_bypass_verification_name"
+                        <input class="form-control form-control-sm" type="text" name="jform[registration_bypass_verification_name]"
                             id="registration_bypass_verification_name"
-                            value="<?php echo htmlentities($this->form->registration_bypass_verification_name ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                            value="<?php echo htmlentities($this->item->registration_bypass_verification_name ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                         <br />
                         <br />
                         <label for="registration_bypass_verify_view">
                             <?php echo Text::_('COM_CONTENTBUILDER_PERM_REGISTRATION_BYPASS_VERIFICATION_VIEW'); ?>
                         </label>
                         <br />
-                        <input class="form-control form-control-sm" type="text" name="registration_bypass_verify_view"
+                        <input class="form-control form-control-sm" type="text" name="jform[registration_bypass_verify_view]"
                             id="registration_bypass_verify_view"
-                            value="<?php echo htmlentities($this->form->registration_bypass_verify_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                            value="<?php echo htmlentities($this->item->registration_bypass_verify_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
 
                         <br />
                         <br />
@@ -2206,35 +2206,35 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         </label>
                         <br />
                         <textarea class="form-control form-control-sm" style="width: 100%;height: 80px;"
-                            name="registration_bypass_plugin_params"
-                            id="registration_bypass_plugin_params"><?php echo htmlentities($this->form->registration_bypass_plugin_params ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
+                            name="jform[registration_bypass_plugin_params]"
+                            id="registration_bypass_plugin_params"><?php echo htmlentities($this->item->registration_bypass_plugin_params ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
                     </td>
                 </tr>
             <?php
             } else {
             ?>
-                <input type="hidden" name="act_as_registration"
-                    value="<?php echo htmlentities($this->form->act_as_registration ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_name_field"
-                    value="<?php echo htmlentities($this->form->registration_name_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_username_field"
-                    value="<?php echo htmlentities($this->form->registration_username_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_email_field"
-                    value="<?php echo htmlentities($this->form->registration_email_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_email_repeat_field"
-                    value="<?php echo htmlentities($this->form->registration_email_repeat_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_password_field"
-                    value="<?php echo htmlentities($this->form->registration_password_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_password_repeat_field"
-                    value="<?php echo htmlentities($this->form->registration_password_repeat_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_bypass_plugin"
-                    value="<?php echo htmlentities($this->form->registration_bypass_plugin ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_bypass_verification_name"
-                    value="<?php echo htmlentities($this->form->registration_bypass_verification_name ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_bypass_verify_view"
-                    value="<?php echo htmlentities($this->form->registration_bypass_verify_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
-                <input type="hidden" name="registration_bypass_plugin_params"
-                    value="<?php echo htmlentities($this->form->registration_bypass_plugin_params ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[act_as_registration]"
+                    value="<?php echo htmlentities($this->item->act_as_registration ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_name_field]"
+                    value="<?php echo htmlentities($this->item->registration_name_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_username_field]"
+                    value="<?php echo htmlentities($this->item->registration_username_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_email_field]"
+                    value="<?php echo htmlentities($this->item->registration_email_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_email_repeat_field]"
+                    value="<?php echo htmlentities($this->item->registration_email_repeat_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_password_field]"
+                    value="<?php echo htmlentities($this->item->registration_password_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_password_repeat_field]"
+                    value="<?php echo htmlentities($this->item->registration_password_repeat_field ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_bypass_plugin]"
+                    value="<?php echo htmlentities($this->item->registration_bypass_plugin ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_bypass_verification_name]"
+                    value="<?php echo htmlentities($this->item->registration_bypass_verification_name ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_bypass_verify_view]"
+                    value="<?php echo htmlentities($this->item->registration_bypass_verify_view ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
+                <input type="hidden" name="jform[registration_bypass_plugin_params]"
+                    value="<?php echo htmlentities($this->item->registration_bypass_plugin_params ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
             <?php
             }
             ?>
@@ -2253,13 +2253,12 @@ $___tableOrdering = "Joomla.tableOrdering = function";
     <div class="clr"></div>
 
     <input type="hidden" name="option" value="com_contentbuilder" />
-    <input type="hidden" name="view" value="form">
-    <input type="hidden" name="layout" value="edit">
-    <input type="hidden" name="id" value="<?php echo (int) $this->form->id; ?>">
+    <input type="hidden" name="id" value="<?php echo (int) $this->item->id; ?>" />
+    <input type="hidden" name="jform[id]" value="<?php echo (int) $this->item->id; ?>" />
     <input type="hidden" name="task" value="" />
     <input type="hidden" name="limitstart" value="" />
-    <input type="hidden" name="ordering" value="<?php echo $this->form->ordering; ?>" />
-    <input type="hidden" name="published" value="<?php echo $this->form->published; ?>" />
+    <input type="hidden" name="jform[ordering]" value="<?php echo $this->item->ordering; ?>" />
+    <input type="hidden" name="jform[published]" value="<?php echo $this->item->published; ?>" />
     <input type="hidden" name="filter_order" value="" />
     <input type="hidden" name="filter_order_Dir" value="" />
     <input type="hidden" name="boxchecked" value="0" />
@@ -2267,9 +2266,9 @@ $___tableOrdering = "Joomla.tableOrdering = function";
     <input type="hidden" name="tabStartOffset" value="<?php echo Factory::getApplication()->getSession()->get('tabStartOffset', 0); ?>" />
     <input type="hidden" name="slideStartOffset"
         value="<?php echo Factory::getApplication()->getSession()->get('slideStartOffset', 1); ?>" />
-    <input type="hidden" name="email_users"
+    <input type="hidden" name="jform[email_users]"
         value="<?php echo Factory::getApplication()->getSession()->get('email_users', 'none', 'com_contentbuilder'); ?>" />
-    <input type="hidden" name="email_admins"
+    <input type="hidden" name="jform[email_admins]"
         value="<?php echo Factory::getApplication()->getSession()->get('email_admins', '', 'com_contentbuilder'); ?>" />
 
     <?php echo HTMLHelper::_('form.token'); ?>
@@ -2322,7 +2321,7 @@ $wa->useScript('jquery');
         const $ = (sel, root = document) => root.querySelector(sel);
 
         function setHidden(name, value) {
-            const el = document.querySelector(`input[name="${name}"]`);
+            const el = document.querySelector(`input[name="jform[${name}]"]`);
             if (el) el.value = value;
         }
 

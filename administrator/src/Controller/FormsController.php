@@ -107,9 +107,6 @@ final class FormsController extends AdminController
             throw new \RuntimeException('FormModel introuvable');
         }
 
-        error_log('TASK=' . $task);
-        error_log('MODEL=' . ($model ? get_class($model) : 'false'));
-
         $value = str_contains($task, 'unpublish') ? 0 : 1;
 
         try {

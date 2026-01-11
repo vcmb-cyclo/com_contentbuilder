@@ -1,10 +1,17 @@
 <?php
+
 /**
+ * ContentBuilder Storages Model (List).
+ *
+ * Handles CRUD and publish state for storage in the admin interface.
+ *
  * @package     ContentBuilder
+ * @subpackage  Administrator.Model
  * @author      Markus Bopp / XDA+GIL
+ * @copyright   Copyright (C) 2011–2026 by XDA+GIL
+ * @license     GNU/GPL v2 or later
  * @link        https://breezingforms.vcmb.fr
- * @copyright   Copyright (C) 2026 by XDA+GIL
- * @license     GNU/GPL
+ * @since       6.0.0  Joomla 6 compatibility rewrite.
  */
 
 namespace CB\Component\Contentbuilder\Administrator\Model;
@@ -12,29 +19,38 @@ namespace CB\Component\Contentbuilder\Administrator\Model;
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
 
-use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Pagination\Pagination;
 use Joomla\CMS\MVC\Model\ListModel;
+use Joomla\Database\QueryInterface;
+use Joomla\Utilities\ArrayHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 class StoragesModel extends ListModel
 {
-    /**
-     * Items total
-     * @var integer
-     */
-    private $_total = null;
+    // Optionnel mais recommandé : définir le nom de la table (sans postfix)
+    protected $table = 'Storage';
 
     /**
      * Pagination object
      * @var object
      */
-    private $_pagination = null;
 
     public function __construct($config = [])
     {
-        parent::__construct($config);
+        if (empty($config['filter_fields'])) {
+            $config['filter_fields'] = [
+                'a.id',
+                'id',
+                'a.name',
+                'name',
+                'a.title',
+                'title',
+                'a.display_in',
+                'display_in',
+                'a.published',
+                'published'
+            ];
+        }
 
         $mainframe = Factory::getApplication();
         $option = 'com_contentbuilder';
@@ -57,8 +73,57 @@ class StoragesModel extends ListModel
 
         $filter_state = $mainframe->getUserStateFromRequest($option . 'storages_filter_state', 'filter_state', '', 'word');
         $this->setState('storages_filter_state', $filter_state);
+
+        parent::__construct($config);
     }
 
+    protected function populateState($ordering = 'a.ordering', $direction = 'ASC')
+    {
+        $app = Factory::getApplication();
+
+        // ✅ appels standard StorageModel
+        parent::populateState($ordering, $direction);
+    }
+
+
+    protected function getListQuery(): QueryInterface
+    {
+        $db    = $this->getDatabase();          // Joomla 4/5/6
+        $query = $db->getQuery(true);
+
+        // Base query
+        $query->select('a.*')
+            ->from($db->quoteName('#__contentbuilder_storages', 'a'));
+
+        // Published filter (storages_filter_state: 'P' or 'U')
+        $filterState = (string) $this->getState('storages_filter_state');
+
+        if ($filterState === 'P' || $filterState === 'U') {
+            $published = ($filterState === 'P') ? 1 : 0;
+            $query->where($db->quoteName('a.published') . ' = ' . (int) $published);
+        }
+
+        // Ordering (equivalent à ton buildOrderBy())
+        $ordering  = (string) $this->getState('list.ordering', 'a.id');
+        $direction = strtoupper((string) $this->getState('list.direction', 'DESC'));
+
+        // Petite sécurité sur la direction
+        if (!in_array($direction, ['ASC', 'DESC'], true)) {
+            $direction = 'DESC';
+        }
+
+        // Optionnel : whitelist rapide des colonnes triables
+        $allowedOrdering = ['a.id', 'a.title', 'a.published', 'a.created', 'a.ordering'];
+        if (!in_array($ordering, $allowedOrdering, true)) {
+            $ordering = 'a.id';
+        }
+
+        $query->order($db->escape($ordering . ' ' . $direction));
+
+        return $query;
+    }
+
+    /*
     function setPublished()
     {
         $cids = CBRequest::getVar('cid', array(), '', 'array');
@@ -76,14 +141,14 @@ class StoragesModel extends ListModel
         $this->getDatabase()->setQuery(' Update #__contentbuilder_storages ' .
             '  Set published = 0 Where id In ( ' . implode(',', $cids) . ')');
         $this->getDatabase()->execute();
-    }
+    }*/
 
     /*
      *
      * MAIN LIST AREA
      * 
      */
-
+/*
     private function buildOrderBy()
     {
         $mainframe = Factory::getApplication();
@@ -93,21 +158,20 @@ class StoragesModel extends ListModel
         $filter_order = $this->getState('storages_filter_order');
         $filter_order_Dir = $this->getState('storages_filter_order_Dir');
 
-        /* Error handling is never a bad thing*/
+        // Error handling is never a bad thing.
         if (!empty($filter_order) && !empty($filter_order_Dir)) {
             $orderby = ' ORDER BY ' . $filter_order . ' ' . $filter_order_Dir;
         }
 
         return $orderby;
     }
-
+*/
 
     /**
      * @return string The query
      */
     private function _buildQuery()
     {
-
         $where = '';
 
         // PUBLISHED FILTER SELECTED?
@@ -129,6 +193,7 @@ class StoragesModel extends ListModel
 
         return 'Select SQL_CALC_FOUND_ROWS * From #__contentbuilder_storages ' . $where . $filter_state . $this->buildOrderBy();
     }
+
 
     function saveOrder()
     {
@@ -162,7 +227,7 @@ class StoragesModel extends ListModel
      * Gets the currencies
      * @return array List of products
      */
-    function getData()
+    /*    function getData()
     {
         // Lets load the data if it doesn't already exist
         if (empty($this->_data)) {
@@ -172,24 +237,5 @@ class StoragesModel extends ListModel
 
         return $this->_data;
     }
-
-    function getTotal()
-    {
-        // Load the content if it doesn't already exist
-        if (empty($this->_total)) {
-            $query = $this->_buildQuery();
-            $this->_total = $this->_getListCount($query);
-        }
-        return $this->_total;
-    }
-
-    function getPagination()
-    {
-        // Load the content if it doesn't already exist
-        if (empty($this->_pagination)) {
-            $this->_pagination = new Pagination($this->getTotal(), $this->getState('limitstart'), $this->getState('limit'));
-        }
-        return $this->_pagination;
-    }
-
+*/
 }

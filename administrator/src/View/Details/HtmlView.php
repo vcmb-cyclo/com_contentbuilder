@@ -20,7 +20,7 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
@@ -37,7 +37,7 @@ class HtmlView extends BaseHtmlView
             .icon-48-logo_left { background-image: url(../administrator/components/com_contentbuilder/views/logo_left.png); }
             </style>
             ';
-			ToolBarHelper::title($subject->page_title . '</span>', 'logo_left.png');
+			ToolbarHelper::title($subject->page_title . '</span>', 'logo_left.png');
 		}
 
 		$event = new \stdClass();
@@ -146,12 +146,12 @@ class HtmlView extends BaseHtmlView
 
 		PluginHelper::importPlugin('contentbuilder_themes', $subject->theme_plugin);
 		$dispatcher = Factory::getApplication()->getDispatcher();
-        $eventResult = $dispatcher->dispatch('onContentTemplateCss', new Joomla\Event\Event('onContentTemplateCss', array()));
+        $eventResult = $dispatcher->dispatch('onContentTemplateCss', new \Joomla\Event\Event('onContentTemplateCss', array()));
         $results = $eventResult->getArgument('result') ?: [];
 		$this->theme_css = implode('', $results);
 
 		PluginHelper::importPlugin('contentbuilder_themes', $subject->theme_plugin);
-        $eventResult = $dispatcher->dispatch('onContentTemplateJavascript', new Joomla\Event\Event('onContentTemplateJavascript', array()));
+        $eventResult = $dispatcher->dispatch('onContentTemplateJavascript', new \Joomla\Event\Event('onContentTemplateJavascript', array()));
         $results = $eventResult->getArgument('result') ?: [];
 		$this->theme_js = implode('', $results);
 

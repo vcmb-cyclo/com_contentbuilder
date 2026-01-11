@@ -18,6 +18,9 @@
       <option value="-2">JTRASHED</option>
     </field>
 
+       <field name="email_users" type="hidden" />
+       <field name="email_admins" type="hidden" />
+
     <field name="name" type="text"
            label="COM_CONTENTBUILDER_FIELD_NAME"
            required="false" filter="string" maxlength="255" />
@@ -76,12 +79,21 @@
        TEMPLATES / PREPARE
   ======================== -->
   <fieldset name="templates" label="COM_CONTENTBUILDER_FIELDSET_TEMPLATES">
+       <field
+       name="intro_text"
+       type="editor"
+       label="COM_CONTENTBUILDER_FIELD_INTRO_TEXT"
+       hiddenLabel="true"
+       filter="raw"
+       buttons="true"
+       width="100%"
+       height="550"
+       rows="20"
+       cols="75"
+       />
 
-    <field name="intro_text" type="editor"
-           label="COM_CONTENTBUILDER_FIELD_INTRO_TEXT"
-           filter="raw" buttons="true" />
-
-    <field name="details_template" type="textarea"
+    <field name="details_template" type="editor"
+           hiddenLabel="true"
            label="COM_CONTENTBUILDER_FIELD_DETAILS_TEMPLATE"
            filter="raw" rows="12" />
 
@@ -89,7 +101,8 @@
            label="COM_CONTENTBUILDER_FIELD_DETAILS_PREPARE"
            filter="raw" rows="10" />
 
-    <field name="editable_template" type="textarea"
+    <field name="editable_template" type="editor"
+           hiddenLabel="true"
            label="COM_CONTENTBUILDER_FIELD_EDITABLE_TEMPLATE"
            filter="raw" rows="12" />
 
@@ -151,23 +164,29 @@
       <option value="1">JYES</option>
     </field>
 
+<!--
     <field name="list_states" type="radio" default="0" filter="intval"
            label="COM_CONTENTBUILDER_FIELD_LIST_STATES">
       <option value="0">JNO</option>
       <option value="1">JYES</option>
     </field>
+-->
 
+<!--
     <field name="list_state" type="radio" default="0" filter="intval"
            label="COM_CONTENTBUILDER_FIELD_LIST_STATE">
       <option value="0">JNO</option>
       <option value="1">JYES</option>
     </field>
+-->
 
+<!--
     <field name="list_publish" type="radio" default="0" filter="intval"
            label="COM_CONTENTBUILDER_FIELD_LIST_PUBLISH">
       <option value="0">JNO</option>
       <option value="1">JYES</option>
     </field>
+-->
 
     <field name="allow_external_filter" type="radio" default="0" filter="intval"
            label="COM_CONTENTBUILDER_FIELD_ALLOW_EXTERNAL_FILTER">
@@ -316,4 +335,80 @@
 
   </fieldset>
 
+  <!-- =======================
+       INTERNAL / DYNAMIC ARRAYS (Elements editor)
+       These fields are posted by the template as arrays:
+       jform[itemLabels][ID], jform[itemWordwrap][ID], ...
+       We declare them so JForm won't drop them.
+  ======================== -->
+  <fieldset name="dynamic" label="COM_CONTENTBUILDER_FIELDSET_DYNAMIC" hidden="true">
+
+    <!-- Elements table editor arrays -->
+    <field name="itemLabels"
+           type="hidden"
+           filter="raw"
+           multiple="true" />
+
+    <field name="itemWordwrap"
+           type="hidden"
+           filter="raw"
+           multiple="true" />
+
+    <field name="itemWrapper"
+           type="hidden"
+           filter="raw"
+           multiple="true" />
+
+    <field name="itemOrderTypes"
+           type="hidden"
+           filter="raw"
+           multiple="true" />
+
+    <field name="order"
+           type="hidden"
+           filter="raw"
+           multiple="true" />
+
+    <!-- List states editor arrays:
+         jform[list_states][stateId][title|color|action|published]
+    -->
+    <field name="list_states"
+           type="hidden"
+           filter="raw"
+           multiple="true" />
+
+    <!-- Misc buttons/flags posted by the template -->
+    <field name="create_sample"
+           type="radio"
+           default="0"
+           filter="intval">
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+
+    <field name="create_editable_sample"
+           type="radio"
+           default="0"
+           filter="intval">
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+
+    <field name="email_create_sample"
+           type="radio"
+           default="0"
+           filter="intval">
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+
+    <field name="email_admin_create_sample"
+           type="radio"
+           default="0"
+           filter="intval">
+      <option value="0">JNO</option>
+      <option value="1">JYES</option>
+    </field>
+
+  </fieldset>
 </form>

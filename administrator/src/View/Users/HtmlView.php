@@ -15,15 +15,15 @@ namespace CB\Component\Contentbuilder\Administrator\View\User;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {
     function display($tpl = null)
     {
 
-        ToolBarHelper::title(   '<span style="display:inline-block; vertical-align:middle">' . Text::_( 'COM_CONTENTBUILDER_FORMS' ) . '</span>', 'logo_left.png' );
-        ToolBarHelper::editList();
+        ToolbarHelper::title(   '<span style="display:inline-block; vertical-align:middle">' . Text::_( 'COM_CONTENTBUILDER_FORMS' ) . '</span>', 'logo_left.png' );
+        ToolbarHelper::editList();
 
         // Get data from the model
         $items = $this->get( 'Data');

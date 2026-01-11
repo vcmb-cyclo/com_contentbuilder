@@ -207,7 +207,7 @@ class VerifyModel extends BaseDatabaseModel
 
         PluginHelper::importPlugin('contentbuilder_verify', $plugin);
 
-        $eventResult = $this->mainframe->getDispatcher()->dispatch('onSetup', new Joomla\Event\Event('onSetup', array($this_page, $out)));
+        $eventResult = $this->mainframe->getDispatcher()->dispatch('onSetup', new \Joomla\Event\Event('onSetup', array($this_page, $out)));
         $setup_result = $eventResult->getArgument('result') ?: [];
         if (!implode('', $setup_result)) {
 
@@ -225,7 +225,7 @@ class VerifyModel extends BaseDatabaseModel
                     $this_page = $urlex[0] . '?' . http_build_query($data, '', '&') . '&verify=1&verification_id=' . $verification_id;
                 }
 
-                $eventResult = $this->mainframe->getDispatcher()->dispatch('onForward', new Joomla\Event\Event('onForward', array($this_page, $out)));
+                $eventResult = $this->mainframe->getDispatcher()->dispatch('onForward', new \Joomla\Event\Event('onForward', array($this_page, $out)));
                 $forward_result = $eventResult->getArgument('result') ?: [];
                 $forward = implode('', $forward_result);
 
@@ -237,7 +237,7 @@ class VerifyModel extends BaseDatabaseModel
                 if ($verification_id) {
 
                     $msg = '';
-                    $eventResult = $this->mainframe->getDispatcher()->dispatch('onVerify', new Joomla\Event\Event('onVerify', array($this_page, $out)));
+                    $eventResult = $this->mainframe->getDispatcher()->dispatch('onVerify', new \Joomla\Event\Event('onVerify', array($this_page, $out)));
                     $verify_result = $eventResult->getArgument('result') ?: [];
 
                     if (count($verify_result)) {

@@ -180,8 +180,8 @@ class plgSystemContentbuilder_system extends CMSPlugin
                     if ($theme) {
                         PluginHelper::importPlugin('contentbuilder_themes', $theme);
                         $dispatcher = $this->app->getDispatcher();
-                        $eventresults_css = $dispatcher->dispatch('onContentTemplateCss', new Joomla\Event\Event('onContentTemplateCss', array()));
-                        $eventresults_js = $dispatcher->dispatch('onContentTemplateJavascript', new Joomla\Event\Event('onContentTemplateJavascript', array()));
+                        $eventresults_css = $dispatcher->dispatch('onContentTemplateCss', new \Joomla\Event\Event('onContentTemplateCss', array()));
+                        $eventresults_js = $dispatcher->dispatch('onContentTemplateJavascript', new \Joomla\Event\Event('onContentTemplateJavascript', array()));
                         $results_css = $eventresults_css->getArgument('result');
                         $results_js = $eventresults_js->getArgument('result');
 

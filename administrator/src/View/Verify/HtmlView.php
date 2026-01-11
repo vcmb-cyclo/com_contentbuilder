@@ -12,7 +12,7 @@ namespace CB\Component\Contentbuilder\Administrator\View\Verify;
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
 
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {

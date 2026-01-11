@@ -836,7 +836,7 @@ final class ContentbuilderLegacyHelper
         PluginHelper::importPlugin('contentbuilder_themes', $plugin);
 
         $dispatcher = Factory::getApplication()->getDispatcher();
-        $eventResult = $dispatcher->dispatch('onContentTemplateSample', new Joomla\Event\Event('onContentTemplateSample', array($contentbuilder_form_id, $form)));
+        $eventResult = $dispatcher->dispatch('onContentTemplateSample', new \Joomla\Event\Event('onContentTemplateSample', array($contentbuilder_form_id, $form)));
         $results = $eventResult->getArgument('result') ?: [];
         return implode('', $results);
     }
@@ -883,7 +883,7 @@ final class ContentbuilderLegacyHelper
         PluginHelper::importPlugin('contentbuilder_themes', $plugin);
 
         $dispatcher = Factory::getApplication()->getDispatcher();
-        $eventResult = $dispatcher->dispatch('onEditableTemplateSample', new Joomla\Event\Event('onEditableTemplateSample', array($contentbuilder_form_id, $form)));
+        $eventResult = $dispatcher->dispatch('onEditableTemplateSample', new \Joomla\Event\Event('onEditableTemplateSample', array($contentbuilder_form_id, $form)));
         $results = $eventResult->getArgument('result') ?: [];
         return implode('', $results);
     }
@@ -1479,7 +1479,7 @@ final class ContentbuilderLegacyHelper
                             \Joomla\CMS\Plugin\PluginHelper4::importPlugin('contentbuilder_form_elements', $element['type']);
 
                             $dispatcher = Factory::getApplication()->getDispatcher();
-                            $eventResult = $dispatcher->dispatch('onRenderElement', new Joomla\Event\Event('onRenderElement', array($item, $element, $options, $failed_values, $result, $hasRecords)));
+                            $eventResult = $dispatcher->dispatch('onRenderElement', new \Joomla\Event\Event('onRenderElement', array($item, $element, $options, $failed_values, $result, $hasRecords)));
                             $results = $eventResult->getArgument('result') ?: [];
                             $dispatcher->clearListeners('onRenderElement');
 
@@ -2049,7 +2049,7 @@ final class ContentbuilderLegacyHelper
             }
 
             $dispatcher = Factory::getApplication()->getDispatcher();
-            $dispatcher->dispatch('onContentBeforeSave', new Joomla\Event\Event('onContentBeforeSave', array('com_content.article', &$table, $isNew)));
+            $dispatcher->dispatch('onContentBeforeSave', new \Joomla\Event\Event('onContentBeforeSave', array('com_content.article', &$table, $isNew)));
         }
 
         $created_by = $created_by ? $created_by : $metadata->created_id;
@@ -2281,7 +2281,7 @@ final class ContentbuilderLegacyHelper
         $cache->clean();
 
         $dispatcher = Factory::getApplication()->getDispatcher();
-        $dispatcher->dispatch('onContentCleanCache', new Joomla\Event\Event('onContentCleanCache', $options));
+        $dispatcher->dispatch('onContentCleanCache', new \Joomla\Event\Event('onContentCleanCache', $options));
 
         //// trigger onContentAfterSave event
         $isNew = true;
@@ -2293,12 +2293,12 @@ final class ContentbuilderLegacyHelper
         }
 
         $dispatcher = Factory::getApplication()->getDispatcher();
-        $eventResult = $dispatcher->dispatch('onContentAfterSave', new Joomla\Event\Event('onContentAfterSave', array('com_content.article', &$table, $isNew)));
+        $eventResult = $dispatcher->dispatch('onContentAfterSave', new \Joomla\Event\Event('onContentAfterSave', array('com_content.article', &$table, $isNew)));
 
         PluginHelper::importPlugin('contentbuilder_listaction');
 
         $dispatcher = Factory::getApplication()->getDispatcher();
-        $eventResult = $dispatcher->dispatch('onAfterArticleCreation', new Joomla\Event\Event('onAfterArticleCreation', array($contentbuilder_form_id, $record_id, $article)));
+        $eventResult = $dispatcher->dispatch('onAfterArticleCreation', new \Joomla\Event\Event('onAfterArticleCreation', array($contentbuilder_form_id, $record_id, $article)));
         $results = $eventResult->getArgument('result') ?: [];
 
         $msg = implode('', $results);

@@ -16,7 +16,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 use Joomla\CMS\Uri\Uri;
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {

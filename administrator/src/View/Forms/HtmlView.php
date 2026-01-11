@@ -14,10 +14,9 @@ namespace CB\Component\Contentbuilder\Administrator\View\Forms;
 
 //use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {
@@ -30,15 +29,15 @@ class HtmlView extends BaseHtmlView
         </style>
         ';
 
-        ToolBarHelper::title('ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_FORMS') . '</span>', 'logo_left.png');
-        ToolBarHelper::addNew('form.add');
-        ToolBarHelper::custom('forms.copy', 'copy', '', Text::_('COM_CONTENTBUILDER_COPY'));
-        ToolBarHelper::editList('form.edit');
+        ToolbarHelper::title('ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_FORMS') . '</span>', 'logo_left.png');
+        ToolbarHelper::addNew('form.add');
+        ToolbarHelper::custom('forms.copy', 'copy', '', Text::_('COM_CONTENTBUILDER_COPY'));
+        ToolbarHelper::editList('form.edit');
 
         ToolbarHelper::publish('forms.publish');
         ToolbarHelper::unpublish('forms.unpublish');
         ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'forms.delete');
-        ToolBarHelper::preferences('com_contentbuilder');
+        ToolbarHelper::preferences('com_contentbuilder');
 
         $items      = $this->getModel()->getItems();
         $pagination = $this->getModel()->getPagination();

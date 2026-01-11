@@ -16,7 +16,7 @@ namespace CB\Component\Contentbuilder\Administrator\View\List;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Plugin\PluginHelper;
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {
@@ -31,7 +31,7 @@ class HtmlView extends BaseHtmlView
             .icon-48-logo_left { background-image: url(../administrator/components/com_contentbuilder/views/logo_left.png); }
             </style>
             ';
-            ToolBarHelper::title($subject->page_title . '</span>', 'logo_left.png');
+            ToolbarHelper::title($subject->page_title . '</span>', 'logo_left.png');
         }
 
 
@@ -50,14 +50,14 @@ class HtmlView extends BaseHtmlView
         PluginHelper::importPlugin('contentbuilder_themes', $subject->theme_plugin);
 
         $dispatcher = Factory::getApplication()->getDispatcher();
-        $eventResult = $dispatcher->dispatch('onListViewCss', new Joomla\Event\Event('onListViewCss', array()));
+        $eventResult = $dispatcher->dispatch('onListViewCss', new \Joomla\Event\Event('onListViewCss', array()));
         $results = $eventResult->getArgument('result') ?: [];
 
         $theme_css = implode('', $results);
         $this->theme_css = $theme_css;
 
         PluginHelper::importPlugin('contentbuilder_themes', $subject->theme_plugin);
-        $eventResult = $dispatcher->dispatch('onListViewJavascript', new Joomla\Event\Event('onListViewJavascript', array()));
+        $eventResult = $dispatcher->dispatch('onListViewJavascript', new \Joomla\Event\Event('onListViewJavascript', array()));
         $results = $eventResult->getArgument('result') ?: [];
 
         $theme_js = implode('', $results);

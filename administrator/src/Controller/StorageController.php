@@ -12,6 +12,7 @@
  * @link        https://breezingforms.vcmb.fr
  * @since       6.0.0  Joomla 6 compatibility rewrite.
  */
+
 namespace CB\Component\Contentbuilder\Administrator\Controller;
 
 // no direct access
@@ -184,7 +185,19 @@ class StorageController extends BaseFormController
         $this->setRedirect('index.php?option=com_contentbuilder&view=storage&layout=edit&id=0');
         return true;
     }
-   
+
+
+    public function publish(): bool
+    {
+        return $this->storagesPublish(1, 'COM_CONTENTBUILDER_PUBLISHED');
+    }
+
+    public function unpublish(): bool
+    {
+        return $this->storagesPublish(0, 'COM_CONTENTBUILDER_UNPUBLISHED');
+    }
+
+  /* 
     public function publish()
     {
         $app = Factory::getApplication();
@@ -224,11 +237,41 @@ class StorageController extends BaseFormController
             Route::_('index.php?option=com_contentbuilder&view=storage&limitstart=' . $this->input->getInt('limitstart'), false),
             Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
     }
-
+*/
 
     public function apply()
     {
         $this->save(true);
     }
 
+   // Passe par le modèle.
+    private function storagesPublish(int $state, string $successMsgKey)
+    {
+        try {
+            $cids = $this->input->get('cid', [], 'array');
+            ArrayHelper::toInteger($cids);
+
+            $storageId = (int) $this->input->getInt('id');
+
+            if (empty($cids)) {
+                $this->setMessage(Text::_('JERROR_NO_ITEMS_SELECTED'), 'error');
+                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storage' . '&id=' . $storageId, false));
+                return false;
+            }
+
+            $model = $this->getModel('Elementoption', 'Administrator', ['ignore_request' => true]);
+            $model->publish($cids, $state);
+
+            $this->setRedirect(
+                Route::_('index.php?option=com_contentbuilder&view=storage&layout=edit&id=' . $storageId, false),
+                Text::_($successMsgKey)
+            );
+
+            return true;
+        } catch (\Throwable $e) {
+            $this->setMessage($e->getMessage(), 'warning');
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storage', false));
+            return false;
+        }
+    }
 }

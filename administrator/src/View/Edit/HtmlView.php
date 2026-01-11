@@ -19,7 +19,7 @@ use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
@@ -84,18 +84,18 @@ class HtmlView extends BaseHtmlView
 			$start = CBRequest::getVar('start', 0, '', 'int');
 
 			$dispatcher = Factory::getApplication()->getDispatcher();
-			$dispatcher->dispatch('onContentPrepare', new Joomla\Event\Event('onContentPrepare', array('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
+			$dispatcher->dispatch('onContentPrepare', new \Joomla\Event\Event('onContentPrepare', array('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
 			$subject->template = $table->text;
 
-			$eventResult = $dispatcher->dispatch('onContentAfterTitle', new Joomla\Event\Event('onContentAfterTitle', array('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
+			$eventResult = $dispatcher->dispatch('onContentAfterTitle', new \Joomla\Event\Event('onContentAfterTitle', array('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
 			$results = $eventResult->getArgument('result') ?: [];
 			$event->afterDisplayTitle = trim(implode("\n", $results));
 
-			$eventResult = $dispatcher->dispatch('onContentBeforeDisplay', new Joomla\Event\Event('onContentBeforeDisplay', array('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
+			$eventResult = $dispatcher->dispatch('onContentBeforeDisplay', new \Joomla\Event\Event('onContentBeforeDisplay', array('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
 			$results = $eventResult->getArgument('result') ?: [];
 			$event->beforeDisplayContent = trim(implode("\n", $results));
 
-			$eventResult = $dispatcher->dispatch('onContentAfterDisplay', new Joomla\Event\Event('onContentAfterDisplay', array('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
+			$eventResult = $dispatcher->dispatch('onContentAfterDisplay', new \Joomla\Event\Event('onContentAfterDisplay', array('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
 			$results = $eventResult->getArgument('result') ?: [];
 
 			// if the slug has been used, we would like to stay in com_contentbuilder, so we re-arrange the resulting url a little
@@ -153,19 +153,19 @@ class HtmlView extends BaseHtmlView
 
 		if (!class_exists('cbFeMarker')) {
 
-			ToolBarHelper::title('<span style="display:inline-block; vertical-align:middle">' . $subject->page_title . '</span>', 'logo_left.png');
+			ToolbarHelper::title('<span style="display:inline-block; vertical-align:middle">' . $subject->page_title . '</span>', 'logo_left.png');
 		}
 
 		PluginHelper::importPlugin('contentbuilder_themes', $subject->theme_plugin);
 		$dispatcher = Factory::getApplication()->getDispatcher();
-        $eventResult = $dispatcher->dispatch('onEditableTemplateCss', new Joomla\Event\Event('onEditableTemplateCss', array()));
+        $eventResult = $dispatcher->dispatch('onEditableTemplateCss', new \Joomla\Event\Event('onEditableTemplateCss', array()));
         $results = $eventResult->getArgument('result') ?: [];
 		$theme_css = implode('', $results);
 		$this->theme_css = $theme_css;
 
 		PluginHelper::importPlugin('contentbuilder_themes', $subject->theme_plugin);
 		$dispatcher = Factory::getApplication()->getDispatcher();
-        $eventResult = $dispatcher->dispatch('onEditableTemplateJavascript', new Joomla\Event\Event('onEditableTemplateJavascript', array()));
+        $eventResult = $dispatcher->dispatch('onEditableTemplateJavascript', new \Joomla\Event\Event('onEditableTemplateJavascript', array()));
         $results = $eventResult->getArgument('result') ?: [];
 		$theme_js = implode('', $results);
 		$this->theme_js = $theme_js;

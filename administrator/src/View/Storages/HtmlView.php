@@ -11,11 +11,9 @@ namespace CB\Component\Contentbuilder\Administrator\View\Storages;
 \defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
-use Joomla\CMS\Factory;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
 /**
  * Vue Storages pour ContentBuilder
@@ -37,15 +35,19 @@ class HtmlView extends BaseHtmlView
     public function display($tpl = null)
     {
         // Récupération des données du modèle
-        $this->items      = $this->get('Data');
-        $this->pagination = $this->get('Pagination');
-        $this->state      = $this->get('State');
+        $this->items      = (array) ($this->getModel()->getItems() ?? []);
+        $this->pagination = $this->getModel()->getPagination();
+        $this->state      = $this->getModel()->getState();
 
-        // Préparation des filtres et tris
-        $this->lists['order_Dir']   = $this->state->get('storages_filter_order_Dir');
-        $this->lists['order']       = $this->state->get('storages_filter_order');
-        $this->lists['state']       = HTMLHelper::_('grid.state', $this->state->get('storages_filter_state'));
-        $this->ordering             = ($this->lists['order'] == 'ordering');
+        // Préparation des filtres et tris (Joomla standard)
+        $this->lists['order_Dir'] = (string) $this->state->get('list.direction', 'ASC');
+        $this->lists['order']     = (string) $this->state->get('list.ordering', 'a.ordering');
+
+        // Si tu as un filtre published standard
+        $this->lists['state']     = HTMLHelper::_('grid.state', (string) $this->state->get('filter.state', ''));
+
+        // Ton flag ordering (ton template compare à "ordering" mais toi tu utilises souvent "a.ordering")
+        $this->ordering = ($this->lists['order'] === 'a.ordering' || $this->lists['order'] === 'ordering');
 
         // Vérification des erreurs
         if (count($errors = $this->get('Errors')))

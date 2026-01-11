@@ -15,7 +15,7 @@ use Joomla\CMS\MVC\View\HtmlView  as BaseHtmlView;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Uri\Uri;
 
-class CBHtmlView extends BaseHtmlView
+class HtmlView extends BaseHtmlView
 {
     public function display($tpl = null)
     {
@@ -36,7 +36,7 @@ class CBHtmlView extends BaseHtmlView
             Uri::root(true) . "/administrator/components/com_contentbuilder/views/logo_left.png); }"
         );
 
-        ToolBarHelper::title(Text::_('COM_CONTENTBUILDER_ABOUT') . '</span>', 'logo_left.png');
+        ToolbarHelper::title(Text::_('COM_CONTENTBUILDER_ABOUT') . '</span>', 'logo_left.png');
 
         // 3️⃣ Affichage du layout
         parent::display($tpl);

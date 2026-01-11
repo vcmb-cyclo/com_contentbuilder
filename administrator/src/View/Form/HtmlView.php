@@ -14,7 +14,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Toolbar\ToolbarHelper;
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\CBHtmlView as BaseHtmlView;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 use Joomla\CMS\HTML\HTMLHelper;
 
 class HtmlView extends BaseHtmlView
@@ -28,11 +28,14 @@ class HtmlView extends BaseHtmlView
         $wa = $app->getDocument()->getWebAssetManager();
         $wa->useScript('com_contentbuilder.jscolor');
   
-        // Charge le form.
-        $this->form = $this->getModel()->getItem();
+        // Formulaire JForm
+        $this->form = $this->getModel()->getForm();
+
+        // Données (l’item)
+        $this->item = $this->getModel()->getItem();
 
         // Chargement sécurisé des éléments
-        $formId = (int) ($this->form->id ?? 0);
+        $formId = (int) ($this->item->id ?? 0);
 
         $this->elements = [];
         $this->elementsPagination = null;
@@ -65,15 +68,14 @@ class HtmlView extends BaseHtmlView
         $text  = $isNew ? Text::_('COM_CONTENTBUILDER_NEW') : Text::_('COM_CONTENTBUILDER_EDIT');
 
         ToolbarHelper::title(
-            'ContentBuilder :: ' . ($isNew ? Text::_('COM_CONTENTBUILDER_FORM') : ($this->form->name ?? '')) .
+            'ContentBuilder :: ' . ($isNew ? Text::_('COM_CONTENTBUILDER_FORM') : ($this->item->name ?? '')) .
             ' : <small><small>[ ' . $text . ' ]</small></small>',
             'logo_left.png'
         );
 
         ToolbarHelper::apply('form.apply');
         ToolbarHelper::save('form.save');
-        ToolbarHelper::custom('form.save2new', 'save', '', Text::_('COM_CONTENTBUILDER_SAVENEW'), false);
-        ToolbarHelper::custom('form.saveorder', 'saveorder', '', Text::_('COM_CONTENTBUILDER_SAVENEW'), false);
+        ToolbarHelper::save2new('form.save2new', 'save', '', Text::_('COM_CONTENTBUILDER_SAVENEW'), false);
 
         ToolbarHelper::custom('form.list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_LIST_INCLUDE'), false);
         ToolbarHelper::custom('form.no_list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_NO_LIST_INCLUDE'), false);
@@ -94,18 +96,20 @@ class HtmlView extends BaseHtmlView
 
         // Données additionnelles
         $db = Factory::getContainer()->get(DatabaseInterface::class);
-        $query = "
-            SELECT CONCAT(REPEAT('..', COUNT(parent.id) - 1), node.title) AS text, node.id AS value
-            FROM #__usergroups AS node, #__usergroups AS parent
-            WHERE node.lft BETWEEN parent.lft AND parent.rgt
-            GROUP BY node.id
-            ORDER BY node.lft
-        ";
-        $db->setQuery($query);
+        $q = $db->getQuery(true)
+            ->select("CONCAT(REPEAT('..', COUNT(parent.id) - 1), node.title) AS " . $db->quoteName('text') . ", node.id AS " . $db->quoteName('value'))
+            ->from($db->quoteName('#__usergroups', 'node'))
+            ->from($db->quoteName('#__usergroups', 'parent'))
+            ->where('node.lft BETWEEN parent.lft AND parent.rgt')
+            ->group('node.id')
+            ->order('node.lft');
+
+        $db->setQuery($q);
         $this->gmap = $db->loadObjectList() ?? [];
 
+
         // ✅ Décode config de manière robuste (très probable cause ids 9/11)
-        $this->form->config = $this->decodeLegacyConfig($this->form->config ?? null);
+        $this->item->config = $this->decodeLegacyConfig($this->item->config ?? null);
 
         $this->list_states_action_plugins = $this->get('ListStatesActionPlugins') ?? [];
         $this->verification_plugins       = $this->get('VerificationPlugins') ?? [];

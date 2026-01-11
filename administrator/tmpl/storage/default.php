@@ -24,17 +24,6 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
         padding-top: 4px;
     }
 </style>
-<script language="javascript" type="text/javascript">
-<!--
-<?php echo $___tableOrdering; ?>(order, dir, task) {
-        var form = document.adminForm;
-        form.limitstart.value = <?php echo CBRequest::getInt('limitstart', 0) ?>;
-        form.filter_order.value = order;
-        form.filter_order_Dir.value = dir;
-        document.adminForm.submit(task);
-    };
-    //-->
-</script>
 <script type="text/javascript">
     Joomla.tableOrdering = function(order, dir, task) {
         var form = document.adminForm;
@@ -489,7 +478,7 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                         </thead>
                         <?php
                         $k = 0;
-                        $n = count($this->elements);
+                        $n = count($this->elements ?? []);
                         for ($i = 0; $i < $n; $i++) {
                             $row = $this->elements[$i];
                             $checked = HTMLHelper::_('grid.id', $i, $row->id);

@@ -73,13 +73,13 @@ $___tableOrdering = "Joomla.tableOrdering = function";
                         <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_NAME'), 'name', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_NAME'), 'a.name', $this->lists['order_Dir'], $this->lists['order']); ?>
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_STORAGE_TITLE'), 'title', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_STORAGE_TITLE'), 'a.title', $this->lists['order_Dir'], $this->lists['order']); ?>
                     </th>
                     <th width="120">
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'ordering', 'desc', @$this->lists['order']); ?>
+                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'a.ordering', 'desc', @$this->lists['order']); ?>
                         <?php // TODO: dragandrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->items );   ?>
                     </th>
                     <th width="5">
