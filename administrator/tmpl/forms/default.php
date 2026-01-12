@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     ContentBuilder
  * @author      Markus Bopp
@@ -28,14 +29,15 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
     }
 </style>
 <script language="javascript" type="text/javascript">
-<!--
-Joomla.tableOrdering = function( order, dir, task ) {
-    var form = document.adminForm;
+    <!--
+    Joomla.tableOrdering = function(order, dir, task) {
+        var form = document.adminForm;
         form.limitstart.value = <?php echo CBRequest::getInt('limitstart', 0) ?>;
-    form.filter_order.value = order;
-    form.filter_order_Dir.value = dir;
-    document.adminForm.submit(task);
-};
+        form.filter_order.value = order;
+        form.filter_order_Dir.value = dir;
+        document.adminForm.submit(task);
+    };
+
     function listItemTask(id, task) {
 
         var f = document.adminForm;
@@ -58,7 +60,8 @@ Joomla.tableOrdering = function( order, dir, task ) {
     if (typeof Joomla != 'undefined') {
         Joomla.listItemTask = listItemTask;
     }
-    //-->
+    //
+    -->
 </script>
 <form action="index.php?option=com_contentbuilder&amp;view=forms" method="post" name="adminForm" id="adminForm">
 
@@ -72,11 +75,11 @@ Joomla.tableOrdering = function( order, dir, task ) {
             </option>
             <?php
             foreach ($this->tags as $tag) {
-                ?>
+            ?>
                 <option value="<?php echo htmlentities($tag->tag, ENT_QUOTES, 'UTF-8') ?>" <?php echo strtolower($this->lists['filter_tag']) == strtolower($tag->tag) ? ' selected="selected"' : ''; ?>>
                     <?php echo htmlentities($tag->tag, ENT_QUOTES, 'UTF-8') ?>
                 </option>
-                <?php
+            <?php
             }
             ?>
         </select>
@@ -92,90 +95,149 @@ Joomla.tableOrdering = function( order, dir, task ) {
                         <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_VIEW_NAME'), 'name', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_('grid.sort', 
+                        Text::_('COM_CONTENTBUILDER_VIEW_NAME'), 
+                        'a.name', 
+                        $this->lists['order_Dir'], 
+                        $this->lists['order']); ?>
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_TAG'), 'tag', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_('grid.sort', 
+                        Text::_('COM_CONTENTBUILDER_TAG'), 
+                        'a.tag', 
+                        $this->lists['order_Dir'], 
+                        $this->lists['order']); ?>
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_FORM_SOURCE'), 'title', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_('grid.sort', 
+                        Text::_('COM_CONTENTBUILDER_FORM_SOURCE'), 
+                        'a.title', 
+                        $this->lists['order_Dir'], 
+                        $this->lists['order']); ?>
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_TYPE'), 'type', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_('grid.sort', 
+                        Text::_('COM_CONTENTBUILDER_TYPE'), 
+                        'a.type', 
+                        $this->lists['order_Dir'], 
+                        $this->lists['order']); ?>
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_DISPLAY'), 'display_in', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_('grid.sort', 
+                        Text::_('COM_CONTENTBUILDER_DISPLAY'), 
+                        'a.display_in', 
+                        $this->lists['order_Dir'], 
+                        $this->lists['order']); ?>
                     </th>
+
+
                     <th width="120">
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'ordering', 'desc', @$this->lists['order']); ?>
-                        <?php // TODO: change to draganddrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->items );   ?>
+                        <?php echo HTMLHelper::_('grid.sort',
+                            Text::_('COM_CONTENTBUILDER_ORDERBY'),
+                            'a.ordering',
+                            $this->lists['order_Dir'],
+                            $this->lists['order']
+                        ); ?>
+                        <?php 
+                        // TODO: change to draganddrop if ($this->ordering) 
+                        //echo HTMLHelper::_('grid.order',  $this->items );   
+                        ?>
                     </th>
                     <th width="5">
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_PUBLISHED'), 'published', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_(
+                            'grid.sort',
+                            Text::_('COM_CONTENTBUILDER_PUBLISHED'),
+                            'a.published',
+                            $this->lists['order_Dir'],
+                            $this->lists['order']
+                        ); ?>
+                    </th>
+                    <th width="140">
+                        <?php echo HTMLHelper::_(
+                            'grid.sort',
+                            Text::_('JGLOBAL_MODIFIED'),
+                            'a.modified',
+                            $this->lists['order_Dir'],
+                            $this->lists['order']
+                        ); ?>
                     </th>
                 </tr>
             </thead>
-            <?php
-            $k = 0;
-            $n = count($this->items);
-            for ($i = 0; $i < $n; $i++) {
-                $row = $this->items[$i];
-                $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                $link = Route::_('index.php?option=com_contentbuilder&task=form.edit&id=' . $row->id);
-                $published = ContentbuilderHelper::listPublish('forms', $row, $i);
-                ?>
-                <tr class="<?php echo "row$k"; ?>">
-                    <td>
-                        <?php echo $row->id; ?>
-                    </td>
-                    <td>
-                        <?php echo $checked; ?>
-                    </td>
-                    <td>
-                        <a href="<?php echo $link; ?>">
-                            <?php echo $row->name; ?>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="<?php echo $link; ?>">
-                            <?php echo $row->tag; ?>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="<?php echo $link; ?>">
-                            <?php echo $row->title; ?>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="<?php echo $link; ?>">
-                            <?php echo $row->type; ?>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="<?php echo $link; ?>">
-                            <?php echo $row->display_in == 0 ? Text::_('COM_CONTENTBUILDER_DISPLAY_FRONTEND') : ($row->display_in == 1 ? Text::_('COM_CONTENTBUILDER_DISPLAY_BACKEND') : Text::_('COM_CONTENTBUILDER_DISPLAY_BOTH')); ?>
-                        </a>
-                    </td>
-                    <td class="order" nowrap="nowrap">
-                        <span>
-                            <?php echo $this->pagination->orderUpIcon($i, true, 'forms.orderup', 'Move Up', $this->ordering); ?>
-                        </span>
-                        <span>
-                            <?php echo $this->pagination->orderDownIcon($i, $n, true, 'forms.orderdown', 'Move Down', $this->ordering); ?>
-                        </span>
-                        <?php $disabled = $this->ordering ? '' : 'disabled="disabled"'; ?>
-                    </td>
-                    <td>
-                        <?php echo $published; ?>
-                    </td>
-                </tr>
+            <tbody>
                 <?php
-                $k = 1 - $k;
-            }
-            ?>
+                $k = 0;
+                $n = count($this->items);
+                for ($i = 0; $i < $n; $i++) {
+                    $row = $this->items[$i];
+                    $checked = HTMLHelper::_('grid.id', $i, $row->id);
+                    $link = Route::_('index.php?option=com_contentbuilder&task=form.edit&id=' . $row->id);
+                    $published = ContentbuilderHelper::listPublish('forms', $row, $i);
+                ?>
+                    <tr class="<?php echo "row$k"; ?>">
+                        <td>
+                            <?php echo $row->id; ?>
+                        </td>
+                        <td>
+                            <?php echo $checked; ?>
+                        </td>
+                        <td>
+                            <a href="<?php echo $link; ?>">
+                                <?php echo $row->name; ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="<?php echo $link; ?>">
+                                <?php echo $row->tag; ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="<?php echo $link; ?>">
+                                <?php echo $row->title; ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="<?php echo $link; ?>">
+                                <?php echo $row->type; ?>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="<?php echo $link; ?>">
+                                <?php echo $row->display_in == 0 ? Text::_('COM_CONTENTBUILDER_DISPLAY_FRONTEND') : ($row->display_in == 1 ? Text::_('COM_CONTENTBUILDER_DISPLAY_BACKEND') : Text::_('COM_CONTENTBUILDER_DISPLAY_BOTH')); ?>
+                            </a>
+                        </td>
+                        <td class="order" nowrap="nowrap">
+                            <span>
+                                <?php echo $this->pagination->orderUpIcon($i, true, 'forms.orderup', 'Move Up', $this->ordering); ?>
+                            </span>
+                            <span>
+                                <?php echo $this->pagination->orderDownIcon($i, $n, true, 'forms.orderdown', 'Move Down', $this->ordering); ?>
+                            </span>
+                            <?php $disabled = $this->ordering ? '' : 'disabled="disabled"'; ?>
+                        </td>
+                        <td>
+                            <?php echo $published; ?>
+                        </td>
+                        <td>
+                            <?php
+                            $m = $row->modified ?? '';
+                            if ($m && $m !== '0000-00-00 00:00:00') {
+                                echo HTMLHelper::_('date', $m, Text::_('DATE_FORMAT_LC4'));
+                            } else {
+                                echo '-';
+                            }
+                            ?>
+                        </td>
+
+
+                    </tr>
+                <?php
+                    $k = 1 - $k;
+                }
+                ?>
+            </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="9">
+                    <td colspan="10">
                         <div class="pagination pagination-toolbar">
                             <div class="cbPagesCounter">
                                 <?php echo $this->pagination->getPagesCounter(); ?>
@@ -198,7 +260,7 @@ Joomla.tableOrdering = function( order, dir, task ) {
     <input type="hidden" name="limitstart" value="" />
     <input type="hidden" name="hidemainmenu" value="0" />
     <input type="hidden" name="boxchecked" value="0" />
-    <input type="hidden" name="filter_order" value="<?php echo $this->lists['order']; ?>" />
-    <input type="hidden" name="filter_order_Dir" value="<?php echo $this->lists['order_Dir']; ?>" />
+    <input type="hidden" name="filter_order" value="<?php echo htmlspecialchars($this->listOrder ?? 'a.id', ENT_QUOTES, 'UTF-8'); ?>">
+    <input type="hidden" name="filter_order_Dir" value="<?php echo htmlspecialchars($this->listDirn ?? 'DESC', ENT_QUOTES, 'UTF-8'); ?>">
     <?php echo HTMLHelper::_('form.token'); ?>
 </form>

@@ -55,24 +55,6 @@ class StoragesModel extends ListModel
         $mainframe = Factory::getApplication();
         $option = 'com_contentbuilder';
 
-        // Get pagination request variables
-        $limit = $mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->get('list_limit'), 'int');
-        $limitstart = CBRequest::getVar('limitstart', 0, '', 'int');
-
-        // In case limit has been changed, adjust it
-        $limitstart = ($limit != 0 ? (floor($limitstart / $limit) * $limit) : 0);
-
-        $this->setState('limit', $limit);
-        $this->setState('limitstart', $limitstart);
-
-        $filter_order = $mainframe->getUserStateFromRequest($option . 'storages_filter_order', 'filter_order', '`name`', 'cmd');
-        $filter_order_Dir = $mainframe->getUserStateFromRequest($option . 'storages_filter_order_Dir', 'filter_order_Dir', 'desc', 'word');
-
-        $this->setState('storages_filter_order', $filter_order);
-        $this->setState('storages_filter_order_Dir', $filter_order_Dir);
-
-        $filter_state = $mainframe->getUserStateFromRequest($option . 'storages_filter_state', 'filter_state', '', 'word');
-        $this->setState('storages_filter_state', $filter_state);
 
         parent::__construct($config);
     }
@@ -83,6 +65,10 @@ class StoragesModel extends ListModel
 
         // ✅ appels standard StorageModel
         parent::populateState($ordering, $direction);
+
+        // ✅ tes filtres custom, mais stockés dans l’état
+        $filterState = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_state', '', 'cmd');
+        $this->setState('filter.state', $filterState);
     }
 
 
@@ -121,6 +107,40 @@ class StoragesModel extends ListModel
         $query->order($db->escape($ordering . ' ' . $direction));
 
         return $query;
+    }
+
+
+    /**
+     * Supprime plusieurs formulaires
+     * Appelée automatiquement par AdminController
+     */
+    public function delete($pks = null): bool
+    {
+        $pks = (array) $pks;
+        ArrayHelper::toInteger($pks);
+
+        $pks = array_values(array_filter($pks));
+        if (!$pks) {
+            return false;
+        }
+
+        $factory = Factory::getApplication()
+            ->bootComponent('com_contentbuilder')
+            ->getMVCFactory();
+
+        $formModel = $factory->createModel('storage', 'Administrator', ['ignore_request' => true]);
+
+        if (!$formModel) {
+            $this->setError('Unable to create Storage model');
+            return false;
+        }
+
+        if (!$formModel->delete($pks)) {
+            $this->setError($formModel->getError());
+            return false;
+        }
+
+        return true;
     }
 
     /*

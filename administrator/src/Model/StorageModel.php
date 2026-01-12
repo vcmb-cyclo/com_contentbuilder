@@ -33,9 +33,8 @@ use CB\Component\Contentbuilder\Administrator\Helper\Logger;
 
 class StorageModel extends AdminModel
 {
-    private $_storage_data = null;
     protected DatabaseInterface $_db;
-    protected int $_id = 0;
+    protected int $storageId = 0;
     protected ?object $_data = null;
 
     protected int $_total = 0;
@@ -49,9 +48,9 @@ class StorageModel extends AdminModel
     }
 
 
-    public function getTable($type = 'Storage', $prefix = 'CB\\Component\\Contentbuilder\\Administrator\\Table\\', $config = [])
+    public function getTable($type = 'Storage', $prefix = 'Contentbuilder', $config = [])
     {
-        return Table::getInstance($type, $prefix, $config);
+        return $this->getMVCFactory()->createTable($type, $prefix, $config);
     }
 
     /**
@@ -172,8 +171,6 @@ class StorageModel extends AdminModel
             $data->published = null;
             $data->ordering = 0;
         }
-
-        $this->_storage_data = $data;
 
         return $data;
     }
@@ -962,20 +959,5 @@ class StorageModel extends AdminModel
         $row->reorder("storage_id = " . $this->_id);
     }
 
-    public function reorder($pks = null, $delta = 0)
-    {
-        $table = $this->getTable();
 
-        // Sécurité : clés primaires
-        $pks = (array) $pks;
-
-        foreach ($pks as $pk) {
-            $table->load((int) $pk);
-
-            // Réordonne à l'intérieur du même id
-            $table->move($delta);
-        }
-
-        return true;
-    }
 }

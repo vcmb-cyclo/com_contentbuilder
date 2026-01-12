@@ -31,14 +31,45 @@ class HtmlView extends BaseHtmlView
 
         // JS
         $wa = $app->getDocument()->getWebAssetManager();
-        // Important : rendre le fichier media/com_contentbuilder/joomla.asset.json visible au manager
-        $wa->getRegistry()->addExtensionRegistryFile('com_contentbuilder');
         $wa->useScript('com_contentbuilder.jscolor');
 
-        $this->tables     = $this->get('DbTables');
-        $this->form       = $this->get('Storage');
-        $this->elements   = $this->get('Data');
-        $this->pagination = $this->get('Pagination');
+        // Formulaire JForm
+        $this->form = $this->getModel()->getForm();
+
+        // Données (l’item)
+        $this->item = $this->getModel()->getItem();
+
+        // Chargement sécurisé des éléments
+        $storageId = (int) ($this->item->id ?? $app->input->getInt('id', 0));
+
+        $this->elements = [];
+        $this->pagination = null;
+        $this->state = null;
+
+        try {
+            $storageId = (int) ($storageId ?? 0);
+            if ($storageId > 0) {
+                $factory = $app->bootComponent('com_contentbuilder')->getMVCFactory();
+                $elementsModel = $factory->createModel('Elements', 'Administrator');
+
+                if (!$elementsModel) {
+                    throw new \RuntimeException('Modèle Elements introuvable (factory)');
+                }
+
+                // IMPORTANT : fournir le form id au ListModel
+                $elementsModel->setFormId($storageId);
+
+                // Charge les items
+                $this->elements   = $elementsModel->getItems();
+                $this->pagination = $elementsModel->getPagination();
+                $this->state      = $elementsModel->getState();
+            }
+        } catch (\Throwable $e) {
+            Factory::getApplication()->enqueueMessage(
+                'Erreur lors du chargement des éléments : ' . $e->getMessage(),
+                'warning'
+            );
+        }
 
         $isNew = ((int) ($this->form->id ?? 0) < 1);
         $text  = $isNew ? Text::_('COM_CONTENTBUILDER_NEW') : Text::_('COM_CONTENTBUILDER_EDIT');
@@ -53,9 +84,9 @@ class HtmlView extends BaseHtmlView
         ToolbarHelper::save('storage.save');
 
         ToolbarHelper::custom('storage.save2New', 'save', '', Text::_('COM_CONTENTBUILDER_SAVENEW'), false);
-        ToolbarHelper::publish('storage.publish', 'publish', '', Text::_('COM_CONTENTBUILDER_PUBLISH'), false);
-        ToolbarHelper::unpublish('storage.unpublish', 'unpublish', '', Text::_('COM_CONTENTBUILDER_UNPUBLISH'), false);
-        ToolbarHelper::unpublish('storage.listdelete', 'delete', '', Text::_('COM_CONTENTBUILDER_DELETE_FIELDS'), false);
+        ToolbarHelper::publish('storage.publish');
+        ToolbarHelper::unpublish('storage.unpublish');
+        ToolbarHelper::deleteList('storage.listdelete', 'delete', '', Text::_('COM_CONTENTBUILDER_DELETE_FIELDS'), false);
 
         ToolbarHelper::cancel('storage.cancel', $isNew ? 'JTOOLBAR_CANCEL' : 'JTOOLBAR_CLOSE');
 

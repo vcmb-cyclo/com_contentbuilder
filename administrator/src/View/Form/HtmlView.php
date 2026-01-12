@@ -56,7 +56,7 @@ class HtmlView extends BaseHtmlView
                 // IMPORTANT : fournir le form id au ListModel
                 $elementsModel->setFormId($formId);
 
-                // charge les items
+                // Charge les items
                 $this->elements   = $elementsModel->getItems();
                 $this->pagination = $elementsModel->getPagination();
                 $this->state      = $elementsModel->getState();
@@ -79,7 +79,7 @@ class HtmlView extends BaseHtmlView
 
         ToolbarHelper::apply('form.apply');
         ToolbarHelper::save('form.save');
-        ToolbarHelper::save2new('form.save2new', 'save', '', Text::_('COM_CONTENTBUILDER_SAVENEW'), false);
+        ToolbarHelper::save2new('form.save2new');
 
         ToolbarHelper::custom('form.list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_LIST_INCLUDE'), false);
         ToolbarHelper::custom('form.no_list_include', 'menu', '', Text::_('COM_CONTENTBUILDER_NO_LIST_INCLUDE'), false);
@@ -87,17 +87,20 @@ class HtmlView extends BaseHtmlView
         ToolbarHelper::custom('form.editable', 'edit', '', Text::_('COM_CONTENTBUILDER_EDITABLE'), false);
         ToolbarHelper::custom('form.not_editable', 'edit', '', Text::_('COM_CONTENTBUILDER_NOT_EDITABLE'), false);
 
-        ToolbarHelper::publish('form.publish', 'publish', '', Text::_('COM_CONTENTBUILDER_PUBLISH'), false);
-        ToolbarHelper::unpublish('form.unpublish', 'unpublish', '', Text::_('COM_CONTENTBUILDER_UNPUBLISH'), false);
+        ToolbarHelper::publish('form.publish');
+        ToolbarHelper::unpublish('form.unpublish');
 
         ToolbarHelper::cancel('form.cancel', $isNew ? 'JTOOLBAR_CLOSE' : 'JTOOLBAR_CLOSE');
 
         // Compat template / listes
-        $listOrder = $this->state?->get('list.ordering', 'ordering') ?? 'ordering';
-        $listDirn  = $this->state?->get('list.direction', 'asc') ?? 'asc';
+        $this->listOrder = (string) $this->state?->get('list.ordering', 'a.ordering');
+        $this->listDirn  = (string) $this->state?->get('list.direction', 'ASC');
 
-        // ordering actif seulement si on est trié par "ordering"
-        $this->ordering = ($listOrder === 'ordering');
+        $lists['order']     = $this->listOrder;
+        $lists['order_Dir'] = $this->listDirn;
+
+        // ordering actif seulement si tri par ordering
+        $this->ordering = in_array($this->listOrder, ['ordering', 'a.ordering'], true);
 
 
         // Données additionnelles

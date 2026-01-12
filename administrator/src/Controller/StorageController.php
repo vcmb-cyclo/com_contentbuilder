@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ContentBuilder Storage controller.
  *
@@ -26,7 +27,6 @@ use Joomla\Filesystem\File;
 use Joomla\Utilities\ArrayHelper;
 use CB\Component\Contentbuilder\Administrator\Helper\Logger;
 
-
 class StorageController extends BaseFormController
 {
     /**
@@ -34,6 +34,27 @@ class StorageController extends BaseFormController
      */
     protected $view_list = 'storages';
     protected $view_item = 'storage';
+
+    public function edit($key = null, $urlVar = null)
+    {
+        try {
+            $input = $this->input;
+
+            // Remap cid[] -> id si besoin
+            if (!$input->getInt('id')) {
+                $cid = $input->get('cid', [], 'array');
+                if (!empty($cid)) {
+                    $input->set('id', (int) $cid[0]);
+                }
+            }
+
+            return parent::edit($key, $urlVar);
+        } catch (\Throwable $e) {
+            $this->setMessage($e->getMessage(), 'warning');
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages', false));
+            return false;
+        }
+    }
 
     /**
      * Surcharge save pour rester compatible avec ton modèle legacy (store/storeCsv).
@@ -118,6 +139,40 @@ class StorageController extends BaseFormController
         return true;
     }
 
+    protected function getRedirectToItemAppend($recordId = null, $urlVar = 'id')
+    {
+        // Si le core ne passe pas l'id, on tente de le retrouver
+        if (!$recordId) {
+            // 1) depuis jform (POST)
+            $jform = $this->input->post->get('jform', [], 'array');
+            $recordId = (int) ($jform[$urlVar] ?? 0);
+
+            // 2) depuis l'input (GET/POST)
+            if (!$recordId) {
+                $recordId = (int) $this->input->getInt($urlVar, 0);
+            }
+
+            // 3) depuis le model state (si dispo)
+            if (!$recordId) {
+                $model = $this->getModel($this->view_item, '', ['ignore_request' => true]);
+                if ($model) {
+                    $recordId = (int) $model->getState($model->getName() . '.id', 0);
+                }
+            }
+        }
+
+        // Appel au core pour conserver tmpl, return, etc.
+        $append = parent::getRedirectToItemAppend($recordId, $urlVar);
+
+        // Filet de sécurité : si le parent n’a pas ajouté id=...
+        if ($recordId && strpos($append, $urlVar . '=') === false) {
+            $append .= '&' . $urlVar . '=' . (int) $recordId;
+        }
+
+        return $append;
+    }
+
+
 
     /**
      * Task: storage.delete (au lieu de remove)
@@ -171,7 +226,8 @@ class StorageController extends BaseFormController
         return $ok;
     }
 
-    public function save2new(){
+    public function save2new()
+    {
         $model = $this->getModel('Storage', 'Contentbuilder');
         $model->store();
 
@@ -179,7 +235,7 @@ class StorageController extends BaseFormController
         return true;
     }
 
- 
+
     public function add()
     {
         $this->setRedirect('index.php?option=com_contentbuilder&view=storage&layout=edit&id=0');
@@ -197,7 +253,7 @@ class StorageController extends BaseFormController
         return $this->storagesPublish(0, 'COM_CONTENTBUILDER_UNPUBLISHED');
     }
 
-  /* 
+    /* 
     public function publish()
     {
         $app = Factory::getApplication();
@@ -244,7 +300,7 @@ class StorageController extends BaseFormController
         $this->save(true);
     }
 
-   // Passe par le modèle.
+    // Passe par le modèle.
     private function storagesPublish(int $state, string $successMsgKey)
     {
         try {

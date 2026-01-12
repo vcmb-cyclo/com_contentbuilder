@@ -11,16 +11,14 @@
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\Editor\Editor;
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-
-
 ?>
+
 <style type="text/css">
     .cbPagesCounter {
         float: left;
@@ -704,7 +702,7 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
                             </th>
                             <th width="120">
                                 <?php if (!empty($this->elements) && is_array($this->elements)) : ?>
-                                    <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'ordering', $listDirn, $listOrder); ?>
+                                    <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'ordering', $this->listDirn, $this->listOrderr); ?>
                                     <?php //TODO: dragndrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->elements );   
                                     ?>
                                     <?php echo HTMLHelper::_('grid.order', $this->elements); ?>
@@ -713,119 +711,121 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
 
                         </tr>
                     </thead>
-                    <?php
-                    $k = 0;
-                    $n = count($this->elements);
-                    for ($i = 0; $i < $n; $i++) {
-                        $row = $this->elements[$i];
-                        $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                        $published = ContentbuilderHelper::listPublish('form', $row, $i);
-                        $list_include = ContentbuilderHelper::listIncludeInList('form', $row, $i);
-                        $search_include = ContentbuilderHelper::listIncludeInSearch('form', $row, $i);
-                        $linkable = ContentbuilderHelper::listLinkable('form', $row, $i);
-                        $editable = ContentbuilderHelper::listEditable('form', $row, $i);
-                    ?>
-                        <tr class="<?php echo "row$k"; ?>">
-                            <td valign="top">
-                                <?php echo $row->id; ?>
-                            </td>
-                            <td valign="top">
-                                <?php echo $checked; ?>
-                            </td>
-                            <td width="150" valign="top">
-                                <div style="cursor:pointer;width: 100%;display:block;"
-                                    id="itemLabels_<?php echo $row->id ?>"
-                                    onclick="document.getElementById('itemLabels<?php echo $row->id ?>').style.display='block';this.style.display='none';document.getElementById('itemLabels<?php echo $row->id ?>').focus();">
-                                    <b>
-                                        <?php echo htmlentities($row->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
-                                    </b>
-                                </div>
-                                <input class="form-control form-control-sm"
-                                    onblur="if(this.value=='') {this.value = 'Unnamed';} this.style.display='none';document.getElementById('itemLabels_<?php echo $row->id ?>').innerHTML='<b>'+this.value+'<b/>';document.getElementById('itemLabels_<?php echo $row->id ?>').style.display='block';"
-                                    id="itemLabels<?php echo $row->id ?>" type="text" style="display:none; width: 100%;"
-                                    name="jform[itemLabels][<?php echo $row->id ?>]"
-                                    value="<?php echo htmlentities($row->label ?? '', ENT_QUOTES, 'UTF-8') ?>" />
+                    <tbody>
+                        <?php
+                        $k = 0;
+                        $n = count($this->elements);
+                        for ($i = 0; $i < $n; $i++) {
+                            $row = $this->elements[$i];
+                            $checked = HTMLHelper::_('grid.id', $i, $row->id);
+                            $published = ContentbuilderHelper::listPublish('form', $row, $i);
+                            $list_include = ContentbuilderHelper::listIncludeInList('form', $row, $i);
+                            $search_include = ContentbuilderHelper::listIncludeInSearch('form', $row, $i);
+                            $linkable = ContentbuilderHelper::listLinkable('form', $row, $i);
+                            $editable = ContentbuilderHelper::listEditable('form', $row, $i);
+                        ?>
+                            <tr class="<?php echo "row$k"; ?>">
+                                <td valign="top">
+                                    <?php echo $row->id; ?>
+                                </td>
+                                <td valign="top">
+                                    <?php echo $checked; ?>
+                                </td>
+                                <td width="150" valign="top">
+                                    <div style="cursor:pointer;width: 100%;display:block;"
+                                        id="itemLabels_<?php echo $row->id ?>"
+                                        onclick="document.getElementById('itemLabels<?php echo $row->id ?>').style.display='block';this.style.display='none';document.getElementById('itemLabels<?php echo $row->id ?>').focus();">
+                                        <b>
+                                            <?php echo htmlentities($row->label ?? '', ENT_QUOTES, 'UTF-8'); ?>
+                                        </b>
+                                    </div>
+                                    <input class="form-control form-control-sm"
+                                        onblur="if(this.value=='') {this.value = 'Unnamed';} this.style.display='none';document.getElementById('itemLabels_<?php echo $row->id ?>').innerHTML='<b>'+this.value+'<b/>';document.getElementById('itemLabels_<?php echo $row->id ?>').style.display='block';"
+                                        id="itemLabels<?php echo $row->id ?>" type="text" style="display:none; width: 100%;"
+                                        name="jform[itemLabels][<?php echo $row->id ?>]"
+                                        value="<?php echo htmlentities($row->label ?? '', ENT_QUOTES, 'UTF-8') ?>" />
 
-                                <br />
+                                    <br />
 
-                                <select class="form-select-sm" style="max-width: 125px;"
-                                    id="itemOrderTypes<?php echo $row->id ?>" name="jform[itemOrderTypes][<?php echo $row->id ?>]">
-                                    <option value=""> -
-                                        <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES'); ?> -
-                                    </option>
-                                    <option value="CHAR" <?php echo $row->order_type == 'CHAR' ? ' selected="selected"' : '' ?>>
-                                        <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_TEXT'); ?>
-                                    </option>
-                                    <option value="DATETIME" <?php echo $row->order_type == 'DATETIME' ? ' selected="selected"' : '' ?>>
-                                        <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_DATETIME'); ?>
-                                    </option>
-                                    <option value="DATE" <?php echo $row->order_type == 'DATE' ? ' selected="selected"' : '' ?>>
-                                        <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_DATE'); ?>
-                                    </option>
-                                    <option value="TIME" <?php echo $row->order_type == 'TIME' ? ' selected="selected"' : '' ?>>
-                                        <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_TIME'); ?>
-                                    </option>
-                                    <option value="UNSIGNED" <?php echo $row->order_type == 'UNSIGNED' ? ' selected="selected"' : '' ?>>
-                                        <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_INTEGER'); ?>
-                                    </option>
-                                    <option value="DECIMAL" <?php echo $row->order_type == 'DECIMAL' ? ' selected="selected"' : '' ?>>
-                                        <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_DECIMAL'); ?>
-                                    </option>
-                                </select>
+                                    <select class="form-select-sm" style="max-width: 125px;"
+                                        id="itemOrderTypes<?php echo $row->id ?>" name="jform[itemOrderTypes][<?php echo $row->id ?>]">
+                                        <option value=""> -
+                                            <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES'); ?> -
+                                        </option>
+                                        <option value="CHAR" <?php echo $row->order_type == 'CHAR' ? ' selected="selected"' : '' ?>>
+                                            <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_TEXT'); ?>
+                                        </option>
+                                        <option value="DATETIME" <?php echo $row->order_type == 'DATETIME' ? ' selected="selected"' : '' ?>>
+                                            <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_DATETIME'); ?>
+                                        </option>
+                                        <option value="DATE" <?php echo $row->order_type == 'DATE' ? ' selected="selected"' : '' ?>>
+                                            <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_DATE'); ?>
+                                        </option>
+                                        <option value="TIME" <?php echo $row->order_type == 'TIME' ? ' selected="selected"' : '' ?>>
+                                            <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_TIME'); ?>
+                                        </option>
+                                        <option value="UNSIGNED" <?php echo $row->order_type == 'UNSIGNED' ? ' selected="selected"' : '' ?>>
+                                            <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_INTEGER'); ?>
+                                        </option>
+                                        <option value="DECIMAL" <?php echo $row->order_type == 'DECIMAL' ? ' selected="selected"' : '' ?>>
+                                            <?php echo Text::_('COM_CONTENTBUILDER_ORDER_TYPES_DECIMAL'); ?>
+                                        </option>
+                                    </select>
 
-                            </td>
-                            <td valign="top">
-                                <?php echo $list_include; ?>
-                            </td>
-                            <td valign="top">
-                                <?php echo $search_include; ?>
-                            </td>
-                            <td valign="top">
-                                <?php echo $linkable; ?>
-                            </td>
-                            <td valign="top">
-                                <?php echo $editable; ?>
-                                <?php
-                                if ($row->editable && !$this->item->edit_by_type) {
-                                    echo '<br/><br/>[<a href="index.php?option=com_contentbuilder&amp;view=elementoptions&amp;tmpl=component&amp;element_id=' . $row->id . '&amp;id=' . $this->item->id . '" title="" data-bs-toggle="modal" data-bs-target="#text-type-modal">' . $row->type . '</a>]';
-                                }
-                                ?>
-                            </td>
-                            <td valign="top">
-                                <input class="form-control form-control-sm w-100" type="text" style="width: 20px;"
-                                    name="jform[itemWordwrap][<?php echo $row->id ?>]"
-                                    value="<?php echo htmlentities($row->wordwrap ?? '', ENT_QUOTES, 'UTF-8') ?>" />
-                            </td>
-                            <td valign="top">
-                                <input class="form-control form-control-sm w-100" style="width: 150px;" type="text"
-                                    name="jform[itemWrapper][<?php echo $row->id ?>]"
-                                    value="<?php echo htmlentities($row->item_wrapper ?? '', ENT_QUOTES, 'UTF-8') ?>" />
-                            </td>
-                            <td valign="top">
-                                <?php echo $published; ?>
-                            </td>
-                            <td class="order" width="150" valign="top">
-                                <span>
-                                    <?php echo $this->pagination->orderUpIcon($i, true, 'form.orderup', 'Move Up', $this->ordering); ?>
-                                </span>
-                                <span>
-                                    <?php echo $this->pagination->orderDownIcon($i, $n, true, 'form.orderdown', 'Move Down', $this->ordering); ?>
-                                </span>
-                                <?php $disabled = $this->ordering ? '' : 'disabled="disabled"'; ?>
-                                <input
-                                    type="text"
-                                    name="jform[order][<?php echo (int) $row->id; ?>]"
-                                    size="3"
-                                    style="width:30px;text-align:center"
-                                    value="<?php echo (int) $row->ordering; ?>"
-                                    <?php echo $disabled; ?>
-                                    class="text_area" />
-                            </td>
-                        </tr>
-                    <?php
-                        $k = 1 - $k;
-                    }
-                    ?>
+                                </td>
+                                <td valign="top">
+                                    <?php echo $list_include; ?>
+                                </td>
+                                <td valign="top">
+                                    <?php echo $search_include; ?>
+                                </td>
+                                <td valign="top">
+                                    <?php echo $linkable; ?>
+                                </td>
+                                <td valign="top">
+                                    <?php echo $editable; ?>
+                                    <?php
+                                    if ($row->editable && !$this->item->edit_by_type) {
+                                        echo '<br/><br/>[<a href="index.php?option=com_contentbuilder&amp;view=elementoptions&amp;tmpl=component&amp;element_id=' . $row->id . '&amp;id=' . $this->item->id . '" title="" data-bs-toggle="modal" data-bs-target="#text-type-modal">' . $row->type . '</a>]';
+                                    }
+                                    ?>
+                                </td>
+                                <td valign="top">
+                                    <input class="form-control form-control-sm w-100" type="text" style="width: 20px;"
+                                        name="jform[itemWordwrap][<?php echo $row->id ?>]"
+                                        value="<?php echo htmlentities($row->wordwrap ?? '', ENT_QUOTES, 'UTF-8') ?>" />
+                                </td>
+                                <td valign="top">
+                                    <input class="form-control form-control-sm w-100" style="width: 150px;" type="text"
+                                        name="jform[itemWrapper][<?php echo $row->id ?>]"
+                                        value="<?php echo htmlentities($row->item_wrapper ?? '', ENT_QUOTES, 'UTF-8') ?>" />
+                                </td>
+                                <td valign="top">
+                                    <?php echo $published; ?>
+                                </td>
+                                <td class="order" width="150" valign="top">
+                                    <span>
+                                        <?php echo $this->pagination->orderUpIcon($i, true, 'form.orderup', 'Move Up', $this->ordering); ?>
+                                    </span>
+                                    <span>
+                                        <?php echo $this->pagination->orderDownIcon($i, $n, true, 'form.orderdown', 'Move Down', $this->ordering); ?>
+                                    </span>
+                                    <?php $disabled = $this->ordering ? '' : 'disabled="disabled"'; ?>
+                                    <input
+                                        type="text"
+                                        name="jform[order][<?php echo (int) $row->id; ?>]"
+                                        size="3"
+                                        style="width:30px;text-align:center"
+                                        value="<?php echo (int) $row->ordering; ?>"
+                                        <?php echo $disabled; ?>
+                                        class="text_area" />
+                                </td>
+                            </tr>
+                        <?php
+                            $k = 1 - $k;
+                        }
+                        ?>
+                    </tbody>                    
                     <tfoot>
                         <tr>
                             <td colspan="11">
@@ -2247,8 +2247,8 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
     <input type="hidden" name="limitstart" value="" />
     <input type="hidden" name="jform[ordering]" value="<?php echo $this->item->ordering; ?>" />
     <input type="hidden" name="jform[published]" value="<?php echo $this->item->published; ?>" />
-    <input type="hidden" name="list[ordering]" value="<?php echo htmlspecialchars($listOrder, ENT_QUOTES, 'UTF-8'); ?>" />
-    <input type="hidden" name="list[direction]" value="<?php echo htmlspecialchars($listDirn, ENT_QUOTES, 'UTF-8'); ?>" />
+    <input type="hidden" name="list[ordering]" value="<?php echo htmlspecialchars($this->listOrderr, ENT_QUOTES, 'UTF-8'); ?>" />
+    <input type="hidden" name="list[direction]" value="<?php echo htmlspecialchars($this->listDirn, ENT_QUOTES, 'UTF-8'); ?>" />
     <input type="hidden" name="boxchecked" value="0" />
     <input type="hidden" name="hidemainmenu" value="0" />
     <input type="hidden" name="tabStartOffset" value="<?php echo Factory::getApplication()->getSession()->get('tabStartOffset', 0); ?>" />

@@ -36,7 +36,7 @@ class FormTable extends Table
     public $tag = '';
     public $created = null;
     public $modified = null;
-    public $created_by = '';
+    public $created_by = 0;
     public $details_template = '';
     public $details_prepare = '';
     public $editable_template = '';
@@ -58,7 +58,7 @@ class FormTable extends Table
     public $email_admin_recipients_attach_uploads = '';
     public $email_admin_html = '';
 
-    public $modified_by = '';
+    public $modified_by = 0;
     public $print_button = 1;
     public $metadata = 1;
     public $export_xls = 0;

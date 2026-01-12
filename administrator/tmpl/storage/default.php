@@ -15,8 +15,8 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
-
 ?>
+
 <style type="text/css">
     .cbPagesCounter {
         float: left;
@@ -25,14 +25,6 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
     }
 </style>
 <script type="text/javascript">
-    Joomla.tableOrdering = function(order, dir, task) {
-        var form = document.adminForm;
-        form.limitstart.value = Joomla.getOptions('com_contentbuilder.limitstart', 0);
-        form.filter_order.value = order;
-        form.filter_order_Dir.value = dir;
-        Joomla.submitform(task, form);
-    };
-
     function saveorder(n, task) {
         checkAll_button(n, 'storage.listsaveorder');
     }
@@ -136,6 +128,11 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
         }
     }
 
+    if (typeof Joomla != 'undefined') {
+        Joomla.submitbutton = submitbutton;
+        Joomla.listItemTask = listItemTask;
+    }
+
     String.prototype.startsWith = function (str) {
         return (this.indexOf(str) === 0);
     }
@@ -159,7 +156,6 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
     <div class="col100" style="margin-left: 20px;overflow-x: auto;">
 
         <?php
-
         // Démarrer les onglets
         echo HTMLHelper::_('uitab.startTabSet', 'view-pane', ['active' => 'tab0']);
         // Premier onglet
@@ -557,17 +553,21 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                                 <td colspan="11">
                                     <div class="pagination pagination-toolbar">
                                         <div class="cbPagesCounter">
-                                            <?php echo $this->pagination->getPagesCounter(); ?>
+                                            <?php if (!empty($this->pagination)) {
+                                                echo $this->pagination->getPagesCounter();
+                                            } ?>
                                             <?php
                                             echo '<span>' . Text::_('COM_CONTENTBUILDER_DISPLAY_NUM') . '&nbsp;</span>';
-                                            echo '<div style="display:inline-block;">' . $this->pagination->getLimitBox() . '</div>';
+                                            echo '<div style="display:inline-block;">' . (empty($this->pagination) ? '' : $this->pagination->getLimitBox()) . '</div>';
                                             ?>
                                         </div>
-                                        <?php echo $this->pagination->getPagesLinks(); ?>
+                                        <?php if (!empty($this->pagination)) {
+                                            echo $this->pagination->getPagesLinks();
+                                        } ?>
                                     </div>
                                 </td>
                             </tr>
-                        </tfoot>
+                        </tfoot>        
 
                     </table>
 
@@ -587,12 +587,13 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
     <input type="hidden" name="option" value="com_contentbuilder" />
     <input type="hidden" name="id" value="<?php echo $this->form->id; ?>" />
+    <input type="hidden" name="jform[id]" value="<?php echo (int) $this->item->id; ?>" />
     <input type="hidden" name="task" value="storage.edit" />
-    <input type="hidden" name="limitstart" value="" />
-    <input type="hidden" name="ordering" value="<?php echo $this->form->ordering; ?>" />
+    <input type="hidden" name="jform[ordering]" value="<?php echo $this->item->ordering; ?>" />
+    <input type="hidden" name="jform[published]" value="<?php echo $this->item->published; ?>" />
+    <input type="hidden" name="list[ordering]" value="<?php echo htmlspecialchars($listOrder, ENT_QUOTES, 'UTF-8'); ?>" />
+    <input type="hidden" name="list[direction]" value="<?php echo htmlspecialchars($listDirn, ENT_QUOTES, 'UTF-8'); ?>" />
     <input type="hidden" name="published" value="<?php echo $this->form->published; ?>" />
-    <input type="hidden" name="filter_order" value="" />
-    <input type="hidden" name="filter_order_Dir" value="" />
     <input type="hidden" name="boxchecked" value="0" />
     <input type="hidden" name="tabStartOffset" value="<?php echo Factory::getApplication()->getSession()->get('tabStartOffset', 0); ?>" />
     <?php echo HTMLHelper::_('form.token'); ?>

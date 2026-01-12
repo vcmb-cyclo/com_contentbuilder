@@ -46,7 +46,9 @@ class FormsModel extends ListModel
                 'a.display_in',
                 'display_in',
                 'a.published',
-                'published'
+                'published',
+                'a.modified',
+                'modified'
             ];
         }
 
@@ -80,8 +82,7 @@ class FormsModel extends ListModel
         // Published filter (forms_filter_state: 'P' or 'U')
         $filterState = (string) $this->getState('forms_filter_state');
 
-        if ($filterState === 'P' || $filterState === 'U')
-        {
+        if ($filterState === 'P' || $filterState === 'U') {
             $published = ($filterState === 'P') ? 1 : 0;
             $query->where($db->quoteName('a.published') . ' = ' . (int) $published);
         }
@@ -91,15 +92,13 @@ class FormsModel extends ListModel
         $direction = strtoupper((string) $this->getState('list.direction', 'DESC'));
 
         // Petite sécurité sur la direction
-        if (!in_array($direction, ['ASC', 'DESC'], true))
-        {
+        if (!in_array($direction, ['ASC', 'DESC'], true)) {
             $direction = 'DESC';
         }
 
         // Optionnel : whitelist rapide des colonnes triables
-        $allowedOrdering = ['a.id', 'a.title', 'a.published', 'a.created', 'a.ordering'];
-        if (!in_array($ordering, $allowedOrdering, true))
-        {
+        $allowedOrdering = ['a.id', 'a.name', 'a.tag', 'a.title', 'a.type', 'a.display_in', 'a.published', 'a.created', 'a.modified', 'a.ordering'];
+        if (!in_array($ordering, $allowedOrdering, true)) {
             $ordering = 'a.id';
         }
 
