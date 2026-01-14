@@ -366,6 +366,52 @@ class com_contentbuilderInstallerScript extends InstallerScript
     $this->removeOldLibraries();
     $this->updateDateColumns();
 
+
+    // On ne fait ça que sur update (et éventuellement discover_install si tu veux)
+    if ($type !== 'update') {
+      return;
+    }
+
+    $table = $db->quoteName('#__contentbuilder_storages');
+
+    // Vérifie l’existence de la table
+    try {
+      $tables = $db->getTableList();
+      $expected = $db->getPrefix() . 'contentbuilder_storages';
+
+      if (!in_array($expected, $tables, true)) {
+        return; // table pas présente => rien à faire
+      }
+    } catch (\Throwable $e) {
+      // Si getTableList foire sur un driver, on tente quand même.
+    }
+
+    // Y a-t-il des ordering à 0 ?
+    $db->setQuery("SELECT COUNT(*) FROM $table WHERE ordering = 0");
+    $needFix = (int) $db->loadResult();
+
+    if ($needFix === 0) {
+      return;
+    }
+
+    // Max ordering existant (si tout est à 0, max = 0)
+    $db->setQuery("SELECT COALESCE(MAX(ordering), 0) FROM $table");
+    $max = (int) $db->loadResult();
+
+    // IDs à réparer (ordering = 0)
+    $db->setQuery("SELECT id FROM $table WHERE ordering = 0 ORDER BY id");
+    $ids = $db->loadColumn() ?: [];
+
+    // Mise à jour séquentielle
+    $order = $max;
+    foreach ($ids as $id) {
+      $order++;
+
+      $db->setQuery(
+        "UPDATE $table SET ordering = " . (int) $order . " WHERE id = " . (int) $id
+      );
+      $db->execute();
+    }
     // try to restore the main menu items if they got lost
     /*
     $db->setQuery("Select component_id From #__menu Where `link`='index.php?option=com_contentbuilder' And parent_id = 1");

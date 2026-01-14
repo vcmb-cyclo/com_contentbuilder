@@ -37,6 +37,7 @@ final class StoragesController extends AdminController
 
         // Register Extra tasks
         $this->registerTask('add', 'edit');
+        
     }
 
     /**
@@ -212,13 +213,6 @@ final class StoragesController extends AdminController
         CBRequest::setVar('filter_order_Dir', 'asc');
         CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
         parent::display();
-    }
-
-    public function orderdown()
-    {
-        $model = $this->getModel('Storage', 'Contentbuilder');
-        $model->move(1);
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . CBRequest::getInt('limitstart'), false));
     }
 
     public function listorderdown()

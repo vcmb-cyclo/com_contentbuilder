@@ -114,12 +114,13 @@
            filter="raw" rows="12" />
 
     <field name="editable_prepare" type="editor"
+           hiddenLabel="true"
            label="COM_CONTENTBUILDER_FIELD_EDITABLE_PREPARE"
            filter="raw"
-            width="100%"
-            height="550"
-            rows="20"
-            cols="75"
+           width="100%"
+           height="550"
+           rows="20"
+           cols="75"
     />
 
   </fieldset>

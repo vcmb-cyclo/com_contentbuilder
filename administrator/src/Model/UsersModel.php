@@ -24,17 +24,16 @@ class UsersModel extends ListModel
         if (empty($config['filter_fields'])) {
             $config['filter_fields'] = [
                 // #__users
-                'u.id', 'id',
-                'u.name', 'name',
-                'u.username', 'username',
-                'u.email', 'email',
-
+                'u.id',
+                'u.name',
+                'u.username',
+                'u.email',
                 // #__contentbuilder_users (alias a)
-                'a.verified_view', 'verified_view',
-                'a.verified_new', 'verified_new',
-                'a.verified_edit', 'verified_edit',
-                'a.records', 'records',
-                'a.published', 'published',
+                'a.verified_view', 
+                'a.verified_new', 
+                'a.verified_edit',
+                'a.records', 
+                'a.published'
             ];
         }
 

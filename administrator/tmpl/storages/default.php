@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     ContentBuilder
  * @author      Markus Bopp / XDA + GIL
@@ -7,155 +8,166 @@
  * @license     GNU/GPL
  */
 
-
-
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
-$___tableOrdering = "Joomla.tableOrdering = function";
+// Charge les scripts Joomla nécessaires (checkAll, submit, etc.)
+HTMLHelper::_('behavior.core');
+HTMLHelper::_('behavior.multiselect');
+
+// Sécurité: valeurs par défaut
+$order     = $this->lists['order'] ?? 'a.ordering';
+$orderDir  = $this->lists['order_Dir'] ?? 'asc';
+
+// Les flèches d'ordering ne doivent être actives QUE si on est trié sur ordering
+$saveOrder = ($order === 'a.ordering');
+
+$n = is_countable($this->items) ? count($this->items) : 0;
+
+// limitstart courant (évite CBRequest/eval)
+$app = Factory::getApplication();
+$limitstart = $app->input->getInt('limitstart', 0);
 ?>
-<style type="text/css">
-    .cbPagesCounter {
-        float: left;
-        padding-right: 10px;
-        padding-top: 4px;
-    }
-</style>
-<script language="javascript" type="text/javascript">
-<!--
-<?php echo $___tableOrdering; ?>(order, dir, task) {
-        var form = document.adminForm;
-        form.limitstart.value = <?php echo CBRequest::getInt('limitstart', 0) ?>;
-        form.filter_order.value = order;
-        form.filter_order_Dir.value = dir;
-        document.adminForm.submit(task);
-    };
-    function listItemTask(id, task) {
 
-        var f = document.adminForm;
-        f.limitstart.value = <?php echo CBRequest::getInt('limitstart', 0) ?>;
-        cb = eval('f.' + id);
+<form action="<?php echo Route::_('index.php?option=com_contentbuilder&view=storages'); ?>"
+    method="post"
+    name="adminForm"
+    id="adminForm">
 
-        if (cb) {
-            for (i = 0; true; i++) {
-                cbx = eval('f.cb' + i);
-                if (!cbx) break;
-                cbx.checked = false;
-            } // for
-            cb.checked = true;
-            f.boxchecked.value = 1;
-
-            Joomla.submitbutton(task);
-        }
-        return false;
-    }
-    if (typeof Joomla != 'undefined') {
-        Joomla.listItemTask = listItemTask;
-    }
-    //-->
-</script>
-<form action="index.php?option=com_contentbuilder&view=storages" method="post" name="adminForm" id="adminForm">
-
-    <div id="editcell">
-        <table class="adminlist table table-striped">
+    <div class="table-responsive">
+        <table class="table table-striped">
             <thead>
                 <tr>
-                    <th width="5">
-                        <?php echo Text::_('COM_CONTENTBUILDER_ID'); ?>
+                    <th class="w-1 text-nowrap"><?php echo Text::_('COM_CONTENTBUILDER_ID'); ?></th>
+
+                    <th class="w-1 text-center">
+                        <?php echo HTMLHelper::_('grid.checkall'); ?>
                     </th>
-                    <th width="20">
-                        <input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this);" />
-                    </th>
+
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_NAME'), 'a.name', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_(
+                            'grid.sort',
+                            Text::_('COM_CONTENTBUILDER_NAME'),
+                            'a.name',
+                            $orderDir,
+                            $order
+                        ); ?>
                     </th>
+
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_STORAGE_TITLE'), 'a.title', $this->lists['order_Dir'], $this->lists['order']); ?>
+                        <?php echo HTMLHelper::_(
+                            'grid.sort',
+                            Text::_('COM_CONTENTBUILDER_STORAGE_TITLE'),
+                            'a.title',
+                            $orderDir,
+                            $order
+                        ); ?>
                     </th>
-                    <th width="120">
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'a.ordering', 'desc', @$this->lists['order']); ?>
-                        <?php // TODO: dragandrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->items );   ?>
+
+                    <th class="w-10 text-nowrap">
+                        <?php echo HTMLHelper::_(
+                            'grid.sort',
+                            Text::_('COM_CONTENTBUILDER_ORDERBY'),
+                            'a.ordering',
+                            $orderDir,
+                            $order
+                        ); ?>
                     </th>
-                    <th width="5">
-                        <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED'); ?>
+
+                    <th class="w-1 text-center">
+                        <?php echo HTMLHelper::_(
+                            'grid.sort',
+                            Text::_('COM_CONTENTBUILDER_PUBLISHED'),
+                            'a.published',
+                            $orderDir,
+                            $order
+                        ); ?>
                     </th>
                 </tr>
             </thead>
-            <?php
-            $k = 0;
-            $n = count($this->items);
-            for ($i = 0; $i < $n; $i++) {
-                $row = $this->items[$i];
-                $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                $link = Route::_('index.php?option=com_contentbuilder&task=storage.edit&id=' . (int) $row->id);
-                $published = ContentbuilderHelper::listPublish('storages', $row, $i);
-                ?>
-                <tr class="<?php echo "row$k"; ?>">
-                    <td>
-                        <?php echo $row->id; ?>
-                    </td>
-                    <td>
-                        <?php echo $checked; ?>
-                    </td>
-                    <td>
-                        <a href="<?php echo $link; ?>">
-                            <?php echo $row->name; ?>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="<?php echo $link; ?>">
-                            <?php echo $row->title; ?>
-                        </a>
-                    </td>
-                    <td class="order" nowrap="nowrap">
-                        <span>
-                            <?php echo $this->pagination->orderUpIcon($i, true, 'storages.orderup', 'Move Up', $this->ordering); ?>
-                        </span>
-                        <span>
-                            <?php echo $this->pagination->orderDownIcon($i, $n, true, 'storages.orderdown', 'Move Down', $this->ordering); ?>
-                        </span>
-                        <?php $disabled = $this->ordering ? '' : 'disabled="disabled"'; ?>
 
-                    </td>
-                    <td>
-                        <?php echo $published; ?>
-                    </td>
-                </tr>
-                <?php
-                $k = 1 - $k;
-            }
-            ?>
+            <tbody>
+                <?php if ($n === 0) : ?>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+                        </td>
+                    </tr>
+                <?php else : ?>
+                    <?php foreach ($this->items as $i => $row) :
+
+                        $id        = (int) ($row->id ?? 0);
+                        $name      = htmlspecialchars((string) ($row->name ?? ''), ENT_QUOTES, 'UTF-8');
+                        $title     = htmlspecialchars((string) ($row->title ?? ''), ENT_QUOTES, 'UTF-8');
+
+                        // ⚠️ Vérifie ta convention : task=storage.edit (singulier) ou storages.edit (pluriel)
+                        $link = Route::_('index.php?option=com_contentbuilder&task=storage.edit&id=' . $id);
+
+                        $checked   = HTMLHelper::_('grid.id', $i, $id);
+                        $published = HTMLHelper::_('jgrid.published', $row->published, $i, 'storages.', true);
+
+                    ?>
+                    <tr>
+                        <td class="text-nowrap"><?php echo $id; ?></td>
+                        <td class="text-center"><?php echo $checked; ?></td>
+
+                        <td><a href="<?php echo $link; ?>"><?php echo $name; ?></a></td>
+                        <td><a href="<?php echo $link; ?>"><?php echo $title; ?></a></td>
+
+                        <td class="order text-nowrap">
+                            <?php if ($saveOrder) : ?>
+                                <span class="me-2">
+                                    <?php echo $this->pagination->orderUpIcon($i, $saveOrder, 'storages.orderup', 'JLIB_HTML_MOVE_UP', $saveOrder); ?>
+                                </span>
+                                <span>
+                                    <?php echo $this->pagination->orderDownIcon($i, $n, $saveOrder, 'storages.orderdown', 'JLIB_HTML_MOVE_DOWN', $saveOrder); ?>
+                                </span>
+                            <?php endif; ?>
+                        </td>
+
+                        <td class="text-center">
+                            <?php echo $published; ?>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+
             <tfoot>
                 <tr>
-                    <td colspan="8">
-                        <div class="pagination pagination-toolbar">
-                            <div class="cbPagesCounter">
+                    <td colspan="6">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+
+                            <div class="d-flex flex-wrap align-items-center gap-2">
                                 <?php echo $this->pagination->getPagesCounter(); ?>
-                                <?php
-                                echo '<span>' . Text::_('COM_CONTENTBUILDER_DISPLAY_NUM') . '&nbsp;</span>';
-                                echo '<div style="display:inline-block;">' . $this->pagination->getLimitBox() . '</div>';
-                                ?>
+                                <span><?php echo Text::_('COM_CONTENTBUILDER_DISPLAY_NUM'); ?></span>
+                                <span class="d-inline-block"><?php echo $this->pagination->getLimitBox(); ?></span>
+                                <span><?php echo Text::_('COM_CONTENTBUILDER_OF'); ?></span>
+                                <span><?php echo (int) ($this->pagination->total ?? 0); ?></span>
                             </div>
-                            <?php echo $this->pagination->getPagesLinks(); ?>
+
+                            <div>
+                                <?php echo $this->pagination->getPagesLinks(); ?>
+                            </div>
+
                         </div>
                     </td>
                 </tr>
             </tfoot>
-
         </table>
     </div>
 
-    <input type="hidden" name="option" value="com_contentbuilder" />
-    <input type="hidden" name="task" value="" />
-    <input type="hidden" name="limitstart" value="" />
-    <input type="hidden" name="boxchecked" value="0" />
-    <input type="hidden" name="filter_order" value="<?php echo $this->lists['order']; ?>" />
-    <input type="hidden" name="filter_order_Dir" value="<?php echo $this->lists['order_Dir']; ?>" />
+    <input type="hidden" name="option" value="com_contentbuilder">
+    <input type="hidden" name="task" value="">
+    <input type="hidden" name="limitstart" value="<?php echo (int) $limitstart; ?>">
+    <input type="hidden" name="boxchecked" value="0">
+    <input type="hidden" name="filter_order" value="<?php echo htmlspecialchars($order, ENT_QUOTES, 'UTF-8'); ?>">
+    <input type="hidden" name="filter_order_Dir" value="<?php echo htmlspecialchars($orderDir, ENT_QUOTES, 'UTF-8'); ?>">
+
     <?php echo HTMLHelper::_('form.token'); ?>
 </form>

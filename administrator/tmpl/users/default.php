@@ -93,22 +93,28 @@ $search    = $this->state->get('filter.search');
                             onclick="Joomla.checkAll(this);" />
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', 'Name', 'u.name', $direction, $ordering); ?>
+                        <?php echo HTMLHelper::_(
+                            'grid.sort', 'Name', 'u.name', $direction, $ordering); ?>
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', 'Username', 'u.username', $direction, $ordering); ?>
+                        <?php echo HTMLHelper::_(
+                            'grid.sort', 'Username', 'u.username', $direction, $ordering); ?>
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_VERIFIED_VIEW'), 'a.verified_view', $direction, $ordering); ?>
+                        <?php echo HTMLHelper::_(
+                            'grid.sort', Text::_('COM_CONTENTBUILDER_VERIFIED_VIEW'), 'a.verified_view', $direction, $ordering); ?>
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_VERIFIED_NEW'),  'a.verified_new',  $direction, $ordering); ?>
+                        <?php echo HTMLHelper::_(
+                            'grid.sort', Text::_('COM_CONTENTBUILDER_VERIFIED_NEW'),  'a.verified_new',  $direction, $ordering); ?>
                     </th>
                     <th>
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_VERIFIED_EDIT'), 'a.verified_edit', $direction, $ordering); ?>
+                        <?php echo HTMLHelper::_(
+                            'grid.sort', Text::_('COM_CONTENTBUILDER_VERIFIED_EDIT'), 'a.verified_edit', $direction, $ordering); ?>
                     </th>
                     <th width="5">
-                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_PUBLISHED'),     'a.published',     $direction, $ordering); ?>
+                        <?php echo HTMLHelper::_(
+                            'grid.sort', Text::_('COM_CONTENTBUILDER_PUBLISHED'),     'a.published',     $direction, $ordering); ?>
                     </th>
                 </tr>
             </thead>

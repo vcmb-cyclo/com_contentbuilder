@@ -35,15 +35,11 @@ class StoragesModel extends ListModel
         if (empty($config['filter_fields'])) {
             $config['filter_fields'] = [
                 'a.id',
-                'id',
                 'a.name',
-                'name',
                 'a.title',
-                'title',
                 'a.display_in',
-                'display_in',
                 'a.published',
-                'published'
+                'a.modified'
             ];
         }
 
@@ -92,7 +88,7 @@ class StoragesModel extends ListModel
         }
 
         // Optionnel : whitelist rapide des colonnes triables
-        $allowedOrdering = ['a.id', 'a.title', 'a.published', 'a.created', 'a.ordering'];
+        $allowedOrdering = ['a.id', 'a.title', 'a.published', 'a.ordering'];
         if (!in_array($ordering, $allowedOrdering, true)) {
             $ordering = 'a.id';
         }

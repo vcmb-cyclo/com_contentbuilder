@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package     ContentBuilder
  * @author      Markus Bopp / XDA+GIL
@@ -14,146 +15,36 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 ?>
 
-<style type="text/css">
-    .cbPagesCounter {
-        float: left;
-        padding-right: 10px;
-        padding-top: 4px;
-    }
-</style>
-<script type="text/javascript">
-    function saveorder(n, task) {
-        checkAll_button(n, 'storage.listsaveorder');
-    }
+<script>
+function listItemTask(id, task) {
+  const form = document.getElementById('adminForm');
+  if (!form) return false;
 
-    function listItemTask(id, task) {
+  // décocher tous les cb*
+  form.querySelectorAll('input[type="checkbox"][name^="cb"]').forEach(cb => cb.checked = false);
 
-        var f = document.adminForm;
-        f.limitstart.value = <?php echo CBRequest::getInt('limitstart', 0) ?>;
-        cb = eval('f.' + id);
+  const target = form.querySelector('#' + CSS.escape(id)) || form.elements[id];
+  if (!target) return false;
 
-        if (cb) {
-            for (i = 0; true; i++) {
-                cbx = eval('f.cb' + i);
-                if (!cbx) break;
-                cbx.checked = false;
-            } // for
-            cb.checked = true;
-            f.boxchecked.value = 1;
-            switch (task) {
-                case 'storage.delete':
-                    task = 'storage.listdelete';
-                    break;
-                case 'publish':
-                    task = 'storage.listpublish';
-                    break;
-                case 'unpublish':
-                    task = 'storage.listunpublish';
-                    break;
-                case 'orderdown':
-                    task = 'storage.listorderdown';
-                    break;
-                case 'orderup':
-                    task = 'storage.listorderup';
-                    break;
-            }
+  target.checked = true;
+  const boxchecked = form.querySelector('input[name="boxchecked"]');
+  if (boxchecked) boxchecked.value = 1;
 
-            submitbutton(task);
-        }
-        return false;
-    }
+  Joomla.submitform(task, form);
+  return false;
+}
 
-    function submitbutton(task) {
-    
-        if (task == 'storage.delete') {
-            task = 'storage.listdelete';
-        }
-
-        if (task == 'storage.listdelete') {
-            var result = confirm("<?php echo addslashes(Text::_('COM_CONTENTBUILDER_STORAGE_DELETE_WARNING')); ?>");
-            if (!result) {
-                return;
-            }
-        }
-
-        switch (task) {
-            case 'storage.cancel':
-            case 'storage.listdelete':
-            case 'storage.listpublish':
-            case 'storage.listunpublish':
-            case 'storage.listorderdown':
-            case 'storage.listorderup':
-                Joomla.submitform(task);
-                break;
-            case 'storage.save':
-            case 'storage.save2new':
-            case 'storage.apply':
-                var error = false;
-                var nodes = document.adminForm['cid[]'];
-
-                if (document.getElementById('bytable').selectedIndex == 0) {
-                    if (document.getElementById('name').value == '') {
-                        error = true;
-                        alert("<?php echo addslashes(Text::_('COM_CONTENTBUILDER_ERROR_ENTER_STORAGENAME')); ?>");
-                    }
-                    else if (nodes) {
-                        if (typeof nodes.value != 'undefined') {
-                            if (nodes.checked && document.adminForm['itemNames[' + nodes.value + ']'].value == '') {
-                                error = true;
-                                alert("<?php echo addslashes(Text::_('COM_CONTENTBUILDER_ERROR_ENTER_STORAGENAME')); ?>");
-                                break;
-                            }
-                        }
-                        else {
-                            for (var i = 0; i < nodes.length; i++) {
-                                if (nodes[i].checked && document.adminForm['itemNames[' + nodes[i].value + ']'].value == '') {
-                                    error = true;
-                                    alert("<?php echo addslashes(Text::_('COM_CONTENTBUILDER_ERROR_ENTER_STORAGENAME')); ?>");
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                }
-
-                if (!error) {
-                    Joomla.submitform(task);
-                }
-
-                break;
-        }
-    }
-
-    if (typeof Joomla != 'undefined') {
-        Joomla.submitbutton = submitbutton;
-        Joomla.listItemTask = listItemTask;
-    }
-
-    String.prototype.startsWith = function (str) {
-        return (this.indexOf(str) === 0);
-    }
-
-    String.prototype.endsWith = function (suffix) {
-        return this.indexOf(suffix, this.length - suffix.length) !== -1;
-    };
-
-    if (typeof Joomla != 'undefined') {
-        Joomla.submitbutton = submitbutton;
-        Joomla.listItemTask = listItemTask;
-    }
+// Joomla utilise souvent Joomla.listItemTask
+if (typeof Joomla !== 'undefined') {
+  Joomla.listItemTask = listItemTask;
+}
 </script>
-<style type="text/css">
-    label {
-        display: inline;
-    }
-</style>
 
-<form action="index.php" method="post" name="adminForm" id="adminForm" enctype="multipart/form-data">
-    <div class="col100" style="margin-left: 20px;overflow-x: auto;">
+
+<form action="<?php echo \Joomla\CMS\Router\Route::_('index.php?option=com_contentbuilder&task=storage.edit&id=' . (int) $this->item->id); ?>"
+      method="post" name="adminForm" id="adminForm" enctype="multipart/form-data">
 
         <?php
         // Démarrer les onglets
@@ -181,20 +72,20 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                                 <td>
                                     <?php
                                     if (!$this->item->bytable) {
-                                        ?>
+                                    ?>
                                         <input class="form-control form-control-sm w-100" type="text" id="name" name="jform[name]"
                                             value="<?php echo htmlentities($this->item->name ?? '', ENT_QUOTES, 'UTF-8'); ?>" />
                                         <br /><br />
-                                        <?php
+                                    <?php
                                     } else {
-                                        ?>
+                                    ?>
                                         <input type="hidden" id="name" name="jform[name]"
                                             value="<?php echo htmlentities($this->item->name, ENT_QUOTES, 'UTF-8'); ?>" />
-                                        <?php
+                                    <?php
                                     }
 
                                     if (!$this->item->id) {
-                                        ?>
+                                    ?>
                                         <b>
                                             <?php echo Text::_('COM_CONTENTBUILDER_CHOOSE_TABLE'); ?>
                                         </b>
@@ -207,25 +98,25 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                                             </option>
                                             <?php
                                             foreach ($this->tables as $table) {
-                                                ?>
+                                            ?>
                                                 <option value="<?php echo htmlentities($table, ENT_QUOTES, 'UTF-8'); ?>">
                                                     <?php echo htmlentities($table, ENT_QUOTES, 'UTF-8'); ?>
                                                 </option>
-                                                <?php
+                                            <?php
                                             }
                                             ?>
                                         </select>
-                                        <?php
+                                    <?php
                                     } else if ($this->item->bytable) {
-                                        ?>
-                                            <input type="hidden" id="bytable" name="jform[bytable]"
-                                                value="<?php echo htmlentities($this->item->name, ENT_QUOTES, 'UTF-8'); ?>" />
+                                    ?>
+                                        <input type="hidden" id="bytable" name="jform[bytable]"
+                                            value="<?php echo htmlentities($this->item->name, ENT_QUOTES, 'UTF-8'); ?>" />
                                         <?php echo htmlentities($this->item->name, ENT_QUOTES, 'UTF-8'); ?>
-                                        <?php
+                                    <?php
                                     } else if (!$this->item->bytable) {
-                                        ?>
-                                                <input type="hidden" id="bytable" name="jform[bytable]" value="" />
-                                        <?php
+                                    ?>
+                                        <input type="hidden" id="bytable" name="jform[bytable]" value="" />
+                                    <?php
                                     }
                                     ?>
                                 </td>
@@ -362,7 +253,7 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                     </fieldset>
                     <?php
                     if (!$this->item->bytable) {
-                        ?>
+                    ?>
                         <fieldset class="adminform">
                             <legend>
                                 <?php echo Text::_('COM_CONTENTBUILDER_STORAGE_NEW_FIELD'); ?>
@@ -438,7 +329,7 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                                 </tr>
                             </table>
                         </fieldset>
-                        <?php
+                    <?php
                     }
                     ?>
                 </td>
@@ -465,7 +356,8 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                                 </th>
                                 <th>
                                     <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'ordering', 'desc', @$this->lists['order'], 'edit'); ?>
-                                    <?php // TODO: draganddrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->elements );  ?>
+                                    <?php // TODO: draganddrop if ($this->ordering) echo HTMLHelper::_('grid.order',  $this->elements );  
+                                    ?>
                                 </th>
                                 <th>
                                     <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED'); ?>
@@ -473,81 +365,47 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                             </tr>
                         </thead>
                         <?php
-                        $k = 0;
-                        $n = count($this->elements ?? []);
-                        for ($i = 0; $i < $n; $i++) {
-                            $row = $this->elements[$i];
-                            $checked = HTMLHelper::_('grid.id', $i, $row->id);
-                            $published = ContentbuilderHelper::listPublish('storage', $row, $i);
-                            ?>
-                            <tr class="<?php echo "row$k"; ?>">
-                                <td>
-                                    <?php echo $row->id; ?>
-                                </td>
-                                <td align="center">
-                                    <?php echo $checked; ?>
-                                </td>
-                                <td width="100">
-                                    <div style="cursor:pointer;width: 100%;display:block;"
-                                        id="itemNames_<?php echo $row->id ?>"
-                                        onclick="if(<?php echo $this->item->bytable ? 'true' : 'false'; ?>){ return; }document.getElementById('itemNames<?php echo $row->id ?>').style.display='block';this.style.display='none';document.getElementById('itemNames<?php echo $row->id ?>').focus();">
-                                        <?php echo htmlentities($row->name, ENT_QUOTES, 'UTF-8'); ?>
-                                    </div>
-                                    <input class="form-control form-control-sm w-100"
-                                        onblur="if(this.value=='') {this.value = 'Unnamed';} this.style.display='none';document.getElementById('itemNames_<?php echo $row->id ?>').innerHTML=this.value;document.getElementById('itemNames_<?php echo $row->id ?>').style.display='block';"
-                                        id="itemNames<?php echo $row->id ?>" type="text" style="display:none; width: 100%;"
-                                        name="itemNames[<?php echo $row->id ?>]"
-                                        value="<?php echo htmlentities($row->name, ENT_QUOTES, 'UTF-8') ?>" />
-                                </td>
-                                <td width="100">
-                                    <div style="cursor:pointer;width: 100%;display:block;"
-                                        id="itemTitles_<?php echo $row->id ?>"
-                                        onclick="document.getElementById('itemTitles<?php echo $row->id ?>').style.display='block';this.style.display='none';document.getElementById('itemTitles<?php echo $row->id ?>').focus();">
-                                        <?php echo htmlentities($row->title, ENT_QUOTES, 'UTF-8'); ?>
-                                    </div>
-                                    <input class="form-control form-control-sm w-100"
-                                        onblur="if(this.value=='') {this.value = 'Untitled';} this.style.display='none';document.getElementById('itemTitles_<?php echo $row->id ?>').innerHTML=this.value;document.getElementById('itemTitles_<?php echo $row->id ?>').style.display='block';"
-                                        id="itemTitles<?php echo $row->id ?>" type="text" style="display:none; width: 100%;"
-                                        name="itemTitles[<?php echo $row->id ?>]"
-                                        value="<?php echo htmlentities($row->title, ENT_QUOTES, 'UTF-8') ?>" />
-                                </td>
-                                <td width="200" align="center">
-                                    <input class="form-check-input" type="radio" name="itemIsGroup[<?php echo $row->id ?>]"
-                                        value="1" id="itemIsGroup_<?php echo $row->id ?>" <?php echo $row->is_group ? ' checked="checked"' : '' ?> /> <label for="itemIsGroup_<?php echo $row->id ?>">
-                                        <?php echo Text::_('COM_CONTENTBUILDER_YES'); ?>
-                                    </label>
-                                    <input class="form-check-input" type="radio" name="itemIsGroup[<?php echo $row->id ?>]"
-                                        value="0" id="itemIsGroupNo_<?php echo $row->id ?>" <?php echo !$row->is_group ? ' checked="checked"' : '' ?> /> <label for="itemIsGroupNo_<?php echo $row->id ?>" />
-                                    <?php echo Text::_('COM_CONTENTBUILDER_NO'); ?></label>
-                                    <div style="cursor:pointer;width: 100%;display:block;"
-                                        id="itemGroupDefinitions_<?php echo $row->id ?>"
-                                        onclick="document.getElementById('itemGroupDefinitions<?php echo $row->id ?>').style.display='block';this.style.display='none';document.getElementById('itemGroupDefinitions<?php echo $row->id ?>').focus();">
-                                        <?php echo htmlentities('[' . Text::_('COM_CONTENTBUILDER_EDIT') . ']', ENT_QUOTES, 'UTF-8'); ?>
-                                    </div>
-                                    <textarea class="form-control form-control-sm"
-                                        onblur="if(this.value=='') {this.value = '';} this.style.display='none';document.getElementById('itemGroupDefinitions_<?php echo $row->id ?>').style.display='block';"
-                                        id="itemGroupDefinitions<?php echo $row->id ?>"
-                                        style="display:none; width: 100%;height:50px;"
-                                        name="itemGroupDefinitions[<?php echo $row->id ?>]"><?php echo htmlentities($row->group_definition, ENT_QUOTES, 'UTF-8') ?></textarea>
-                                </td>
-                                <td class="order" nowrap="nowrap" width="100">
-                                    <span>
-                                        <?php echo $this->pagination->orderUpIcon($i, true, 'storage.orderup', 'Move Up', $this->ordering); ?>
-                                    </span>
-                                    <span>
-                                        <?php echo $this->pagination->orderDownIcon($i, $n, true, 'storage.orderdown', 'Move Down', $this->ordering); ?>
-                                    </span>
-                                    <?php $disabled = $this->ordering ? '' : 'disabled="disabled"'; ?>
-
-                                </td>
-                                <td width="25">
-                                    <?php echo $published; ?>
-                                </td>
-                            </tr>
-                            <?php
-                            $k = 1 - $k;
-                        }
+                        $elements = $this->elements ?? [];
+                        $n        = is_countable($elements) ? count($elements) : 0;
                         ?>
+                        <?php foreach ($elements as $i => $row) :
+                            $id    = (int) ($row->id ?? 0);
+                            $name  = htmlspecialchars((string) ($row->name ?? ''), ENT_QUOTES, 'UTF-8');
+                            $title = htmlspecialchars((string) ($row->title ?? ''), ENT_QUOTES, 'UTF-8');
+
+                            $checked   = HTMLHelper::_('grid.id', $i, $id);
+
+                            // ✅ RECO : passer en jgrid.published (tu l’as déjà validé côté listes)
+                            // Important : le prefix "storage." doit matcher tes tasks côté controller
+                            $published = HTMLHelper::_('jgrid.published', $row->published, $i, 'storage.', true);
+    
+                            // ordering: n’active les flèches que si ordering est vrai
+                            $canOrder = !empty($this->ordering);
+                        ?>
+                        <tr class="row<?php echo $i % 2; ?>">
+                            <td><?php echo $id; ?></td>
+
+                            <td class="text-center"><?php echo $checked; ?></td>
+
+                            <td><?php echo $name; ?></td>
+
+                            <td><?php echo $title; ?></td>
+
+                            <td class="order text-nowrap">
+                                <?php if ($canOrder) : ?>
+                                    <span class="me-2">
+                                        <?php echo $this->pagination->orderUpIcon($i, true, 'storage.orderup', 'JLIB_HTML_MOVE_UP', $this->ordering); ?>
+                                    </span>
+                                    <span>
+                                        <?php echo $this->pagination->orderDownIcon($i, $n, true, 'storage.orderdown', 'JLIB_HTML_MOVE_DOWN', $this->ordering); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+
+                            <td class="text-center"><?php echo $published; ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+
                         <tfoot>
                             <tr>
                                 <td colspan="11">
@@ -567,13 +425,10 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
                                     </div>
                                 </td>
                             </tr>
-                        </tfoot>        
-
+                        </tfoot>
                     </table>
-
                 </td>
             </tr>
-
         </table>
 
         <?php
@@ -586,9 +441,9 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
     <div class="clr"></div>
 
     <input type="hidden" name="option" value="com_contentbuilder" />
-    <input type="hidden" name="id" value="<?php echo $this->item->id; ?>" />
+    <input type="hidden" name="id" value="<?php echo (int) $this->item->id; ?>">
+    <input type="hidden" name="task" value="">
     <input type="hidden" name="jform[id]" value="<?php echo (int) $this->item->id; ?>" />
-    <input type="hidden" name="task" value="" />
     <input type="hidden" name="jform[ordering]" value="<?php echo $this->item->ordering; ?>" />
     <input type="hidden" name="jform[published]" value="<?php echo $this->item->published; ?>" />
     <input type="hidden" name="list[ordering]" value="<?php echo htmlspecialchars($listOrder, ENT_QUOTES, 'UTF-8'); ?>" />

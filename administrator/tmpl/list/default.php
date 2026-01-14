@@ -39,13 +39,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 ?>
 <?php Factory::getApplication()->getDocument()->addStyleDeclaration($this->theme_css); ?>
 <?php Factory::getApplication()->getDocument()->addScriptDeclaration($this->theme_js); ?>
-<style type="text/css">
-    .cbPagesCounter {
-        float: left;
-        padding-right: 10px;
-        padding-top: 4px;
-    }
-</style>
+
 <script language="javascript" type="text/javascript">
 <!--
 <?php echo $___tableOrdering; ?>(order, dir, task) {

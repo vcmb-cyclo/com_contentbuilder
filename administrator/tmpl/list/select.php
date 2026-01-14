@@ -114,7 +114,7 @@ SELECT
                 <td>
 
                 </td>
-                <td align="right" width="40%" nowrap="nowrap">
+                <td align="right" width="40%" class="text-nowrap">
                     <?php
                     if ($new_allowed) {
                         ?>
@@ -231,7 +231,7 @@ SELECT
                 <?php
                 if ($this->display_filter) {
                     ?>
-                    <td align="left" width="60%" nowrap="nowrap">
+                    <td align="left" width="60%" class="text-nowrap">
                         <?php echo Text::_('COM_CONTENTBUILDER_FILTER') . '&nbsp;'; ?>
                         <input type="text" id="contentbuilder_filter" name="filter"
                             value="<?php echo $this->escape($this->lists['filter']); ?>" class=" inputbox"

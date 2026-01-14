@@ -49,11 +49,11 @@ final class FormsController extends AdminController
         }
 
         if ($this->input->getInt('slideStartOffset', -1) !== -1) {
-            $session->set('slideStartOffset', $this->input->getInt('slideStartOffset', 1));
+            $session->set('slideStartOffset', $this->input->getInt('slideStartOffset', 1), 'com_contentbuilder');
         }
 
         if ($this->input->getInt('tabStartOffset', -1) !== -1) {
-            $session->set('tabStartOffset', $this->input->getInt('tabStartOffset', 0));
+            $session->set('tabStartOffset', $this->input->getInt('tabStartOffset', 0), 'com_contentbuilder');
         }
     }
 
@@ -79,12 +79,6 @@ final class FormsController extends AdminController
     protected function getReorderConditions($table): array
     {
         return [];
-    }
-
-    public function display($cachable = false, $urlparams = []): void
-    {
-        $this->input->set('view', $this->view_list);
-        parent::display($cachable, $urlparams);
     }
 
     // Publish methode : manage both publish and unpublish
@@ -189,8 +183,10 @@ final class FormsController extends AdminController
             $model->copy($cid);
 
             // Message Joomla standard (tu peux aussi faire tes propres Text::sprintf)
+            $count = count($cid);
+
             $this->setMessage(
-                Text::plural('COM_CONTENTBUILDER_COPIED'),
+                Text::plural('JLIB_APPLICATION_N_ITEMS_COPIED', $count),
                 'message'
             );
         } catch (\Throwable $e) {
@@ -198,9 +194,8 @@ final class FormsController extends AdminController
         }
 
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'), false),
-            Text::_('COM_CONTENTBUILDER_COPIED')
-        );
+            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'),
+            false));
     }
 
 

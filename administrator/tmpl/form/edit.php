@@ -19,13 +19,6 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 ?>
 
-<style type="text/css">
-    .cbPagesCounter {
-        float: left;
-        padding-right: 10px;
-        padding-top: 4px;
-    }
-</style>
 <script type="text/javascript">
     function listItemTask(id, task) {
 
@@ -829,24 +822,24 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
                     <tfoot>
                         <tr>
                             <td colspan="11">
-                                <div class="pagination pagination-toolbar">
-                                    <div class="cbPagesCounter">
-                                        <?php if (!empty($this->pagination)) {
-                                            echo $this->pagination->getPagesCounter();
-                                        } ?>
-                                        <?php
-                                        echo '<span>' . Text::_('COM_CONTENTBUILDER_DISPLAY_NUM') . '&nbsp;</span>';
-                                        echo '<div style="display:inline-block;">' . (empty($this->pagination) ? '' : $this->pagination->getLimitBox()) . '</div>';
-                                        ?>
+                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+
+                                    <div class="d-flex flex-wrap align-items-center gap-2">
+                                        <?php echo $this->pagination->getPagesCounter(); ?>
+                                        <span><?php echo Text::_('COM_CONTENTBUILDER_DISPLAY_NUM'); ?>&nbsp;</span>
+                                        <span class="d-inline-block">
+                                            <?php echo $this->pagination->getLimitBox(); ?>
+                                        </span>
                                     </div>
-                                    <?php if (!empty($this->pagination)) {
-                                        echo $this->pagination->getPagesLinks();
-                                    } ?>
+
+                                    <div>
+                                        <?php echo $this->pagination->getPagesLinks(); ?>
+                                    </div>
+
                                 </div>
                             </td>
                         </tr>
                     </tfoot>
-
                 </table>
 
             </td>

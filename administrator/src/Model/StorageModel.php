@@ -561,11 +561,11 @@ class StorageModel extends AdminModel
     {
         $db = Factory::getContainer()->get(DatabaseInterface::class);
 
-        // liste des champs définis
+        // Liste des champs définis
         $db->setQuery("SELECT `name` FROM #__contentbuilder_storage_fields WHERE storage_id = " . (int)$storageId);
         $fieldNames = $db->loadColumn() ?: [];
 
-        // colonnes existantes
+        // Colonnes existantes
         try {
             $cols = $db->getTableColumns($db->getPrefix() . $dataTableName, true);
         } catch (\Throwable $e) {
@@ -587,10 +587,7 @@ class StorageModel extends AdminModel
         }
     }
 
-    /**
-     * Delete “propre” (ton code existant est OK, je le garde)
-     */
-    public function delete(&$pks)
+     public function delete(&$pks)
     {
         $pks = (array) $pks;
         ArrayHelper::toInteger($pks);
@@ -805,6 +802,14 @@ class StorageModel extends AdminModel
 
         $value = $this->getDatabase()->Quote($value);
         return $value;
+    }
+
+    // Give the database tables list.
+    function getDbTables()
+    {
+        $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $tables = $db->getTableList();
+        return $tables;
     }
 
 }

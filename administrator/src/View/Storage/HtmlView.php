@@ -33,6 +33,7 @@ class HtmlView extends BaseHtmlView
 
         // JS
         $wa = $app->getDocument()->getWebAssetManager();
+        $wa->getRegistry()->addExtensionRegistryFile('com_contentbuilder');
         $wa->useScript('com_contentbuilder.jscolor');
 
         // Formulaire JForm
@@ -40,6 +41,8 @@ class HtmlView extends BaseHtmlView
 
         // Données (l’item)
         $this->item = $this->getModel()->getItem();
+
+        $this->tables     = $this->get('DbTables');
 
         // Chargement sécurisé des éléments
         $storageId = (int) ($this->item->id ?? $app->input->getInt('id', 0));

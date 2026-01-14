@@ -1114,10 +1114,16 @@ class FormModel extends AdminModel
 
             $obj->name = 'Copy of ' . $obj->name;
             $obj->published = 0;
+
+            // $obj->created = Factory::getDate()->toSql();
+            // $obj->created_by = Factory::getApplication()->getIdentity()->id;
+            $obj->modified = Factory::getDate()->toSql();
+            $obj->modified_by = Factory::getApplication()->getIdentity()->id;
+            
             $db->insertObject('#__contentbuilder_forms', $obj);
             $insertId = $db->insertid();
 
-            // elements
+            // Elements
             $db->setQuery(' Select * From #__contentbuilder_elements ' .
                 '  Where form_id = ' . $origId);
             $elements = $db->loadObjectList();

@@ -59,7 +59,6 @@ class HtmlView extends BaseHtmlView
         $this->addToolbar();
 
         // Ajout du CSS personnalisé (méthode propre)
-        $this->addStylesheet();
         $this->addToolbarIcon();
 
         HTMLHelper::_('behavior.keepalive');
@@ -83,16 +82,6 @@ class HtmlView extends BaseHtmlView
     }
 
     /**
-     * Ajoute le CSS personnalisé
-     */
-    protected function addStylesheet()
-    {
-        // Chargement d'un CSS fixe pour bluestork si nécessaire (sinon à supprimer)
-        // $document = Factory::getDocument();
-        // $document->addStyleSheet(Uri::root(true) . '/media/com_ontentbuilder/css/bluestork.fix.css');
-    }
-
-    /**
      * Ajoute l'icône personnalisée pour le titre de la barre d'outils
      */
     protected function addToolbarIcon()
@@ -100,8 +89,5 @@ class HtmlView extends BaseHtmlView
         // Récupération du WebAssetManager (méthode moderne)
         $wa = $this->getDocument()->getWebAssetManager();
         $wa->useStyle('com_contentbuilder.admin-toolbar'); // à déclarer dans joomla.asset.json
-
-        // Optionnel : si vous avez aussi bluestork.fix.css
-        // $wa->useStyle('com_contentbuilder.bluestork-fix');
     }
 }
