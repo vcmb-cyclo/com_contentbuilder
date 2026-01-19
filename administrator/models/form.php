@@ -555,8 +555,25 @@ class ContentbuilderModelForm extends CBModel
         $form = $this->getForm();
         $form_id = 0;
 
+		// Lire le body brut
+		$rawBody = file_get_contents('php://input');
+
+		// Parser comme application/x-www-form-urlencoded
+		$post = [];
+		parse_str($rawBody, $post);
+
+		// Récupérer codes tel qu'envoyés
+		$details_template = trim($post['details_template'] ?? '');
+		$editable_template = trim($post['editable_template'] ?? '');
+		$details_prepare = trim($post['details_prepare'] ?? '');
+		$editable_prepare = trim($post['editable_prepare'] ?? '');
+		$intro_text = trim($post['intro_text'] ?? '');
+		$editable = trim($post['editable'] ?? '');
+		$email_admin_template = trim($post['email_admin_template'] ?? '');
+		$email_template = trim($post['email_template'] ?? '');
+
         $data = CBRequest::get('post');
-        $data['details_template'] = CBRequest::getVar('details_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
+/*      $data['details_template'] = CBRequest::getVar('details_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
         $data['editable_template'] = CBRequest::getVar('editable_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
         $data['details_prepare'] = CBRequest::getVar('details_prepare', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
         $data['editable_prepare'] = CBRequest::getVar('editable_prepare', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
@@ -564,6 +581,16 @@ class ContentbuilderModelForm extends CBModel
         $data['editable'] = CBRequest::getVar('editable', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
         $data['email_admin_template'] = CBRequest::getVar('email_admin_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
         $data['email_template'] = CBRequest::getVar('email_template', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
+*/
+        $data['details_template'] = $details_template;
+        $data['editable_template'] = $editable_template;
+        $data['details_prepare'] = $details_prepare;
+        $data['editable_prepare'] = $editable_prepare;
+        $data['intro_text'] = $intro_text;
+        $data['editable'] = $editable;
+        $data['email_admin_template'] = $email_admin_template;
+        $data['email_template'] = $email_template;
+
 
         #### SETTINGS
         $data['create_articles'] = CBRequest::getInt('create_articles', 0);
