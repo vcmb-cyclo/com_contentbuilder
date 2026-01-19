@@ -13,11 +13,12 @@ namespace CB\Component\Contentbuilder\Administrator\View\Form;
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Language\Text;
-use Joomla\Database\DatabaseInterface;
-use Joomla\CMS\Toolbar\ToolbarHelper;
-use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Uri\Uri;
+use Joomla\Database\DatabaseInterface;
+use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {
@@ -29,6 +30,13 @@ class HtmlView extends BaseHtmlView
         // JS
         $wa = $app->getDocument()->getWebAssetManager();
         $wa->useScript('com_contentbuilder.jscolor');
+
+        $wa->addInlineStyle(
+            '.icon-48-logo_icon_cb{background-image:url('
+            . Uri::root(true)
+            . '/media/com_contentbuilder/images/logo_icon_cb.png);background-size:contain;background-repeat:no-repeat;}'
+        );
+
 
         // Formulaire JForm
         $this->form = $this->getModel()->getForm();
@@ -74,7 +82,7 @@ class HtmlView extends BaseHtmlView
         ToolbarHelper::title(
             'ContentBuilder :: ' . ($isNew ? Text::_('COM_CONTENTBUILDER_FORM') : ($this->item->name ?? '')) .
                 ' : <small><small>[ ' . $text . ' ]</small></small>',
-            'logo_left.png'
+            'logo_left'
         );
 
         ToolbarHelper::apply('form.apply');

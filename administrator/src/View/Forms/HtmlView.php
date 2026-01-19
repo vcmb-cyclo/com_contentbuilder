@@ -16,20 +16,25 @@ namespace CB\Component\Contentbuilder\Administrator\View\Forms;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Uri\Uri;
 use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
 {
     function display($tpl = null)
     {
-        
-        echo '
-        <style type="text/css">
-        .icon-48-logo_left { background-image: url(../media/com_contentbuilder/images/logo_left.png); }
-        </style>
-        ';
 
-        ToolbarHelper::title('ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_FORMS') . '</span>', 'logo_left.png');
+        $wa = $this->document->getWebAssetManager();
+        $wa->addInlineStyle(
+            '.icon-48-logo_left{'
+            . 'background-image:url(' . Uri::root(true) . '/media/com_contentbuilder/images/logo_left.png);'
+            . 'background-size:contain;'
+            . 'background-repeat:no-repeat;'
+            . '}'
+        );
+
+        // Et pour le title, garde un identifiant cohérent :
+        ToolbarHelper::title('ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_FORMS'), 'logo_left');
         ToolbarHelper::addNew('form.add');
         ToolbarHelper::custom('forms.copy', 'copy', '', Text::_('COM_CONTENTBUILDER_COPY'));
         ToolbarHelper::editList('form.edit');

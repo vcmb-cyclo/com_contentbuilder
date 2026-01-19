@@ -69,9 +69,10 @@ class HtmlView extends BaseHtmlView
                 $this->elements   = $elementsModel->getItems();
                 $this->pagination = $elementsModel->getPagination();
                 $this->state      = $elementsModel->getState();
+                $this->ordering   = ($this->state && $this->state->get('list.ordering') === 'ordering');
             }
         } catch (\Throwable $e) {
-            Factory::getApplication()->enqueueMessage(
+            $app->enqueueMessage(
                 'Erreur lors du chargement des éléments : ' . $e->getMessage(),
                 'warning'
             );

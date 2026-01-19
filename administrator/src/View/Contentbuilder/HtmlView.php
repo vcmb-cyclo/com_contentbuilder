@@ -31,12 +31,17 @@ class HtmlView extends BaseHtmlView
             ['media' => 'all']
         );
 
-        $document->addStyleDeclaration(
-            ".icon-48-logo_left { background-image: url(" .
-            Uri::root(true) . "/administrator/components/com_contentbuilder/views/logo_left.png); }"
+        $wa->addInlineStyle(
+            '.icon-48-logo_icon_cb{background-image:url('
+            . Uri::root(true)
+            . '/media/com_contentbuilder/images/logo_icon_cb.png);background-size:contain;background-repeat:no-repeat;}'
         );
 
-        ToolbarHelper::title(Text::_('COM_CONTENTBUILDER_ABOUT') . '</span>', 'logo_left.png');
+        ToolbarHelper::title(
+            'ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_FORMS'),
+            'logo_icon_cb'
+        );
+
 
         // 3️⃣ Affichage du layout
         parent::display($tpl);

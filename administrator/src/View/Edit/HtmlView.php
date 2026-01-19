@@ -153,7 +153,7 @@ class HtmlView extends BaseHtmlView
 
 		if (!class_exists('cbFeMarker')) {
 
-			ToolbarHelper::title('<span style="display:inline-block; vertical-align:middle">' . $subject->page_title . '</span>', 'logo_left.png');
+			ToolbarHelper::title($subject->page_title, 'logo_left');
 		}
 
 		PluginHelper::importPlugin('contentbuilder_themes', $subject->theme_plugin);

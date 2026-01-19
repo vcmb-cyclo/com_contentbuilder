@@ -30,7 +30,7 @@ class HtmlView extends BaseHtmlView
             .icon-48-logo_left { background-image: url(../administrator/components/com_contentbuilder/views/logo_left.png); }
             </style>
             ';
-            ToolbarHelper::title($subject->page_title . '</span>', 'logo_left.png');
+            ToolbarHelper::title($subject->page_title, 'logo_left');
         }
 
 
