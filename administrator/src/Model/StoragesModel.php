@@ -160,7 +160,7 @@ class StoragesModel extends ListModel
 /*
     private function buildOrderBy()
     {
-        $mainframe = Factory::getApplication();
+        $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
         $orderby = '';

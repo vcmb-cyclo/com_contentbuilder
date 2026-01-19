@@ -21,28 +21,26 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Event\Content\ContentPrepareEvent;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
+use Joomla\CMS\MVC\Model\ListModel as BaseListModel;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
-class ListModel extends BaseDatabaseModel
+class ListModel extends BaseListModel
 {
-    /**
+    protected int $_id = 0;
+
+    protected ?array $_data = null; // si tu veux être propre avec _data aussi
+
+/**
      * Items total
      * @var integer
      */
     private $_total = null;
 
-    /**
-     * Pagination object
-     * @var object
-     */
-    private $_pagination = null;
-
     private $_menu_item = false;
 
-    private $frontend = false;
+    private $frontend = true;
 
     private $_menu_filter = array();
 
@@ -55,50 +53,58 @@ class ListModel extends BaseDatabaseModel
     private $_page_title = '';
 
     private $_page_heading = '';
+   
+    private $app;
 
     function  __construct($config)
     {
         parent::__construct($config);
 
-        $mainframe = Factory::getApplication();
+        $app = Factory::getApplication();
+        $this->app = $app;
+
+        $this->frontend = $app->isClient('site');
         $option = 'com_contentbuilder';
 
-        $this->frontend = class_exists('cbFeMarker');
-
         if ($this->frontend) {
-            Factory::getApplication()->getDocument()->addStyleSheet(Uri::root(true) . '/components/com_contentbuilder/assets/css/system.css');
+            $app->getDocument()->addStyleSheet(Uri::root(true) . '/components/com_contentbuilder/assets/css/system.css');
         }
 
         if (CBRequest::getInt('Itemid', 0)) {
             $this->_menu_item = true;
         }
 
-        $this->setId(CBRequest::getInt('id', 0));
+        $id = CBRequest::getInt('id', 0);
 
-        // Get pagination request variables
-        $limit = $mainframe->getUserStateFromRequest('global.list.limit', 'limit', CBRequest::getInt('cb_list_limit', 0) > 0 ? CBRequest::getInt('cb_list_limit', 0) : $mainframe->get('list_limit'), 'int');
-        $limitstart = CBRequest::getVar('limitstart', 0, '', 'int');
+        if (!$id && $this->frontend) {
+            $menu = $app->getMenu();
+            $item = $menu->getActive();
 
-        // In case limit has been changed, adjust it
-        $limitstart = ($limit != 0 ? (floor($limitstart / $limit) * $limit) : 0);
+            if ($item) {
+                $id = (int) $item->getParams()->get('form_id', 0);
+            }
+        }
 
-        $this->setState('limit', $limit);
-        $this->setState('limitstart', $limitstart);
+        $this->setId($id);
 
-        if (Factory::getApplication()->getSession()->get($option . 'formsd_id', 0) == 0 || Factory::getApplication()->getSession()->get($option . 'formsd_id', 0) == $this->_id) {
-            $filter_order     = $mainframe->getUserStateFromRequest($option . 'formsd_filter_order', 'filter_order', '', 'cmd');
-            $filter_order_Dir = $mainframe->getUserStateFromRequest($option . 'formsd_filter_order_Dir', 'filter_order_Dir', '', 'cmd');
-            $filter           = $mainframe->getUserStateFromRequest($option . 'formsd_filter', 'filter', '', 'string');
-            $filter_state     = $mainframe->getUserStateFromRequest($option . 'formsd_filter_state', 'list_state_filter', 0, 'int');
-            $filter_publish   = $mainframe->getUserStateFromRequest($option . 'formsd_filter_publish', 'list_publish_filter', -1, 'int');
-            $filter_language  = $mainframe->getUserStateFromRequest($option . 'formsd_filter_language', 'list_language_filter', '', 'cmd');
+        if (!$this->_id) {
+            throw new \Exception(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 404);
+        }
+
+        if ($app->getSession()->get($option . 'formsd_id', 0) == 0 || $app->getSession()->get($option . 'formsd_id', 0) == $this->_id) {
+            $filter_order     = $app->getUserStateFromRequest($option . 'formsd_filter_order', 'filter_order', '', 'cmd');
+            $filter_order_Dir = $app->getUserStateFromRequest($option . 'formsd_filter_order_Dir', 'filter_order_Dir', '', 'cmd');
+            $filter           = $app->getUserStateFromRequest($option . 'formsd_filter', 'filter', '', 'string');
+            $filter_state     = $app->getUserStateFromRequest($option . 'formsd_filter_state', 'list_state_filter', 0, 'int');
+            $filter_publish   = $app->getUserStateFromRequest($option . 'formsd_filter_publish', 'list_publish_filter', -1, 'int');
+            $filter_language  = $app->getUserStateFromRequest($option . 'formsd_filter_language', 'list_language_filter', '', 'cmd');
         } else {
-            $mainframe->setUserState($option . 'formsd_filter_order', CBRequest::getCmd('filter_order', ''));
-            $mainframe->setUserState($option . 'formsd_filter_order_Dir', CBRequest::getCmd('filter_order_Dir', ''));
-            $mainframe->setUserState($option . 'formsd_filter', CBRequest::getVar('filter', ''));
-            $mainframe->setUserState($option . 'formsd_filter_state', CBRequest::getInt('list_state_filter', 0));
-            $mainframe->setUserState($option . 'formsd_filter_publish', CBRequest::getInt('list_publish_filter', -1));
-            $mainframe->setUserState($option . 'formsd_filter_language', CBRequest::getCmd('list_language_filter', ''));
+            $app->setUserState($option . 'formsd_filter_order', CBRequest::getCmd('filter_order', ''));
+            $app->setUserState($option . 'formsd_filter_order_Dir', CBRequest::getCmd('filter_order_Dir', ''));
+            $app->setUserState($option . 'formsd_filter', CBRequest::getVar('filter', ''));
+            $app->setUserState($option . 'formsd_filter_state', CBRequest::getInt('list_state_filter', 0));
+            $app->setUserState($option . 'formsd_filter_publish', CBRequest::getInt('list_publish_filter', -1));
+            $app->setUserState($option . 'formsd_filter_language', CBRequest::getCmd('list_language_filter', ''));
             $filter_order     = CBRequest::getCmd('filter_order', '');
             $filter_order_Dir = CBRequest::getCmd('filter_order_Dir', '');
             $filter           = CBRequest::getVar('filter', '');
@@ -117,7 +123,7 @@ class ListModel extends BaseDatabaseModel
         if ($this->frontend && CBRequest::getInt('Itemid', 0)) {
 
             // try menu item
-            $menu = Factory::getApplication()->getMenu();
+            $menu = $app->getMenu();
             $item = $menu->getActive();
             if (is_object($item)) {
                 if ($item->getParams()->get('show_page_heading', null) !== null) {
@@ -168,7 +174,7 @@ class ListModel extends BaseDatabaseModel
 
         @natsort($this->_menu_filter_order);
 
-        Factory::getApplication()->getSession()->set($option . 'formsd_id', $this->_id);
+        $app->getSession()->set($option . 'formsd_id', $this->_id);
     }
 
     function setId($id)
@@ -178,6 +184,29 @@ class ListModel extends BaseDatabaseModel
         $this->_data    = null;
     }
 
+    protected function populateState($ordering = null, $direction = null)
+    {
+        $app = Factory::getApplication();
+
+        $limit = $app->getUserStateFromRequest(
+            'global.list.limit',
+            'limit',
+            CBRequest::getInt('cb_list_limit', 0) > 0 ? CBRequest::getInt('cb_list_limit', 0) : $app->get('list_limit'),
+            'int'
+        );
+
+        $start = $app->input->getInt('limitstart', 0);
+
+        // Important: états utilisés par ListModel + Pagination
+        $this->setState('list.limit', $limit);
+        $this->setState('list.start', $start);
+
+        parent::populateState($ordering, $direction);
+    }
+
+
+
+
     /*
      *
      * MAIN LIST AREA
@@ -186,9 +215,6 @@ class ListModel extends BaseDatabaseModel
 
     private function buildOrderBy()
     {
-        $mainframe = Factory::getApplication();
-        $option = 'com_contentbuilder';
-
         $orderby = '';
         $filter_order     = $this->getState('formsd_filter_order');
         $filter_order_Dir = $this->getState('formsd_filter_order_Dir') ? $this->getState('formsd_filter_order_Dir') : 'desc';
@@ -216,7 +242,7 @@ class ListModel extends BaseDatabaseModel
      */
     function getData()
     {
-        $mainframe = Factory::getApplication();
+        $app = $this->app;
         $option = 'com_contentbuilder';
 
         // Lets load the data if it doesn't already exist
@@ -257,7 +283,7 @@ class ListModel extends BaseDatabaseModel
                         if (!$this->_menu_item) {
                             $data->page_title = $data->use_view_name_as_title ? $data->name : $data->form->getPageTitle();
                         } else {
-                            $data->page_title = $data->use_view_name_as_title ? $data->name : Factory::getApplication()->getDocument()->getTitle();
+                            $data->page_title = $data->use_view_name_as_title ? $data->name : $app->getDocument()->getTitle();
                         }
                     }
 
@@ -282,16 +308,16 @@ class ListModel extends BaseDatabaseModel
 
                     if (CBRequest::getBool('filter_reset', false)) {
 
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.filter_signal.' . $this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.filter.' . $this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.calendar_filter_from.' . $this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.calendar_filter_to.' . $this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.calendar_formats.' . $this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.filter_keywords.' . $this->_id);
-                        Factory::getApplication()->getSession()->clear('com_contentbuilder.filter_article_categories.' . $this->_id);
+                        $app->getSession()->clear('com_contentbuilder.filter_signal.' . $this->_id);
+                        $app->getSession()->clear('com_contentbuilder.filter.' . $this->_id);
+                        $app->getSession()->clear('com_contentbuilder.calendar_filter_from.' . $this->_id);
+                        $app->getSession()->clear('com_contentbuilder.calendar_filter_to.' . $this->_id);
+                        $app->getSession()->clear('com_contentbuilder.calendar_formats.' . $this->_id);
+                        $app->getSession()->clear('com_contentbuilder.filter_keywords.' . $this->_id);
+                        $app->getSession()->clear('com_contentbuilder.filter_article_categories.' . $this->_id);
                     } else if (
                         (
-                            Factory::getApplication()->getSession()->get('com_contentbuilder.filter_signal.' . $this->_id, false)
+                            $app->getSession()->get('com_contentbuilder.filter_signal.' . $this->_id, false)
                             ||
                             CBRequest::getBool('contentbuilder_filter_signal', false)
                         )
@@ -320,23 +346,23 @@ class ListModel extends BaseDatabaseModel
                             $filters_to = CBRequest::getVar('cbListFilterCalendarTo', array(), 'POST', 'array');
                             $calendar_formats = CBRequest::getVar('cb_filter_calendar_format', array(), 'POST', 'array');
 
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.filter_signal.' . $this->_id, true);
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.filter.' . $this->_id, $filters);
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.filter_keywords.' . $this->_id, CBRequest::getVar('cbListFilterKeywords', ''));
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.filter_article_categories.' . $this->_id, CBRequest::getInt('cbListFilterArticleCategories', -1));
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.calendar_filter_from.' . $this->_id, $filters_from);
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.calendar_filter_to.' . $this->_id, $filters_to);
-                            Factory::getApplication()->getSession()->set('com_contentbuilder.calendar_formats.' . $this->_id, $calendar_formats);
+                            $app->getSession()->set('com_contentbuilder.filter_signal.' . $this->_id, true);
+                            $app->getSession()->set('com_contentbuilder.filter.' . $this->_id, $filters);
+                            $app->getSession()->set('com_contentbuilder.filter_keywords.' . $this->_id, CBRequest::getVar('cbListFilterKeywords', ''));
+                            $app->getSession()->set('com_contentbuilder.filter_article_categories.' . $this->_id, CBRequest::getInt('cbListFilterArticleCategories', -1));
+                            $app->getSession()->set('com_contentbuilder.calendar_filter_from.' . $this->_id, $filters_from);
+                            $app->getSession()->set('com_contentbuilder.calendar_filter_to.' . $this->_id, $filters_to);
+                            $app->getSession()->set('com_contentbuilder.calendar_formats.' . $this->_id, $calendar_formats);
 
                             // else pick from session
-                        } else if (Factory::getApplication()->getSession()->get('com_contentbuilder.filter_signal.' . $this->_id, false)) {
+                        } else if ($app->getSession()->get('com_contentbuilder.filter_signal.' . $this->_id, false)) {
 
-                            $filters = Factory::getApplication()->getSession()->get('com_contentbuilder.filter.' . $this->_id, array());
-                            $filters_from = Factory::getApplication()->getSession()->get('com_contentbuilder.calendar_filter_from.' . $this->_id, array());
-                            $filters_to = Factory::getApplication()->getSession()->get('com_contentbuilder.calendar_filter_to.' . $this->_id, array());
-                            $calendar_formats = Factory::getApplication()->getSession()->get('com_contentbuilder.calendar_formats.' . $this->_id, array());
-                            $filter_keywords = Factory::getApplication()->getSession()->get('com_contentbuilder.filter_keywords.' . $this->_id, '');
-                            $filter_cats = Factory::getApplication()->getSession()->get('com_contentbuilder.filter_article_categories.' . $this->_id, -1);
+                            $filters = $app->getSession()->get('com_contentbuilder.filter.' . $this->_id, array());
+                            $filters_from = $app->getSession()->get('com_contentbuilder.calendar_filter_from.' . $this->_id, array());
+                            $filters_to = $app->getSession()->get('com_contentbuilder.calendar_filter_to.' . $this->_id, array());
+                            $calendar_formats = $app->getSession()->get('com_contentbuilder.calendar_formats.' . $this->_id, array());
+                            $filter_keywords = $app->getSession()->get('com_contentbuilder.filter_keywords.' . $this->_id, '');
+                            $filter_cats = $app->getSession()->get('com_contentbuilder.filter_article_categories.' . $this->_id, -1);
 
                             if ($filter_keywords != '') {
                                 $this->setState('formsd_filter', $filter_keywords);
@@ -453,7 +479,7 @@ class ListModel extends BaseDatabaseModel
 
                     $custom_page_heading = '';
 
-                    if (!Factory::getApplication()->isClient('administrator')) {
+                    if (!$app->isClient('administrator')) {
 
                         if ($this->_show_page_heading && $this->_page_heading != '') {
                             $data->page_title = $this->_page_heading;
@@ -507,10 +533,13 @@ class ListModel extends BaseDatabaseModel
                         $act_as_registration[$data->registration_email_field] = 'registration_email_field';
                     }
 
-                    $data->items = $data->form->getListRecords($ids, $this->getState('formsd_filter'), $searchable_elements, $this->getState('limitstart'), $this->getState('limit'), $this->getState('formsd_filter_order'), $order_types, $this->getState('formsd_filter_order_Dir') ? $this->getState('formsd_filter_order_Dir') : $data->initial_order_dir, 0, $data->published_only, $this->frontend ? ($data->own_only_fe ? Factory::getUser()->get('id', 0) : -1) : ($data->own_only ? Factory::getUser()->get('id', 0) : -1), $this->getState('formsd_filter_state'), $this->getState('formsd_filter_publish'), $data->initial_sort_order == -1 ? -1 : 'col' . $data->initial_sort_order, $data->initial_sort_order2 == -1 ? -1 : 'col' . $data->initial_sort_order2, $data->initial_sort_order3 == -1 ? -1 : 'col' . $data->initial_sort_order3, $this->_menu_filter, $this->frontend ? $data->show_all_languages_fe : true, $this->getState('formsd_filter_language'), $act_as_registration, $data, $this->getState('article_category_filter'));
+                    $data->items = $data->form->getListRecords($ids, $this->getState('formsd_filter'), 
+                        $searchable_elements, 
+                        $this->getState('list.start'), $this->getState('list.limit'),
+                        $this->getState('formsd_filter_order'), $order_types, $this->getState('formsd_filter_order_Dir') ? $this->getState('formsd_filter_order_Dir') : $data->initial_order_dir, 0, $data->published_only, $this->frontend ? ($data->own_only_fe ? Factory::getUser()->get('id', 0) : -1) : ($data->own_only ? Factory::getUser()->get('id', 0) : -1), $this->getState('formsd_filter_state'), $this->getState('formsd_filter_publish'), $data->initial_sort_order == -1 ? -1 : 'col' . $data->initial_sort_order, $data->initial_sort_order2 == -1 ? -1 : 'col' . $data->initial_sort_order2, $data->initial_sort_order3 == -1 ? -1 : 'col' . $data->initial_sort_order3, $this->_menu_filter, $this->frontend ? $data->show_all_languages_fe : true, $this->getState('formsd_filter_language'), $act_as_registration, $data, $this->getState('article_category_filter'));
 
                     if ($data->items === null) {
-                        $mainframe->setUserState($option . 'formsd_filter_order', '');
+                        $app->setUserState($option . 'formsd_filter_order', '');
                         throw new \Exception(Text::_('Stale list setup detected. Please reload view.'), 500);
                     }
                     $data->items = ContentbuilderLegacyHelper::applyItemWrappers($this->_id, $data->items, $data);
@@ -550,7 +579,7 @@ class ListModel extends BaseDatabaseModel
                     $data->intro_text = $introtext . ($fulltext ? '<br/><br/>' . $fulltext : '');
 
                     // plugin call
-                    $limitstart = CBRequest::getVar('limitstart', 0, '', 'int');
+                    $limitstart = (int) $this->getState('list.start');
                     $start      = CBRequest::getVar('start', 0, '', 'int');
                     $table = Table::getInstance('content');
                     $registry = new Registry;
@@ -559,13 +588,13 @@ class ListModel extends BaseDatabaseModel
                     $table->text = $data->intro_text;
                     $table->text .= "<!-- workaround for J! pagebreak bug: class=\"system-pagebreak\" -->\n";
 
-                    $dispatcher = Factory::getApplication()->getDispatcher();
+                    $dispatcher = $app->getDispatcher();
                     $dispatcher->dispatch('onContentPrepare', new ContentPrepareEvent('onContentPrepare', array('com_content.article', &$table, &$registry, $limitstart ? $limitstart : $start)));
 
                     $data->intro_text = $table->text;
 
                     if (
-                        Factory::getApplication()->isClient('administrator')
+                        $app->isClient('administrator')
                         && strpos($data->intro_text, '[[hide-admin-title]]') !== false
                     ) {
 
@@ -579,23 +608,25 @@ class ListModel extends BaseDatabaseModel
         return null;
     }
 
-    function getTotal()
+    public function getItems()
     {
-        return $this->_total;
+        $data = $this->getData(); // ton getData() récupère déjà $data->items
+        return $data->items ?? [];
     }
 
-    function getPagination()
+    public function getTotal()
     {
-        // Load the content if it doesn't already exist
-        if (empty($this->_pagination)) {
-
-            // using a different chrome to bypass problems with pagination in frontend 
-            require_once(JPATH_SITE . '/administrator/' . 'components/' . 'com_contentbuilder/' . 'classes/' . 'pagination.php');
-            $this->_pagination = new CBPagination($this->getTotal(), $this->getState('limitstart'), $this->getState('limit'));
-        }
-        return $this->_pagination;
+        // soit tu fais calculer $_total dans getData() comme actuellement
+        $this->getData();
+        return (int) $this->_total;
     }
 
+    public function getPagination()
+    {
+        return parent::getPagination();
+    }
+
+ 
     function startsWith($haystack, $needle)
     {
         $length = strlen($needle);

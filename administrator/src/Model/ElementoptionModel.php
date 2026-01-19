@@ -32,7 +32,7 @@ class ElementoptionModel extends BaseDatabaseModel
         $this->_db = Factory::getContainer()->get(DatabaseInterface::class);
         parent::__construct($config);
 
-        $mainframe = Factory::getApplication();
+        $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
         $this->setIds(CBRequest::getInt('id', 0), CBRequest::getInt('element_id', ''));

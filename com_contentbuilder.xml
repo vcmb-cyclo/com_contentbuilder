@@ -42,6 +42,7 @@
     <filename>router.php</filename>
     <filename>contentbuilder.php</filename>
     <folder>src</folder>
+    <folder>tmpl</folder>
  </files>
 
  <languages folder="site">
@@ -54,11 +55,11 @@
 <!-- ADMINISTRATION -->
 <!-- ===================== -->
 <administration>
-    <menu img="components/com_contentbuilder/views/logo_icon_cb.png">ContentBuilder</menu>
+    <menu>ContentBuilder</menu>
     <submenu>
-        <menu view="storages" img="components/com_contentbuilder/views/logo_icon_cb.png">COM_CONTENTBUILDER_STORAGES</menu>
-        <menu view="forms" img="components/com_contentbuilder/views/logo_icon_cb.png">COM_CONTENTBUILDER_LIST</menu>
-        <menu view="contentbuilder">COM_CONTENTBUILDER_ABOUT</menu>
+        <menu view="storages">COM_CONTENTBUILDER_STORAGES</menu>
+        <menu view="forms">COM_CONTENTBUILDER_LIST</menu>
+        <menu view="about">COM_CONTENTBUILDER_ABOUT</menu>
     </submenu>
 
     <!-- Un seul bloc <files> avec folder="administrator" -->

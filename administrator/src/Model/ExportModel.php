@@ -33,25 +33,25 @@ class ExportModel extends BaseDatabaseModel
 
         $this->frontend = Factory::getApplication()->isClient('site');
         
-        $mainframe = Factory::getApplication();
+        $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
         $this->setId(CBRequest::getInt('id',0));
 
         if(Factory::getApplication()->getSession()->get($option.'formsd_id', 0) == 0 || Factory::getApplication()->getSession()->get($option.'formsd_id', 0) == $this->_id ){
-            $filter_order     = $mainframe->getUserStateFromRequest(  $option.'formsd_filter_order', 'filter_order', '', 'cmd' );
-            $filter_order_Dir = $mainframe->getUserStateFromRequest( $option.'formsd_filter_order_Dir', 'filter_order_Dir', 'desc', 'cmd' );
-            $filter           = $mainframe->getUserStateFromRequest(  $option.'formsd_filter', 'filter', '', 'string' );
-            $filter_state     = $mainframe->getUserStateFromRequest(  $option.'formsd_filter_state', 'list_state_filter', 0, 'int' );
-            $filter_publish   = $mainframe->getUserStateFromRequest(  $option.'formsd_filter_publish', 'list_publish_filter', -1, 'int' );
-            $filter_language  = $mainframe->getUserStateFromRequest(  $option.'formsd_filter_language', 'list_language_filter', '', 'cmd' );
+            $filter_order     = $app->getUserStateFromRequest(  $option.'formsd_filter_order', 'filter_order', '', 'cmd' );
+            $filter_order_Dir = $app->getUserStateFromRequest( $option.'formsd_filter_order_Dir', 'filter_order_Dir', 'desc', 'cmd' );
+            $filter           = $app->getUserStateFromRequest(  $option.'formsd_filter', 'filter', '', 'string' );
+            $filter_state     = $app->getUserStateFromRequest(  $option.'formsd_filter_state', 'list_state_filter', 0, 'int' );
+            $filter_publish   = $app->getUserStateFromRequest(  $option.'formsd_filter_publish', 'list_publish_filter', -1, 'int' );
+            $filter_language  = $app->getUserStateFromRequest(  $option.'formsd_filter_language', 'list_language_filter', '', 'cmd' );
         }else{
-            $mainframe->setUserState($option.'formsd_filter_order', CBRequest::getCmd('filter_order',''));
-            $mainframe->setUserState($option.'formsd_filter_order_Dir', CBRequest::getCmd('filter_order_Dir',''));
-            $mainframe->setUserState($option.'formsd_filter', CBRequest::getVar('filter',''));
-            $mainframe->setUserState($option.'formsd_filter_state', CBRequest::getInt('list_state_filter',0));
-            $mainframe->setUserState($option.'formsd_filter_publish', CBRequest::getInt('list_publish_filter',-1));
-            $mainframe->setUserState($option.'formsd_filter_language', CBRequest::getCmd('list_language_filter',''));
+            $app->setUserState($option.'formsd_filter_order', CBRequest::getCmd('filter_order',''));
+            $app->setUserState($option.'formsd_filter_order_Dir', CBRequest::getCmd('filter_order_Dir',''));
+            $app->setUserState($option.'formsd_filter', CBRequest::getVar('filter',''));
+            $app->setUserState($option.'formsd_filter_state', CBRequest::getInt('list_state_filter',0));
+            $app->setUserState($option.'formsd_filter_publish', CBRequest::getInt('list_publish_filter',-1));
+            $app->setUserState($option.'formsd_filter_language', CBRequest::getCmd('list_language_filter',''));
             $filter_order     = CBRequest::getCmd('filter_order','');
             $filter_order_Dir = CBRequest::getCmd('filter_order_Dir','');
             $filter           = CBRequest::getVar('filter','');

@@ -412,7 +412,7 @@ endif;
                             }
                             ?>
                             <th class="sectiontableheader<?php echo $hidden; ?>">
-                                <?php echo HTMLHelper::_('grid.sort', nl2br(htmlentities(contentbuilder_wordwrap($label, 20, "\n", true), ENT_QUOTES, 'UTF-8')), "col$reference_id", $this->lists['order_Dir'], $this->lists['order']); ?>
+                                <?php echo HTMLHelper::_('grid.sort', nl2br(htmlentities(ContentbuilderHelper::contentbuilder_wordwrap($label, 20, "\n", true), ENT_QUOTES, 'UTF-8')), "col$reference_id", $this->lists['order_Dir'], $this->lists['order']); ?>
                             </th>
                             <?php
                             $label_count++;

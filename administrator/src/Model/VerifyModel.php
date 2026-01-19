@@ -30,7 +30,7 @@ class VerifyModel extends BaseDatabaseModel
 {
 
     private $frontend = false;
-    var $mainframe;
+    var $app;
 
     public function __construct($config = [])
     {

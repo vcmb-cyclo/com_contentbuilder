@@ -16,10 +16,6 @@ use Joomla\CMS\Factory;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 
-class cbFeMarker
-{
-}
-
 // Require the base controller
 
 require_once(JPATH_COMPONENT .'/controller.php');
@@ -45,7 +41,6 @@ $menu = Factory::getApplication()->getMenu();
 $item = $menu->getActive();
 
 if (is_object($item)) {
-
 	CBRequest::setVar('Itemid', $item->id);
 }
 

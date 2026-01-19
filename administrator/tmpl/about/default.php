@@ -11,4 +11,8 @@
 // no direct access
 \defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR .'/views/edit/tmpl/default.php');
+
+use Joomla\CMS\Language\Text;
+
+?>
+<?php echo Text::_('COM_CONTENTBUILDER_ABOUT_DESC'); ?> <a href="https://breezingforms.vcmb.fr">VCMB migration</a>

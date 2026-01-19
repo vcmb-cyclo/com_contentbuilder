@@ -20,25 +20,40 @@ use Joomla\CMS\Router\Route;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Table\Table;
+use Joomla\CMS\Uri\Uri;
 use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 class HtmlView extends BaseHtmlView
 {
+    private bool $frontend = false;
+
 	function display($tpl = null)
 	{
 		// Get data from the model
+        $this->frontend = Factory::getApplication()->isClient('site');
 		$subject = $this->get('Data');
 
-		if (!class_exists('cbFeMarker')) {
-			echo '
-            <style type="text/css">
-            .icon-48-logo_left { background-image: url(../administrator/components/com_contentbuilder/views/logo_left.png); }
-            </style>
-            ';
-			ToolbarHelper::title($subject->page_title, 'logo_left');
-		}
+
+		if (!$this->frontend) {
+            // 1️⃣ Récupération du WebAssetManager
+            $document = $this->getDocument();
+            $wa = $document->getWebAssetManager();
+            $wa->addInlineStyle(
+                '.icon-logo_left{
+                    background-image:url(' . Uri::root(true) . '/media/com_contentbuilder/images/logo_left.png);
+                    background-size:contain;
+                    background-repeat:no-repeat;
+                    background-position:center;
+                    display:inline-block;
+                    width:48px;
+                    height:48px;
+                }'
+            );
+
+            ToolbarHelper::title($subject->page_title, 'logo_left');
+        }
 
 		$event = new \stdClass();
 

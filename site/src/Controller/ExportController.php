@@ -6,7 +6,7 @@
  * @license     GNU/GPL
 */
 
-namespace CB\Component\Contentbuilder\Administrator\Controller;
+namespace CB\Component\Contentbuilder\Site\Controller;
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
@@ -14,7 +14,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 use Joomla\CMS\MVC\Controller\BaseController;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
-class PublicformsController extends BaseController
+class ExportController extends BaseController
 {
     public function __construct($config = [])
     {
@@ -25,7 +25,8 @@ class PublicformsController extends BaseController
     {
         CBRequest::setVar('tmpl', CBRequest::getWord('tmpl',null));
         CBRequest::setVar('layout', CBRequest::getWord('layout',null));
-        CBRequest::setVar('view', 'publicforms');
+        CBRequest::setVar('view', 'export');
+        CBRequest::setVar('format', 'raw');
 
         parent::display();
     }

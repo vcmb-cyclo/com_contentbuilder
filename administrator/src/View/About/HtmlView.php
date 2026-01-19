@@ -1,13 +1,12 @@
 <?php
 /**
- * Default page.
  * @package     ContentBuilder
  * @author      Xavier DANO
  * @link        https://breezingforms.vcmb.fr
  * @license     GNU/GPL
 */
 
-namespace CB\Component\Contentbuilder\Administrator\View\Contentbuilder;
+namespace CB\Component\Contentbuilder\Administrator\View\About;
 
 \defined('_JEXEC') or die('Restricted access');
 
@@ -34,21 +33,20 @@ class HtmlView extends BaseHtmlView
 
         // Icon addition.
         $wa->addInlineStyle(
-            '.icon-logo_icon_cb{
-                background-image:url(' . Uri::root(true) . '/media/com_contentbuilder/images/logo_icon_cb.png);
+            '.icon-logo_left{
+                background-image:url(' . Uri::root(true) . '/media/com_contentbuilder/images/logo_left.png);
                 background-size:contain;
                 background-repeat:no-repeat;
                 background-position:center;
                 display:inline-block;
-                width:24px;
-                height:24px;
+                width:48px;
+                height:48px;
             }'
         );
 
-
         ToolbarHelper::title(
-            'ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER'),
-            'logo_icon_cb'
+            'ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_ABOUT'),
+            'logo_left'
         );
 
 

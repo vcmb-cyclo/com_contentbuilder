@@ -20,12 +20,12 @@ use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
-
-$new_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
-$edit_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('edit') : ContentbuilderLegacyHelper::authorize('edit');
-$delete_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('delete') : ContentbuilderLegacyHelper::authorize('delete');
-$view_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('view') : ContentbuilderLegacyHelper::authorize('view');
-$fullarticle_allowed = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('fullarticle') : ContentbuilderLegacyHelper::authorize('fullarticle');
+$frontend = Factory::getApplication()->isClient('site');
+$new_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
+$edit_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('edit') : ContentbuilderLegacyHelper::authorize('edit');
+$delete_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('delete') : ContentbuilderLegacyHelper::authorize('delete');
+$view_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('view') : ContentbuilderLegacyHelper::authorize('view');
+$fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('fullarticle') : ContentbuilderLegacyHelper::authorize('fullarticle');
 ?>
 <?php Factory::getApplication()->getDocument()->addStyleDeclaration($this->theme_css); ?>
 <?php Factory::getApplication()->getDocument()->addScriptDeclaration($this->theme_js); ?>

@@ -6,7 +6,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\Controller;
+namespace CB\Component\Contentbuilder\Site\Controller;
 
 // no direct access
 \defined('_JEXEC') or die('Restricted access');
@@ -21,10 +21,13 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class DetailsController extends BaseController
 {
+    private bool $frontend;
+
     public function __construct($config = [])
     {
+        $this->frontend = Factory::getApplication()->isClient('site');
 
-        if (class_exists('cbFeMarker') && CBRequest::getInt('Itemid', 0)) {
+        if ($this->frontend && CBRequest::getInt('Itemid', 0)) {
 
             $option = 'com_contentbuilder';
 
@@ -77,8 +80,8 @@ class DetailsController extends BaseController
             if (!CBRequest::getCmd('record_id', '')) {
 
                 CBRequest::setVar('cbIsNew', 1);
-                ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, class_exists('cbFeMarker') ? '_fe' : '');
-                $auth = class_exists('cbFeMarker') ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
+                ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, $this->frontend ? '_fe' : '');
+                $auth = $this->frontend ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
 
                 if ($auth) {
                     Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&view=edit&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
@@ -89,13 +92,13 @@ class DetailsController extends BaseController
             }
         }
 
-        ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', 0), class_exists('cbFeMarker') ? '_fe' : '');
+        ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', 0), $this->frontend ? '_fe' : '');
         parent::__construct($config);
     }
 
     function display($cachable = false, $urlparams = array())
     {
-        ContentbuilderLegacyHelper::checkPermissions('view', Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED'), class_exists('cbFeMarker') ? '_fe' : '');
+        ContentbuilderLegacyHelper::checkPermissions('view', Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED'), $this->frontend ? '_fe' : '');
 
         CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));
         CBRequest::setVar('layout', CBRequest::getWord('layout', null) == 'latest' ? null : CBRequest::getWord('layout', null));

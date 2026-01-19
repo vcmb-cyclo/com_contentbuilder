@@ -26,11 +26,15 @@ class HtmlView extends BaseHtmlView
 
         $wa = $this->document->getWebAssetManager();
         $wa->addInlineStyle(
-            '.icon-48-logo_left{'
-            . 'background-image:url(' . Uri::root(true) . '/media/com_contentbuilder/images/logo_left.png);'
-            . 'background-size:contain;'
-            . 'background-repeat:no-repeat;'
-            . '}'
+            '.icon-logo_left{
+                background-image:url(' . Uri::root(true) . '/media/com_contentbuilder/images/logo_left.png);
+                background-size:contain;
+                background-repeat:no-repeat;
+                background-position:center;
+                display:inline-block;
+                width:48px;
+                height:48px;
+            }'
         );
 
         // Et pour le title, garde un identifiant cohérent :

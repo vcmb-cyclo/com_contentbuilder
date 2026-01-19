@@ -30,7 +30,7 @@ class AjaxModel extends BaseDatabaseModel
 
         $this->frontend = Factory::getApplication()->isClient('site');
 
-        $mainframe = Factory::getApplication();
+        $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
         $this->_id = CBRequest::getInt('id', 0);

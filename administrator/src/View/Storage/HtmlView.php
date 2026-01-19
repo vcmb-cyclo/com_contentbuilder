@@ -14,6 +14,7 @@ namespace CB\Component\Contentbuilder\Administrator\View\Storage;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Uri\Uri;
 use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
 class HtmlView extends BaseHtmlView
@@ -36,6 +37,23 @@ class HtmlView extends BaseHtmlView
         $wa->getRegistry()->addExtensionRegistryFile('com_contentbuilder');
         $wa->useScript('com_contentbuilder.jscolor');
 
+		if (!$this->frontend) {
+            // 1️⃣ Récupération du WebAssetManager
+            $document = $this->getDocument();
+            $wa = $document->getWebAssetManager();
+            $wa->addInlineStyle(
+                '.icon-logo_left{
+                    background-image:url(' . Uri::root(true) . '/media/com_contentbuilder/images/logo_left.png);
+                    background-size:contain;
+                    background-repeat:no-repeat;
+                    background-position:center;
+                    display:inline-block;
+                    width:48px;
+                    height:48px;
+                }'
+            );
+        }    
+            
         // Formulaire JForm
         $this->form = $this->getModel()->getForm();
 
@@ -84,7 +102,7 @@ class HtmlView extends BaseHtmlView
         ToolbarHelper::title(
             'ContentBuilder :: ' . ($isNew ? Text::_('COM_CONTENTBUILDER_STORAGES') : ($this->item->title ?? ''))
             . ' : <small><small>[ ' . $text . ' ]</small></small>',
-            'logo_left.png'
+            'logo_left'
         );
 
         ToolbarHelper::apply('storage.apply');

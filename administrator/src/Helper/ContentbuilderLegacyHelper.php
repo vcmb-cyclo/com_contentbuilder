@@ -514,7 +514,7 @@ final class ContentbuilderLegacyHelper
                         }
 
                         if ($wrapper['wordwrap'] && !$allow_html) {
-                            $new_value = self::allhtmlentities(contentbuilder_wordwrap(ContentbuilderHelper::cbinternal($value), $wrapper['wordwrap'], "\n", true));
+                            $new_value = self::allhtmlentities(ContentbuilderHelper::contentbuilder_wordwrap(ContentbuilderHelper::cbinternal($value), $wrapper['wordwrap'], "\n", true));
                         } else {
                             $new_value = $allow_html ? self::cleanString(ContentbuilderHelper::cbinternal($value)) : self::allhtmlentities(ContentbuilderHelper::cbinternal($value));
                         }
@@ -605,7 +605,7 @@ final class ContentbuilderLegacyHelper
                     'option=com_contentbuilder&viewcontainer=true',
                     'ContentBuilder',
                     '',
-                    'components/com_contentbuilder/views/logo_icon_cb.png',
+                    'media/com_contentbuilder/images/logo_icon_cb.png',
                     1
                  )
            "
@@ -637,7 +637,7 @@ final class ContentbuilderLegacyHelper
                         'option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "',
                         " . $db->Quote($name) . ",
                         'com_contentbuilder',
-                        'components/com_contentbuilder/views/logo_icon_cb.png',
+                        'media/com_contentbuilder/images/logo_icon_cb.png',
                         1,
                         '$parent_id'
                      )
@@ -680,7 +680,7 @@ final class ContentbuilderLegacyHelper
                     "values (" .
                     "'ContentBuilder Views', 'ContentBuilder Views', 'main', 1, " .
                     "'index.php?option=com_contentbuilder&viewcontainer=true'," .
-                    "'0', 1, " . intval($result) . ", 1, 'components/com_contentbuilder/views/logo_icon_cb.png',( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone ),( Select mrgtrgt From (Select max(mrgt.rgt)+2 As mrgtrgt From #__menu As mrgt) As filet )" .
+                    "'0', 1, " . intval($result) . ", 1, 'media/com_contentbuilder/images/logo_icon_cb.png',( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone ),( Select mrgtrgt From (Select max(mrgt.rgt)+2 As mrgtrgt From #__menu As mrgt) As filet )" .
                     ")"
                 );
                 $db->execute();
@@ -719,7 +719,7 @@ final class ContentbuilderLegacyHelper
                     "values (" .
                     "" . $db->Quote($name) . ", " . $db->Quote($name) . ", 'main', '$parent_id', " .
                     "'index.php?option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "'," .
-                    "'0', 1, " . intval($result) . ", 1, 'components/com_contentbuilder/views/logo_icon_cb.png'" .
+                    "'0', 1, " . intval($result) . ", 1, 'media/com_contentbuilder/images/logo_icon_cb.png'" .
                     ",( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone), ( Select mrgtrgt From (Select max(mrgt.rgt)+2 As mrgtrgt From #__menu As mrgt) As filet))"
                 );
                 $db->execute();
@@ -766,7 +766,7 @@ final class ContentbuilderLegacyHelper
                     "values (" .
                     "'ContentBuilder Views', 'ContentBuilder Views', 'main', 'component', 1, " .
                     "'index.php?option=com_contentbuilder&viewcontainer=true'," .
-                    "1, " . intval($result) . ", 1, 'components/com_contentbuilder/views/logo_icon_cb.png',( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone ),( Select mrgtrgt From (Select max(mrgt.rgt)+2 As mrgtrgt From #__menu As mrgt) As filet )" .
+                    "1, " . intval($result) . ", 1, 'media/com_contentbuilder/images/logo_icon_cb.png',( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone ),( Select mrgtrgt From (Select max(mrgt.rgt)+2 As mrgtrgt From #__menu As mrgt) As filet )" .
                     ")"
                 );
                 $db->execute();
@@ -805,7 +805,7 @@ final class ContentbuilderLegacyHelper
                     "values (" .
                     "''," . "''," . $db->Quote($name) . ", " . $db->Quote($name) . ", 'main', 'component', '$parent_id', " .
                     "'index.php?option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "'," .
-                    "1, " . intval($result) . ", 1, 'components/com_contentbuilder/views/logo_icon_cb.png'" .
+                    "1, " . intval($result) . ", 1, 'media/com_contentbuilder/images/logo_icon_cb.png'" .
                     ",( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone), ( Select mrgtrgt From (Select max(mrgt.rgt)+2 As mrgtrgt From #__menu As mrgt) As filet))"
                 );
                 $db->execute();

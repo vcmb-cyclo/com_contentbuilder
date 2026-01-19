@@ -58,11 +58,11 @@ class PublicformsModel extends ListModel
     {
         parent::__construct($config);
 
-        $mainframe = Factory::getApplication();
+        $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
         // Get pagination request variables
-        $limit = $mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->get('list_limit'), 'int');
+        $limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->get('list_limit'), 'int');
         $limitstart = CBRequest::getVar('limitstart', 0, '', 'int');
 
         // In case limit has been changed, adjust it
@@ -71,16 +71,16 @@ class PublicformsModel extends ListModel
         $this->setState('limit', $limit);
         $this->setState('limitstart', $limitstart);
 
-        $filter_order = $mainframe->getUserStateFromRequest($option . 'forms_filter_order', 'filter_order', '`name`', 'cmd');
-        $filter_order_Dir = $mainframe->getUserStateFromRequest($option . 'forms_filter_order_Dir', 'filter_order_Dir', 'desc', 'word');
+        $filter_order = $app->getUserStateFromRequest($option . 'forms_filter_order', 'filter_order', '`name`', 'cmd');
+        $filter_order_Dir = $app->getUserStateFromRequest($option . 'forms_filter_order_Dir', 'filter_order_Dir', 'desc', 'word');
 
         $this->setState('forms_filter_order', $filter_order);
         $this->setState('forms_filter_order_Dir', $filter_order_Dir);
 
-        $filter_state = $mainframe->getUserStateFromRequest($option . 'forms_filter_state', 'filter_state', '', 'word');
+        $filter_state = $app->getUserStateFromRequest($option . 'forms_filter_state', 'filter_state', '', 'word');
         $this->setState('forms_filter_state', $filter_state);
 
-        $filter_tag = $mainframe->getUserStateFromRequest($option . 'forms_filter_tag', 'filter_tag', '', 'string');
+        $filter_tag = $app->getUserStateFromRequest($option . 'forms_filter_tag', 'filter_tag', '', 'string');
         $this->setState('forms_filter_tag', $filter_tag);
 
         $this->frontend = Factory::getApplication()->isClient('site');
@@ -149,7 +149,7 @@ class PublicformsModel extends ListModel
 
     private function buildOrderBy()
     {
-        $mainframe = Factory::getApplication();
+        $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
         $orderby = ' Order By ordering';

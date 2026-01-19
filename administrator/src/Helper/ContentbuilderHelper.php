@@ -85,20 +85,19 @@ if (!function_exists('mb_wordwrap')) {
         return $return;
     }
 }
-if (function_exists('mb_strlen')) {
-    function contentbuilder_wordwrap($str, $width = 75, $break = "\n", $cut = false, $charset = null)
-    {
-        return mb_wordwrap($str, $width, $break, $cut, $charset);
-    }
-} else {
-    function contentbuilder_wordwrap($str, $width = 75, $break = "\n", $cut = false, $charset = null)
-    {
-        return wordwrap($str, $width, $break, $cut);
-    }
-}
+
 
 class ContentbuilderHelper
 {
+
+    public static function contentbuilder_wordwrap($str, $width = 75, $break = "\n", $cut = false, $charset = null)
+    {
+        if (function_exists('mb_strlen')) {
+            return mb_wordwrap($str, $width, $break, $cut, $charset);
+        } else {
+            return wordwrap($str, $width, $break, $cut);
+        }
+    }
 
     private static function is_url($url = FALSE)
     {

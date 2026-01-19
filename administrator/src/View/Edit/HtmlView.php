@@ -30,9 +30,12 @@ class HtmlView extends BaseHtmlView
 	protected $row;
 	protected $article_settings;
 	protected $article_options;
+    private bool $frontend;
 
 	function display($tpl = null)
 	{
+		// Get data from the model
+        $this->frontend = Factory::getApplication()->isClient('site');
 		//HTMLHelper::_('bootstrap.tooltip');
 
 		// Get data from the model
@@ -151,8 +154,7 @@ class HtmlView extends BaseHtmlView
 			$subject->template = preg_replace($pattern, '', $subject->template);
 		}
 
-		if (!class_exists('cbFeMarker')) {
-
+		if (!$this->frontend) {
 			ToolbarHelper::title($subject->page_title, 'logo_left');
 		}
 

@@ -125,7 +125,7 @@ class EditModel extends BaseDatabaseModel
         $this->_db = Factory::getContainer()->get(DatabaseInterface::class);
         parent::__construct($config);
 
-        $mainframe = Factory::getApplication();
+        $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
         $this->is15 = false;
@@ -1949,7 +1949,7 @@ var contentbuilder = new function(){
 
     function _sendMail($bypass_plugin, $bypass_verification_name, $verification_id, &$user, $password)
     {
-        global $mainframe;
+        global $app;
 
         $db = Factory::getContainer()->get(DatabaseInterface::class);
 
@@ -1958,10 +1958,10 @@ var contentbuilder = new function(){
         $username = $user->get('username');
 
         $usersConfig = ComponentHelper::getParams('com_users');
-        $sitename = $mainframe->get('sitename');
+        $sitename = $app->get('sitename');
         $useractivation = $usersConfig->get('useractivation');
-        $mailfrom = $mainframe->get('mailfrom');
-        $fromname = $mainframe->get('fromname');
+        $mailfrom = $app->get('mailfrom');
+        $fromname = $app->get('fromname');
         $siteURL = Uri::base();
 
         $subject = sprintf(Text::_('Account details for'), $name, $sitename);

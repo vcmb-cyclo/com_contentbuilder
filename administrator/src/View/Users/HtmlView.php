@@ -40,7 +40,7 @@ class HtmlView extends BaseHtmlView
 
         // Toolbar
         ToolbarHelper::title(
-            '<span style="display:inline-block; vertical-align:middle">' . Text::_('COM_CONTENTBUILDER_USERS') . '</span>',
+            'ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER_USERS'),
             'users'
         );
 
