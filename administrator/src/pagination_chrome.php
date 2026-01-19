@@ -17,7 +17,7 @@
 
 namespace CB\Component\Contentbuilder\Administrator;
 
-// no direct access
+// No direct access
 \defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Language\Text;

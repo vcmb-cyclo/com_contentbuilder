@@ -7,7 +7,7 @@
  * @copyright Copyright (C) 2026 by XDA+GIL
  */
 
-// no direct access
+// No direct access
 \defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Factory;

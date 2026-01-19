@@ -7,7 +7,7 @@
  * @license     GNU/GPL
 */
 
-// no direct access
+// No direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 use Joomla\CMS\Plugin\CMSPlugin;

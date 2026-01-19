@@ -9,7 +9,7 @@
 
 namespace CB\Component\Contentbuilder\Administrator\View\Details;
 
-// no direct access
+// No direct access
 \defined('_JEXEC') or die('Restricted access');
 
 

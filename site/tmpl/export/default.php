@@ -1,25 +1,21 @@
 <?php
 /**
  * @package     ContentBuilder
- * @author      Markus Bopp
+ * @author      Markus Bopp / XDA+GIL
  * @link        https://breezingforms.vcmb.fr
  * @copyright   Copyright (C) 2026 by XDA+GIL
  * @license     GNU/GPL
  */
 
 
-
-// no direct access
+// No direct access
 \defined('_JEXEC') or die('Restricted access');
 
 use Joomla\CMS\Language\Text;
-use PhpOffice\PhpSpreadsheet\Shared\Font;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
 @ob_end_clean();
 
-require __DIR__ . '/../../../librairies/PhpSpreadsheet-5.3.0/vendor/autoload.php';
+require JPATH_ADMINISTRATOR . '/components/com_contentbuilder/librairies/PhpSpreadsheet-5.3.0/vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Joomla\CMS\Factory;

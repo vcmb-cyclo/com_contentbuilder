@@ -12,7 +12,7 @@
 // Vue simple de test.
 namespace CB\Component\Contentbuilder\Administrator\View\Test;
 
-// no direct access
+// No direct access
 \defined('_JEXEC') or die('Restricted access');
 
 use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;

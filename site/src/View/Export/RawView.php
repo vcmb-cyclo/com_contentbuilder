@@ -14,7 +14,7 @@ namespace CB\Component\Contentbuilder\Site\View\Export;
 
 use CB\Component\Contentbuilder\Administrator\View\Contentbuilder\HtmlView as BaseHtmlView;
 
-class HtmlView extends BaseHtmlView
+class RawView extends BaseHtmlView
 {
     function display($tpl = null)
     {

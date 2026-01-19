@@ -17,7 +17,7 @@
 
 namespace CB\Component\Contentbuilder\Site\View\Ajax;
 
-// no direct access
+// No direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-require_once(JPATH_COMPONENT_ADMINISTRATOR .'/views/ajax/view.raw.php');
+//require_once(JPATH_COMPONENT_ADMINISTRATOR .'/views/ajax/view.raw.php');

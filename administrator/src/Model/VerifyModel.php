@@ -36,8 +36,8 @@ class VerifyModel extends BaseDatabaseModel
     {
         parent::__construct($config);
 
-        $this->mainframe = Factory::getApplication();
-        $this->frontend = $this->mainframe->isClient('site');
+        $this->app = Factory::getApplication();
+        $this->frontend = $this->app->isClient('site');
 
         $option = 'com_contentbuilder';
 
@@ -54,8 +54,8 @@ class VerifyModel extends BaseDatabaseModel
         }
 
         if (!$verification_id) {
-            $user_id = $this->mainframe->getIdentity()->get('id', 0);
-            $setup = $this->mainframe->getSession()->get($plugin . $verification_name, '', 'com_contentbuilder.verify.' . $plugin . $verification_name);
+            $user_id = $this->app->getIdentity()->get('id', 0);
+            $setup = $this->app->getSession()->get($plugin . $verification_name, '', 'com_contentbuilder.verify.' . $plugin . $verification_name);
         } else {
             $this->getDatabase()->setQuery("Select `setup`,`user_id` From #__contentbuilder_verifications Where `verification_hash` = " . $this->getDatabase()->Quote($verification_id));
             $setup = $this->getDatabase()->loadAssoc();
@@ -74,8 +74,8 @@ class VerifyModel extends BaseDatabaseModel
         if (isset($out['plugin']) && $out['plugin'] && isset($out['verification_name']) && $out['verification_name'] && isset($out['verify_view']) && $out['verify_view']) {
             // alright 
         } else {
-            $this->mainframe->enqueueMessage('Spoofed data or invalid verification id', 'error');
-            $this->mainframe->redirect('index.php');
+            $this->app->enqueueMessage('Spoofed data or invalid verification id', 'error');
+            $this->app->redirect('index.php');
         }
 
         if (isset($out['plugin_options'])) {
@@ -108,9 +108,9 @@ class VerifyModel extends BaseDatabaseModel
 
         if (isset($out['require_view']) && is_numeric($out['require_view']) && intval($out['require_view']) > 0) {
 
-            if ($this->mainframe->getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder')) {
-                $user_id = $this->mainframe->getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder');
-                $this->mainframe->getSession()->clear('cb_last_record_user_id', 'com_contentbuilder');
+            if ($this->app->getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder')) {
+                $user_id = $this->app->getSession()->get('cb_last_record_user_id', 0, 'com_contentbuilder');
+                $this->app->getSession()->clear('cb_last_record_user_id', 'com_contentbuilder');
             }
 
             $id = intval($out['require_view']);
@@ -132,7 +132,7 @@ class VerifyModel extends BaseDatabaseModel
             }
 
             if (intval($user_id) == 0) {
-                $this->mainframe->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . base64_decode(Uri::getInstance()->toString()) . '&view=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
+                $this->app->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . base64_decode(Uri::getInstance()->toString()) . '&view=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
             }
 
             $rec = $form->getListRecords($ids, '', array(), 0, 1, '', array(), 'desc', 0, false, $user_id, 0, -1, -1, -1, -1, array(), true, null);
@@ -143,12 +143,12 @@ class VerifyModel extends BaseDatabaseModel
             }
 
             if (!$form->getListRecordsTotal($ids)) {
-                $this->mainframe->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . base64_decode(Uri::getInstance()->toString()) . '&view=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
+                $this->app->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . base64_decode(Uri::getInstance()->toString()) . '&view=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
             }
         }
 
         // clearing session after possible required view to make re-visits possible
-        $this->mainframe->getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
+        $this->app->getSession()->clear($plugin . $verification_name, 'com_contentbuilder.verify.' . $plugin . $verification_name);
 
         $verification_data = '';
         if (is_array($rec) && count($rec)) {
@@ -190,7 +190,7 @@ class VerifyModel extends BaseDatabaseModel
         }
 
         /*
-         if(intval($out['client']) && !$this->mainframe->isClient('administrator')){
+         if(intval($out['client']) && !$this->app->isClient('administrator')){
             parse_str(Uri::getInstance()->getQuery(), $data1);
             $this_page = Uri::getInstance()->base() . 'administrator/index.php?'.http_build_query($data1, '', '&');
         }else{
@@ -199,7 +199,7 @@ class VerifyModel extends BaseDatabaseModel
             $this_page = $urlex[0] . '?' . http_build_query($data1, '', '&');
         }
          */
-        if (intval($out['client']) && !$this->mainframe->isClient('administrator')) {
+        if (intval($out['client']) && !$this->app->isClient('administrator')) {
             $this_page = Uri::getInstance()->base() . 'administrator/index.php?' . Uri::getInstance()->getQuery();
         } else {
             $this_page = Uri::getInstance()->toString();
@@ -207,13 +207,13 @@ class VerifyModel extends BaseDatabaseModel
 
         PluginHelper::importPlugin('contentbuilder_verify', $plugin);
 
-        $eventResult = $this->mainframe->getDispatcher()->dispatch('onSetup', new \Joomla\Event\Event('onSetup', array($this_page, $out)));
+        $eventResult = $this->app->getDispatcher()->dispatch('onSetup', new \Joomla\Event\Event('onSetup', array($this_page, $out)));
         $setup_result = $eventResult->getArgument('result') ?: [];
         if (!implode('', $setup_result)) {
 
             if (!CBRequest::getBool('verify', 0)) {
 
-                if ($this->mainframe->isClient('administrator')) {
+                if ($this->app->isClient('administrator')) {
                     $local = explode('/', Uri::getInstance()->base());
                     unset($local[count($local) - 1]);
                     unset($local[count($local) - 1]);
@@ -225,19 +225,19 @@ class VerifyModel extends BaseDatabaseModel
                     $this_page = $urlex[0] . '?' . http_build_query($data, '', '&') . '&verify=1&verification_id=' . $verification_id;
                 }
 
-                $eventResult = $this->mainframe->getDispatcher()->dispatch('onForward', new \Joomla\Event\Event('onForward', array($this_page, $out)));
+                $eventResult = $this->app->getDispatcher()->dispatch('onForward', new \Joomla\Event\Event('onForward', array($this_page, $out)));
                 $forward_result = $eventResult->getArgument('result') ?: [];
                 $forward = implode('', $forward_result);
 
                 if ($forward) {
-                    $this->mainframe->redirect($forward);
+                    $this->app->redirect($forward);
                 }
             } else {
 
                 if ($verification_id) {
 
                     $msg = '';
-                    $eventResult = $this->mainframe->getDispatcher()->dispatch('onVerify', new \Joomla\Event\Event('onVerify', array($this_page, $out)));
+                    $eventResult = $this->app->getDispatcher()->dispatch('onVerify', new \Joomla\Event\Event('onVerify', array($this_page, $out)));
                     $verify_result = $eventResult->getArgument('result') ?: [];
 
                     if (count($verify_result)) {
@@ -260,7 +260,7 @@ class VerifyModel extends BaseDatabaseModel
                             }
 
                             if ((!$out['client'] && (!isset($out['return-site']) || !$out['return-site'])) || ($out['client'] && (!isset($out['return-admin']) || !$out['return-admin']))) {
-                                if (intval($out['client']) && !$this->mainframe->isClient('administrator')) {
+                                if (intval($out['client']) && !$this->app->isClient('administrator')) {
                                     $redirect_view = Uri::getInstance()->base() . 'administrator/index.php?option=com_contentbuilder&view=list&lang=' . CBRequest::getCmd('lang', '') . '&id=' . $out['verify_view'];
                                 } else {
                                     $redirect_view = 'index.php?option=com_contentbuilder&view=list&lang=' . CBRequest::getCmd('lang', '') . '&id=' . $out['verify_view'];
@@ -353,12 +353,12 @@ class VerifyModel extends BaseDatabaseModel
                     $msg = Text::_('COM_CONTENTBUILDER_VERIFICATION_NOT_EXECUTED');
                 }
 
-                $this->mainframe->enqueueMessage($msg, 'warning');
+                $this->app->enqueueMessage($msg, 'warning');
 
                 if (!$out['client']) {
-                    $this->mainframe->redirect($redirect_view ? $redirect_view : (!$out['client'] && isset($out['return-site']) && $out['return-site'] ? base64_decode($out['return-site']) : 'index.php'));
+                    $this->app->redirect($redirect_view ? $redirect_view : (!$out['client'] && isset($out['return-site']) && $out['return-site'] ? base64_decode($out['return-site']) : 'index.php'));
                 } else {
-                    $this->mainframe->redirect($redirect_view ? $redirect_view : ($out['client'] && isset($out['return-admin']) && $out['return-admin'] ? base64_decode($out['return-admin']) : 'index.php'));
+                    $this->app->redirect($redirect_view ? $redirect_view : ($out['client'] && isset($out['return-admin']) && $out['return-admin'] ? base64_decode($out['return-admin']) : 'index.php'));
                 }
             }
         } else {
@@ -369,7 +369,7 @@ class VerifyModel extends BaseDatabaseModel
     public function activate_by_admin($token)
     {
 
-        $user = $this->mainframe->getIdentity();
+        $user = $this->app->getIdentity();
 
         if (!$user->authorise('core.create', 'com_users')) {
 
@@ -453,13 +453,13 @@ class VerifyModel extends BaseDatabaseModel
         // Send the registration email.
         $return = Factory::getContainer()->get(MailerFactoryInterface::class)->createMailer()->sendMail($data['mailfrom'], $data['fromname'], $data['email'], $emailSubject, $emailBody);
 
-        $this->mainframe->enqueueMessage(Text::_('COM_USERS_REGISTRATION_ADMINACTIVATE_SUCCESS'));
-        $this->mainframe->redirect(Route::_('index.php?option=com_users', false));
+        $this->app->enqueueMessage(Text::_('COM_USERS_REGISTRATION_ADMINACTIVATE_SUCCESS'));
+        $this->app->redirect(Route::_('index.php?option=com_users', false));
     }
 
     public function activate($token)
     {
-        $this->mainframe->getLanguage()->load('com_users', JPATH_SITE);
+        $this->app->getLanguage()->load('com_users', JPATH_SITE);
 
         $config = Factory::getConfig();
         $userParams = ComponentHelper::getParams('com_users');
@@ -499,7 +499,7 @@ class VerifyModel extends BaseDatabaseModel
             $data['activate'] = Uri::root() . 'index.php?option=com_contentbuilder&view=verify&token=' . $data['activation'] . '&verify_by_admin=1&format=raw';
 
             // Remove administrator/ from activate url in case this method is called from admin
-            if ($this->mainframe->isClient('administrator')) {
+            if ($this->app->isClient('administrator')) {
                 $adminPos = strrpos($data['activate'], 'administrator/');
                 $data['activate'] = substr_replace($data['activate'], '', $adminPos, 14);
             }
@@ -555,7 +555,7 @@ class VerifyModel extends BaseDatabaseModel
                 }
             }
 
-            $this->mainframe->enqueueMessage(Text::_('COM_USERS_REGISTRATION_VERIFY_SUCCESS'));
+            $this->app->enqueueMessage(Text::_('COM_USERS_REGISTRATION_VERIFY_SUCCESS'));
         }
         // Admin activation is on and admin is activating the account
         elseif (($userParams->get('useractivation') == 2) && $user->getParam('activate', 0)) {
@@ -591,13 +591,13 @@ class VerifyModel extends BaseDatabaseModel
                 return false;
             }
 
-            $this->mainframe->enqueueMessage(Text::_('COM_USERS_REGISTRATION_VERIFY_SUCCESS'));
+            $this->app->enqueueMessage(Text::_('COM_USERS_REGISTRATION_VERIFY_SUCCESS'));
         } else {
 
             $user->set('activation', '');
             $user->set('block', '0');
 
-            $this->mainframe->enqueueMessage(Text::_('COM_USERS_REGISTRATION_SAVE_SUCCESS'));
+            $this->app->enqueueMessage(Text::_('COM_USERS_REGISTRATION_SAVE_SUCCESS'));
 
         }
 

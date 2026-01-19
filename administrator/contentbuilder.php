@@ -9,7 +9,7 @@
  * @license     GNU/GPL
  */
 
-// no direct access
+// No direct access
 \defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;

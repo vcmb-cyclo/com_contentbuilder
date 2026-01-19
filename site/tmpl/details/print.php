@@ -7,9 +7,7 @@
  * @license     GNU/GPL
  */
 
-namespace CB\Component\Contentbuilder\Administrator\View\Details\Tmpl;
-
-// no direct access
+// No direct access
 \defined('_JEXEC') or die('Restricted access');
 
 
