@@ -110,7 +110,7 @@ final class StoragesController extends AdminController
             $this->setMessage($e->getMessage(), 'warning');
         }
 
-        $this->setRedirect('index.php?option=com_contentbuilder&view=storages');
+        $this->setRedirect('index.php?option=com_contentbuilder&task=storages.display');
     }
 
     public function delete(): void
@@ -144,7 +144,7 @@ final class StoragesController extends AdminController
             $this->setMessage($e->getMessage(), 'warning');
         }
 
-        $this->setRedirect('index.php?option=com_contentbuilder&view=storages');
+        $this->setRedirect('index.php?option=com_contentbuilder&task=storages.display');
     }
 
     /**
@@ -181,7 +181,7 @@ final class StoragesController extends AdminController
         }
 
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . $this->input->getInt('limitstart'), false),
+            Route::_('index.php?option=com_contentbuilder&task=storages.display&limitstart=' . $this->input->getInt('limitstart'), false),
             Text::_('COM_CONTENTBUILDER_COPIED')
         );
     }
@@ -254,7 +254,7 @@ final class StoragesController extends AdminController
             $model->setPublished();
         }
 
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_PUBLISHED'));
+        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=storages.display&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_PUBLISHED'));
     }
 
     public function listpublish()
@@ -286,7 +286,7 @@ final class StoragesController extends AdminController
             $model->setUnpublished();
         }
 
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
+        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=storages.display&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
     }
 
     public function listunpublish()

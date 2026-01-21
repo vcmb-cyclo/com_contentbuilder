@@ -132,7 +132,7 @@ class VerifyModel extends BaseDatabaseModel
             }
 
             if (intval($user_id) == 0) {
-                $this->app->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . base64_decode(Uri::getInstance()->toString()) . '&view=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
+                $this->app->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . base64_decode(Uri::getInstance()->toString()) . '&task=edit.display&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
             }
 
             $rec = $form->getListRecords($ids, '', array(), 0, 1, '', array(), 'desc', 0, false, $user_id, 0, -1, -1, -1, -1, array(), true, null);
@@ -143,7 +143,7 @@ class VerifyModel extends BaseDatabaseModel
             }
 
             if (!$form->getListRecordsTotal($ids)) {
-                $this->app->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . base64_decode(Uri::getInstance()->toString()) . '&view=edit&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
+                $this->app->redirect('index.php?option=com_contentbuilder&lang=' . CBRequest::getCmd('lang', '') . '&return=' . base64_decode(Uri::getInstance()->toString()) . '&task=edit.display&record_id=&id=' . $id . '&rand=' . rand(0, getrandmax()));
             }
         }
 
@@ -261,9 +261,9 @@ class VerifyModel extends BaseDatabaseModel
 
                             if ((!$out['client'] && (!isset($out['return-site']) || !$out['return-site'])) || ($out['client'] && (!isset($out['return-admin']) || !$out['return-admin']))) {
                                 if (intval($out['client']) && !$this->app->isClient('administrator')) {
-                                    $redirect_view = Uri::getInstance()->base() . 'administrator/index.php?option=com_contentbuilder&view=list&lang=' . CBRequest::getCmd('lang', '') . '&id=' . $out['verify_view'];
+                                    $redirect_view = Uri::getInstance()->base() . 'administrator/index.php?option=com_contentbuilder&task=list.display&lang=' . CBRequest::getCmd('lang', '') . '&id=' . $out['verify_view'];
                                 } else {
-                                    $redirect_view = 'index.php?option=com_contentbuilder&view=list&lang=' . CBRequest::getCmd('lang', '') . '&id=' . $out['verify_view'];
+                                    $redirect_view = 'index.php?option=com_contentbuilder&task=list.display&lang=' . CBRequest::getCmd('lang', '') . '&id=' . $out['verify_view'];
                                 }
                             }
 

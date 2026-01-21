@@ -1,16 +1,31 @@
 <?php
+/**
+ * @package     ContentBuilder
+ * @author      Xavier DANO / XDA+GIL
+ * @link        https://breezingforms.vcmb.fr
+ * @license     GNU/GPL
+ * 
+ * Custom dispatcher to Controllers.
+*/
 namespace CB\Component\Contentbuilder\Site\Controller;
 
 \defined('_JEXEC') or die;
 
-use Joomla\CMS\MVC\Controller\BaseController;
-use Joomla\CMS\Factory;
-class DisplayController extends BaseController
-{
-    protected $default_view = 'forms';
+use Joomla\CMS\Dispatcher\ComponentDispatcher;
 
-    public function display($cachable = false, $urlparams = [])
+class Dispatcher extends ComponentDispatcher
+{
+    public function dispatch(): void
     {
-        return parent::display($cachable, $urlparams);
+        // On lit les variables AVANT la sélection du controller
+        $view = $this->input->getCmd('view', '');
+        $task = $this->input->getCmd('task', '');
+
+        // Mapping propre: menu Joomla => view=list, task vide => on force ListController::display
+        if ($view === 'list' && $task === '') {
+            $this->input->set('task', 'list.display');
+        }
+
+        parent::dispatch();
     }
 }

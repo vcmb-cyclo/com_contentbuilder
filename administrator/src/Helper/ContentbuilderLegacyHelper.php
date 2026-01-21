@@ -14,19 +14,20 @@ namespace CB\Component\Contentbuilder\Administrator\Helper;
 \defined('_JEXEC') or die('Direct Access to this location is not allowed.');
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Editor\Editor;
-use Joomla\Database\DatabaseInterface;
-use Joomla\CMS\Language\Text;
-use Joomla\Filesystem\File;
-use Joomla\Registry\Registry;
-use Joomla\CMS\Uri\Uri;
-use Joomla\CMS\Router\Route;
-use Joomla\CMS\HTML\HTMLHelper;
-use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Table\Table;
-use Joomla\Filesystem\Folder;
-use Joomla\CMS\Event\Content\ContentPrepareEvent;
 use Joomla\CMS\Access\Access;
+use Joomla\CMS\Editor\Editor;
+use Joomla\CMS\Event\Content\ContentPrepareEvent;
+use Joomla\CMS\Access\Exception\NotAllowed;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Uri\Uri;
+use Joomla\Database\DatabaseInterface;
+use Joomla\Filesystem\File;
+use Joomla\Filesystem\Folder;
+use Joomla\Registry\Registry;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\Logger;
@@ -613,7 +614,7 @@ final class ContentbuilderLegacyHelper
             $db->execute();
             $parent_id = $db->insertid();
         }
-        $db->setQuery("Select id From #__components Where admin_menu_link = 'option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "'");
+        $db->setQuery("Select id From #__components Where admin_menu_link = 'option=com_contentbuilder&task=list.display&id=" . intval($contentbuilder_form_id) . "'");
         $menuitem = $db->loadResult();
         if (!$update)
             return;
@@ -634,7 +635,7 @@ final class ContentbuilderLegacyHelper
                      Values
                      (
                         " . $db->Quote($name) . ",
-                        'option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "',
+                        'option=com_contentbuilder&task=list.display&id=" . intval($contentbuilder_form_id) . "',
                         " . $db->Quote($name) . ",
                         'com_contentbuilder',
                         'media/com_contentbuilder/images/logo_icon_cb.png',
@@ -693,7 +694,7 @@ final class ContentbuilderLegacyHelper
                 $db->execute();
             }
 
-            $db->setQuery("Select id From #__menu Where link = 'index.php?option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "'");
+            $db->setQuery("Select id From #__menu Where link = 'index.php?option=com_contentbuilder&task=list.display&id=" . intval($contentbuilder_form_id) . "'");
             $menuitem = $db->loadResult();
 
             if (!$update)
@@ -701,7 +702,7 @@ final class ContentbuilderLegacyHelper
             if (!$result)
                 die("ContentBuilder main menu item not found!");
 
-            $db->setQuery("Select id From #__menu Where alias = " . $db->Quote($name) . " And link Like 'index.php?option=com_contentbuilder&view=list&id=%' And link <> 'index.php?option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "'");
+            $db->setQuery("Select id From #__menu Where alias = " . $db->Quote($name) . " And link Like 'index.php?option=com_contentbuilder&task=list.display&id=%' And link <> 'index.php?option=com_contentbuilder&task=list.display&id=" . intval($contentbuilder_form_id) . "'");
             $name_exists = $db->loadResult();
 
             if ($name_exists) {
@@ -718,7 +719,7 @@ final class ContentbuilderLegacyHelper
                     ",lft,rgt) " .
                     "values (" .
                     "" . $db->Quote($name) . ", " . $db->Quote($name) . ", 'main', '$parent_id', " .
-                    "'index.php?option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "'," .
+                    "'index.php?option=com_contentbuilder&task=list.display&id=" . intval($contentbuilder_form_id) . "'," .
                     "'0', 1, " . intval($result) . ", 1, 'media/com_contentbuilder/images/logo_icon_cb.png'" .
                     ",( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone), ( Select mrgtrgt From (Select max(mrgt.rgt)+2 As mrgtrgt From #__menu As mrgt) As filet))"
                 );
@@ -779,7 +780,7 @@ final class ContentbuilderLegacyHelper
                 $db->execute();
             }
 
-            $db->setQuery("Select id From #__menu Where link = 'index.php?option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "'");
+            $db->setQuery("Select id From #__menu Where link = 'index.php?option=com_contentbuilder&task=list.display&id=" . intval($contentbuilder_form_id) . "'");
             $menuitem = $db->loadResult();
 
             if (!$update)
@@ -787,7 +788,7 @@ final class ContentbuilderLegacyHelper
             if (!$result)
                 die("ContentBuilder main menu item not found!");
 
-            $db->setQuery("Select id From #__menu Where alias = " . $db->Quote($name) . " And link Like 'index.php?option=com_contentbuilder&view=list&id=%' And link <> 'index.php?option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "'");
+            $db->setQuery("Select id From #__menu Where alias = " . $db->Quote($name) . " And link Like 'index.php?option=com_contentbuilder&task=list.display&id=%' And link <> 'index.php?option=com_contentbuilder&task=list.display&id=" . intval($contentbuilder_form_id) . "'");
             $name_exists = $db->loadResult();
 
             if ($name_exists) {
@@ -804,7 +805,7 @@ final class ContentbuilderLegacyHelper
                     ",lft,rgt) " .
                     "values (" .
                     "''," . "''," . $db->Quote($name) . ", " . $db->Quote($name) . ", 'main', 'component', '$parent_id', " .
-                    "'index.php?option=com_contentbuilder&view=list&id=" . intval($contentbuilder_form_id) . "'," .
+                    "'index.php?option=com_contentbuilder&task=list.display&id=" . intval($contentbuilder_form_id) . "'," .
                     "1, " . intval($result) . ", 1, 'media/com_contentbuilder/images/logo_icon_cb.png'" .
                     ",( Select mlftrgt From (Select max(mlft.rgt)+1 As mlftrgt From #__menu As mlft) As tbone), ( Select mrgtrgt From (Select max(mrgt.rgt)+2 As mrgtrgt From #__menu As mrgt) As filet))"
                 );
@@ -2312,6 +2313,12 @@ final class ContentbuilderLegacyHelper
 
     public static function setPermissions($form_id, $record_id = 0, $suffix = '')
     {
+        $app     = Factory::getApplication();
+        $session = $app->getSession();
+        $key     = 'com_contentbuilder.permissions' . $suffix;
+
+        // Optionnel : reset propre
+        $session->remove($key); // ou $session->set($key, []);
 
         $db = Factory::getContainer()->get(DatabaseInterface::class);
 
@@ -2404,7 +2411,6 @@ final class ContentbuilderLegacyHelper
 
         $config = unserialize(base64_decode($result['config']));
 
-        Factory::getApplication()->getSession()->clear('permissions' . $suffix, 'com_contentbuilder');
         $permissions = array();
 
         //if(!$exclude_own){
@@ -2630,7 +2636,8 @@ final class ContentbuilderLegacyHelper
             }
         }
 
-        Factory::getApplication()->getSession()->set('permissions' . $suffix, $permissions, 'com_contentbuilder');
+
+        $session->set($key, $permissions);
     }
 
     public static function stringURLUnicodeSlug($string)
@@ -2663,13 +2670,18 @@ final class ContentbuilderLegacyHelper
     {
 
         $allowed = false;
-        $permissions = Factory::getApplication()->getSession()->get('permissions' . $suffix, array(), 'com_contentbuilder');
+        $session = Factory::getApplication()->getSession();
+        $key = 'com_contentbuilder.permissions' . $suffix;
 
-        $published_return = $permissions['published'];
+
+        // AVANT (J<=5) : get('permissions' . $suffix, [], 'com_contentbuilder')
+        // APRES (J6) :
+        $permissions = $session->get($key, []);
+        $published_return = $permissions['published'] ?? false;
         if (!$published_return) {
             if (!$auth) {
                 Factory::getApplication()->enqueueMessage($error_msg, 'error');
-                Factory::getApplication()->redirect('index.php');
+                throw new NotAllowed($error_msg, 403);
             } else {
                 return false;
             }
@@ -2677,11 +2689,11 @@ final class ContentbuilderLegacyHelper
 
         switch ($action) {
             case 'edit':
-                $edit_return = $permissions['limit_edit'];
+                $edit_return = $permissions['limit_edit'] ?? false;
                 if (!$edit_return) {
                     if (!$auth) {
                         Factory::getApplication()->enqueueMessage($error_msg, 'error');
-                        Factory::getApplication()->redirect('index.php');
+                        throw new NotAllowed($error_msg, 403);
                     } else {
                         return false;
                     }
@@ -2691,11 +2703,11 @@ final class ContentbuilderLegacyHelper
 
         switch ($action) {
             case 'new':
-                $add_return = $permissions['limit_add'];
+                $add_return = $permissions['limit_add'] ?? false;
                 if (!$add_return) {
                     if (!$auth) {
                         Factory::getApplication()->enqueueMessage($error_msg, 'error');
-                        Factory::getApplication()->redirect('index.php');
+                        throw new NotAllowed($error_msg, 403);
                     } else {
                         return false;
                     }
@@ -2709,7 +2721,7 @@ final class ContentbuilderLegacyHelper
             case 'view':
             case 'delete':
                 $myaction = $action == 'delete' ? 'edit' : $action;
-                $verify_return = $permissions['verify_' . $myaction];
+                $verify_return = $permissions['verify_' . $myaction] ?? false;
 
                 if ($verify_return !== true) {
 
@@ -2717,7 +2729,7 @@ final class ContentbuilderLegacyHelper
 
                         if (!$auth) {
                             Factory::getApplication()->enqueueMessage($error_msg, 'error');
-                            Factory::getApplication()->redirect('index.php');
+                            throw new NotAllowed($error_msg, 403);
                         } else {
                             return false;
                         }
@@ -2798,7 +2810,8 @@ final class ContentbuilderLegacyHelper
 
         if (!$allowed) {
             if (!$auth) {
-                Factory::getApplication()->redirect('index.php', 403);
+                Factory::getApplication()->enqueueMessage('Not autorized', 'error');
+                throw new NotAllowed($error_msg, 403);
             } else {
                 return false;
             }
@@ -2807,6 +2820,8 @@ final class ContentbuilderLegacyHelper
         if ($auth) {
             return true;
         }
+
+        return $allowed;
     }
 
     public static function authorize($action)

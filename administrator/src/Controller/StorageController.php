@@ -51,7 +51,7 @@ class StorageController extends BaseFormController
             return parent::edit($key, $urlVar);
         } catch (\Throwable $e) {
             $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storages', false));
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=storages.display', false));
             return false;
         }
     }
@@ -102,7 +102,7 @@ class StorageController extends BaseFormController
         } catch (\Throwable $e) {
             Logger::exception($e);
             $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=storages', false),
+                Route::_('index.php?option=com_contentbuilder&task=storages.display', false),
                 $e->getMessage(),
                 'error'
             );
@@ -113,7 +113,7 @@ class StorageController extends BaseFormController
         $task = $this->getTask();
         $link = ($task === 'apply')
             ? Route::_('index.php?option=com_contentbuilder&task=storage.edit&id=' . (int) $id, false)
-            : Route::_('index.php?option=com_contentbuilder&view=storages', false);
+            : Route::_('index.php?option=com_contentbuilder&task=storages.display', false);
 
         $this->setRedirect($link, Text::_('COM_CONTENTBUILDER_SAVED'));
         return true;
@@ -171,7 +171,7 @@ class StorageController extends BaseFormController
 
         if (!$cid) {
             $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=storages', false),
+                Route::_('index.php?option=com_contentbuilder&task=storages.display', false),
                 Text::_('JERROR_NO_ITEMS_SELECTED'),
                 'warning'
             );
@@ -186,7 +186,7 @@ class StorageController extends BaseFormController
             $ok = $model->delete($cid);
             if (!$ok) {
                 $this->setRedirect(
-                    Route::_('index.php?option=com_contentbuilder&view=storages', false),
+                    Route::_('index.php?option=com_contentbuilder&task=storages.display', false),
                     Text::_('COM_CONTENTBUILDER_ERROR'),
                     'error'
                 );
@@ -199,7 +199,7 @@ class StorageController extends BaseFormController
         }
 
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=storages', false),
+            Route::_('index.php?option=com_contentbuilder&task=storages.display', false),
             Text::_('COM_CONTENTBUILDER_DELETED'),
             'message'
         );
@@ -212,14 +212,14 @@ class StorageController extends BaseFormController
         $model = $this->getModel('Storage', 'Contentbuilder');
         $model->save();
 
-        $this->setRedirect('index.php?option=com_contentbuilder&view=storage&layout=edit&id=0');
+        $this->setRedirect('index.php?option=com_contentbuilder&task=storage.display&layout=edit&id=0');
         return true;
     }
 
 
     public function add()
     {
-        $this->setRedirect('index.php?option=com_contentbuilder&view=storage&layout=edit&id=0');
+        $this->setRedirect('index.php?option=com_contentbuilder&task=storage.display&layout=edit&id=0');
         return true;
     }
 
@@ -251,7 +251,7 @@ class StorageController extends BaseFormController
         }
 
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=storage&limitstart=' . $this->input->getInt('limitstart'), false),
+            Route::_('index.php?option=com_contentbuilder&task=storage.display&limitstart=' . $this->input->getInt('limitstart'), false),
             Text::_('COM_CONTENTBUILDER_PUBLISHED'));
     }
 
@@ -271,7 +271,7 @@ class StorageController extends BaseFormController
         }
 
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=storage&limitstart=' . $this->input->getInt('limitstart'), false),
+            Route::_('index.php?option=com_contentbuilder&task=storage.display&limitstart=' . $this->input->getInt('limitstart'), false),
             Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
     }
 */
@@ -292,7 +292,7 @@ class StorageController extends BaseFormController
 
             if (empty($cids)) {
                 $this->setMessage(Text::_('JERROR_NO_ITEMS_SELECTED'), 'error');
-                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storage' . '&id=' . $storageId, false));
+                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=storage.display' . '&id=' . $storageId, false));
                 return false;
             }
 
@@ -300,14 +300,14 @@ class StorageController extends BaseFormController
             $model->publish($cids, $state);
 
             $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=storage&layout=edit&id=' . $storageId, false),
+                Route::_('index.php?option=com_contentbuilder&task=storage.display&layout=edit&id=' . $storageId, false),
                 Text::_($successMsgKey)
             );
 
             return true;
         } catch (\Throwable $e) {
             $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=storage', false));
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=storage.display', false));
             return false;
         }
     }

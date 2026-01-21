@@ -173,7 +173,12 @@ class plgSystemContentbuilder_system extends CMSPlugin
             $the_ids = implode(',', $ids);
 
             if ($the_ids) {
-                $this->app->getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
+                $wa = $this->app->getDocument()->getWebAssetManager();
+
+                // Charge le manifeste joomla.asset.json du composant
+                $wa->getRegistry()->addExtensionRegistryFile('com_contentbuilder');
+                $wa->useScript('com_contentbuilder.contentbuilder');
+
                 $this->db->setQuery("Select Distinct forms.theme_plugin From #__contentbuilder_forms As forms, #__contentbuilder_articles As articles, #__content As content Where forms.id = articles.form_id And articles.article_id In (" . $the_ids . ") And content.id = articles.article_id And (content.state = 1 Or content.state = 0)");
                 $themes = $this->db->loadColumn();
                 foreach ($themes as $theme) {
@@ -218,7 +223,7 @@ class plgSystemContentbuilder_system extends CMSPlugin
                 $this->db->setQuery("Select article.record_id, article.form_id From #__contentbuilder_articles As article, #__content As content Where content.id = " . intval($id) . " And (content.state = 0 Or content.state = 1) And article.article_id = content.id");
                 $article = $this->db->loadAssoc();
                 if (is_array($article)) {
-                    $this->app->redirect('index.php?option=com_contentbuilder&view=edit&id=' . $article['form_id'] . "&record_id=" . $article['record_id'] . "&jsback=1&Itemid=" . CBRequest::getInt('Itemid', 0));
+                    $this->app->redirect('index.php?option=com_contentbuilder&task=edit.display&id=' . $article['form_id'] . "&record_id=" . $article['record_id'] . "&jsback=1&Itemid=" . CBRequest::getInt('Itemid', 0));
                 }
             }
         }

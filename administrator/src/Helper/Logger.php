@@ -122,7 +122,7 @@ final class Logger
             'client' => $app->isClient('administrator') ? 'admin' : 'site',
             'view'   => $input->getCmd('view', ''),
             'task'   => $input->getCmd('task', ''),
-            'userId' => (int) Factory::getUser()->id,
+            'userId' => (int) Factory::getApplication()->getIdentity()->id
         ];
     }
 

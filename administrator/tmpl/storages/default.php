@@ -34,7 +34,7 @@ $app = Factory::getApplication();
 $limitstart = $app->input->getInt('limitstart', 0);
 ?>
 
-<form action="<?php echo Route::_('index.php?option=com_contentbuilder&view=storages'); ?>"
+<form action="<?php echo Route::_('index.php?option=com_contentbuilder&task=storages.display'); ?>"
     method="post"
     name="adminForm"
     id="adminForm">

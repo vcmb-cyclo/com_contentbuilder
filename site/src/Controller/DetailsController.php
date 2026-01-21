@@ -43,7 +43,6 @@ class DetailsController extends BaseController
         }
 
         if (CBRequest::getWord('view', '') == 'latest') {
-
             $db = Factory::getContainer()->get(DatabaseInterface::class);
 
             $db->setQuery('Select `type`, `reference_id` From #__contentbuilder_forms Where id = ' . intval(CBRequest::getInt('id', 0)) . ' And published = 1');
@@ -68,23 +67,20 @@ class DetailsController extends BaseController
             $rec = $form->getListRecords($ids, '', array(), 0, 1, '', array(), 'desc', 0, false, Factory::getApplication()->getIdentity()->get('id', 0), 0, -1, -1, -1, -1, array(), true, null);
 
             if (count($rec) > 0) {
-
                 $rec = $rec[0];
                 $rec2 = $form->getRecord($rec->colRecord, false, -1, true);
 
                 $record_id = $rec->colRecord;
                 CBRequest::setVar('record_id', $record_id);
-
             }
 
             if (!CBRequest::getCmd('record_id', '')) {
-
                 CBRequest::setVar('cbIsNew', 1);
                 ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, $this->frontend ? '_fe' : '');
                 $auth = $this->frontend ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
 
                 if ($auth) {
-                    Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&view=edit&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
+                    Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&task=edit.display&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
                 } else {
                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_ADD_ENTRY_FIRST'));
                     Factory::getApplication()->redirect('index.php');
@@ -98,6 +94,25 @@ class DetailsController extends BaseController
 
     function display($cachable = false, $urlparams = array())
     {
+        $app   = Factory::getApplication();
+        $input = $app->input;
+
+        // Si tu gardes le suffixe pour compat legacy :
+        //$frontend = Factory::getApplication()->isClient('site');
+        $suffix = '_fe';
+
+        // 1) d'abord depuis l'URL
+        $form_id = $input->getInt('id', 0);
+
+        // 2) sinon depuis les params du menu actif
+        if (!$form_id) {
+            $menu = $app->getMenu()->getActive();
+            if ($menu) {
+                $form_id = (int) $menu->getParams()->get('form_id', 0);
+            }
+        }
+
+        ContentbuilderLegacyHelper::setPermissions($form_id, 0, $suffix);
         ContentbuilderLegacyHelper::checkPermissions('view', Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED'), $this->frontend ? '_fe' : '');
 
         CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));

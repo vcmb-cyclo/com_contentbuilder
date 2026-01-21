@@ -121,7 +121,7 @@ final class FormsController extends AdminController
             $this->setMessage($e->getMessage(), 'warning');
         }
 
-        $this->setRedirect('index.php?option=com_contentbuilder&view=forms');
+        $this->setRedirect('index.php?option=com_contentbuilder&task=forms.display');
     }
 
     public function delete(): void
@@ -155,7 +155,7 @@ final class FormsController extends AdminController
             $this->setMessage($e->getMessage(), 'warning');
         }
 
-        $this->setRedirect('index.php?option=com_contentbuilder&view=forms');
+        $this->setRedirect('index.php?option=com_contentbuilder&task=forms.display');
     }
 
     /**
@@ -194,7 +194,7 @@ final class FormsController extends AdminController
         }
 
         $this->setRedirect(
-            Route::_('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->input->getInt('limitstart'),
+            Route::_('index.php?option=com_contentbuilder&task=forms.display&limitstart=' . $this->input->getInt('limitstart'),
             false));
     }
 

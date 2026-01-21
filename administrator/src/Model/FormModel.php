@@ -421,7 +421,7 @@ class FormModel extends AdminModel
             $data->form = ContentbuilderLegacyHelper::getForm($data->type, $data->reference_id);
             if (!$data->form->exists) {
                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 'error');
-                Factory::getApplication()->redirect('index.php?option=com_contentbuilder&view=forms&limitstart=' . $this->getState('limitstart', 0));
+                Factory::getApplication()->redirect('index.php?option=com_contentbuilder&task=forms.display&limitstart=' . $this->getState('limitstart', 0));
             }
             if (isset($data->form->properties) && isset($data->form->properties->name)) {
                 $data->type_name = trim($data->form->properties->name);
@@ -520,7 +520,7 @@ class FormModel extends AdminModel
         parent::prepareTable($table);
 
         $now  = Factory::getDate()->toSql();
-        $user = Factory::getUser();
+        $user = Factory::getApplication()->getIdentity();
 
         $table->name  = trim((string) $table->name);
         $table->title = trim((string) $table->title);
@@ -563,6 +563,7 @@ class FormModel extends AdminModel
 
         // 2) Override champs sensibles : on force RAW pour les templates/scripts
         $rawFields = [
+            'intro_text',
             'details_template',
             'editable_template',
             'details_prepare',
@@ -576,14 +577,6 @@ class FormModel extends AdminModel
                 $jform[$f] = $jformRaw[$f];
             }
         }
-
-        // Champs HTML
-        if (array_key_exists('intro_text', $jformHtml)) {
-            $jform['intro_text'] = $jformHtml['intro_text'];
-        }
-
-        // NOTE: Dans ton code initial tu avais "$jform['editable'] = $jformHtml['editable']".
-        // Or "editable" est un bool/int en DB -> ne le remplace pas par du HTML.
 
         // 3) Normalisation des checkboxes / flags (standardiser en 0/1)
         $boolFields = [
@@ -1023,9 +1016,9 @@ class FormModel extends AdminModel
 
             $this->getTable('Elementoption')->reorder('form_id = ' . $cid);
 
-            $db->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&view=list&id=" . intval($cid) . "'");
+            $db->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&task=list.display&id=" . intval($cid) . "'");
             $db->execute();
-            $db->setQuery("Select count(id) From #__menu Where `link` Like 'index.php?option=com_contentbuilder&view=list&id=%'");
+            $db->setQuery("Select count(id) From #__menu Where `link` Like 'index.php?option=com_contentbuilder&task=list.display&id=%'");
             $amount = $db->loadResult();
             if (!$amount) {
                 $db->setQuery("Delete From #__menu Where `link` = 'index.php?option=com_contentbuilder&viewcontainer=true'");

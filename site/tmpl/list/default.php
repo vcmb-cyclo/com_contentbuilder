@@ -13,7 +13,6 @@
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
-use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
@@ -30,7 +29,13 @@ $state_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('state') : 
 $publish_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('publish') : ContentbuilderLegacyHelper::authorize('publish');
 $rating_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('rating') : ContentbuilderLegacyHelper::authorize('rating');
 
-Factory::getApplication()->getDocument()->addScript(Uri::root(true) . '/components/com_contentbuilder/assets/js/contentbuilder.js');
+$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+
+// Charge le manifeste joomla.asset.json du composant
+$wa->getRegistry()->addExtensionRegistryFile('com_contentbuilder');
+
+$wa->useScript('jquery');
+$wa->useScript('com_contentbuilder.contentbuilder');
 
 $___getpost = 'post';
 $___tableOrdering = "Joomla.tableOrdering = function";
@@ -101,7 +106,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 	if ($new_allowed) {
 		?>
 		<button class="btn btn-sm btn-primary"
-			onclick="location.href='<?php echo Route::_('index.php?option=com_contentbuilder&view=edit&backtolist=1&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=0&filter_order=' . CBRequest::getCmd('filter_order')); ?>'"><?php echo Text::_('COM_CONTENTBUILDER_NEW'); ?></button>
+			onclick="location.href='<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display&backtolist=1&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=0&filter_order=' . CBRequest::getCmd('filter_order')); ?>'"><?php echo Text::_('COM_CONTENTBUILDER_NEW'); ?></button>
 		<?php
 	}
 	-- END of BEGIN - NEW BUTTON */
@@ -128,7 +133,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 # Bug CB Joomla 4 (march 2023) - fix error search, delete, pagination, 404 error 
 Replace line 144 of media/com_contentbuilder/images/list/tmpl/default.php
 # by this block -->
-<form action="<?php echo Route::_('index.php?option=com_contentbuilder&view=list&id=' . (int) CBRequest::getInt('id') . '&Itemid=' . (int) CBRequest::getInt('Itemid', 0)); ?>"
+<form action="<?php echo Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . (int) CBRequest::getInt('id') . '&Itemid=' . (int) CBRequest::getInt('Itemid', 0)); ?>"
 	method="<?php echo $___getpost; ?>" name="adminForm" id="adminForm">
 
 	<!-- 2023-12-19 END -->
@@ -428,10 +433,10 @@ Replace line 144 of media/com_contentbuilder/images/list/tmpl/default.php
 			$n = count($this->items);
 			for ($i = 0; $i < $n; $i++) {
 				$row = $this->items[$i];
-				$link = Route::_('index.php?option=com_contentbuilder&view=details&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
-				$edit_link = Route::_('index.php?option=com_contentbuilder&view=edit&backtolist=1&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
-				$publish_link = Route::_('index.php?option=com_contentbuilder&view=edit&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=1&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
-				$unpublish_link = Route::_('index.php?option=com_contentbuilder&view=edit&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=0&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
+				$link = Route::_('index.php?option=com_contentbuilder&task=details.display&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
+				$edit_link = Route::_('index.php?option=com_contentbuilder&task=edit.display&backtolist=1&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
+				$publish_link = Route::_('index.php?option=com_contentbuilder&task=edit.display&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=1&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
+				$unpublish_link = Route::_('index.php?option=com_contentbuilder&task=edit.display&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=0&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
 				$select = '<input class="form-check-input" type="checkbox" name="cid[]" value="' . $row->colRecord . '"/>';
 			?>
 				<tr class="<?php echo "row$k"; ?>">
@@ -470,7 +475,8 @@ Replace line 144 of media/com_contentbuilder/images/list/tmpl/default.php
 					?>
 						<td>
 							<a href="<?php echo $edit_link; ?>"><img
-									src="<?php Uri::root(true) ?>components/com_contentbuilder/images/edit.png" border="0"
+									src="<?php echo \Joomla\CMS\Uri\Uri::root(); ?>media/com_contentbuilder/images/edit.png"
+									border="0"
 									width="18" height="18" /></a>
 						</td>
 					<?php

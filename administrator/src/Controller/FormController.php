@@ -48,7 +48,7 @@ class FormController extends BaseFormController
             return parent::edit($key, $urlVar);
         } catch (\Throwable $e) {
             $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false));
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=forms.display', false));
             return false;
         }
     }
@@ -60,11 +60,11 @@ class FormController extends BaseFormController
     {
         try {
             // Tu peux aussi faire: return parent::add();
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=0', false));
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=form.display&layout=edit&id=0', false));
             return true;
         } catch (\Throwable $e) {
             $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false));
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=forms.display', false));
             return false;
         }
     }
@@ -86,7 +86,7 @@ class FormController extends BaseFormController
             if (!$id) {
                 $this->setRedirect(
                     Route::_(
-                        'index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $this->input->getInt('id', 0),
+                        'index.php?option=com_contentbuilder&task=form.display&layout=edit&id=' . (int) $this->input->getInt('id', 0),
                         false
                     ),
                     $model->getError() ?: 'Store failed (no id returned)',
@@ -96,7 +96,7 @@ class FormController extends BaseFormController
             }
 
             $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $id, false),
+                Route::_('index.php?option=com_contentbuilder&task=form.display&layout=edit&id=' . (int) $id, false),
                 Text::_('JLIB_APPLICATION_SAVE_SUCCESS'),
                 'message'
             );
@@ -106,7 +106,7 @@ class FormController extends BaseFormController
             $this->setMessage($e->getMessage(), 'warning');
             $this->setRedirect(
                 Route::_(
-                    'index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $this->input->getInt('id', 0),
+                    'index.php?option=com_contentbuilder&task=form.display&layout=edit&id=' . (int) $this->input->getInt('id', 0),
                     false
                 )
             );
@@ -128,7 +128,7 @@ class FormController extends BaseFormController
             if (!$id) {
                 $this->setRedirect(
                     Route::_(
-                        'index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $this->input->getInt('id', 0),
+                        'index.php?option=com_contentbuilder&task=form.display&layout=edit&id=' . (int) $this->input->getInt('id', 0),
                         false
                     ),
                     $model->getError() ?: 'Store failed (no id returned)',
@@ -139,20 +139,20 @@ class FormController extends BaseFormController
 
             // ✅ Comportement actuel: rester sur l'édition
             $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $id, false),
+                Route::_('index.php?option=com_contentbuilder&task=form.display&layout=edit&id=' . (int) $id, false),
                 Text::_('JLIB_APPLICATION_SAVE_SUCCESS'),
                 'message'
             );
 
             // 👉 Si tu veux plutôt revenir à la liste après Save :
-            // $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=forms', false), Text::_('JLIB_APPLICATION_SAVE_SUCCESS'));
+            // $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=forms.display', false), Text::_('JLIB_APPLICATION_SAVE_SUCCESS'));
 
             return true;
         } catch (\Throwable $e) {
             $this->setMessage($e->getMessage(), 'warning');
             $this->setRedirect(
                 Route::_(
-                    'index.php?option=com_contentbuilder&view=form&layout=edit&id=' . (int) $this->input->getInt('id', 0),
+                    'index.php?option=com_contentbuilder&task=form.display&layout=edit&id=' . (int) $this->input->getInt('id', 0),
                     false
                 )
             );
@@ -211,12 +211,12 @@ class FormController extends BaseFormController
 
             if (!$id) {
                 $this->setMessage($model->getError() ?: 'Store failed (no id returned)', 'error');
-                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=0', false));
+                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=form.display&layout=edit&id=0', false));
                 return false;
             }
 
             $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=0', false),
+                Route::_('index.php?option=com_contentbuilder&task=form.display&layout=edit&id=0', false),
                 Text::_('JLIB_APPLICATION_SAVE_SUCCESS'),
                 'message'
             );
@@ -224,7 +224,7 @@ class FormController extends BaseFormController
             return true;
         } catch (\Throwable $e) {
             $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=0', false));
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=form.display&layout=edit&id=0', false));
             return false;
         }
     }
@@ -355,7 +355,7 @@ class FormController extends BaseFormController
 
             if (empty($cids)) {
                 $this->setMessage(Text::_('JERROR_NO_ITEMS_SELECTED'), 'error');
-                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form' . '&id=' . $formId, false));
+                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=form.display' . '&id=' . $formId, false));
                 return false;
             }
 
@@ -369,7 +369,7 @@ class FormController extends BaseFormController
             return true;
         } catch (\Throwable $e) {
             $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form' . '&id=' . $formId, false));
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=form.display' . '&id=' . $formId, false));
             return false;
         }
     }
@@ -385,7 +385,7 @@ class FormController extends BaseFormController
 
             if (empty($cids)) {
                 $this->setMessage(Text::_('JERROR_NO_ITEMS_SELECTED'), 'error');
-                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form' . '&id=' . $formId, false));
+                $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=form.display' . '&id=' . $formId, false));
                 return false;
             }
 
@@ -393,14 +393,14 @@ class FormController extends BaseFormController
             $model->publish($cids, $state);
 
             $this->setRedirect(
-                Route::_('index.php?option=com_contentbuilder&view=form&layout=edit&id=' . $formId, false),
+                Route::_('index.php?option=com_contentbuilder&task=form.display&layout=edit&id=' . $formId, false),
                 Text::_($successMsgKey)
             );
 
             return true;
         } catch (\Throwable $e) {
             $this->setMessage($e->getMessage(), 'warning');
-            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&view=form', false));
+            $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=form.display', false));
             return false;
         }
     }

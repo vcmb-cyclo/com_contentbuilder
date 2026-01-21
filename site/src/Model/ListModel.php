@@ -67,7 +67,13 @@ class ListModel extends BaseListModel
         $option = 'com_contentbuilder';
 
         if ($this->frontend) {
-            $app->getDocument()->addStyleSheet(Uri::root(true) . '/components/com_contentbuilder/assets/css/system.css');
+            $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+
+            // Charge le manifeste joomla.asset.json du composant
+            $wa->getRegistry()->addExtensionRegistryFile('com_contentbuilder');
+
+            // Utilise la feuille de style déclarée
+            $wa->useStyle('com_contentbuilder.system');
         }
 
         if (CBRequest::getInt('Itemid', 0)) {
@@ -554,7 +560,7 @@ class ListModel extends BaseListModel
                         $this->getState('formsd_filter_order_Dir') ? $this->getState('formsd_filter_order_Dir') : $data->initial_order_dir,
                         0,
                         $data->published_only,
-                        $this->frontend ? ($data->own_only_fe ? Factory::getUser()->get('id', 0) : -1) : ($data->own_only ? Factory::getUser()->get('id', 0) : -1),
+                        $this->frontend ? ($data->own_only_fe ? Factory::getApplication()->getIdentity()->get('id', 0) : -1) : ($data->own_only ? Factory::getApplication()->getIdentity()->get('id', 0) : -1),
                         $this->getState('formsd_filter_state'),
                         $this->getState('formsd_filter_publish'),
                         $data->initial_sort_order == -1 ? -1 : 'col' . $data->initial_sort_order,

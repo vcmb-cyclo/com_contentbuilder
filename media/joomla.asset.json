@@ -10,6 +10,11 @@
             "uri": "com_contentbuilder/admin-toolbar.css"
         },
         {
+            "name": "com_contentbuilder.system",
+            "type": "style",
+            "uri": "media/com_contentbuilder/css/system.css"
+        },
+        {
             "name": "com_contentbuilder.contentbuilder",
             "type": "script",
             "uri": "com_contentbuilder/contentbuilder.js",

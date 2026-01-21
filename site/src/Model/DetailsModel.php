@@ -187,22 +187,19 @@ class DetailsModel extends ListModel
                         $rec = $data->form->getListRecords($ids, '', array(), 0, 1, '', array(), 'desc', 0, false, Factory::getApplication()->getIdentity()->get('id', 0), 0, -1, -1, -1, -1, array(), true, null);
 
                         if (count($rec) > 0) {
-
                             $rec = $rec[0];
                             $rec2 = $data->form->getRecord($rec->colRecord, false, -1, true);
 
                             $data->record_id = $rec->colRecord;
                             CBRequest::setVar('record_id', $data->record_id);
                             $this->_record_id = $data->record_id;
-
                         } else {
-
                             CBRequest::setVar('cbIsNew', 1);
                             ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, $this->frontend ? '_fe' : '');
                             $auth = $this->frontend ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
 
                             if ($auth) {
-                                Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&view=edit&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . $this->_id . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
+                                Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&task=edit.display&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . $this->_id . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
                             } else {
                                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_ADD_ENTRY_FIRST'));
                                 Factory::getApplication()->redirect('index.php');
