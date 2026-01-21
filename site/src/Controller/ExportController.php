@@ -16,11 +16,6 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 class ExportController extends BaseController
 {
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
-    }
-
     function display($cachable = false, $urlparams = array())
     {
         CBRequest::setVar('tmpl', CBRequest::getWord('tmpl',null));

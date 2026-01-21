@@ -29,7 +29,7 @@ class HtmlView extends BaseHtmlView
 
     public function display($tpl = null): void
     {
-        $this->state = $this->getModel->getState();
+        $this->state = $this->getModel()->getState();
         $this->item  = $this->getModel()->getItem();   // si ton model fournit Item
         $this->form  = $this->getModel()->getForm();   // si c’est une vue avec formulaire
 

@@ -14,13 +14,21 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
+use Joomla\Input\Input;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 class UsersController extends BaseController
 {
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
+    public function __construct(
+        $config = [],
+        MVCFactoryInterface $factory,
+        CMSApplicationInterface $app,
+        Input $input
+    ) {
+        // IMPORTANT : on transmet factory/app/input à BaseController
+        parent::__construct($config, $factory, $app, $input);
         
         // Register Extra tasks
         $this->registerTask( 'add', 'edit' );

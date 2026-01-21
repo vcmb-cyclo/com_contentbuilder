@@ -22,6 +22,9 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
+use Joomla\Input\Input;
 use CB\Component\Contentbuilder\Administrator\Helper\Logger;
 
 final class FormsController extends AdminController
@@ -32,9 +35,14 @@ final class FormsController extends AdminController
     protected $view_list = 'forms';
     protected $view_item = 'form';
 
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
+    public function __construct(
+        $config = [],
+        MVCFactoryInterface $factory,
+        CMSApplicationInterface $app,
+        Input $input
+    ) {
+        // IMPORTANT : on transmet factory/app/input à BaseController
+        parent::__construct($config, $factory, $app, $input);
 
         // Si tu veux absolument garder ces paramètres en session (legacy),
         // tu peux le faire proprement via $this->input.

@@ -1706,7 +1706,7 @@ class Securimage
                 return false;
             }
 
-            throw new Exception("Failed to check tables: {$err[0]} - {$err[1]}: {$err[2]}");
+            throw new \Exception("Failed to check tables: {$err[0]} - {$err[1]}: {$err[2]}");
         } else if ($this->database_driver == self::SI_DRIVER_SQLITE3) {
             // successful here regardless of row count for sqlite
             return true;

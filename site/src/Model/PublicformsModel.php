@@ -224,9 +224,7 @@ class PublicformsModel extends ListModel
     {
         $perms = array();
         if ($this->show_permissions) {
-
             foreach ($this->items as $item) {
-
                 ContentbuilderLegacyHelper::setPermissions($item->id, '', '_fe');
                 $view = ContentbuilderLegacyHelper::authorizeFe('view');
                 $new = ContentbuilderLegacyHelper::authorizeFe('new');

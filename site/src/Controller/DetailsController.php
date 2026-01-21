@@ -11,20 +11,35 @@ namespace CB\Component\Contentbuilder\Site\Controller;
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\CMS\Factory;
-use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
+use Joomla\Database\DatabaseInterface;
+use Joomla\Input\Input;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 class DetailsController extends BaseController
 {
+    protected $default_view = 'details';
+
+    // ✅ IMPORTANT : force le prefix PSR-4 des vues
+    protected $viewPrefix = 'CB\\Component\\Contentbuilder\\Site\\View';
+
     private bool $frontend;
 
-    public function __construct($config = [])
-    {
+    public function __construct(
+        $config = [],
+        MVCFactoryInterface $factory,
+        CMSApplicationInterface $app,
+        Input $input) {
+
+            // IMPORTANT : on transmet factory/app/input à BaseController
+        parent::__construct($config, $factory, $app, $input);
+
         $this->frontend = Factory::getApplication()->isClient('site');
 
         if ($this->frontend && CBRequest::getInt('Itemid', 0)) {
@@ -89,24 +104,22 @@ class DetailsController extends BaseController
         }
 
         ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', 0), $this->frontend ? '_fe' : '');
-        parent::__construct($config);
     }
 
     function display($cachable = false, $urlparams = array())
     {
-        $app   = Factory::getApplication();
-        $input = $app->input;
+        $this->input->set('view', 'details');
 
         // Si tu gardes le suffixe pour compat legacy :
         //$frontend = Factory::getApplication()->isClient('site');
         $suffix = '_fe';
 
         // 1) d'abord depuis l'URL
-        $form_id = $input->getInt('id', 0);
+        $form_id = $this->input->getInt('id', 0);
 
         // 2) sinon depuis les params du menu actif
         if (!$form_id) {
-            $menu = $app->getMenu()->getActive();
+            $menu = $this->app->getMenu()->getActive();
             if ($menu) {
                 $form_id = (int) $menu->getParams()->get('form_id', 0);
             }
@@ -120,7 +133,6 @@ class DetailsController extends BaseController
         if (CBRequest::getWord('view', '') == 'latest') {
             CBRequest::setVar('cb_latest', 1);
         }
-        CBRequest::setVar('view', 'details');
 
         parent::display();
     }

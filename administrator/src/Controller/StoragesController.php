@@ -21,6 +21,9 @@ namespace CB\Component\Contentbuilder\Administrator\Controller;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\AdminController;
+use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
+use Joomla\Input\Input;
 use CB\Component\Contentbuilder\Administrator\Helper\Logger;
 
 final class StoragesController extends AdminController
@@ -31,9 +34,14 @@ final class StoragesController extends AdminController
     protected $view_list = 'storages';
     protected $view_item = 'storage';
 
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
+    public function __construct(
+        $config = [],
+        MVCFactoryInterface $factory,
+        CMSApplicationInterface $app,
+        Input $input
+    ) {
+        // IMPORTANT : on transmet factory/app/input à BaseController
+        parent::__construct($config, $factory, $app, $input);
 
         // Register Extra tasks
         $this->registerTask('add', 'edit');

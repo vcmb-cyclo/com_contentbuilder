@@ -194,7 +194,7 @@ class HtmlView extends BaseHtmlView
 		$this->print_button = $subject->print_button;
 		$this->show_back_button = $subject->show_back_button;
 
-        $this->state = $this->getModel->getState();
+        $this->state = $this->getModel()->getState();
         $this->item  = $this->getModel()->getItem();   // si ton model fournit Item
         $this->form  = $this->getModel()->getForm();   // si c’est une vue avec formulaire
 

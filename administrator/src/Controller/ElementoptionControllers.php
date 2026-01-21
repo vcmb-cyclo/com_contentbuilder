@@ -19,12 +19,6 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
 
 class ElementoptionsController extends AdminController
 {
-    public function __construct($config = [])
-    {
-        parent::__construct($config);
-  //      $this->option = 'com_contentbuilder';
-
-    }
 
     function display($cachable = false, $urlparams = array())
     {

@@ -21,14 +21,13 @@ class ListController extends BaseController
     public function display($cachable = false, $urlparams = [])
     {
         $app   = Factory::getApplication();
-        $input = $app->input;
 
         // Si tu gardes le suffixe pour compat legacy :
         //$frontend = Factory::getApplication()->isClient('site');
         $suffix = '_fe';
 
         // 1) d'abord depuis l'URL
-        $form_id = $input->getInt('id', 0);
+        $form_id = $this->input->getInt('id', 0);
 
         // 2) sinon depuis les params du menu actif
         if (!$form_id) {
@@ -39,7 +38,6 @@ class ListController extends BaseController
         }
 
         ContentbuilderLegacyHelper::setPermissions($form_id, 0, $suffix);
-
         ContentbuilderLegacyHelper::checkPermissions(
             'listaccess',
             Text::_('COM_CONTENTBUILDER_PERMISSIONS_LISTACCESS_NOT_ALLOWED'),
@@ -47,8 +45,8 @@ class ListController extends BaseController
         );
 
         // Piloter le rendu via l'input Joomla
-        $layout = $input->getCmd('layout', null);
-        $input->set('layout', ($layout === 'latest') ? null : $layout);
+        $layout = $this->input->getCmd('layout', null);
+        $this->input->set('layout', ($layout === 'latest') ? null : $layout);
 
         return parent::display($cachable, $urlparams);
     }

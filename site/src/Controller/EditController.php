@@ -17,6 +17,9 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
+use Joomla\Input\Input;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
@@ -24,8 +27,15 @@ class EditController extends BaseController
 {
     private bool $frontend;
 
-    public function __construct($config = [])
-    {
+    public function __construct(
+        $config = [],
+        MVCFactoryInterface $factory,
+        CMSApplicationInterface $app,
+        Input $input
+    ) {
+        // IMPORTANT : on transmet factory/app/input à BaseController
+        parent::__construct($config, $factory, $app, $input);
+
         $this->frontend = Factory::getApplication()->isClient('site');
        
         CBRequest::setVar('cbIsNew', 0);
@@ -41,7 +51,6 @@ class EditController extends BaseController
                 ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, $this->frontend ? '_fe' : '');
             }
         }
-        parent::__construct($config);
     }
 
     /**
@@ -188,14 +197,13 @@ class EditController extends BaseController
     public function display($cachable = false, $urlparams = array())
     {
         $app   = Factory::getApplication();
-        $input = $app->input;
 
         // Si tu gardes le suffixe pour compat legacy :
         //$frontend = Factory::getApplication()->isClient('site');
         $suffix = '_fe';
 
         // 1) d'abord depuis l'URL
-        $form_id = $input->getInt('id', 0);
+        $form_id = $this->input->getInt('id', 0);
 
         // 2) sinon depuis les params du menu actif
         if (!$form_id) {

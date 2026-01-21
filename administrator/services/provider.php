@@ -24,7 +24,7 @@ return new class implements ServiceProviderInterface
 {
     public function register(Container $container): void
     {
-        $namespace = 'CB\\Component\\Contentbuilder';
+        $namespace = '\\CB\\Component\\Contentbuilder';
 
         $container->registerServiceProvider(new MVCFactory($namespace));
         $container->registerServiceProvider(new ComponentDispatcherFactory($namespace));

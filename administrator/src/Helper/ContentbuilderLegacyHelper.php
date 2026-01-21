@@ -1185,7 +1185,7 @@ final class ContentbuilderLegacyHelper
         } else {
             if ($quiet_skip)
                 return '';
-            throw new Exception(Text::_('COM_CONTENTBUILDER_TEMPLATE_NOT_FOUND'), 404);
+            throw new \Exception(Text::_('COM_CONTENTBUILDER_TEMPLATE_NOT_FOUND'), 404);
         }
         return '';
     }
@@ -1714,7 +1714,7 @@ final class ContentbuilderLegacyHelper
 
         } else {
             // JError::raiseError(404, Text::_('COM_CONTENTBUILDER_TEMPLATE_NOT_FOUND'));
-            // throw new Exception(Text::_('COM_CONTENTBUILDER_TEMPLATE_NOT_FOUND'), 404);
+            // throw new \Exception(Text::_('COM_CONTENTBUILDER_TEMPLATE_NOT_FOUND'), 404);
             Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_TEMPLATE_NOT_FOUND'), 'warning');
         }
 
