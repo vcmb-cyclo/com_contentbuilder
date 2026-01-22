@@ -567,6 +567,13 @@ class FormModel extends AdminModel
         $id = (int) ($input->getInt('id', 0) ?: (int) ($jform['id'] ?? 0));
         $jform['id'] = $id;
 
+        Logger::info('Form save flags', [
+            'task' => $input->getCmd('task', ''),
+            'create_sample' => $jform['create_sample'] ?? null,
+            'create_sample_raw' => $jformRaw['create_sample'] ?? null,
+            'theme_plugin' => $jform['theme_plugin'] ?? null,
+        ]);
+
         // 2) Override champs sensibles : on force RAW pour les templates/scripts
         $rawFields = [
             'intro_text',
@@ -770,25 +777,51 @@ class FormModel extends AdminModel
         // Nettoyage des champs temporaires (on ne les stocke pas en colonnes)
         unset($jform['perms'], $jform['perms_fe'], $jform['own'], $jform['own_fe']);
 
+        $formObj = null;
+        if (!empty($jform['type']) && !empty($jform['reference_id'])) {
+            $formObj = ContentbuilderLegacyHelper::getForm($jform['type'], $jform['reference_id']);
+        }
+
         $createSample = !empty($jform['create_sample']);
         if ($createSample) {
-            $jform['details_template'] .= ContentbuilderLegacyHelper::createDetailsSample($id, $jform, $jform['theme_plugin']);
+            if (!$formObj) {
+                $app->enqueueMessage(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 'warning');
+            }
+            $sample = ContentbuilderLegacyHelper::createDetailsSample($id, $formObj, $jform['theme_plugin']);
+            Logger::info('Details sample requested', [
+                'form_id' => $id,
+                'theme_plugin' => $jform['theme_plugin'] ?? null,
+                'sample_length' => is_string($sample) ? strlen($sample) : null,
+            ]);
+            if ($sample === '' || $sample === null) {
+                $app->enqueueMessage('Details sample generation returned empty output (theme: ' . ($jform['theme_plugin'] ?? 'none') . ').', 'warning');
+            }
+            $jform['details_template'] = (string) $sample;
         }
 
         $createEditableSample = !empty($jform['create_editable_sample']);
         if ($createEditableSample) {
-            $jform['editable_template'] .= ContentbuilderLegacyHelper::createEditableSample($id, $jform, $jform['theme_plugin']);
+            if (!$formObj) {
+                $app->enqueueMessage(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 'warning');
+            }
+            $jform['editable_template'] = ContentbuilderLegacyHelper::createEditableSample($id, $formObj, $jform['theme_plugin']);
         }
 
         $emailAdminHtml = !empty($jform['email_admin_html']);
         $emailAdminTemplate = !empty($jform['email_admin_create_sample']);
         if ($emailAdminTemplate) {
-            $jform['email_admin_template'] .= ContentbuilderLegacyHelper::createEmailSample($id, $jform, $emailAdminHtml);
+            if (!$formObj) {
+                $app->enqueueMessage(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 'warning');
+            }
+            $jform['email_admin_template'] = ContentbuilderLegacyHelper::createEmailSample($id, $formObj, $emailAdminHtml);
         }
 
         $emailCreateSample = !empty($jform['email_create_sample']);
         if ($emailCreateSample) {
-            $jform['email_template'] .= ContentbuilderLegacyHelper::createEmailSample($id, $jform, CBRequest::getBool('email_html', false));
+            if (!$formObj) {
+                $app->enqueueMessage(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 'warning');
+            }
+            $jform['email_template'] = ContentbuilderLegacyHelper::createEmailSample($id, $formObj, CBRequest::getBool('email_html', false));
         }
 
         // Config legacy

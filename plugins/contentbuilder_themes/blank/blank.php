@@ -11,12 +11,22 @@
 \defined('_JEXEC') or die ('Restricted access');
 
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 
-class plgContentbuilder_themesBlank extends CMSPlugin
+class plgContentbuilder_themesBlank extends CMSPlugin implements SubscriberInterface
 {
-    function __construct(&$subject, $params)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $params);
+        return [
+            'onContentTemplateJavascript' => 'onContentTemplateJavascript',
+            'onEditableTemplateJavascript' => 'onEditableTemplateJavascript',
+            'onListViewJavascript' => 'onListViewJavascript',
+            'onContentTemplateCss' => 'onContentTemplateCss',
+            'onEditableTemplateCss' => 'onEditableTemplateCss',
+            'onListViewCss' => 'onListViewCss',
+            'onContentTemplateSample' => 'onContentTemplateSample',
+            'onEditableTemplateSample' => 'onEditableTemplateSample',
+        ];
     }
 
     /**
@@ -124,11 +134,25 @@ class plgContentbuilder_themesBlank extends CMSPlugin
     function onEditableTemplateSample($contentbuilder_form_id, $form)
     {
         $db = Factory::getContainer()->get(DatabaseInterface::class);
+        $checkEditable = $db->getQuery(true)
+            ->select('COUNT(*)')
+            ->from('#__contentbuilder_elements')
+            ->where('published = 1')
+            ->where('editable = 1')
+            ->where('form_id = ' . (int) $contentbuilder_form_id);
+        $db->setQuery($checkEditable);
+        $hasEditable = (int) $db->loadResult() > 0;
+        if (!$hasEditable) {
+            $msg = 'No editable elements configured; generated editable sample uses all elements.';
+            Factory::getApplication()->enqueueMessage($msg, 'warning');
+            Log::add($msg, Log::WARNING, 'com_contentbuilder');
+        }
         $out = '<table border="0" width="100%" class="blanktable_edit"><tbody>' . "\n";
         $names = $form->getElementNames();
         $hidden = array();
         foreach ($names as $reference_id => $name) {
-            $db->setQuery("Select id, `type` From #__contentbuilder_elements Where published = 1 And editable = 1 And form_id = " . intval($contentbuilder_form_id) . " And reference_id = " . $db->Quote($reference_id));
+            $whereEditable = $hasEditable ? " And editable = 1" : "";
+            $db->setQuery("Select id, `type` From #__contentbuilder_elements Where published = 1" . $whereEditable . " And form_id = " . intval($contentbuilder_form_id) . " And reference_id = " . $db->Quote($reference_id));
             $result = $db->loadAssoc();
             if (is_array($result)) {
                 if ($result['type'] != 'hidden') {

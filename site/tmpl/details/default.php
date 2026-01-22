@@ -61,12 +61,12 @@ $wa->useScript('com_contentbuilder.contentbuilder');
 <?php
 if ($this->print_button):
 ?>
-    <div class="hidden-phone cbPrintBar" style="float: right; text-align: right; padding-bottom: 5px;">
+    <div class="hidden-phone cbPrintBar d-flex justify-content-end mb-2">
         <a
+            class="btn btn-sm btn-outline-secondary"
             href="javascript:window.open('<?php echo Route::_('index.php?option=com_contentbuilder&title=' . CBRequest::getVar('title', '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&task=details.display&layout=print&tmpl=component&id=' . CBRequest::getInt('id', 0) . '&record_id=' . CBRequest::getCmd('record_id', 0)) ?>','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');void(0);"><i
-                class="fa fa-print"></i></a>
+                class="fa fa-print" aria-hidden="true"></i> <?php echo Text::_('JGLOBAL_PRINT'); ?></a>
     </div>
-    <div style="clear: both;"></div>
 <?php
 endif;
 ?>
@@ -90,7 +90,7 @@ ob_start();
 if ((CBRequest::getInt('cb_show_details_back_button', 1) && $this->show_back_button) || $delete_allowed || $edit_allowed) {
 ?>
 
-    <div class="cbToolBar" style="float: right; text-align: right;">
+    <div class="cbToolBar d-flex justify-content-end gap-2 flex-wrap mb-3">
     <?php
 }
     ?>
@@ -104,14 +104,14 @@ if ((CBRequest::getInt('cb_show_details_back_button', 1) && $this->show_back_but
     }
     ?>
     <?php if ($delete_allowed) { ?>
-        <button class="btn btn-sm btn-primary cbButton cbDeleteButton" onclick="contentbuilder_delete();">
+        <button class="btn btn-sm btn-danger cbButton cbDeleteButton" onclick="contentbuilder_delete();">
             <?php echo Text::_('COM_CONTENTBUILDER_DELETE') ?>
         </button>
     <?php
     }
     ?>
     <?php if ($this->show_back_button && CBRequest::getBool('cb_show_details_back_button', 1)): ?>
-        <a class="btn btn-sm btn-primary cbButton cbBackButton"
+        <a class="btn btn-sm btn-outline-secondary cbButton cbBackButton"
             href="<?php echo Route::_('index.php?option=com_contentbuilder&title=' . CBRequest::getVar('title', '') . '&task=list.display&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order') . '&Itemid=' . CBRequest::getInt('Itemid', 0)); ?>">
             <?php echo Text::_('COM_CONTENTBUILDER_BACK') ?>
         </a>

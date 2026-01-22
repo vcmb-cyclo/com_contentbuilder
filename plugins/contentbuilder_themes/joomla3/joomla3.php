@@ -14,9 +14,23 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Database\DatabaseInterface;
 use Joomla\Event\Event;
+use Joomla\Event\SubscriberInterface;
 
-class PlgContentbuilder_themesJoomla3 extends CMSPlugin
+class PlgContentbuilder_themesJoomla3 extends CMSPlugin implements SubscriberInterface
 {
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            'onContentTemplateJavascript' => 'onContentTemplateJavascript',
+            'onEditableTemplateJavascript' => 'onEditableTemplateJavascript',
+            'onListViewJavascript' => 'onListViewJavascript',
+            'onContentTemplateCss' => 'onContentTemplateCss',
+            'onEditableTemplateCss' => 'onEditableTemplateCss',
+            'onListViewCss' => 'onListViewCss',
+            'onContentTemplateSample' => 'onContentTemplateSample',
+            'onEditableTemplateSample' => 'onEditableTemplateSample',
+        ];
+    }
     /**
      * Helper: pousse un résultat dans $event->result en mode Joomla 4/5/6.
      */
@@ -182,6 +196,12 @@ class PlgContentbuilder_themesJoomla3 extends CMSPlugin
 
         $db = Factory::getContainer()->get(DatabaseInterface::class);
         $elementTypes = $this->fetchElementTypes($db, $contentbuilder_form_id, true);
+        if ($elementTypes === []) {
+            $msg = 'No editable elements configured; generated editable sample uses all elements.';
+            Factory::getApplication()->enqueueMessage($msg, 'warning');
+            Log::add($msg, Log::WARNING, 'com_contentbuilder');
+            $elementTypes = $this->fetchElementTypes($db, $contentbuilder_form_id, false);
+        }
 
         $out = "\n";
         $names = $form->getElementNames();

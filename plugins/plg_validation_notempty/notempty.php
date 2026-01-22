@@ -14,12 +14,13 @@ use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 
-class plgContentbuilder_validationNotempty extends CMSPlugin
+class plgContentbuilder_validationNotempty extends CMSPlugin implements SubscriberInterface
 {
-    function __construct(&$subject, $params)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $params);
+        return ['onValidate' => 'onValidate'];
     }
 
     function onValidate($field, $fields, $record_id, $form, $value)

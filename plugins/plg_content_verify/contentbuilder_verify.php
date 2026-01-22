@@ -12,10 +12,11 @@
 
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 use Joomla\CMS\Plugin\PluginHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
-class plgContentContentbuilder_verify extends CMSPlugin
+class plgContentContentbuilder_verify extends CMSPlugin implements SubscriberInterface
 {
 
     /**
@@ -35,9 +36,9 @@ class plgContentContentbuilder_verify extends CMSPlugin
     protected $db;
 
 
-    function __construct(&$subject, $params)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $params);
+        return ['onContentPrepare' => 'onContentPrepare'];
     }
 
     function getValueByLanguage($value)

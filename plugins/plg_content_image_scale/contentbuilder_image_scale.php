@@ -17,6 +17,7 @@ use Joomla\CMS\Filter\OutputFilter;
 use Joomla\Filesystem\Path;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 use Joomla\Registry\Registry;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
@@ -49,7 +50,7 @@ if (!function_exists('exif_imagetype')) {
 	}
 }
 
-class plgContentContentbuilder_image_scale extends CMSPlugin
+class plgContentContentbuilder_image_scale extends CMSPlugin implements SubscriberInterface
 {
 
 	/**
@@ -68,10 +69,10 @@ class plgContentContentbuilder_image_scale extends CMSPlugin
      */
     protected $db;
 
-	function __construct(&$subject, $params)
-	{
-		parent::__construct($subject, $params);
-	}
+    public static function getSubscribedEvents(): array
+    {
+        return ['onContentPrepare' => 'onContentPrepare'];
+    }
 
 	/**
 	 * Joomla 1.5 compatibility

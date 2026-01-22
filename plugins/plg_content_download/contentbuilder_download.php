@@ -17,10 +17,11 @@ use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
-class plgContentContentbuilder_download extends CMSPlugin
+class plgContentContentbuilder_download extends CMSPlugin implements SubscriberInterface
 {
     /**
      * Application object.
@@ -38,9 +39,9 @@ class plgContentContentbuilder_download extends CMSPlugin
      */
     protected $db;
 
-    function __construct(&$subject, $params)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $params);
+        return ['onContentPrepare' => 'onContentPrepare'];
     }
 
     function mime_content_type($filename)

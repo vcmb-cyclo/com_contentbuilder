@@ -46,9 +46,9 @@
  </files>
 
  <languages folder="site">
-    <language tag="en-GB">languages/en-GB/admin/en-GB.com_contentbuilder.ini</language>
-    <language tag="de-DE">languages/de-DE/admin/de-DE.com_contentbuilder.ini</language>
-    <language tag="fr-FR">languages/fr-FR/admin/fr-FR.com_contentbuilder.ini</language>
+    <language tag="en-GB">languages/en-GB/site/en-GB.com_contentbuilder.ini</language>
+    <language tag="de-DE">languages/de-DE/site/de-DE.com_contentbuilder.ini</language>
+    <language tag="fr-FR">languages/fr-FR/site/fr-FR.com_contentbuilder.ini</language>
  </languages>
 
 <!-- ===================== -->
@@ -102,6 +102,7 @@
 
 <plugins>
     <plugin group="contentbuilder_themes">plugins/contentbuilder_themes/blank</plugin>
+    <plugin group="contentbuilder_themes">plugins/contentbuilder_themes/joomla3</plugin>
     <plugin group="contentbuilder_themes">plugins/contentbuilder_themes/joomla6</plugin>
     <plugin group="contentbuilder_themes">plugins/contentbuilder_themes/khepri</plugin>
 </plugins>

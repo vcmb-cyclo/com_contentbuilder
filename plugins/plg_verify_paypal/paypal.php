@@ -12,10 +12,11 @@
 
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 use Joomla\Registry\Registry;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
-class plgContentbuilder_verifyPaypal extends CMSPlugin
+class plgContentbuilder_verifyPaypal extends CMSPlugin implements SubscriberInterface
 {
     private $test = false;
     private $url = 'https://www.paypal.com';
@@ -30,9 +31,9 @@ class plgContentbuilder_verifyPaypal extends CMSPlugin
     private $amount = 0;
     private $cancel_url = '';
 
-    function __construct(&$subject, $params)
+    public function __construct($subject, array $config = [])
     {
-        parent::__construct($subject, $params);
+        parent::__construct($subject, $config);
 
         $plugin = PluginHelper::getPlugin('contentbuilder_verify', 'paypal');
         $pluginParams = (new Registry)->loadString($plugin->params);
@@ -46,6 +47,16 @@ class plgContentbuilder_verifyPaypal extends CMSPlugin
             $this->business = $pluginParams->def('business', '');
             $this->token = $pluginParams->def('token', '');
         }
+    }
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            'onViewport' => 'onViewport',
+            'onSetup' => 'onSetup',
+            'onForward' => 'onForward',
+            'onVerify' => 'onVerify',
+        ];
     }
 
     /**

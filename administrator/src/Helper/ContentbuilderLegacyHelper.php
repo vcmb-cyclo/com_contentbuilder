@@ -22,6 +22,7 @@ use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Uri\Uri;
 use Joomla\Database\DatabaseInterface;
@@ -834,12 +835,24 @@ final class ContentbuilderLegacyHelper
             return;
         }
 
+        if ($plugin && !PluginHelper::isEnabled('contentbuilder_themes', $plugin)) {
+            $msg = "ContentBuilder theme plugin not enabled: contentbuilder_themes/{$plugin}";
+            Log::add($msg, Log::WARNING, 'com_contentbuilder');
+            Factory::getApplication()->enqueueMessage($msg, 'warning');
+        }
+
         PluginHelper::importPlugin('contentbuilder_themes', $plugin);
 
         $dispatcher = Factory::getApplication()->getDispatcher();
         $eventResult = $dispatcher->dispatch('onContentTemplateSample', new \Joomla\Event\Event('onContentTemplateSample', array($contentbuilder_form_id, $form)));
         $results = $eventResult->getArgument('result') ?: [];
-        return implode('', $results);
+        $out = implode('', $results);
+        if ($plugin && $out === '') {
+            $msg = "ContentBuilder theme plugin returned empty sample: contentbuilder_themes/{$plugin}";
+            Log::add($msg, Log::WARNING, 'com_contentbuilder');
+            Factory::getApplication()->enqueueMessage($msg, 'warning');
+        }
+        return $out;
     }
 
     public static function createEmailSample($contentbuilder_form_id, $form, $html = false)
@@ -881,12 +894,24 @@ final class ContentbuilderLegacyHelper
             return;
         }
 
+        if ($plugin && !PluginHelper::isEnabled('contentbuilder_themes', $plugin)) {
+            $msg = "ContentBuilder theme plugin not enabled: contentbuilder_themes/{$plugin}";
+            Log::add($msg, Log::WARNING, 'com_contentbuilder');
+            Factory::getApplication()->enqueueMessage($msg, 'warning');
+        }
+
         PluginHelper::importPlugin('contentbuilder_themes', $plugin);
 
         $dispatcher = Factory::getApplication()->getDispatcher();
         $eventResult = $dispatcher->dispatch('onEditableTemplateSample', new \Joomla\Event\Event('onEditableTemplateSample', array($contentbuilder_form_id, $form)));
         $results = $eventResult->getArgument('result') ?: [];
-        return implode('', $results);
+        $out = implode('', $results);
+        if ($plugin && $out === '') {
+            $msg = "ContentBuilder theme plugin returned empty editable sample: contentbuilder_themes/{$plugin}";
+            Log::add($msg, Log::WARNING, 'com_contentbuilder');
+            Factory::getApplication()->enqueueMessage($msg, 'warning');
+        }
+        return $out;
     }
 
     public static function synchElements($contentbuilder_form_id, $form)
@@ -1108,7 +1133,7 @@ final class ContentbuilderLegacyHelper
                 }
             }
 
-            $template = $result['details_template'];
+            $template = self::normalizeTemplateMarkers($result['details_template']);
             $items = array();
 
             $hasLabels = count($labels);
@@ -1171,7 +1196,16 @@ final class ContentbuilderLegacyHelper
                 $items[$key]['label'] = htmlentities($item['label'], ENT_QUOTES, 'UTF-8');
                 $items[$key]['value'] = isset($allow_html[$item['id']]) ? self::cleanString($item['value']) : nl2br(self::allhtmlentities(ContentbuilderHelper::cbinternal($item['value'])));
             }
-            @eval($result['details_prepare']);
+            $detailsPrepare = $result['details_prepare'] ?? '';
+            if ($detailsPrepare !== '') {
+                try {
+                    eval($detailsPrepare);
+                } catch (\ParseError $e) {
+                    $msg = 'Invalid details_prepare code; skipped. Check the Details Prepare field for stray HTML (editor).';
+                    Log::add($msg . ' Error: ' . $e->getMessage(), Log::WARNING, 'com_contentbuilder');
+                    Factory::getApplication()->enqueueMessage($msg, 'warning');
+                }
+            }
             foreach ($items as $key => $item) {
                 if (!isset($item['label']) || !isset($item['id']))
                     continue;
@@ -1207,6 +1241,21 @@ final class ContentbuilderLegacyHelper
         $db->setQuery("Select `element` From #__extensions Where `folder` = 'contentbuilder_form_elements' And `enabled` = 1");
         $res = $db->loadColumn();
         return $res;
+    }
+
+    private static function normalizeTemplateMarkers(string $template): string
+    {
+        if (stripos($template, '{hide-if-empty') === false && stripos($template, '{/hide}') === false) {
+            return $template;
+        }
+
+        $replacements = array(
+            '/<li>\s*{hide-if-empty\s+([^}]+)}\s*<\/li>/i' => '{hide-if-empty $1}',
+            '/<li>\s*{\/hide}\s*{hide-if-empty\s+([^}]+)}\s*<\/li>/i' => "{/hide}\n{hide-if-empty $1}",
+            '/<li>\s*{\/hide}\s*<\/li>/i' => '{/hide}',
+        );
+
+        return preg_replace(array_keys($replacements), array_values($replacements), $template);
     }
 
     public static function getEmailTemplate($contentbuilder_form_id, $record_id, array $record, array $elements_allowed, $isAdmin)
@@ -1416,7 +1465,16 @@ final class ContentbuilderLegacyHelper
             }
             $item = null;
             if ($execPrepare) {
-                eval($result['editable_prepare']);
+                $editablePrepare = $result['editable_prepare'] ?? '';
+                if ($editablePrepare !== '') {
+                    try {
+                        eval($editablePrepare);
+                    } catch (\ParseError $e) {
+                        $msg = 'Invalid editable_prepare code; skipped. Check the Editable Prepare field for stray HTML (editor).';
+                        Log::add($msg . ' Error: ' . $e->getMessage(), Log::WARNING, 'com_contentbuilder');
+                        Factory::getApplication()->enqueueMessage($msg, 'warning');
+                    }
+                }
             }
 
             $the_init_scripts = "\n" . '<script type="text/javascript">' . "\n" . '<!--' . "\n";

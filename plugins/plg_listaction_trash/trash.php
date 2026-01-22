@@ -12,8 +12,9 @@
 
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 
-class plgContentbuilder_listactionTrash extends CMSPlugin
+class plgContentbuilder_listactionTrash extends CMSPlugin implements SubscriberInterface
 {
     /**
      * Application object.
@@ -31,9 +32,13 @@ class plgContentbuilder_listactionTrash extends CMSPlugin
      */
     protected $db;
 
-    function __construct(&$subject, $params)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $params);
+        return [
+            'onBeforeAction' => 'onBeforeAction',
+            'onAfterAction' => 'onAfterAction',
+            'onAfterArticleCreation' => 'onAfterArticleCreation',
+        ];
     }
 
     /**

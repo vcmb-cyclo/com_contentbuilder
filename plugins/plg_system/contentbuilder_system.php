@@ -16,10 +16,11 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
-class plgSystemContentbuilder_system extends CMSPlugin
+class plgSystemContentbuilder_system extends CMSPlugin implements SubscriberInterface
 {
     /**
      * Application object.
@@ -39,10 +40,14 @@ class plgSystemContentbuilder_system extends CMSPlugin
 
     private $caching = 0;
 
-    function __construct(&$subject, $params)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $params);
-
+        return [
+            'onAfterDispatch' => 'onAfterDispatch',
+            'onAfterInitialise' => 'onAfterInitialise',
+            'onAfterRoute' => 'onAfterRoute',
+            'onBeforeRender' => 'onBeforeRender',
+        ];
     }
 
     function onBeforeRender()

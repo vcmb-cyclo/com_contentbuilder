@@ -14,15 +14,15 @@ use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
-class plgContentContentbuilder_permission_observer extends CMSPlugin
+class plgContentContentbuilder_permission_observer extends CMSPlugin implements SubscriberInterface
 {
-
-    function __construct(&$subject, $params)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $params);
+        return ['onContentPrepare' => 'onContentPrepare'];
     }
 
     /**

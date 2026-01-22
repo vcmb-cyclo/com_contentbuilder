@@ -104,9 +104,12 @@
        />
 
     <field name="details_prepare" type="editor"
+           editor="none"
            hiddenLabel="true"
            label="COM_CONTENTBUILDER_FIELD_DETAILS_PREPARE"
-           filter="raw" rows="10" />
+           filter="raw"
+           buttons="false"
+           rows="10" />
 
     <field name="editable_template" type="editor"
            hiddenLabel="true"
@@ -114,9 +117,11 @@
            filter="raw" rows="12" />
 
     <field name="editable_prepare" type="editor"
+           editor="none"
            hiddenLabel="true"
            label="COM_CONTENTBUILDER_FIELD_EDITABLE_PREPARE"
            filter="raw"
+           buttons="false"
            width="100%"
            height="550"
            rows="20"
@@ -225,9 +230,8 @@
            label="COM_CONTENTBUILDER_FIELD_UPLOAD_DIRECTORY"
            filter="string" maxlength="1024" />
 
-    <field name="protect_upload_directory" type="radio" default="1" filter="intval"
+    <field name="protect_upload_directory" type="checkbox" default="0" filter="intval"
            label="COM_CONTENTBUILDER_FIELD_PROTECT_UPLOAD_DIRECTORY">
-      <option value="0">JNO</option>
       <option value="1">JYES</option>
     </field>
 
@@ -402,34 +406,30 @@
 
     <!-- Misc buttons/flags posted by the template -->
     <field name="create_sample"
-           type="radio"
+           type="checkbox"
            default="0"
            filter="intval">
-      <option value="0">JNO</option>
       <option value="1">JYES</option>
     </field>
 
     <field name="create_editable_sample"
-           type="radio"
+           type="checkbox"
            default="0"
            filter="intval">
-      <option value="0">JNO</option>
       <option value="1">JYES</option>
     </field>
 
     <field name="email_create_sample"
-           type="radio"
+           type="checkbox"
            default="0"
            filter="intval">
-      <option value="0">JNO</option>
       <option value="1">JYES</option>
     </field>
 
     <field name="email_admin_create_sample"
-           type="radio"
+           type="checkbox"
            default="0"
            filter="intval">
-      <option value="0">JNO</option>
       <option value="1">JYES</option>
     </field>
 

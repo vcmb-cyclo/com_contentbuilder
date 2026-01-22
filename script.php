@@ -61,6 +61,7 @@ class com_contentbuilderInstallerScript extends InstallerScript
     $plugins['contentbuilder_themes'][] = 'khepri';
     $plugins['contentbuilder_themes'][] = 'blank';
     $plugins['contentbuilder_themes'][] = 'joomla3';
+    $plugins['contentbuilder_themes'][] = 'joomla6';
     $plugins['system'] = array();
     $plugins['system'][] = 'contentbuilder_system';
     $plugins['contentbuilder_submit'] = array();
@@ -371,6 +372,58 @@ class com_contentbuilderInstallerScript extends InstallerScript
     }
   }
 
+  private function ensurePluginsInstalled(?string $source = null): void
+  {
+    $db = Factory::getContainer()->get(DatabaseInterface::class);
+    $installer = new Installer();
+    $installer->setDatabase(Factory::getContainer()->get('DatabaseDriver'));
+
+    $plugins = $this->getPlugins();
+
+    foreach ($plugins as $folder => $elements) {
+      foreach ($elements as $element) {
+        $query = $db->getQuery(true)
+          ->select($db->quoteName('extension_id'))
+          ->from($db->quoteName('#__extensions'))
+          ->where($db->quoteName('type') . ' = ' . $db->quote('plugin'))
+          ->where($db->quoteName('folder') . ' = ' . $db->quote($folder))
+          ->where($db->quoteName('element') . ' = ' . $db->quote($element));
+
+        $db->setQuery($query);
+        $id = (int) $db->loadResult();
+
+        if ($id > 0) {
+          continue;
+        }
+
+        $path = null;
+        if ($source) {
+          $candidate = rtrim($source, '/') . '/plugins/' . $folder . '/' . $element;
+          if (is_dir($candidate)) {
+            $path = $candidate;
+          }
+        }
+        if (!$path) {
+          $path = JPATH_ROOT . '/plugins/' . $folder . '/' . $element;
+        }
+        if (!is_dir($path)) {
+          $this->log("[WARNING] Plugin folder not found: {$path}", Log::WARNING);
+          Factory::getApplication()->enqueueMessage("[WARNING] Plugin folder not found: {$path}", 'warning');
+          continue;
+        }
+
+        $ok = $installer->install($path);
+        if ($ok) {
+          $this->log("[OK] Plugin installed: {$folder}/{$element}");
+          Factory::getApplication()->enqueueMessage("[OK] Plugin installed: {$folder}/{$element}", 'message');
+        } else {
+          $this->log("[ERROR] Plugin install failed: {$folder}/{$element}", Log::ERROR);
+          Factory::getApplication()->enqueueMessage("[ERROR] Plugin install failed: {$folder}/{$element}", 'error');
+        }
+      }
+    }
+  }
+
   /**
    * Method to run after an install/update/uninstall method
    *
@@ -395,6 +448,14 @@ class com_contentbuilderInstallerScript extends InstallerScript
 
     $this->removeOldLibraries();
     $this->updateDateColumns();
+    $source = null;
+    if (is_object($parent) && method_exists($parent, 'getParent')) {
+      $parentInstaller = $parent->getParent();
+      if ($parentInstaller && method_exists($parentInstaller, 'getPath')) {
+        $source = $parentInstaller->getPath('source');
+      }
+    }
+    $this->ensurePluginsInstalled($source);
     $this->activatePlugins();
 
 

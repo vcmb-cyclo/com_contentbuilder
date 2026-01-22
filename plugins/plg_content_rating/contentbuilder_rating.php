@@ -16,16 +16,17 @@ use Joomla\Filesystem\Folder;
 use Joomla\Filesystem\File;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 use Joomla\Registry\Registry;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 
-class plgContentContentbuilder_rating extends CMSPlugin
+class plgContentContentbuilder_rating extends CMSPlugin implements SubscriberInterface
 {
 
-    function __construct(&$subject, $params)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $params);
+        return ['onContentPrepare' => 'onContentPrepare'];
     }
 
     /**

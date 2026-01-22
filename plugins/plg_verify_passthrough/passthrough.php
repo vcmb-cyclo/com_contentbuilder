@@ -10,14 +10,19 @@
 // No direct access
 \defined('_JEXEC') or die ('Restricted access');
 use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Event\SubscriberInterface;
 
 
-class plgContentbuilder_verifyPassthrough extends CMSPlugin
+class plgContentbuilder_verifyPassthrough extends CMSPlugin implements SubscriberInterface
 {
-
-    function __construct(&$subject, $params)
+    public static function getSubscribedEvents(): array
     {
-        parent::__construct($subject, $params);
+        return [
+            'onViewport' => 'onViewport',
+            'onSetup' => 'onSetup',
+            'onForward' => 'onForward',
+            'onVerify' => 'onVerify',
+        ];
     }
 
     /**

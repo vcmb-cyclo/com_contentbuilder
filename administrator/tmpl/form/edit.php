@@ -948,6 +948,7 @@ $wa->addInlineStyle('.saveorder.btn{background-color:#fff;border-color:#ced4da;c
                             <?php echo Text::_('COM_CONTENTBUILDER_CREATE'); ?><span></label>
                 </td>
                 <td>
+                    <input type="hidden" name="jform[create_sample]" value="0" />
                     <input class="form-check-input" id="create_sample" type="checkbox" name="jform[create_sample]" value="1" />
                     <label for="create_sample">
                         <?php echo Text::_('COM_CONTENTBUILDER_CREATE_SAMPLE'); ?>
@@ -1177,6 +1178,7 @@ $wa->addInlineStyle('.saveorder.btn{background-color:#fff;border-color:#ced4da;c
                     <?php
                     if ($this->item->edit_by_type && $this->item->type == 'com_breezingforms') {
                     ?>
+                        <input type="hidden" name="jform[protect_upload_directory]" value="0" />
                         <input class="form-check-input" type="checkbox" value="1" name="jform[protect_upload_directory]"
                             id="protect_upload_directory" <?php echo trim($this->item->protect_upload_directory) ? ' checked="checked"' : ''; ?> />
                     <?php
@@ -1227,13 +1229,16 @@ $wa->addInlineStyle('.saveorder.btn{background-color:#fff;border-color:#ced4da;c
                 name="jform[upload_directory]" id="upload_directory" />
             <br />
             <br />
+            <input type="hidden" name="jform[protect_upload_directory]" value="0" />
             <input class="form-check-input" type="checkbox" value="1" name="jform[protect_upload_directory]"
                 id="protect_upload_directory" <?php echo trim($this->item->protect_upload_directory) ? ' checked="checked"' : ''; ?> /> <label for="protect_upload_directory">
                 <?php echo Text::_('COM_CONTENTBUILDER_PROTECT_UPLOAD_DIRECTORY'); ?>
             </label>
             <br />
             <br />
-            <input class="form-check-input" type="checkbox" name="jform[create_editable_sample]" id="editable_sample" value="1" />
+            <input type="hidden" name="jform[create_editable_sample]" value="0" />
+            <input class="form-check-input" type="checkbox" name="jform[create_editable_sample]" id="editable_sample"
+                value="1" <?php echo !empty($this->item->create_editable_sample) ? ' checked="checked"' : ''; ?> />
             <label for="editable_sample">
                 <?php echo Text::_('COM_CONTENTBUILDER_CREATE_EDITABLE_SAMPLE'); ?>
             </label>
@@ -1374,8 +1379,10 @@ $wa->addInlineStyle('.saveorder.btn{background-color:#fff;border-color:#ced4da;c
                             </label>
                         </td>
                         <td>
+                            <input type="hidden" name="jform[email_admin_create_sample]" value="0" />
                             <input class="form-check-input" id="email_admin_create_sample" type="checkbox"
-                                name="jform[email_admin_create_sample]" value="1" />
+                                name="jform[email_admin_create_sample]" value="1"
+                                <?php echo !empty($this->item->email_admin_create_sample) ? ' checked="checked"' : ''; ?> />
                         </td>
                         <td width="20%">
                         </td>
@@ -1473,8 +1480,10 @@ $wa->addInlineStyle('.saveorder.btn{background-color:#fff;border-color:#ced4da;c
                             </label>
                         </td>
                         <td>
+                            <input type="hidden" name="jform[email_create_sample]" value="0" />
                             <input class="form-check-input" id="email_create_sample" type="checkbox"
-                                name="jform[email_create_sample]" value="1" />
+                                name="jform[email_create_sample]" value="1"
+                                <?php echo !empty($this->item->email_create_sample) ? ' checked="checked"' : ''; ?> />
                         </td>
                         <td width="20%">
                         </td>

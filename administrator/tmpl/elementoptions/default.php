@@ -23,7 +23,7 @@ use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 $plugins = ContentbuilderLegacyHelper::getFormElementsPlugins();
 
-$plgs = \Joomla\CMS\Plugin\PluginHelper4::importPlugin('contentbuilder_form_elements', $this->element->type);
+\Joomla\CMS\Plugin\PluginHelper::importPlugin('contentbuilder_form_elements', $this->element->type);
 
 $dispatcher = Factory::getApplication()->getDispatcher();
 $eventResult = $dispatcher->dispatch('onSettingsDisplay', new \Joomla\Event\Event('onSettingsDisplay', array($this->element->options)));
