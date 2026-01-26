@@ -1,11 +1,11 @@
 <!-- ABOUT THE PROJECT -->
 ## About the Project
 
-This repository provides **community-maintained updates and fixes for ContentBuilder**,  
+This repository provides **community-maintained updates and fixes for ContentBuilder**, 
 a Joomla extension originally developed by **Crosstec**. The original Crosstec project 
 is no longer maintained or supported.
 
-This ContentBuiler-ng (new gen) has been highly refactored for Joomla 6 native support.
+This ContentBuiler-ng (new gen) has been highly refactored for Joomla 6 native support. 
 New Gen releases releases will be named: " contentBuiler-ng-6.1.xx.zip " and above
 
 This initiative aims to keep the extension usable on modern Joomla installations by:
