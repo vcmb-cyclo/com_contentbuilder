@@ -6,7 +6,7 @@ a Joomla extension originally developed by **Crosstec**. The original Crosstec p
 is no longer maintained or supported.
 
 This ContentBuiler-ng (new gen) has been highly refactored for Joomla 6 native support. 
-New Gen releases releases will be named: " contentBuiler-ng-6.1.xx.zip " and above
+New Gen releases releases will be named: " contentBuiler-ng-6.1.xx.zip " and above.
 
 This initiative aims to keep the extension usable on modern Joomla installations by:
 - fixing compatibility issues
@@ -20,9 +20,9 @@ All trademarks and original copyrights remain the property of their respective o
 
 ## Compatibility
 
-- ✅ Joomla 5.x (tested **without** the Backward Compatibility plugin)
-- ✅ Joomla 6.x (tested **with** the Backward Compatibility plugin)
-- ✅ PHP 8.3
+- ✅ Joomla 5.4.x (not tested, shoudl be OK **without** the Backward Compatibility plugin)
+- ✅ Joomla 6.x. (tested **with and witout** the Backward Compatibility plugin)
+- ✅ PHP 8.3 
 
 ⚠️ **This is NOT an official ContentBuilder repository.**  
 This project is maintained by volunteers and provided *as-is*.
