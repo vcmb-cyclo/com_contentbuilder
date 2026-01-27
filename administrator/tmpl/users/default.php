@@ -16,6 +16,7 @@
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Factory;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderHelper;
 
@@ -37,7 +38,7 @@ $sortLink = function (string $label, string $field) use ($ordering, $direction, 
     $tmplParam = $tmpl !== '' ? '&tmpl=' . $tmpl : '';
     $url = Route::_(
         'index.php?option=com_contentbuilder&view=users&form_id='
-        . $formId . $tmplParam . '&limitstart=0&list[ordering]=' . $field
+        . $formId . $tmplParam . '&list[start]=0&list[ordering]=' . $field
         . '&list[direction]=' . $nextDir
     );
 

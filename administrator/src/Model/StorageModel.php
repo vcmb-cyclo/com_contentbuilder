@@ -118,6 +118,10 @@ class StorageModel extends AdminModel
     {
         parent::prepareTable($table);
 
+        // "bytable" is a flag in DB, but the form sends the table name.
+        $jform = Factory::getApplication()->input->post->get('jform', [], 'array');
+        $rawBytable = isset($jform['bytable']) ? trim((string) $jform['bytable']) : '';
+
         $bytable = (string) ($table->bytable ?? '');
         $name    = (string) ($table->name ?? '');
         $title   = (string) ($table->title ?? '');
@@ -125,11 +129,24 @@ class StorageModel extends AdminModel
         // forcing to lower
         $name = strtolower($name);
 
-        if (!empty($bytable)) {
-            // bytable = table externe choisie
+        // Resolve the actual bytable name from the raw form value when present.
+        $bytableName = '';
+        if ($rawBytable !== '' && $rawBytable !== '0' && $rawBytable !== '1') {
+            $bytableName = $rawBytable;
+        } elseif (!empty($bytable) && $bytable !== '0' && $bytable !== '1') {
+            $bytableName = $bytable;
+        }
+
+        if ($bytableName !== '') {
+            // External table chosen: store flag + keep the table name in "name".
             $table->bytable = 1;
-            $table->name = $bytable;
-            $table->title = trim($title) !== '' ? trim($title) : $bytable;
+            $table->name = $bytableName;
+            $table->title = trim($title) !== '' ? trim($title) : $bytableName;
+        } elseif (!empty($bytable)) {
+            // Flag set without a table name in the request: keep current name.
+            $table->bytable = 1;
+            $table->name = $name;
+            $table->title = trim($title) !== '' ? trim($title) : $name;
         } else {
             $table->bytable = 0;
 

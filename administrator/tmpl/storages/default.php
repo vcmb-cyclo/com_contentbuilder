@@ -30,9 +30,10 @@ $saveOrder = ($order === 'a.ordering');
 
 $n = is_countable($this->items) ? count($this->items) : 0;
 
-// limitstart courant (évite CBRequest/eval)
+// Joomla 6 native list start
 $app = Factory::getApplication();
-$limitstart = $app->input->getInt('limitstart', 0);
+$list = (array) $app->input->get('list', [], 'array');
+$listStart = isset($list['start']) ? (int) $list['start'] : 0;
 $limitValue = (int) ($this->pagination->limit ?? 0);
 
 $limitOptions = [];
@@ -62,7 +63,7 @@ $sortLink = function (string $label, string $field) use ($order, $orderDir, $lim
             : ' <span class="ms-1 icon-sort icon-sort-desc" aria-hidden="true"></span>')
         : '';
     $url = Route::_(
-        'index.php?option=com_contentbuilder&view=storages&limitstart=0&list[ordering]='
+        'index.php?option=com_contentbuilder&view=storages&list[start]=0&list[ordering]='
         . $field . '&list[direction]=' . $nextDir . '&list[limit]=' . $limitValue
     );
 
@@ -188,7 +189,7 @@ $sortLink = function (string $label, string $field) use ($order, $orderDir, $lim
 
     <input type="hidden" name="option" value="com_contentbuilder">
     <input type="hidden" name="task" value="">
-    <input type="hidden" name="limitstart" value="<?php echo (int) $limitstart; ?>">
+    <input type="hidden" name="list[start]" value="<?php echo (int) $listStart; ?>">
     <input type="hidden" name="boxchecked" value="0">
     <input type="hidden" name="list[ordering]" value="<?php echo htmlspecialchars($order, ENT_QUOTES, 'UTF-8'); ?>">
     <input type="hidden" name="list[direction]" value="<?php echo htmlspecialchars($orderDir, ENT_QUOTES, 'UTF-8'); ?>">
