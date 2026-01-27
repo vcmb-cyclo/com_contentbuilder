@@ -2089,7 +2089,6 @@ var contentbuilder = new function(){
                                 $this->getDatabase()->setQuery("Delete From #__workflow_associations Where item_id In (" . implode(',', $article_ids) . ")");
                                 $this->getDatabase()->execute();
 
-                                echo "Delete From #__workflow_associations Where item_id In (" . implode(',', $article_ids) . ")";
                             }
                         }
 

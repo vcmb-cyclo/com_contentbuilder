@@ -78,42 +78,6 @@ final class StoragesController extends AdminController
         parent::display($cachable, $urlparams);
     }
 
-
-/*
-    public function delete(): void
-    {
-        // Vérif CSRF.
-        $this->checkToken();
-
-        $cid = (array) $this->input->get('cid', [], 'array');
-        $cid = array_values(array_filter(array_map('intval', $cid)));
-
-        Logger::debug('Click Delete action', [
-            'task' => $this->input->getCmd('task'),
-            'cid'  => $cid,
-        ]);
-
-        $model = $this->getModel('Storage', 'Administrator', ['ignore_request' => true]);
-        if (!$model) {
-            throw new \RuntimeException('StorageModel introuvable');
-        }
-
-        try {
-            $model->delete($cid);
-
-            $count = count($cid);
-            // Message Joomla standard (tu peux aussi faire tes propres Text::sprintf)
-            $this->setMessage(
-                Text::plural('JLIB_APPLICATION_N_ITEMS_DELETED', $count),
-                'message'
-            );
-        } catch (\Throwable $e) {
-            $this->setMessage($e->getMessage(), 'warning');
-        }
-
-        $this->setRedirect('index.php?option=com_contentbuilder&task=storages.display');
-    }*/
-
     /**
      * Copie (custom)
      */
