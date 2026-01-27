@@ -70,7 +70,7 @@ class HtmlView extends BaseHtmlView
 		$table = Table::getInstance('content');
 
 		// required for pagebreak plugin
-		CBRequest::setVar('view', 'article');
+		Factory::getApplication()->input->set('view', 'article');
 
 		$isNew = true;
 		if ($article > 0) {
@@ -95,8 +95,8 @@ class HtmlView extends BaseHtmlView
 		PluginHelper::importPlugin('content');
 
 		// seems to be a joomla bug. if sef urls is enabled, "start" is used for paging in articles, else "limitstart" will be used
-		//$limitstart = CBRequest::getVar('limitstart', 0, '', 'int');
-		//$start      = CBRequest::getVar('start', 0, '', 'int');
+		//$limitstart = Factory::getApplication()->input->getInt('limitstart', 0);
+		//$start      = Factory::getApplication()->input->getInt('start', 0);
 
 		$limitstart = 0;
 
@@ -169,7 +169,7 @@ class HtmlView extends BaseHtmlView
 						}
 					}
 				}
-				$subject->template = str_replace($match, Route::_('index.php?option=com_contentbuilder&task=details.display&id=' . CBRequest::getInt('id') . '&record_id=' . CBRequest::getCmd('record_id', '') . '&Itemid=' . CBRequest::getInt('Itemid', 0) . $sub), $subject->template);
+				$subject->template = str_replace($match, Route::_('index.php?option=com_contentbuilder&task=details.display&id=' . Factory::getApplication()->input->getInt('id') . '&record_id=' . Factory::getApplication()->input->getCmd('record_id', '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . $sub), $subject->template);
 			}
 		}
 
@@ -191,7 +191,7 @@ class HtmlView extends BaseHtmlView
 						}
 					}
 				}
-				$table->toc = str_replace($match, Route::_('index.php?option=com_contentbuilder&task=details.display&id=' . CBRequest::getInt('id') . '&record_id=' . CBRequest::getCmd('record_id', '') . '&Itemid=' . CBRequest::getInt('Itemid', 0) . $sub), $table->toc);
+				$table->toc = str_replace($match, Route::_('index.php?option=com_contentbuilder&task=details.display&id=' . Factory::getApplication()->input->getInt('id') . '&record_id=' . Factory::getApplication()->input->getCmd('record_id', '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . $sub), $table->toc);
 			}
 		}
 

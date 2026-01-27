@@ -109,7 +109,7 @@ class FormModel extends AdminModel
 
 
         $db = $this->getDatabase();
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
+        $items = Factory::getApplication()->input->post->get('cid', [], 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
             $db->setQuery(' Update #__contentbuilder_elements ' .
@@ -127,7 +127,7 @@ class FormModel extends AdminModel
         }
 
         $db = $this->getDatabase();
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
+        $items = Factory::getApplication()->input->post->get('cid', [], 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
             $db->setQuery(' Update #__contentbuilder_elements ' .
@@ -144,7 +144,7 @@ class FormModel extends AdminModel
         }
 
         $db = $this->getDatabase();
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
+        $items = Factory::getApplication()->input->post->get('cid', [], 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
             $db->setQuery(' Update #__contentbuilder_elements ' .
@@ -162,7 +162,7 @@ class FormModel extends AdminModel
         }
 
         $db = $this->getDatabase();
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
+        $items = Factory::getApplication()->input->post->get('cid', [], 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
             $db->setQuery(' Update #__contentbuilder_elements ' .
@@ -180,7 +180,7 @@ class FormModel extends AdminModel
         }
 
         $db = $this->getDatabase();
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
+        $items = Factory::getApplication()->input->post->get('cid', [], 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
             $db->setQuery(' Update #__contentbuilder_elements ' .
@@ -198,7 +198,7 @@ class FormModel extends AdminModel
         }
 
         $db = $this->getDatabase();
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
+        $items = Factory::getApplication()->input->post->get('cid', [], 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
             $db->setQuery(' Update #__contentbuilder_elements ' .
@@ -216,7 +216,7 @@ class FormModel extends AdminModel
         }
 
         $db = $this->getDatabase();
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
+        $items = Factory::getApplication()->input->post->get('cid', [], 'array');
         ArrayHelper::toInteger($items);
         if (count($items)) {
             $db->setQuery(' Update #__contentbuilder_elements ' .
@@ -821,7 +821,7 @@ class FormModel extends AdminModel
             if (!$formObj) {
                 $app->enqueueMessage(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 'warning');
             }
-            $jform['email_template'] = ContentbuilderLegacyHelper::createEmailSample($id, $formObj, CBRequest::getBool('email_html', false));
+            $jform['email_template'] = ContentbuilderLegacyHelper::createEmailSample($id, $formObj, Factory::getApplication()->input->getBool('email_html', false));
         }
 
         // Config legacy
@@ -1153,7 +1153,7 @@ class FormModel extends AdminModel
 
     private function copyByIds($cids): bool
     {
-        $cids = CBRequest::getVar('cid', array(), '', 'array');
+        $cids = Factory::getApplication()->input->get('cid', [], 'array');
         ArrayHelper::toInteger($cids);
 
         if (!count($cids))

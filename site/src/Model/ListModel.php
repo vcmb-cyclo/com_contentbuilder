@@ -76,11 +76,11 @@ class ListModel extends BaseListModel
             $wa->useStyle('com_contentbuilder.system');
         }
 
-        if (CBRequest::getInt('Itemid', 0)) {
+        if (Factory::getApplication()->input->getInt('Itemid', 0)) {
             $this->_menu_item = true;
         }
 
-        $id = CBRequest::getInt('id', 0);
+        $id = Factory::getApplication()->input->getInt('id', 0);
 
         if (!$id && $this->frontend) {
             $menu = $app->getMenu();
@@ -105,18 +105,18 @@ class ListModel extends BaseListModel
             $filter_publish   = $app->getUserStateFromRequest($option . 'formsd_filter_publish', 'list_publish_filter', -1, 'int');
             $filter_language  = $app->getUserStateFromRequest($option . 'formsd_filter_language', 'list_language_filter', '', 'cmd');
         } else {
-            $app->setUserState($option . 'formsd_filter_order', CBRequest::getCmd('filter_order', ''));
-            $app->setUserState($option . 'formsd_filter_order_Dir', CBRequest::getCmd('filter_order_Dir', ''));
-            $app->setUserState($option . 'formsd_filter', CBRequest::getVar('filter', ''));
-            $app->setUserState($option . 'formsd_filter_state', CBRequest::getInt('list_state_filter', 0));
-            $app->setUserState($option . 'formsd_filter_publish', CBRequest::getInt('list_publish_filter', -1));
-            $app->setUserState($option . 'formsd_filter_language', CBRequest::getCmd('list_language_filter', ''));
-            $filter_order     = CBRequest::getCmd('filter_order', '');
-            $filter_order_Dir = CBRequest::getCmd('filter_order_Dir', '');
-            $filter           = CBRequest::getVar('filter', '');
-            $filter_state     = CBRequest::getInt('list_state_filter', 0);
-            $filter_publish   = CBRequest::getInt('list_publish_filter', -1);
-            $filter_language  = CBRequest::getCmd('list_language_filter', '');
+            $app->setUserState($option . 'formsd_filter_order', Factory::getApplication()->input->getCmd('filter_order', ''));
+            $app->setUserState($option . 'formsd_filter_order_Dir', Factory::getApplication()->input->getCmd('filter_order_Dir', ''));
+            $app->setUserState($option . 'formsd_filter', Factory::getApplication()->input->get('filter', '', 'string'));
+            $app->setUserState($option . 'formsd_filter_state', Factory::getApplication()->input->getInt('list_state_filter', 0));
+            $app->setUserState($option . 'formsd_filter_publish', Factory::getApplication()->input->getInt('list_publish_filter', -1));
+            $app->setUserState($option . 'formsd_filter_language', Factory::getApplication()->input->getCmd('list_language_filter', ''));
+            $filter_order     = Factory::getApplication()->input->getCmd('filter_order', '');
+            $filter_order_Dir = Factory::getApplication()->input->getCmd('filter_order_Dir', '');
+            $filter           = Factory::getApplication()->input->get('filter', '', 'string');
+            $filter_state     = Factory::getApplication()->input->getInt('list_state_filter', 0);
+            $filter_publish   = Factory::getApplication()->input->getInt('list_publish_filter', -1);
+            $filter_language  = Factory::getApplication()->input->getCmd('list_language_filter', '');
         }
 
         $this->setState('formsd_filter_state', $filter_state);
@@ -126,7 +126,7 @@ class ListModel extends BaseListModel
         $this->setState('formsd_filter_order', $filter_order);
         $this->setState('formsd_filter_order_Dir', $filter_order_Dir);
 
-        if ($this->frontend && CBRequest::getInt('Itemid', 0)) {
+        if ($this->frontend && Factory::getApplication()->input->getInt('Itemid', 0)) {
 
             // try menu item
             $menu = $app->getMenu();
@@ -147,7 +147,7 @@ class ListModel extends BaseListModel
             }
         }
 
-        $menu_filter = CBRequest::getVar('cb_list_filterhidden', null);
+        $menu_filter = Factory::getApplication()->input->get('cb_list_filterhidden', null, 'string');
 
         if ($menu_filter !== null) {
             $lines  = explode("\n", $menu_filter);
@@ -163,7 +163,7 @@ class ListModel extends BaseListModel
             }
         }
 
-        $menu_filter_order = CBRequest::getVar('cb_list_orderhidden', null);
+        $menu_filter_order = Factory::getApplication()->input->get('cb_list_orderhidden', null, 'string');
 
         if ($menu_filter_order !== null) {
             $lines  = explode("\n", $menu_filter_order);
@@ -277,9 +277,9 @@ class ListModel extends BaseListModel
                 }
 
                 // filter by category if requested by menu item
-                if (CBRequest::getVar('cb_category_menu_filter', null) !== null && CBRequest::getVar('cb_category_menu_filter', 0) == 1 && CBRequest::getVar('cb_category_id', null) !== null) {
-                    if (CBRequest::getInt('cb_category_id', -1) > -2) {
-                        $this->setState('article_category_filter', CBRequest::getInt('cb_category_id', -1));
+                if (Factory::getApplication()->input->get('cb_category_menu_filter', null, 'string') !== null && Factory::getApplication()->input->get('cb_category_menu_filter', 0, 'string') == 1 && Factory::getApplication()->input->get('cb_category_id', null, 'string') !== null) {
+                    if (Factory::getApplication()->input->getInt('cb_category_id', -1) > -2) {
+                        $this->setState('article_category_filter', Factory::getApplication()->input->getInt('cb_category_id', -1));
                     } else {
                         $this->setState('article_category_filter', $data->default_category);
                     }
@@ -294,7 +294,7 @@ class ListModel extends BaseListModel
                         throw new \Exception(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 404);
                     }
                     $data->page_title = '';
-                    if (CBRequest::getInt('cb_prefix_in_title', 1)) {
+                    if (Factory::getApplication()->input->getInt('cb_prefix_in_title', 1)) {
                         if (!$this->_menu_item) {
                             $data->page_title = $data->use_view_name_as_title ? $data->name : $data->form->getPageTitle();
                         } else {
@@ -322,7 +322,7 @@ class ListModel extends BaseListModel
 
                     $data->labels = $data->form->getElementLabels();
 
-                    if (CBRequest::getBool('filter_reset', false)) {
+                    if (Factory::getApplication()->input->getBool('filter_reset', false)) {
 
                         $app->getSession()->clear('com_contentbuilder.filter_signal.' . $this->_id);
                         $app->getSession()->clear('com_contentbuilder.filter.' . $this->_id);
@@ -335,7 +335,7 @@ class ListModel extends BaseListModel
                         (
                             $app->getSession()->get('com_contentbuilder.filter_signal.' . $this->_id, false)
                             ||
-                            CBRequest::getBool('contentbuilder_filter_signal', false)
+                            Factory::getApplication()->input->getBool('contentbuilder_filter_signal', false)
                         )
                         && $data->allow_external_filter
                     ) {
@@ -347,25 +347,25 @@ class ListModel extends BaseListModel
                         $calendar_formats = array();
 
                         // renew on request
-                        if (CBRequest::getBool('contentbuilder_filter_signal', false)) {
+                        if (Factory::getApplication()->input->getBool('contentbuilder_filter_signal', false)) {
 
-                            if (CBRequest::getVar('cbListFilterKeywords', '')) {
-                                $this->setState('formsd_filter', CBRequest::getVar('cbListFilterKeywords', ''));
+                            if (Factory::getApplication()->input->get('cbListFilterKeywords', '', 'string')) {
+                                $this->setState('formsd_filter', Factory::getApplication()->input->get('cbListFilterKeywords', '', 'string'));
                             }
 
-                            if (CBRequest::getVar('cbListFilterArticleCategories', -1) > -1) {
-                                $this->setState('article_category_filter', CBRequest::getInt('cbListFilterArticleCategories', -1));
+                            if (Factory::getApplication()->input->get('cbListFilterArticleCategories', -1, 'string') > -1) {
+                                $this->setState('article_category_filter', Factory::getApplication()->input->getInt('cbListFilterArticleCategories', -1));
                             }
 
-                            $filters = CBRequest::getVar('cb_filter', array(), 'POST', 'array');
-                            $filters_from = CBRequest::getVar('cbListFilterCalendarFrom', array(), 'POST', 'array');
-                            $filters_to = CBRequest::getVar('cbListFilterCalendarTo', array(), 'POST', 'array');
-                            $calendar_formats = CBRequest::getVar('cb_filter_calendar_format', array(), 'POST', 'array');
+                            $filters = Factory::getApplication()->input->post->get('cb_filter', [], 'array');
+                            $filters_from = Factory::getApplication()->input->post->get('cbListFilterCalendarFrom', [], 'array');
+                            $filters_to = Factory::getApplication()->input->post->get('cbListFilterCalendarTo', [], 'array');
+                            $calendar_formats = Factory::getApplication()->input->post->get('cb_filter_calendar_format', [], 'array');
 
                             $app->getSession()->set('com_contentbuilder.filter_signal.' . $this->_id, true);
                             $app->getSession()->set('com_contentbuilder.filter.' . $this->_id, $filters);
-                            $app->getSession()->set('com_contentbuilder.filter_keywords.' . $this->_id, CBRequest::getVar('cbListFilterKeywords', ''));
-                            $app->getSession()->set('com_contentbuilder.filter_article_categories.' . $this->_id, CBRequest::getInt('cbListFilterArticleCategories', -1));
+                            $app->getSession()->set('com_contentbuilder.filter_keywords.' . $this->_id, Factory::getApplication()->input->get('cbListFilterKeywords', '', 'string'));
+                            $app->getSession()->set('com_contentbuilder.filter_article_categories.' . $this->_id, Factory::getApplication()->input->getInt('cbListFilterArticleCategories', -1));
                             $app->getSession()->set('com_contentbuilder.calendar_filter_from.' . $this->_id, $filters_from);
                             $app->getSession()->set('com_contentbuilder.calendar_filter_to.' . $this->_id, $filters_to);
                             $app->getSession()->set('com_contentbuilder.calendar_formats.' . $this->_id, $calendar_formats);
@@ -505,7 +505,7 @@ class ListModel extends BaseListModel
 
                             $data->page_title = $this->_page_title;
 
-                            if (CBRequest::getInt('cb_filter_in_title', 1)) {
+                            if (Factory::getApplication()->input->getInt('cb_filter_in_title', 1)) {
                                 $data->slug2      = str_replace(' &raquo; ', '', $ordered_extra_title);
                                 $data->page_title .= $ordered_extra_title;
                             }
@@ -616,7 +616,7 @@ class ListModel extends BaseListModel
 
                     // Plugin call
                     $limitstart = (int) $this->getState('list.start');
-                    $start      = CBRequest::getVar('start', 0, '', 'int');
+                    $start      = Factory::getApplication()->input->getInt('start', 0);
                     $table = Table::getInstance('content');
                     $registry = new Registry;
                     $registry->loadString($table->attribs ?? '');

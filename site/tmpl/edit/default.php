@@ -33,7 +33,7 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
     function contentbuilder_delete() {
         var confirmed = confirm('<?php echo Text::_('COM_CONTENTBUILDER_CONFIRM_DELETE_MESSAGE'); ?>');
         if (confirmed) {
-            location.href = '<?php echo 'index.php?option=com_contentbuilder&task=edit.delete' . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&task=edit.display&id=' . CBRequest::getInt('id', 0) . '&cid[]=' . CBRequest::getCmd('record_id', 0) . '&Itemid=' . CBRequest::getInt('Itemid', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'); ?>';
+            location.href = '<?php echo 'index.php?option=com_contentbuilder&task=edit.delete' . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&task=edit.display&id=' . Factory::getApplication()->input->getInt('id', 0) . '&cid[]=' . Factory::getApplication()->input->getCmd('record_id', 0) . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order'); ?>';
         }
     }
 
@@ -192,7 +192,7 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
             <?php
         }
         if (($edit_allowed || $new_allowed) && !$this->edit_by_type) {
-            if (CBRequest::getVar('cb_controller') != 'edit' && !CBRequest::getVar('return', '') && !$this->latest) {
+            if (Factory::getApplication()->input->getString('cb_controller', '') != 'edit' && !Factory::getApplication()->input->get('return', '', 'string') && !$this->latest) {
             ?>
                 <button class="btn btn-sm btn-primary cbButton cbApplyButton" onclick="document.getElementById('contentbuilder_task').value='apply';contentbuilder.onSubmit();"><?php echo trim($this->apply_button_title) != '' ? htmlentities($this->apply_button_title, ENT_QUOTES, 'UTF-8') : Text::_('COM_CONTENTBUILDER_APPLY') ?></button>
             <?php
@@ -213,11 +213,11 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
             <?php echo Text::_('COM_CONTENTBUILDER_DELETE') ?></button>
             <?php
         }
-        if (!CBRequest::getInt('backtolist', 0) && !CBRequest::getVar('return', '')) {
-            if (!CBRequest::getInt('jsback', 0)) {
+        if (!Factory::getApplication()->input->getInt('backtolist', 0) && !Factory::getApplication()->input->get('return', '', 'string')) {
+            if (!Factory::getApplication()->input->getInt('jsback', 0)) {
                 if ($this->back_button) {
             ?>
-                    <a class="btn btn-sm btn-primary cbButton cbBackButton" href="<?php echo Route::_('index.php?option=com_contentbuilder&task=details.display' . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&id=' . CBRequest::getInt('id', 0) . '&record_id=' . CBRequest::getCmd('record_id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . '&Itemid=' . CBRequest::getInt('Itemid', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order')); ?>"><?php echo Text::_('COM_CONTENTBUILDER_BACK') ?></a>
+                    <a class="btn btn-sm btn-primary cbButton cbBackButton" href="<?php echo Route::_('index.php?option=com_contentbuilder&task=details.display' . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&id=' . Factory::getApplication()->input->getInt('id', 0) . '&record_id=' . Factory::getApplication()->input->getCmd('record_id', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order')); ?>"><?php echo Text::_('COM_CONTENTBUILDER_BACK') ?></a>
                 <?php
                 }
             } else {
@@ -226,9 +226,9 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
             <?php
             }
         } else {
-            if ($this->back_button && !CBRequest::getVar('return', '')) {
+            if ($this->back_button && !Factory::getApplication()->input->get('return', '', 'string')) {
             ?>
-                <a class="btn btn-sm btn-primary cbButton cbBackButton" href="<?php echo Route::_('index.php?option=com_contentbuilder&task=list.display' . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&id=' . CBRequest::getInt('id', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . '&Itemid=' . CBRequest::getInt('Itemid', 0)); ?>"><?php echo Text::_('COM_CONTENTBUILDER_BACK') ?></a>
+                <a class="btn btn-sm btn-primary cbButton cbBackButton" href="<?php echo Route::_('index.php?option=com_contentbuilder&task=list.display' . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&id=' . Factory::getApplication()->input->getInt('id', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0)); ?>"><?php echo Text::_('COM_CONTENTBUILDER_BACK') ?></a>
         <?php
             }
         }
@@ -238,14 +238,14 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
     $buttons = ob_get_contents();
     ob_end_clean();
 
-    if (CBRequest::getInt('cb_show_top_bar', 1)) {
+    if (Factory::getApplication()->input->getInt('cb_show_top_bar', 1)) {
     ?>
         <div style="clear:right;"></div>
     <?php
         echo $buttons;
     }
 
-    if (CBRequest::getInt('cb_show_author', 1)) {
+    if (Factory::getApplication()->input->getInt('cb_show_author', 1)) {
     ?>
 
         <?php if ($this->created): ?>
@@ -258,7 +258,7 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
     <?php
     }
 
-    if (CBRequest::getInt('cb_show_author', 1)) {
+    if (Factory::getApplication()->input->getInt('cb_show_author', 1)) {
     ?>
 
         <?php if ($this->modified_by): ?>
@@ -278,14 +278,14 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
         <?php
         if (!$this->edit_by_type) {
         ?>
-            <form class="form-horizontal mt-5 mb-5" name="adminForm" id="adminForm" onsubmit="return false;" action="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display' . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&id=' . CBRequest::getInt('id', 0) . '&record_id=' . CBRequest::getCmd('record_id',  '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . '&Itemid=' . CBRequest::getInt('Itemid', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order')); ?>" method="post" enctype="multipart/form-data">
+            <form class="form-horizontal mt-5 mb-5" name="adminForm" id="adminForm" onsubmit="return false;" action="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display' . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&id=' . Factory::getApplication()->input->getInt('id', 0) . '&record_id=' . Factory::getApplication()->input->getCmd('record_id',  '') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order')); ?>" method="post" enctype="multipart/form-data">
             <?php
         }
             ?>
             <?php
             if ($this->edit_by_type) {
             ?>
-                <form class="mt-5 mb-5" name="adminForm" id="adminForm" onsubmit="return false;" action="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display' . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&id=' . CBRequest::getInt('id', 0) . '&record_id=' . CBRequest::getCmd('record_id',  '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . '&Itemid=' . CBRequest::getInt('Itemid', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order')); ?>" method="post" enctype="multipart/form-data">
+                <form class="mt-5 mb-5" name="adminForm" id="adminForm" onsubmit="return false;" action="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display' . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&id=' . Factory::getApplication()->input->getInt('id', 0) . '&record_id=' . Factory::getApplication()->input->getCmd('record_id',  '') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order')); ?>" method="post" enctype="multipart/form-data">
                 <?php
             }
                 ?>
@@ -425,16 +425,16 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
                 </div>
                 <?php
 
-                if (CBRequest::getVar('tmpl', '') != '') {
+                if (Factory::getApplication()->input->get('tmpl', '', 'string') != '') {
                 ?>
-                    <input type="hidden" name="tmpl" value="<?php echo CBRequest::getVar('tmpl', ''); ?>" />
+                    <input type="hidden" name="tmpl" value="<?php echo Factory::getApplication()->input->get('tmpl', '', 'string'); ?>" />
                 <?php
                 }
                 ?>
-                <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid', 0); ?>" />
+                <input type="hidden" name="Itemid" value="<?php echo Factory::getApplication()->input->getInt('Itemid', 0); ?>" />
                 <input type="hidden" name="task" id="contentbuilder_task" value="edit.save" />
-                <input type="hidden" name="backtolist" value="<?php echo CBRequest::getInt('backtolist', 0); ?>" />
-                <input type="hidden" name="return" value="<?php echo CBRequest::getVar('return', ''); ?>" />
+                <input type="hidden" name="backtolist" value="<?php echo Factory::getApplication()->input->getInt('backtolist', 0); ?>" />
+                <input type="hidden" name="return" value="<?php echo Factory::getApplication()->input->get('return', '', 'string'); ?>" />
                 <?php echo HTMLHelper::_('form.token'); ?>
                 <?php
                 if ($this->edit_by_type) {
@@ -449,7 +449,7 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
             <?php echo $this->event->afterDisplayContent; ?>
             <br />
             <?php
-            if (CBRequest::getInt('cb_show_bottom_bar', 1)) {
+            if (Factory::getApplication()->input->getInt('cb_show_bottom_bar', 1)) {
 
                 echo $buttons;
             ?>
@@ -468,18 +468,18 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
     } else {
         if ($this->edit_by_type) {
         ?>
-            <form class="mt-5" name="adminForm" id="adminForm" onsubmit="return false;" action="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display' . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&id=' . CBRequest::getInt('id', 0) . '&record_id=' . CBRequest::getCmd('record_id',  '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . '&Itemid=' . CBRequest::getInt('Itemid', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order')); ?>" method="post" enctype="multipart/form-data">
+            <form class="mt-5" name="adminForm" id="adminForm" onsubmit="return false;" action="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display' . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&id=' . Factory::getApplication()->input->getInt('id', 0) . '&record_id=' . Factory::getApplication()->input->getCmd('record_id',  '') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order')); ?>" method="post" enctype="multipart/form-data">
                 <?php
-                if (CBRequest::getVar('tmpl', '') != '') {
+                if (Factory::getApplication()->input->get('tmpl', '', 'string') != '') {
                 ?>
-                    <input type="hidden" name="tmpl" value="<?php echo CBRequest::getVar('tmpl', ''); ?>" />
+                    <input type="hidden" name="tmpl" value="<?php echo Factory::getApplication()->input->get('tmpl', '', 'string'); ?>" />
                 <?php
                 }
                 ?>
-                <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid', 0); ?>" />
+                <input type="hidden" name="Itemid" value="<?php echo Factory::getApplication()->input->getInt('Itemid', 0); ?>" />
                 <input type="hidden" name="task" id="contentbuilder_task" value="edit.save" />
-                <input type="hidden" name="backtolist" value="<?php echo CBRequest::getInt('backtolist', 0); ?>" />
-                <input type="hidden" name="return" value="<?php echo CBRequest::getVar('return', ''); ?>" />
+                <input type="hidden" name="backtolist" value="<?php echo Factory::getApplication()->input->getInt('backtolist', 0); ?>" />
+                <input type="hidden" name="return" value="<?php echo Factory::getApplication()->input->get('return', '', 'string'); ?>" />
                 <?php echo HTMLHelper::_('form.token'); ?>
             </form>
             <?php echo $this->event->beforeDisplayContent; ?>
@@ -488,7 +488,7 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
             <?php echo $this->event->afterDisplayContent; ?>
             <br />
             <?php
-            if (CBRequest::getInt('cb_show_bottom_bar', 1)) {
+            if (Factory::getApplication()->input->getInt('cb_show_bottom_bar', 1)) {
 
                 echo $buttons;
             ?>
@@ -499,26 +499,26 @@ $fullarticle_allowed = $frontend ? ContentbuilderLegacyHelper::authorizeFe('full
         <?php
         } else {
         ?>
-            <form class="form-horizontal name=" adminForm" id="adminForm" onsubmit="return false;" action="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display' . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&id=' . CBRequest::getInt('id', 0) . '&record_id=' . CBRequest::getCmd('record_id',  '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . '&Itemid=' . CBRequest::getInt('Itemid', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order')); ?>" method="post" enctype="multipart/form-data">
+            <form class="form-horizontal name=" adminForm" id="adminForm" onsubmit="return false;" action="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display' . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&id=' . Factory::getApplication()->input->getInt('id', 0) . '&record_id=' . Factory::getApplication()->input->getCmd('record_id',  '') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order')); ?>" method="post" enctype="multipart/form-data">
                 <?php echo $this->event->beforeDisplayContent; ?>
                 <?php echo $this->toc ?>
                 <?php echo $this->tpl ?>
                 <?php echo $this->event->afterDisplayContent; ?>
                 <?php
-                if (CBRequest::getVar('tmpl', '') != '') {
+                if (Factory::getApplication()->input->get('tmpl', '', 'string') != '') {
                 ?>
-                    <input type="hidden" name="tmpl" value="<?php echo CBRequest::getVar('tmpl', ''); ?>" />
+                    <input type="hidden" name="tmpl" value="<?php echo Factory::getApplication()->input->get('tmpl', '', 'string'); ?>" />
                 <?php
                 }
                 ?>
-                <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid', 0); ?>" />
+                <input type="hidden" name="Itemid" value="<?php echo Factory::getApplication()->input->getInt('Itemid', 0); ?>" />
                 <input type="hidden" name="task" id="contentbuilder_task" value="edit.save" />
-                <input type="hidden" name="backtolist" value="<?php echo CBRequest::getInt('backtolist', 0); ?>" />
-                <input type="hidden" name="return" value="<?php echo CBRequest::getVar('return', ''); ?>" />
+                <input type="hidden" name="backtolist" value="<?php echo Factory::getApplication()->input->getInt('backtolist', 0); ?>" />
+                <input type="hidden" name="return" value="<?php echo Factory::getApplication()->input->get('return', '', 'string'); ?>" />
                 <?php echo HTMLHelper::_('form.token'); ?>
             </form>
             <?php
-            if (CBRequest::getInt('cb_show_bottom_bar', 1)) {
+            if (Factory::getApplication()->input->getInt('cb_show_bottom_bar', 1)) {
 
                 echo $buttons;
             ?>

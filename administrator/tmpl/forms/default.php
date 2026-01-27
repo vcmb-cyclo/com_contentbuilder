@@ -77,17 +77,6 @@ $sortLink = function (string $label, string $field) use ($order, $orderDir, $lim
     id="adminForm">
 
     <div id="editcell">
-        <label for="filter_id">
-            <?php echo Text::_('JGLOBAL_FIELD_ID_LABEL'); ?>:
-        </label>
-        <input class="form-control form-control-sm d-inline-block" style="max-width: 120px;"
-            type="number"
-            id="filter_id"
-            name="filter_id"
-            min="0"
-            value="<?php echo (int) ($this->lists['filter_id'] ?? 0); ?>"
-            onchange="document.adminForm.submit();" />
-        <span class="mx-2"></span>
         <label for="filter_tag">
             <?php echo Text::_('COM_CONTENTBUILDER_FILTER_TAG'); ?>:
         </label>

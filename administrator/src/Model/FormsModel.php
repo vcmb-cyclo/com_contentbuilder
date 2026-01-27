@@ -73,9 +73,6 @@ class FormsModel extends ListModel
         $filterState = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_state', '', 'cmd');
         $this->setState('filter.state', $filterState);
 
-        $filterId = $app->getUserStateFromRequest($this->context . '.filter.id', 'filter_id', 0, 'int');
-        $this->setState('filter.id', (int) $filterId);
-
         $input = $app->input;
         $user = $app->getIdentity();
         $profileKey = 'com_contentbuilder.filter_tag';
@@ -175,13 +172,7 @@ class FormsModel extends ListModel
             $query->where($db->quoteName('a.tag') . ' = ' . $db->quote($filterTag));
         }
 
-        // ID filter.
-        $filterId = (int) $this->getState('filter.id', 0);
-        if ($filterId > 0) {
-            $query->where($db->quoteName('a.id') . ' = ' . $filterId);
-        }
-
-        // Ordering (equivalent à ton buildOrderBy())
+        // Ordering
         $ordering  = (string) $this->getState('list.ordering', 'a.ordering');
         $direction = strtoupper((string) $this->getState('list.direction', 'ASC'));
 

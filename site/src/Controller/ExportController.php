@@ -18,10 +18,10 @@ class ExportController extends BaseController
 {
     function display($cachable = false, $urlparams = array())
     {
-        CBRequest::setVar('tmpl', CBRequest::getWord('tmpl',null));
-        CBRequest::setVar('layout', CBRequest::getWord('layout',null));
-        CBRequest::setVar('view', 'export');
-        CBRequest::setVar('format', 'raw');
+        Factory::getApplication()->input->set('tmpl', Factory::getApplication()->input->getWord('tmpl',null));
+        Factory::getApplication()->input->set('layout', Factory::getApplication()->input->getWord('layout',null));
+        Factory::getApplication()->input->set('view', 'export');
+        Factory::getApplication()->input->set('format', 'raw');
 
         parent::display();
     }

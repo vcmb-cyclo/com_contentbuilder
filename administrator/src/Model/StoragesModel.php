@@ -23,11 +23,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Database\QueryInterface;
 use Joomla\Utilities\ArrayHelper;
-use Joomla\CMS\Application\CMSApplicationInterface;
 use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
-use Joomla\Input\Input;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
-
 class StoragesModel extends ListModel
 {
     // Optionnel mais recommandé : définir le nom de la table (sans postfix)
@@ -37,9 +33,6 @@ class StoragesModel extends ListModel
         $config,
         MVCFactoryInterface $factory
     ) {
-        // IMPORTANT : on transmet factory/app/input à AdminModel
-        parent::__construct($config, $factory);
-
         if (empty($config['filter_fields'])) {
             $config['filter_fields'] = [
                 'a.id',
@@ -51,7 +44,8 @@ class StoragesModel extends ListModel
             ];
         }
 
-        $this->option = 'com_contentbuilder';
+        // IMPORTANT : on transmet factory/app/input à AdminModel
+        parent::__construct($config, $factory);
     }
 
     protected function populateState($ordering = 'a.ordering', $direction = 'ASC')
@@ -60,6 +54,18 @@ class StoragesModel extends ListModel
 
         // ✅ appels standard StorageModel
         parent::populateState($ordering, $direction);
+
+        // Joomla 6 admin lists post list[limit]; also accept legacy limit.
+        $list = $app->input->get('list', [], 'array');
+        if (is_array($list) && array_key_exists('limit', $list)) {
+            $limit = (int) $list['limit'];
+            $this->setState('list.limit', $limit);
+            $app->setUserState($this->context . '.list.limit', $limit);
+        } elseif ($app->input->get('limit', null, 'raw') !== null) {
+            $limit = (int) $app->input->get('limit', 0, 'int');
+            $this->setState('list.limit', $limit);
+            $app->setUserState($this->context . '.list.limit', $limit);
+        }
 
         // ✅ tes filtres custom, mais stockés dans l’état
         $filterState = $app->getUserStateFromRequest($this->context . '.filter.state', 'filter_state', '', 'cmd');
@@ -85,18 +91,18 @@ class StoragesModel extends ListModel
         }
 
         // Ordering (equivalent à ton buildOrderBy())
-        $ordering  = (string) $this->getState('list.ordering', 'a.id');
-        $direction = strtoupper((string) $this->getState('list.direction', 'DESC'));
+        $ordering  = (string) $this->getState('list.ordering', 'a.ordering');
+        $direction = strtoupper((string) $this->getState('list.direction', 'ASC'));
 
         // Petite sécurité sur la direction
         if (!in_array($direction, ['ASC', 'DESC'], true)) {
-            $direction = 'DESC';
+            $direction = 'ASC';
         }
 
         // Optionnel : whitelist rapide des colonnes triables
-        $allowedOrdering = ['a.id', 'a.title', 'a.published', 'a.ordering'];
+        $allowedOrdering = ['a.id', 'a.name', 'a.title', 'a.published', 'a.ordering'];
         if (!in_array($ordering, $allowedOrdering, true)) {
-            $ordering = 'a.id';
+            $ordering = 'a.ordering';
         }
 
         $query->order($db->escape($ordering . ' ' . $direction));
@@ -141,7 +147,7 @@ class StoragesModel extends ListModel
     /*
     function setPublished()
     {
-        $cids = CBRequest::getVar('cid', array(), '', 'array');
+        $cids = Factory::getApplication()->input->get('cid', [], 'array');
         ArrayHelper::toInteger($cids);
         $this->getDatabase()->setQuery(' Update #__contentbuilder_storages ' .
             '  Set published = 1 Where id In ( ' . implode(',', $cids) . ')');
@@ -151,7 +157,7 @@ class StoragesModel extends ListModel
 
     function setUnpublished()
     {
-        $cids = CBRequest::getVar('cid', array(), '', 'array');
+        $cids = Factory::getApplication()->input->get('cid', [], 'array');
         ArrayHelper::toInteger($cids);
         $this->getDatabase()->setQuery(' Update #__contentbuilder_storages ' .
             '  Set published = 0 Where id In ( ' . implode(',', $cids) . ')');
@@ -213,14 +219,14 @@ class StoragesModel extends ListModel
 
     function saveOrder()
     {
-        $items = CBRequest::getVar('cid', array(), 'post', 'array');
+        $items = Factory::getApplication()->input->post->get('cid', [], 'array');
         ArrayHelper::toInteger($items);
 
         $total = count($items);
         $row = $this->getTable('Storage');
         $groupings = array();
 
-        $order = CBRequest::getVar('order', array(), 'post', 'array');
+        $order = Factory::getApplication()->input->post->get('order', [], 'array');
         ArrayHelper::toInteger($order);
 
         // update ordering values

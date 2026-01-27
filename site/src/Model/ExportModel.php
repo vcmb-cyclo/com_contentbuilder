@@ -43,7 +43,7 @@ class ExportModel extends BaseDatabaseModel
         $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
-        $id = CBRequest::getInt('id', 0);
+        $id = Factory::getApplication()->input->getInt('id', 0);
 
         if (!$id && $this->frontend) {
             $menu = $app->getMenu();
@@ -71,18 +71,18 @@ class ExportModel extends BaseDatabaseModel
             $filter_publish   = $app->getUserStateFromRequest($option . 'formsd_filter_publish', 'list_publish_filter', -1, 'int');
             $filter_language  = $app->getUserStateFromRequest($option . 'formsd_filter_language', 'list_language_filter', '', 'cmd');
         } else {
-            $app->setUserState($option . 'formsd_filter_order', CBRequest::getCmd('filter_order', ''));
-            $app->setUserState($option . 'formsd_filter_order_Dir', CBRequest::getCmd('filter_order_Dir', ''));
-            $app->setUserState($option . 'formsd_filter', CBRequest::getVar('filter', ''));
-            $app->setUserState($option . 'formsd_filter_state', CBRequest::getInt('list_state_filter', 0));
-            $app->setUserState($option . 'formsd_filter_publish', CBRequest::getInt('list_publish_filter', -1));
-            $app->setUserState($option . 'formsd_filter_language', CBRequest::getCmd('list_language_filter', ''));
-            $filter_order     = CBRequest::getCmd('filter_order', '');
-            $filter_order_Dir = CBRequest::getCmd('filter_order_Dir', '');
-            $filter           = CBRequest::getVar('filter', '');
-            $filter_state     = CBRequest::getInt('list_state_filter', 0);
-            $filter_publish   = CBRequest::getInt('list_publish_filter', -1);
-            $filter_language  = CBRequest::getCmd('list_language_filter', '');
+            $app->setUserState($option . 'formsd_filter_order', Factory::getApplication()->input->getCmd('filter_order', ''));
+            $app->setUserState($option . 'formsd_filter_order_Dir', Factory::getApplication()->input->getCmd('filter_order_Dir', ''));
+            $app->setUserState($option . 'formsd_filter', Factory::getApplication()->input->get('filter', '', 'string'));
+            $app->setUserState($option . 'formsd_filter_state', Factory::getApplication()->input->getInt('list_state_filter', 0));
+            $app->setUserState($option . 'formsd_filter_publish', Factory::getApplication()->input->getInt('list_publish_filter', -1));
+            $app->setUserState($option . 'formsd_filter_language', Factory::getApplication()->input->getCmd('list_language_filter', ''));
+            $filter_order     = Factory::getApplication()->input->getCmd('filter_order', '');
+            $filter_order_Dir = Factory::getApplication()->input->getCmd('filter_order_Dir', '');
+            $filter           = Factory::getApplication()->input->get('filter', '', 'string');
+            $filter_state     = Factory::getApplication()->input->getInt('list_state_filter', 0);
+            $filter_publish   = Factory::getApplication()->input->getInt('list_publish_filter', -1);
+            $filter_language  = Factory::getApplication()->input->getCmd('list_language_filter', '');
         }
 
         $this->setState('formsd_filter_state', $filter_state);
@@ -92,7 +92,7 @@ class ExportModel extends BaseDatabaseModel
         $this->setState('formsd_filter_order', $filter_order);
         $this->setState('formsd_filter_order_Dir', $filter_order_Dir);
 
-        $menu_filter = CBRequest::getVar('cb_list_filterhidden', null);
+        $menu_filter = Factory::getApplication()->input->get('cb_list_filterhidden', null, 'string');
 
         if ($menu_filter !== null) {
             $lines  = explode("\n", $menu_filter);
@@ -108,7 +108,7 @@ class ExportModel extends BaseDatabaseModel
             }
         }
 
-        $menu_filter_order = CBRequest::getVar('cb_list_orderhidden', null);
+        $menu_filter_order = Factory::getApplication()->input->get('cb_list_orderhidden', null, 'string');
 
         if ($menu_filter_order !== null) {
             $lines  = explode("\n", $menu_filter_order);

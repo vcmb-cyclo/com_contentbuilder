@@ -202,21 +202,21 @@ class plgSystemContentbuilder_system extends CMSPlugin implements SubscriberInte
             }
             // theme loading end
 
-            $option = CBRequest::getCmd('option', '');
-            $view = CBRequest::getCmd('view', '');
-            $task = CBRequest::getCmd('task', '');
-            $layout = CBRequest::getCmd('layout', '');
-            $id = CBRequest::getVar('id', 0);
+            $option = Factory::getApplication()->input->getCmd('option', '');
+            $view = Factory::getApplication()->input->getCmd('view', '');
+            $task = Factory::getApplication()->input->getCmd('task', '');
+            $layout = Factory::getApplication()->input->getCmd('layout', '');
+            $id = Factory::getApplication()->input->get('id', 0, 'string');
             $id = explode(':', $id);
             $id = intval($id[0]);
-            $a_id = CBRequest::getVar('a_id', 0);
+            $a_id = Factory::getApplication()->input->get('a_id', 0, 'string');
             $a_id = explode(':', $a_id);
             $a_id = intval($a_id[0]);
 
             $pluginParams = $this->params;
 
             // if somebody tries to submit an article through the built-in joomla content submit
-            if ($pluginParams->def('disable_new_articles', 0) && trim(CBRequest::getCmd('option', '')) == 'com_content' && (trim(CBRequest::getCmd('task', '')) == 'new' || trim(CBRequest::getCmd('task', '')) == 'article.add' || (trim(CBRequest::getCmd('view', '')) == 'article' && trim(CBRequest::getCmd('layout', '')) == 'form') || (trim(CBRequest::getCmd('view', '')) == 'form' && trim(CBRequest::getCmd('layout', '')) == 'edit') && $a_id <= 0)) {
+            if ($pluginParams->def('disable_new_articles', 0) && trim(Factory::getApplication()->input->getCmd('option', '')) == 'com_content' && (trim(Factory::getApplication()->input->getCmd('task', '')) == 'new' || trim(Factory::getApplication()->input->getCmd('task', '')) == 'article.add' || (trim(Factory::getApplication()->input->getCmd('view', '')) == 'article' && trim(Factory::getApplication()->input->getCmd('layout', '')) == 'form') || (trim(Factory::getApplication()->input->getCmd('view', '')) == 'form' && trim(Factory::getApplication()->input->getCmd('layout', '')) == 'edit') && $a_id <= 0)) {
                 $this->app->getLanguage()->load('com_contentbuilder');
                 $this->app->enqueueMessage(Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), 'error');
                 $this->app->redirect('index.php');
@@ -228,7 +228,7 @@ class plgSystemContentbuilder_system extends CMSPlugin implements SubscriberInte
                 $this->db->setQuery("Select article.record_id, article.form_id From #__contentbuilder_articles As article, #__content As content Where content.id = " . intval($id) . " And (content.state = 0 Or content.state = 1) And article.article_id = content.id");
                 $article = $this->db->loadAssoc();
                 if (is_array($article)) {
-                    $this->app->redirect('index.php?option=com_contentbuilder&task=edit.display&id=' . $article['form_id'] . "&record_id=" . $article['record_id'] . "&jsback=1&Itemid=" . CBRequest::getInt('Itemid', 0));
+                    $this->app->redirect('index.php?option=com_contentbuilder&task=edit.display&id=' . $article['form_id'] . "&record_id=" . $article['record_id'] . "&jsback=1&Itemid=" . Factory::getApplication()->input->getInt('Itemid', 0));
                 }
             }
         }
@@ -241,7 +241,7 @@ class plgSystemContentbuilder_system extends CMSPlugin implements SubscriberInte
         }
 
         // register non-existent records
-        if (in_array(CBRequest::getVar('option', ''), array('com_contentbuilder', 'com_content'))) {
+        if (in_array(Factory::getApplication()->input->get('option', '', 'string'), array('com_contentbuilder', 'com_content'))) {
             require_once(JPATH_SITE .'/administrator/components/com_contentbuilder/src/contentbuilder.php');
             $this->db->setQuery("Select `type`, `reference_id` From #__contentbuilder_forms Where published = 1");
             $views = $this->db->loadAssocList();
@@ -257,7 +257,7 @@ class plgSystemContentbuilder_system extends CMSPlugin implements SubscriberInte
             }
         }
 
-        if (CBRequest::getCmd('option', '') == 'com_content' || CBRequest::getCmd('option', '') == 'com_contentbuilder') {
+        if (Factory::getApplication()->input->getCmd('option', '') == 'com_content' || Factory::getApplication()->input->getCmd('option', '') == 'com_contentbuilder') {
             // managing published states
             $date = Factory::getDate()->toSql();
 
@@ -274,7 +274,7 @@ class plgSystemContentbuilder_system extends CMSPlugin implements SubscriberInte
         // J! is then trying to redirect to com_content (for non-obvious reasons), using the view variable orginally used in contentbuilder and then it will 
         // throw an error 500, view not found
         // this will get rid of the view parameter and pass the rest of the url to the return parameter
-        $enc = base64_decode(CBRequest::getVar('return', ''));
+        $enc = base64_decode(Factory::getApplication()->input->get('return', '', 'string'));
         if (is_string($enc)) {
             $enc = explode('?', $enc);
             count($enc) > 1 ? parse_str($enc[1], $out) : $out = array();
@@ -288,7 +288,7 @@ class plgSystemContentbuilder_system extends CMSPlugin implements SubscriberInte
                     }
                     $i++;
                 }
-                CBRequest::setVar('return', base64_decode('index.php' . ($return ? '?' : '') . $return));
+                Factory::getApplication()->input->set('return', base64_decode('index.php' . ($return ? '?' : '') . $return));
             }
         }
 

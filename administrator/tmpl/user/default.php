@@ -194,9 +194,9 @@ use CB\Component\Contentbuilder\Administrator\CBRequest;
 
     <input type="hidden" name="option" value="com_contentbuilder" />
     <input type="hidden" name="task" id="task" value="" />
-    <input type="hidden" name="form_id" value="<?php echo CBRequest::getInt('form_id', 0); ?>" />
+    <input type="hidden" name="form_id" value="<?php echo Factory::getApplication()->input->getInt('form_id', 0); ?>" />
     <input type="hidden" name="joomla_userid" value="<?php echo $this->subject->id; ?>" />
     <input type="hidden" name="cb_id" value="<?php echo $this->subject->cb_id; ?>" />
-    <input type="hidden" name="tmpl" value="<?php echo CBRequest::getCmd('tmpl', ''); ?>" />
+    <input type="hidden" name="tmpl" value="<?php echo Factory::getApplication()->input->getCmd('tmpl', ''); ?>" />
     <?php echo HTMLHelper::_('form.token'); ?>
 </form>

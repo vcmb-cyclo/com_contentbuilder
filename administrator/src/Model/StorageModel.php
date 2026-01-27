@@ -642,7 +642,7 @@ class StorageModel extends AdminModel
 
     function storeCsv($file)
     {
-        $data = CBRequest::get('post');
+        $data = Factory::getApplication()->input->post->getArray();
 
         if (isset($data['bytable']) && $data['bytable']) {
             return Text::_('COM_CONTENTBUILDER_CANNOT_USE_CSV_WITH_FOREIGN_TABLE');
@@ -680,7 +680,7 @@ class StorageModel extends AdminModel
 
         $encoding = '';
 
-        switch (CBRequest::getVar('csv_repair_encoding', '')) {
+        switch (Factory::getApplication()->input->get('csv_repair_encoding', '', 'string')) {
             case 'WINDOWS-1250':
             case 'WINDOWS-1251':
             case 'WINDOWS-1252':
@@ -723,7 +723,7 @@ class StorageModel extends AdminModel
             case 'KOI8-U':
             case 'KOI8-RU':
             case 'EUC-JP':
-                $encoding = CBRequest::getVar('csv_repair_encoding', '');
+                $encoding = Factory::getApplication()->input->get('csv_repair_encoding', '', 'string');
                 break;
         }
 
@@ -744,7 +744,7 @@ class StorageModel extends AdminModel
 
             $fieldnames = array();
 
-            $columns = fgetcsv($handle, $max_line_length, CBRequest::getVar('csv_delimiter', ','), '"');
+            $columns = fgetcsv($handle, $max_line_length, Factory::getApplication()->input->get('csv_delimiter', ',', 'string'), '"');
 
             $colCheck = array();
             foreach ($columns as &$column) {
@@ -764,7 +764,7 @@ class StorageModel extends AdminModel
                 $data['id'] = $this->_id;
             }
 
-            if (CBRequest::getBool('csv_drop_records', false)) {
+            if (Factory::getApplication()->input->getBool('csv_drop_records', false)) {
                 $this->getDatabase()->setQuery("Truncate Table #__" . $this->target_table);
                 $this->getDatabase()->execute();
                 $this->getDatabase()->setQuery("Delete From #__contentbuilder_records Where `type` = 'com_contentbuilder' And reference_id = " . $this->getDatabase()->Quote($this->_id));
@@ -775,13 +775,13 @@ class StorageModel extends AdminModel
 
             $insert_query_prefix = "INSERT INTO #__" . $this->target_table . " (" . join(",", $fieldnames) . ")\nVALUES";
 
-            while (($data = fgetcsv($handle, $max_line_length, CBRequest::getVar('csv_delimiter', ','), '"')) !== FALSE) {
+            while (($data = fgetcsv($handle, $max_line_length, Factory::getApplication()->input->get('csv_delimiter', ',', 'string'), '"')) !== FALSE) {
                 while (count($data) < count($columns))
                     array_push($data, NULL);
                 $query = "$insert_query_prefix (" . join(", ", $this->quote_all_array($data)) . ")";
                 $this->getDatabase()->setQuery($query);
                 $this->getDatabase()->execute();
-                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (`type`,last_update,is_future,lang_code, sef, published, record_id, reference_id) Values ('com_contentbuilder'," . $this->getDatabase()->Quote($last_update) . ",0,'*',''," . CBRequest::getInt('csv_published', 0) . ", " . $this->getDatabase()->Quote(intval($this->getDatabase()->insertid())) . ", " . $this->getDatabase()->Quote($this->_id) . ")");
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (`type`,last_update,is_future,lang_code, sef, published, record_id, reference_id) Values ('com_contentbuilder'," . $this->getDatabase()->Quote($last_update) . ",0,'*',''," . Factory::getApplication()->input->getInt('csv_published', 0) . ", " . $this->getDatabase()->Quote(intval($this->getDatabase()->insertid())) . ", " . $this->getDatabase()->Quote($this->_id) . ")");
                 $this->getDatabase()->execute();
             }
             fclose($handle);

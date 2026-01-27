@@ -39,8 +39,8 @@ class AjaxModel extends BaseDatabaseModel
         $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
-        $this->_id = CBRequest::getInt('id', 0);
-        $this->_subject = CBRequest::getCmd('subject', '');
+        $this->_id = Factory::getApplication()->input->getInt('id', 0);
+        $this->_subject = Factory::getApplication()->input->getCmd('subject', '');
 
     }
 
@@ -67,9 +67,9 @@ class AjaxModel extends BaseDatabaseModel
                     return json_encode(array('code' => 2, 'msg' => Text::_('COM_CONTENTBUILDER_FORM_ERROR')));
                 }
 
-                $values = $form->getUniqueValues(CBRequest::getCmd('field_reference_id', ''), CBRequest::getCmd('where_field', ''), CBRequest::getVar('where', ''));
+                $values = $form->getUniqueValues(Factory::getApplication()->input->getCmd('field_reference_id', ''), Factory::getApplication()->input->getCmd('where_field', ''), Factory::getApplication()->input->get('where', '', 'string'));
 
-                return json_encode(array('code' => 0, 'field_reference_id' => CBRequest::getCmd('field_reference_id', ''), 'msg' => $values));
+                return json_encode(array('code' => 0, 'field_reference_id' => Factory::getApplication()->input->getCmd('field_reference_id', ''), 'msg' => $values));
 
 
                 break;
@@ -103,7 +103,7 @@ class AjaxModel extends BaseDatabaseModel
                         //$rating = 5;
                         break;
                     case 2:
-                        $rating = CBRequest::getInt('rate', 5);
+                        $rating = Factory::getApplication()->input->getInt('rate', 5);
                         if ($rating > 5)
                             $rating = 5;
                         if ($rating < 4)
@@ -112,7 +112,7 @@ class AjaxModel extends BaseDatabaseModel
                         //if($rating == 2) $rating = 5;
                         break;
                     case 3:
-                        $rating = CBRequest::getInt('rate', 3);
+                        $rating = Factory::getApplication()->input->getInt('rate', 3);
                         if ($rating > 3)
                             $rating = 3;
                         if ($rating < 1)
@@ -122,7 +122,7 @@ class AjaxModel extends BaseDatabaseModel
                         //if($rating == 3) $rating = 5;
                         break;
                     case 4:
-                        $rating = CBRequest::getInt('rate', 4);
+                        $rating = Factory::getApplication()->input->getInt('rate', 4);
                         if ($rating > 4)
                             $rating = 4;
                         if ($rating < 1)
@@ -132,7 +132,7 @@ class AjaxModel extends BaseDatabaseModel
                         //if($rating == 4) $rating = 5;
                         break;
                     case 5:
-                        $rating = CBRequest::getInt('rate', 5);
+                        $rating = Factory::getApplication()->input->getInt('rate', 5);
                         if ($rating > 5)
                             $rating = 5;
                         if ($rating < 1)
@@ -151,27 +151,27 @@ class AjaxModel extends BaseDatabaseModel
                     $this->getDatabase()->execute();
 
                     // test if already voted
-                    $this->getDatabase()->setQuery("Select `form_id` From #__contentbuilder_rating_cache Where `record_id` = " . $this->getDatabase()->Quote(CBRequest::getCmd('record_id', '')) . " And `form_id` = " . $this->_id . " And `ip` = " . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']));
+                    $this->getDatabase()->setQuery("Select `form_id` From #__contentbuilder_rating_cache Where `record_id` = " . $this->getDatabase()->Quote(Factory::getApplication()->input->getCmd('record_id', '')) . " And `form_id` = " . $this->_id . " And `ip` = " . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']));
                     $cached = $this->getDatabase()->loadResult();
-                    $rated = Factory::getApplication()->getSession()->get('rated' . $this->_id . CBRequest::getCmd('record_id', ''), false, 'com_contentbuilder.rating');
+                    $rated = Factory::getApplication()->getSession()->get('rated' . $this->_id . Factory::getApplication()->input->getCmd('record_id', ''), false, 'com_contentbuilder.rating');
 
                     if ($rated || $cached) {
                         return json_encode(array('code' => 1, 'msg' => Text::_('COM_CONTENTBUILDER_RATED_ALREADY')));
                     } else {
-                        Factory::getApplication()->getSession()->set('rated' . $this->_id . CBRequest::getCmd('record_id', ''), true, 'com_contentbuilder.rating');
+                        Factory::getApplication()->getSession()->set('rated' . $this->_id . Factory::getApplication()->input->getCmd('record_id', ''), true, 'com_contentbuilder.rating');
                     }
 
                     // adding vote
-                    $this->getDatabase()->setQuery("Update #__contentbuilder_records Set rating_count = rating_count + 1, rating_sum = rating_sum + " . $rating . ", lastip = " . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']) . " Where `type` = " . $this->getDatabase()->Quote($result['type']) . " And `reference_id` = " . $this->getDatabase()->Quote($result['reference_id']) . " And `record_id` = " . $this->getDatabase()->Quote(CBRequest::getCmd('record_id', '')));
+                    $this->getDatabase()->setQuery("Update #__contentbuilder_records Set rating_count = rating_count + 1, rating_sum = rating_sum + " . $rating . ", lastip = " . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']) . " Where `type` = " . $this->getDatabase()->Quote($result['type']) . " And `reference_id` = " . $this->getDatabase()->Quote($result['reference_id']) . " And `record_id` = " . $this->getDatabase()->Quote(Factory::getApplication()->input->getCmd('record_id', '')));
                     $this->getDatabase()->execute();
 
                     // adding vote to cache
                     $___now = $_now->toSql();
-                    $this->getDatabase()->setQuery("Insert Into #__contentbuilder_rating_cache (`record_id`,`form_id`,`ip`,`date`) Values (" . $this->getDatabase()->Quote(CBRequest::getCmd('record_id', '')) . ", " . $this->_id . "," . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']) . ",'" . $___now . "')");
+                    $this->getDatabase()->setQuery("Insert Into #__contentbuilder_rating_cache (`record_id`,`form_id`,`ip`,`date`) Values (" . $this->getDatabase()->Quote(Factory::getApplication()->input->getCmd('record_id', '')) . ", " . $this->_id . "," . $this->getDatabase()->Quote($_SERVER['REMOTE_ADDR']) . ",'" . $___now . "')");
                     $this->getDatabase()->execute();
 
                     // updating article's votes if there is an article bound to the record & view
-                    $this->getDatabase()->setQuery("Select a.article_id From #__contentbuilder_articles As a, #__content As c Where c.id = a.article_id And (c.state = 1 Or c.state = 0) And a.form_id = " . $this->_id . " And a.record_id = " . $this->getDatabase()->Quote(CBRequest::getCmd('record_id', '')));
+                    $this->getDatabase()->setQuery("Select a.article_id From #__contentbuilder_articles As a, #__content As c Where c.id = a.article_id And (c.state = 1 Or c.state = 0) And a.form_id = " . $this->_id . " And a.record_id = " . $this->getDatabase()->Quote(Factory::getApplication()->input->getCmd('record_id', '')));
                     $article_id = $this->getDatabase()->loadResult();
 
                     if ($article_id) {
@@ -190,7 +190,7 @@ class AjaxModel extends BaseDatabaseModel
                                     cr.rating_sum = cbr.rating_sum,
                                     cr.lastip = cbr.lastip
                                 Where
-                                    cbr.record_id = " . $this->getDatabase()->Quote(CBRequest::getCmd('record_id', '')) . "
+                                    cbr.record_id = " . $this->getDatabase()->Quote(Factory::getApplication()->input->getCmd('record_id', '')) . "
                                 And
                                     cbr.record_id = cba.record_id
                                 And

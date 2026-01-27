@@ -32,15 +32,15 @@ class AjaxController extends BaseController
 
         $bfrontend = Factory::getApplication()->isClient('site');
 
-        ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id',0),0, $bfrontend ? '_fe' : '');
+        ContentbuilderLegacyHelper::setPermissions(Factory::getApplication()->input->getInt('id',0),0, $bfrontend ? '_fe' : '');
     }
 
     function display($cachable = false, $urlparams = array())
     {
-        CBRequest::setVar('tmpl', CBRequest::getWord('tmpl',null));
-        CBRequest::setVar('layout', CBRequest::getWord('layout',null));
-        CBRequest::setVar('view', 'ajax');
-        CBRequest::setVar('format', 'raw');
+        Factory::getApplication()->input->set('tmpl', Factory::getApplication()->input->getWord('tmpl',null));
+        Factory::getApplication()->input->set('layout', Factory::getApplication()->input->getWord('layout',null));
+        Factory::getApplication()->input->set('view', 'ajax');
+        Factory::getApplication()->input->set('format', 'raw');
         
         parent::display();
     }

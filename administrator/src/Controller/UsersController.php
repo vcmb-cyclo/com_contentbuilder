@@ -35,108 +35,108 @@ class UsersController extends BaseController
     }
     
     public function verified_view() {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
+        $cid = Factory::getApplication()->input->get('cid', [], 'array');
 
         $model = $this->getModel( 'User' );
         $model->setListVerifiedView();
 
-        CBRequest::setVar( 'view', 'users' );
-        CBRequest::setVar( 'layout', 'default'  );
-        CBRequest::setVar( 'hidemainmenu', 1 );
-        CBRequest::setVar( 'filter_order', 'ordering' );
-        CBRequest::setVar( 'filter_order_Dir', 'asc' );
-        CBRequest::setVar( 'limitstart', CBRequest::getInt('limitstart') );
+        Factory::getApplication()->input->set( 'view', 'users' );
+        Factory::getApplication()->input->set( 'layout', 'default'  );
+        Factory::getApplication()->input->set( 'hidemainmenu', 1 );
+        Factory::getApplication()->input->set( 'filter_order', 'ordering' );
+        Factory::getApplication()->input->set( 'filter_order_Dir', 'asc' );
+        Factory::getApplication()->input->set( 'limitstart', Factory::getApplication()->input->getInt('limitstart') );
 
         parent::display();
     }
     
     public function not_verified_view() {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
+        $cid = Factory::getApplication()->input->get('cid', [], 'array');
 
         $model = $this->getModel( 'User' );
         $model->setListNotVerifiedView();
 
-        CBRequest::setVar( 'view', 'users' );
-        CBRequest::setVar( 'layout', 'default'  );
-        CBRequest::setVar( 'hidemainmenu', 1 );
-        CBRequest::setVar( 'filter_order', 'ordering' );
-        CBRequest::setVar( 'filter_order_Dir', 'asc' );
-        CBRequest::setVar( 'limitstart', CBRequest::getInt('limitstart') );
+        Factory::getApplication()->input->set( 'view', 'users' );
+        Factory::getApplication()->input->set( 'layout', 'default'  );
+        Factory::getApplication()->input->set( 'hidemainmenu', 1 );
+        Factory::getApplication()->input->set( 'filter_order', 'ordering' );
+        Factory::getApplication()->input->set( 'filter_order_Dir', 'asc' );
+        Factory::getApplication()->input->set( 'limitstart', Factory::getApplication()->input->getInt('limitstart') );
 
         parent::display();
     }
     
     public function verified_new() {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
+        $cid = Factory::getApplication()->input->get('cid', [], 'array');
 
         $model = $this->getModel( 'User' );
         $model->setListVerifiedNew();
 
-        CBRequest::setVar( 'view', 'users' );
-        CBRequest::setVar( 'layout', 'default'  );
-        CBRequest::setVar( 'hidemainmenu', 1 );
-        CBRequest::setVar( 'filter_order', 'ordering' );
-        CBRequest::setVar( 'filter_order_Dir', 'asc' );
-        CBRequest::setVar( 'limitstart', CBRequest::getInt('limitstart') );
+        Factory::getApplication()->input->set( 'view', 'users' );
+        Factory::getApplication()->input->set( 'layout', 'default'  );
+        Factory::getApplication()->input->set( 'hidemainmenu', 1 );
+        Factory::getApplication()->input->set( 'filter_order', 'ordering' );
+        Factory::getApplication()->input->set( 'filter_order_Dir', 'asc' );
+        Factory::getApplication()->input->set( 'limitstart', Factory::getApplication()->input->getInt('limitstart') );
 
         parent::display();
     }
     
     public function not_verified_new() {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
+        $cid = Factory::getApplication()->input->get('cid', [], 'array');
 
         $model = $this->getModel( 'User' );
         $model->setListNotVerifiedNew();
 
-        CBRequest::setVar( 'view', 'users' );
-        CBRequest::setVar( 'layout', 'default'  );
-        CBRequest::setVar( 'hidemainmenu', 1 );
-        CBRequest::setVar( 'filter_order', 'ordering' );
-        CBRequest::setVar( 'filter_order_Dir', 'asc' );
-        CBRequest::setVar( 'limitstart', CBRequest::getInt('limitstart') );
+        Factory::getApplication()->input->set( 'view', 'users' );
+        Factory::getApplication()->input->set( 'layout', 'default'  );
+        Factory::getApplication()->input->set( 'hidemainmenu', 1 );
+        Factory::getApplication()->input->set( 'filter_order', 'ordering' );
+        Factory::getApplication()->input->set( 'filter_order_Dir', 'asc' );
+        Factory::getApplication()->input->set( 'limitstart', Factory::getApplication()->input->getInt('limitstart') );
 
         parent::display();
     }
     
     public function verified_edit() {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
+        $cid = Factory::getApplication()->input->get('cid', [], 'array');
 
         $model = $this->getModel( 'User' );
         $model->setListVerifiedEdit();
 
-        CBRequest::setVar( 'view', 'users' );
-        CBRequest::setVar( 'layout', 'default'  );
-        CBRequest::setVar( 'hidemainmenu', 1 );
-        CBRequest::setVar( 'filter_order', 'ordering' );
-        CBRequest::setVar( 'filter_order_Dir', 'asc' );
-        CBRequest::setVar( 'limitstart', CBRequest::getInt('limitstart') );
+        Factory::getApplication()->input->set( 'view', 'users' );
+        Factory::getApplication()->input->set( 'layout', 'default'  );
+        Factory::getApplication()->input->set( 'hidemainmenu', 1 );
+        Factory::getApplication()->input->set( 'filter_order', 'ordering' );
+        Factory::getApplication()->input->set( 'filter_order_Dir', 'asc' );
+        Factory::getApplication()->input->set( 'limitstart', Factory::getApplication()->input->getInt('limitstart') );
 
         parent::display();
     }
     
     public function not_verified_edit() {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
+        $cid = Factory::getApplication()->input->get('cid', [], 'array');
 
         $model = $this->getModel( 'User' );
         $model->setListNotVerifiedEdit();
 
-        CBRequest::setVar( 'view', 'users' );
-        CBRequest::setVar( 'layout', 'default'  );
-        CBRequest::setVar( 'hidemainmenu', 1 );
-        CBRequest::setVar( 'filter_order', 'ordering' );
-        CBRequest::setVar( 'filter_order_Dir', 'asc' );
-        CBRequest::setVar( 'limitstart', CBRequest::getInt('limitstart') );
+        Factory::getApplication()->input->set( 'view', 'users' );
+        Factory::getApplication()->input->set( 'layout', 'default'  );
+        Factory::getApplication()->input->set( 'hidemainmenu', 1 );
+        Factory::getApplication()->input->set( 'filter_order', 'ordering' );
+        Factory::getApplication()->input->set( 'filter_order_Dir', 'asc' );
+        Factory::getApplication()->input->set( 'limitstart', Factory::getApplication()->input->getInt('limitstart') );
 
         parent::display();
     }
     
     public function edit()
     {
-        CBRequest::setVar( 'view', 'User' );
-        CBRequest::setVar( 'layout', 'default'  );
-        CBRequest::setVar( 'hidemainmenu', 1 );
-        CBRequest::setVar( 'filter_order', 'ordering' );
-        CBRequest::setVar( 'filter_order_Dir', 'asc' );
+        Factory::getApplication()->input->set( 'view', 'User' );
+        Factory::getApplication()->input->set( 'layout', 'default'  );
+        Factory::getApplication()->input->set( 'hidemainmenu', 1 );
+        Factory::getApplication()->input->set( 'filter_order', 'ordering' );
+        Factory::getApplication()->input->set( 'filter_order_Dir', 'asc' );
         parent::display();
     }
 
@@ -146,7 +146,7 @@ class UsersController extends BaseController
     }
 
     public function publish() {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
+        $cid = Factory::getApplication()->input->get('cid', [], 'array');
 
         if(count($cid) == 1)
         {
@@ -159,11 +159,11 @@ class UsersController extends BaseController
             $model->setPublished();
         }
 
-        $this->setRedirect( Route::_('index.php?option=com_contentbuilder&view=users&form_id='.CBRequest::getInt('form_id',0).'&tmpl='.CBRequest::getCmd('tmpl','').'&limitstart='.CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_PUBLISHED') );
+        $this->setRedirect( Route::_('index.php?option=com_contentbuilder&view=users&form_id='.Factory::getApplication()->input->getInt('form_id',0).'&tmpl='.Factory::getApplication()->input->getCmd('tmpl','').'&limitstart='.Factory::getApplication()->input->getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_PUBLISHED') );
     }
     
     public function unpublish() {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
+        $cid = Factory::getApplication()->input->get('cid', [], 'array');
 
         if(count($cid) == 1)
         {
@@ -176,7 +176,7 @@ class UsersController extends BaseController
             $model->setUnpublished();
         }
 
-        $this->setRedirect( Route::_('index.php?option=com_contentbuilder&view=users&form_id='.CBRequest::getInt('form_id',0).'&tmpl='.CBRequest::getCmd('tmpl','').'&limitstart='.CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_UNPUBLISHED') );
+        $this->setRedirect( Route::_('index.php?option=com_contentbuilder&view=users&form_id='.Factory::getApplication()->input->getInt('form_id',0).'&tmpl='.Factory::getApplication()->input->getCmd('tmpl','').'&limitstart='.Factory::getApplication()->input->getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_UNPUBLISHED') );
     }
     
     public function save($keep_task = false)
@@ -195,26 +195,26 @@ class UsersController extends BaseController
         if($keep_task){
             if($id){
                 $additionalParams = '&task=User.edit&joomla_userid='.$id;
-                $limit = CBRequest::getInt('limitstart');
+                $limit = Factory::getApplication()->input->getInt('limitstart');
             }
         }
 
         // Check the table in so it can be edited.... we are done with it anyway
-        $link = 'index.php?option=com_contentbuilder&view=users&form_id='.CBRequest::getInt('form_id',0).'&tmpl='.CBRequest::getCmd('tmpl','').'&limitstart='.$limit.$additionalParams;
+        $link = 'index.php?option=com_contentbuilder&view=users&form_id='.Factory::getApplication()->input->getInt('form_id',0).'&tmpl='.Factory::getApplication()->input->getCmd('tmpl','').'&limitstart='.$limit.$additionalParams;
         $this->setRedirect(Route::_($link, false), $msg);
     }
 
     public function cancel()
     {
         $msg = Text::_( 'COM_CONTENTBUILDER_CANCELLED' );
-        $this->setRedirect( Route::_('index.php?option=com_contentbuilder&view=users&form_id='.CBRequest::getInt('form_id',0).'&tmpl='.CBRequest::getCmd('tmpl','').'&limitstart=0', false), $msg );
+        $this->setRedirect( Route::_('index.php?option=com_contentbuilder&view=users&form_id='.Factory::getApplication()->input->getInt('form_id',0).'&tmpl='.Factory::getApplication()->input->getCmd('tmpl','').'&limitstart=0', false), $msg );
     }
 
     public function display($cachable = false, $urlparams = array())
     {
-        CBRequest::setVar('tmpl', CBRequest::getWord('tmpl',null));
-        CBRequest::setVar('layout', CBRequest::getWord('layout',null));
-        CBRequest::setVar('view', 'users');
+        Factory::getApplication()->input->set('tmpl', Factory::getApplication()->input->getWord('tmpl',null));
+        Factory::getApplication()->input->set('layout', Factory::getApplication()->input->getWord('layout',null));
+        Factory::getApplication()->input->set('view', 'users');
 
         parent::display();
     }

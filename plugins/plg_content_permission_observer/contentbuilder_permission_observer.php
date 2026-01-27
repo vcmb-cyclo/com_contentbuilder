@@ -57,12 +57,12 @@ class plgContentContentbuilder_permission_observer extends CMSPlugin implements 
                 return true;
             }
 
-            if ($form && !(CBRequest::getVar('option', '') == 'com_contentbuilder' && CBRequest::getVar('controller', '') == 'edit')) {
+            if ($form && !(Factory::getApplication()->input->get('option', '', 'string') == 'com_contentbuilder' && Factory::getApplication()->input->get('controller', '', 'string') == 'edit')) {
 
                 Factory::getApplication()->getLanguage()->load('com_contentbuilder');
                 ContentbuilderLegacyHelper::setPermissions($data['form_id'], $data['record_id'], $frontend ? '_fe' : '');
 
-                if (CBRequest::getCmd('view') == 'article') {
+                if (Factory::getApplication()->input->getCmd('view') == 'article') {
                     ContentbuilderLegacyHelper::checkPermissions('view', Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED'), $frontend ? '_fe' : '');
                 } else {
                     if ($frontend) {

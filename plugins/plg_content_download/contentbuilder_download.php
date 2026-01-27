@@ -248,7 +248,7 @@ class plgContentContentbuilder_download extends CMSPlugin implements SubscriberI
 
                     if ($frontend) {
                         if (!ContentbuilderLegacyHelper::authorizeFe('view')) {
-                            if (CBRequest::getVar('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW)) {
+                            if (Factory::getApplication()->input->get('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW, 'string')) {
                                 ob_end_clean();
                                 die('No Access');
                             } else {
@@ -257,7 +257,7 @@ class plgContentContentbuilder_download extends CMSPlugin implements SubscriberI
                         }
                     } else {
                         if (!ContentbuilderLegacyHelper::authorize('view')) {
-                            if (CBRequest::getVar('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW)) {
+                            if (Factory::getApplication()->input->get('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW, 'string')) {
                                 ob_end_clean();
                                 die('No Access');
                             } else {
@@ -376,7 +376,7 @@ class plgContentContentbuilder_download extends CMSPlugin implements SubscriberI
                                                 }
                                             }
 
-                                            if (CBRequest::getVar('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW) == sha1($field . $the_value)) {
+                                            if (Factory::getApplication()->input->get('contentbuilder_download_file', '', 'GET', 'STRING', CBREQUEST_ALLOWRAW, 'string') == sha1($field . $the_value)) {
 
                                                 $download_name = basename(OutputFilter::stringURLSafe($default_title) . '_' . $the_value);
                                                 $file_id = md5($type . $item->recElementId . $the_value);
@@ -434,8 +434,8 @@ class plgContentContentbuilder_download extends CMSPlugin implements SubscriberI
 
                                             $url = Uri::getInstance()->toString();
                                             //fixing downloads on other pages than page 1
-                                            if (CBRequest::getVar('controller', '') == 'list') {
-                                                $url = Uri::getInstance()->base() . 'index.php?option=com_contentbuilder&amp;task=list.display&amp;id=' . intval($form_id) . '&amp;limitstart=' . CBRequest::getInt('limitstart', 0);
+                                            if (Factory::getApplication()->input->get('controller', '', 'string') == 'list') {
+                                                $url = Uri::getInstance()->base() . 'index.php?option=com_contentbuilder&amp;task=list.display&amp;id=' . intval($form_id) . '&amp;limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0);
                                             }
 
                                             $open_ = Route::_($url . (strstr($url, '?') !== false ? '&' : '?') . 'contentbuilder_download_file=' . sha1($field . $the_value));

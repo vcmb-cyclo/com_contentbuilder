@@ -57,7 +57,7 @@ final class StoragesController extends AdminController
      *
      * @return  \Joomla\CMS\MVC\Model\BaseDatabaseModel|false  Model object on success; otherwise false on failure.
      */
-    public function getModel($name = 'Storage', $prefix = 'Contentbuilder', $config = ['ignore_request' => true])
+    public function getModel($name = 'Storage', $prefix = 'Administrator', $config = ['ignore_request' => true])
     {
         return parent::getModel($name, $prefix, $config);
     }
@@ -78,49 +78,6 @@ final class StoragesController extends AdminController
         parent::display($cachable, $urlparams);
     }
 
-    // Publish methode : manage both publish and unpublish
-    public function publish()
-    {
-        // Vérif CSRF.
-        $this->checkToken();
-
-        $cid = (array) $this->input->get('cid', [], 'array');
-        $cid = array_values(array_filter(array_map('intval', $cid)));
-        $task = $this->input->getCmd('task'); // storages.publish / storages.unpublish
-
-        Logger::debug('Click [Un]Publish action', [
-            'task' => $task,
-            'cid'  => $cid,
-        ]);
-
-        $model = $this->getModel('Storage', 'Contentbuilder', ['ignore_request' => true]);
-        if (!$model) {
-            throw new \RuntimeException('StorageModel introuvable');
-        }
-
-        $value = str_contains($task, 'unpublish') ? 0 : 1;
-
-        try {
-            $result = $model->publish($cid, $value);
-            // Message OK
-            /* $count = count((array) $cid);
-            $this->setMessage(Text::sprintf(
-                $value ? 'COM_CONTENTBUILDER_N_ITEMS_PUBLISHED' : 'COM_CONTENTBUILDER_N_ITEMS_UNPUBLISHED',
-                $count
-            ));*/
-
-            $this->setMessage(
-                $value ? Text::_('COM_CONTENTBUILDER_PUBLISHED')
-                       : Text::_('COM_CONTENTBUILDER_UNPUBLISHED'),
-                'message'
-            );
-        } catch (\Throwable $e) {
-            $this->setMessage($e->getMessage(), 'warning');
-        }
-
-        $this->setRedirect('index.php?option=com_contentbuilder&task=storages.display');
-    }
-
     public function delete(): void
     {
         // Vérif CSRF.
@@ -134,7 +91,7 @@ final class StoragesController extends AdminController
             'cid'  => $cid,
         ]);
 
-        $model = $this->getModel('Storage', 'Contentbuilder', ['ignore_request' => true]);
+        $model = $this->getModel('Storage', 'Administrator', ['ignore_request' => true]);
         if (!$model) {
             throw new \RuntimeException('StorageModel introuvable');
         }
@@ -171,7 +128,7 @@ final class StoragesController extends AdminController
             'cid'  => $cid,
         ]);
 
-        $model = $this->getModel('Storage', 'Contentbuilder', ['ignore_request' => true]);
+        $model = $this->getModel('Storage', 'Administrator', ['ignore_request' => true]);
         if (!$model) {
             throw new \RuntimeException('StorageModel introuvable');
         }
@@ -194,153 +151,3 @@ final class StoragesController extends AdminController
         );
     }
 }
-
-    /*
-    public function listdelete()
-    {
-        $model = $this->getModel('Storage', 'Contentbuilder');
-        $model->listDelete();
-        Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_DELETED'));
-        CBRequest::setVar('view', 'Storage');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-        parent::display();
-    }
-
-    public function listorderup()
-    {
-        $model = $this->getModel('Storage', 'Contentbuilder');
-        $model->listMove(-1);
-        CBRequest::setVar('view', 'Storage');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-        parent::display();
-    }
-
-    public function listorderdown()
-    {
-        $model = $this->getModel('Storage', 'Contentbuilder');
-        $model->listMove(1);
-        CBRequest::setVar('view', 'Storage');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-        parent::display();
-    }
-
-     public function listsaveorder()
-    {
-        $model = $this->getModel('Storage', 'Contentbuilder');
-        $model->listSaveOrder();
-        CBRequest::setVar('view', 'Storage');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    public function publish()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        if (count($cid) == 1) {
-            $model = $this->getModel('Storage', 'Contentbuilder');
-            $model->setPublished();
-        } else if (count($cid) > 1) {
-            $model = $this->getModel('Storage', 'Contentbuilder');
-            $model->setPublished();
-        }
-
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=storages.display&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_PUBLISHED'));
-    }
-
-    public function listpublish()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('Storage', 'Contentbuilder');
-        $model->setListPublished();
-
-        CBRequest::setVar('view', 'Storage');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-    public function unpublish()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        if (count($cid) == 1) {
-            $model = $this->getModel('Storage', 'Contentbuilder');
-            $model->setUnpublished();
-        } else if (count($cid) > 1) {
-            $model = $this->getModel('Storage', 'Contentbuilder');
-            $model->setUnpublished();
-        }
-
-        $this->setRedirect(Route::_('index.php?option=com_contentbuilder&task=storages.display&limitstart=' . CBRequest::getInt('limitstart'), false), Text::_('COM_CONTENTBUILDER_UNPUBLISHED'));
-    }
-
-    public function listunpublish()
-    {
-        $cid = CBRequest::getVar('cid', array(), '', 'array');
-
-        $model = $this->getModel('Storage', 'Contentbuilder');
-        $model->setListUnpublished();
-
-        CBRequest::setVar('view', 'Storage');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart'));
-
-        parent::display();
-    }
-
-
-    public function listremove()
-    {
-        $model = $this->getModel('Storage', 'Contentbuilder');
-        if (!$model->listDelete()) {
-            $msg = Text::_('COM_CONTENTBUILDER_ERROR');
-        } else {
-            $msg = Text::_('COM_CONTENTBUILDER_DELETED');
-        }
-
-        CBRequest::setVar('view', 'Storage');
-        CBRequest::setVar('layout', 'form');
-        CBRequest::setVar('hidemainmenu', 0);
-        CBRequest::setVar('filter_order', 'ordering');
-        CBRequest::setVar('filter_order_Dir', 'asc');
-        CBRequest::setVar('limitstart', CBRequest::getInt('limitstart', 0));
-
-        parent::display();
-    }
-
-    public function display($cachable = false, $urlparams = array())
-    {
-        CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));
-        CBRequest::setVar('layout', CBRequest::getWord('layout', null));
-        CBRequest::setVar('view', 'storages');
-
-        parent::display();
-    }
-}
-*/

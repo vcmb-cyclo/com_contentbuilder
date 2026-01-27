@@ -42,7 +42,7 @@ class DetailsController extends BaseController
 
         $this->frontend = Factory::getApplication()->isClient('site');
 
-        if ($this->frontend && CBRequest::getInt('Itemid', 0)) {
+        if ($this->frontend && Factory::getApplication()->input->getInt('Itemid', 0)) {
 
             $option = 'com_contentbuilder';
 
@@ -51,16 +51,16 @@ class DetailsController extends BaseController
             $item = $menu->getActive();
             if (is_object($item)) {
                 if ($item->getParams()->get('record_id', null) !== null) {
-                    CBRequest::setVar('record_id', $item->getParams()->get('record_id', null));
+                    Factory::getApplication()->input->set('record_id', $item->getParams()->get('record_id', null));
                     $this->_show_back_button = $item->getParams()->get('show_back_button', null);
                 }
             }
         }
 
-        if (CBRequest::getWord('view', '') == 'latest') {
+        if (Factory::getApplication()->input->getWord('view', '') == 'latest') {
             $db = Factory::getContainer()->get(DatabaseInterface::class);
 
-            $db->setQuery('Select `type`, `reference_id` From #__contentbuilder_forms Where id = ' . intval(CBRequest::getInt('id', 0)) . ' And published = 1');
+            $db->setQuery('Select `type`, `reference_id` From #__contentbuilder_forms Where id = ' . intval(Factory::getApplication()->input->getInt('id', 0)) . ' And published = 1');
             $form = $db->loadAssoc();
             $form = ContentbuilderLegacyHelper::getForm($form['type'], $form['reference_id']);
 
@@ -71,7 +71,7 @@ class DetailsController extends BaseController
             }
 
             if (count($ids)) {
-                $db->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval(CBRequest::getInt('id', 0)) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
+                $db->setQuery("Select Distinct `label`, reference_id From #__contentbuilder_elements Where form_id = " . intval(Factory::getApplication()->input->getInt('id', 0)) . " And reference_id In (" . implode(',', $ids) . ") And published = 1 Order By ordering");
                 $rows = $db->loadAssocList();
                 $ids = array();
                 foreach ($rows as $row) {
@@ -86,16 +86,16 @@ class DetailsController extends BaseController
                 $rec2 = $form->getRecord($rec->colRecord, false, -1, true);
 
                 $record_id = $rec->colRecord;
-                CBRequest::setVar('record_id', $record_id);
+                Factory::getApplication()->input->set('record_id', $record_id);
             }
 
-            if (!CBRequest::getCmd('record_id', '')) {
-                CBRequest::setVar('cbIsNew', 1);
-                ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, $this->frontend ? '_fe' : '');
+            if (!Factory::getApplication()->input->getCmd('record_id', '')) {
+                Factory::getApplication()->input->set('cbIsNew', 1);
+                ContentbuilderLegacyHelper::setPermissions(Factory::getApplication()->input->getInt('id', 0), 0, $this->frontend ? '_fe' : '');
                 $auth = $this->frontend ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
 
                 if ($auth) {
-                    Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&task=edit.display&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
+                    Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&task=edit.display&latest=1&backtolist=' . Factory::getApplication()->input->getInt('backtolist', 0) . '&id=' . Factory::getApplication()->input->getInt('id', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&record_id=&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->get('filter_order', '', 'string'), false));
                 } else {
                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_ADD_ENTRY_FIRST'));
                     Factory::getApplication()->redirect(Route::_('index.php'));
@@ -103,7 +103,7 @@ class DetailsController extends BaseController
             }
         }
 
-        ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', 0), $this->frontend ? '_fe' : '');
+        ContentbuilderLegacyHelper::setPermissions(Factory::getApplication()->input->getInt('id', 0), Factory::getApplication()->input->getCmd('record_id', 0), $this->frontend ? '_fe' : '');
     }
 
     function display($cachable = false, $urlparams = array())
@@ -127,7 +127,7 @@ class DetailsController extends BaseController
 
         // Synchroniser Input + CBRequest (legacy)
         $this->input->set('id', $form_id);
-        CBRequest::setVar('id', $form_id);
+        Factory::getApplication()->input->set('id', $form_id);
 
         $recordId = (int) $this->input->getInt('record_id', 0);
         if (!$recordId) {
@@ -138,16 +138,16 @@ class DetailsController extends BaseController
         }
         if ($recordId) {
             $this->input->set('record_id', $recordId);
-            CBRequest::setVar('record_id', $recordId);
+            Factory::getApplication()->input->set('record_id', $recordId);
         }
 
         ContentbuilderLegacyHelper::setPermissions($form_id, $recordId, $suffix);
         ContentbuilderLegacyHelper::checkPermissions('view', Text::_('COM_CONTENTBUILDER_PERMISSIONS_VIEW_NOT_ALLOWED'), $this->frontend ? '_fe' : '');
 
-        CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));
-        CBRequest::setVar('layout', CBRequest::getWord('layout', null) == 'latest' ? null : CBRequest::getWord('layout', null));
-        if (CBRequest::getWord('view', '') == 'latest') {
-            CBRequest::setVar('cb_latest', 1);
+        Factory::getApplication()->input->set('tmpl', Factory::getApplication()->input->getWord('tmpl', null));
+        Factory::getApplication()->input->set('layout', Factory::getApplication()->input->getWord('layout', null) == 'latest' ? null : Factory::getApplication()->input->getWord('layout', null));
+        if (Factory::getApplication()->input->getWord('view', '') == 'latest') {
+            Factory::getApplication()->input->set('cb_latest', 1);
         }
 
         parent::display();

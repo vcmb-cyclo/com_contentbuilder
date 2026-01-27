@@ -48,7 +48,7 @@ $sortLink = function (string $label, string $field) use ($listOrder, $listDirn, 
     function listItemTask(id, task) {
 
         var f = document.adminForm;
-        f.limitstart.value = <?php echo CBRequest::getInt('limitstart', 0) ?>;
+        f.limitstart.value = <?php echo Factory::getApplication()->input->getInt('limitstart', 0) ?>;
         cb = eval('f.' + id);
 
         if (cb) {

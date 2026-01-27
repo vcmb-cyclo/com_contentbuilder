@@ -106,7 +106,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 	if ($new_allowed) {
 		?>
 		<button class="btn btn-sm btn-primary"
-			onclick="location.href='<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display&backtolist=1&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&record_id=0&filter_order=' . CBRequest::getCmd('filter_order')); ?>'"><?php echo Text::_('COM_CONTENTBUILDER_NEW'); ?></button>
+			onclick="location.href='<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display&backtolist=1&id=' . Factory::getApplication()->input->getInt('id', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&record_id=0&filter_order=' . Factory::getApplication()->input->getCmd('filter_order')); ?>'"><?php echo Text::_('COM_CONTENTBUILDER_NEW'); ?></button>
 		<?php
 	}
 	-- END of BEGIN - NEW BUTTON */
@@ -133,7 +133,7 @@ $___tableOrdering = "Joomla.tableOrdering = function";
 # Bug CB Joomla 4 (march 2023) - fix error search, delete, pagination, 404 error 
 Replace line 144 of media/com_contentbuilder/images/list/tmpl/default.php
 # by this block -->
-<form action="<?php echo Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . (int) CBRequest::getInt('id') . '&Itemid=' . (int) CBRequest::getInt('Itemid', 0)); ?>"
+<form action="<?php echo Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . (int) Factory::getApplication()->input->getInt('id') . '&Itemid=' . (int) Factory::getApplication()->input->getInt('Itemid', 0)); ?>"
 	method="<?php echo $___getpost; ?>" name="adminForm" id="adminForm">
 
 	<!-- 2023-12-19 END -->
@@ -319,7 +319,7 @@ Replace line 144 of media/com_contentbuilder/images/list/tmpl/default.php
 
 								<?php if ($this->export_xls) : ?>
 									<a class="btn btn-sm btn-outline-success align-self-center"
-										href="<?php echo Route::_('index.php?option=com_contentbuilder&view=export&id=' . (int) CBRequest::getInt('id', 0) . '&type=xls&format=raw&tmpl=component'); ?>"
+										href="<?php echo Route::_('index.php?option=com_contentbuilder&view=export&id=' . (int) Factory::getApplication()->input->getInt('id', 0) . '&type=xls&format=raw&tmpl=component'); ?>"
 										title="Export Excel">
 										<i class="fa fa-solid fa-file-excel"></i>
 									</a>
@@ -434,10 +434,10 @@ Replace line 144 of media/com_contentbuilder/images/list/tmpl/default.php
 			$n = count($this->items);
 			for ($i = 0; $i < $n; $i++) {
 				$row = $this->items[$i];
-				$link = Route::_('index.php?option=com_contentbuilder&task=details.display&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
-				$edit_link = Route::_('index.php?option=com_contentbuilder&task=edit.display&backtolist=1&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
-				$publish_link = Route::_('index.php?option=com_contentbuilder&task=edit.display&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=1&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
-				$unpublish_link = Route::_('index.php?option=com_contentbuilder&task=edit.display&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=0&cid[]=' . $row->colRecord . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : ''));
+				$link = Route::_('index.php?option=com_contentbuilder&task=details.display&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : ''));
+				$edit_link = Route::_('index.php?option=com_contentbuilder&task=edit.display&backtolist=1&id=' . $this->form_id . '&record_id=' . $row->colRecord . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : ''));
+				$publish_link = Route::_('index.php?option=com_contentbuilder&task=edit.display&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=1&cid[]=' . $row->colRecord . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : ''));
+				$unpublish_link = Route::_('index.php?option=com_contentbuilder&task=edit.display&task=edit.publish&backtolist=1&id=' . $this->form_id . '&list_publish=0&cid[]=' . $row->colRecord . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : ''));
 				$select = '<input class="form-check-input" type="checkbox" name="cid[]" value="' . $row->colRecord . '"/>';
 			?>
 				<tr class="<?php echo "row$k"; ?>">
@@ -559,7 +559,7 @@ Replace line 144 of media/com_contentbuilder/images/list/tmpl/default.php
 					?>
 						<td class="hidden-phone">
 							<?php
-							echo ContentbuilderLegacyHelper::getRating(CBRequest::getInt('id', 0), $row->colRecord, $row->colRating, $this->rating_slots, CBRequest::getCmd('lang', ''), $rating_allowed, $row->colRatingCount, $row->colRatingSum);
+							echo ContentbuilderLegacyHelper::getRating(Factory::getApplication()->input->getInt('id', 0), $row->colRecord, $row->colRating, $this->rating_slots, Factory::getApplication()->input->getCmd('lang', ''), $rating_allowed, $row->colRatingCount, $row->colRatingSum);
 							?>
 						</td>
 					<?php
@@ -613,19 +613,19 @@ Replace line 144 of media/com_contentbuilder/images/list/tmpl/default.php
 		</table>
 	</div>
 	<?php
-	if (CBRequest::getVar('tmpl', '') != '') {
+	if (Factory::getApplication()->input->get('tmpl', '', 'string') != '') {
 	?>
-		<input type="hidden" name="tmpl" value="<?php echo CBRequest::getVar('tmpl', ''); ?>" />
+		<input type="hidden" name="tmpl" value="<?php echo Factory::getApplication()->input->get('tmpl', '', 'string'); ?>" />
 	<?php
 	}
 	?>
 	<input type="hidden" name="option" value="com_contentbuilder" />
 	<input type="hidden" name="task" id="task" value="" />
 	<input type="hidden" name="view" id="view" value="list" />
-	<input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid', 0); ?>" />
+	<input type="hidden" name="Itemid" value="<?php echo Factory::getApplication()->input->getInt('Itemid', 0); ?>" />
 	<input type="hidden" name="limitstart" value="<?php echo (int) $this->pagination->limitstart; ?>" />
 	<input type="hidden" name="list[start]" value="<?php echo (int) $this->pagination->limitstart; ?>" />
-	<input type="hidden" name="id" value="<?php echo CBRequest::getInt('id', 0) ?>" />
+	<input type="hidden" name="id" value="<?php echo Factory::getApplication()->input->getInt('id', 0) ?>" />
 	<input type="hidden" name="filter_order" value="<?php echo $this->lists['order']; ?>" />
 	<input type="hidden" name="filter_order_Dir" value="<?php echo $this->lists['order_Dir']; ?>" />
 	<?php echo HTMLHelper::_('form.token'); ?>

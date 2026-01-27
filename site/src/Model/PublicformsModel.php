@@ -69,7 +69,7 @@ class PublicformsModel extends ListModel
 
         // Get pagination request variables
         $limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->get('list_limit'), 'int');
-        $limitstart = CBRequest::getVar('limitstart', 0, '', 'int');
+        $limitstart = Factory::getApplication()->input->getInt('limitstart', 0);
 
         // In case limit has been changed, adjust it
         $limitstart = ($limit != 0 ? (floor($limitstart / $limit) * $limit) : 0);
@@ -91,7 +91,7 @@ class PublicformsModel extends ListModel
 
         $this->frontend = Factory::getApplication()->isClient('site');
 
-        if ($this->frontend && CBRequest::getInt('Itemid', 0)) {
+        if ($this->frontend && Factory::getApplication()->input->getInt('Itemid', 0)) {
             $this->_menu_item = true;
 
             // try menu item

@@ -17,7 +17,6 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
-use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Helper\ContentbuilderLegacyHelper;
 
 $th = 'th';
@@ -259,7 +258,7 @@ if ($this->page_heading) {
 
     <input type="hidden" name="option" value="com_contentbuilder" />
     <input type="hidden" name="task" value="" />
-    <input type="hidden" name="Itemid" value="<?php echo CBRequest::getInt('Itemid', 0); ?>" />
+    <input type="hidden" name="Itemid" value="<?php echo Factory::getApplication()->input->getInt('Itemid', 0); ?>" />
     <input type="hidden" name="limitstart" value="" />
     <input type="hidden" name="boxchecked" value="0" />
     <input type="hidden" name="view" id="view" value="publicforms" />

@@ -41,15 +41,15 @@ class ListController extends BaseController
 
         // Synchroniser Joomla Input + CBRequest (legacy)
         $this->input->set('id', $formId);
-        CBRequest::setVar('id', $formId);
+        Factory::getApplication()->input->set('id', $formId);
 
         if ($recordId) {
             $this->input->set('record_id', $recordId);
-            CBRequest::setVar('record_id', $recordId);
+            Factory::getApplication()->input->set('record_id', $recordId);
         }
 
         // Contexte CB correct pour cette page
-        CBRequest::setVar('view', 'list');
+        Factory::getApplication()->input->set('view', 'list');
 
         // Permissions
         ContentbuilderLegacyHelper::setPermissions($formId, $recordId, $suffix);

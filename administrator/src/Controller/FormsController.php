@@ -89,49 +89,6 @@ final class FormsController extends AdminController
         return [];
     }
 
-    // Publish methode : manage both publish and unpublish
-    public function publish()
-    {
-        // Vérif CSRF.
-        $this->checkToken();
-
-        $cid = (array) $this->input->get('cid', [], 'array');
-        $cid = array_values(array_filter(array_map('intval', $cid)));
-        $task = $this->input->getCmd('task'); // forms.publish / forms.unpublish
-
-        Logger::debug('Click [Un]Publish action', [
-            'task' => $task,
-            'cid'  => $cid,
-        ]);
-
-        $model = $this->getModel('Form', 'Administrator', ['ignore_request' => true]);
-        if (!$model) {
-            throw new \RuntimeException('FormModel introuvable');
-        }
-
-        $value = str_contains($task, 'unpublish') ? 0 : 1;
-
-        try {
-            $result = $model->publish($cid, $value);
-            // Message OK
-            /* $count = count((array) $cid);
-            $this->setMessage(Text::sprintf(
-                $value ? 'COM_CONTENTBUILDER_N_ITEMS_PUBLISHED' : 'COM_CONTENTBUILDER_N_ITEMS_UNPUBLISHED',
-                $count
-            ));*/
-
-            $this->setMessage(
-                $value ? Text::_('COM_CONTENTBUILDER_PUBLISHED')
-                       : Text::_('COM_CONTENTBUILDER_UNPUBLISHED'),
-                'message'
-            );
-        } catch (\Throwable $e) {
-            $this->setMessage($e->getMessage(), 'warning');
-        }
-
-        $this->setRedirect('index.php?option=com_contentbuilder&task=forms.display');
-    }
-
     public function delete(): void
     {
         // Vérif CSRF.

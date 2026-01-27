@@ -38,17 +38,17 @@ class EditController extends BaseController
 
         $this->frontend = Factory::getApplication()->isClient('site');
        
-        CBRequest::setVar('cbIsNew', 0);
+        Factory::getApplication()->input->set('cbIsNew', 0);
 
-        if (CBRequest::getCmd('task', '') == 'delete' || CBRequest::getCmd('task', '') == 'publish') {
-            $items = CBRequest::getVar('cid', array(), 'request', 'array');
-            ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), $items, $this->frontend ? '_fe' : '');
+        if (Factory::getApplication()->input->getCmd('task', '') == 'delete' || Factory::getApplication()->input->getCmd('task', '') == 'publish') {
+            $items = Factory::getApplication()->input->get('cid', [], 'array');
+            ContentbuilderLegacyHelper::setPermissions(Factory::getApplication()->input->getInt('id', 0), $items, $this->frontend ? '_fe' : '');
         } else {
-            if (CBRequest::getCmd('record_id', '')) {
-                ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', ''), $this->frontend ? '_fe' : '');
+            if (Factory::getApplication()->input->getCmd('record_id', '')) {
+                ContentbuilderLegacyHelper::setPermissions(Factory::getApplication()->input->getInt('id', 0), Factory::getApplication()->input->getCmd('record_id', ''), $this->frontend ? '_fe' : '');
             } else {
-                CBRequest::setVar('cbIsNew', 1);
-                ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, $this->frontend ? '_fe' : '');
+                Factory::getApplication()->input->set('cbIsNew', 1);
+                ContentbuilderLegacyHelper::setPermissions(Factory::getApplication()->input->getInt('id', 0), 0, $this->frontend ? '_fe' : '');
             }
         }
     }
@@ -70,40 +70,40 @@ class EditController extends BaseController
     public function save($apply = false)
     {
 
-        if (Factory::getApplication()->isClient('site') && CBRequest::getInt('Itemid', 0)) {
+        if (Factory::getApplication()->isClient('site') && Factory::getApplication()->input->getInt('Itemid', 0)) {
             $menu = Factory::getApplication()->getMenu();
             $item = $menu->getActive();
             if (is_object($item)) {
-                CBRequest::setVar('cb_controller', $item->getParams()->get('cb_controller', null));
-                CBRequest::setVar('cb_category_id', $item->getParams()->get('cb_category_id', null));
+                Factory::getApplication()->input->set('cb_controller', $item->getParams()->get('cb_controller', null));
+                Factory::getApplication()->input->set('cb_category_id', $item->getParams()->get('cb_category_id', null));
             }
         }
 
-        CBRequest::setVar('cbIsNew', 0);
-        CBRequest::setVar('ContentbuilderHelper::cbinternalCheck', 1);
+        Factory::getApplication()->input->set('cbIsNew', 0);
+        Factory::getApplication()->input->set('ContentbuilderHelper::cbinternalCheck', 1);
 
-        if (CBRequest::getCmd('record_id', '')) {
-            ContentbuilderLegacyHelper::checkPermissions('Edit', Text::_('COM_CONTENTBUILDER_PERMISSIONS_EDIT_NOT_ALLOWED'), $this->frontend ? '_fe' : '');
+        if (Factory::getApplication()->input->getCmd('record_id', '')) {
+            ContentbuilderLegacyHelper::checkPermissions('edit', Text::_('COM_CONTENTBUILDER_PERMISSIONS_EDIT_NOT_ALLOWED'), $this->frontend ? '_fe' : '');
         } else {
-            CBRequest::setVar('cbIsNew', 1);
+            Factory::getApplication()->input->set('cbIsNew', 1);
             ContentbuilderLegacyHelper::checkPermissions('new', Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), $this->frontend ? '_fe' : '');
         }
 
-        $model = $this->getModel('Edit', 'Contentbuilder');
+        $model = $this->getModel('edit', 'Contentbuilder');
         $id = $model->store();
 
-        $submission_failed = CBRequest::getBool('cb_submission_failed', false);
-        $cb_submit_msg = CBRequest::setVar('cb_submit_msg', '');
+        $submission_failed = Factory::getApplication()->input->getBool('cb_submission_failed', false);
+        $cb_submit_msg = Factory::getApplication()->input->set('cb_submit_msg', '');
 
         $type = 'message';
         if ($id && !$submission_failed) {
 
             $msg = Text::_('COM_CONTENTBUILDER_SAVED');
-            $return = CBRequest::getVar('return', '');
+            $return = Factory::getApplication()->input->get('return', '', 'string');
             if ($return) {
                 $return = base64_decode($return);
 
-                if (!CBRequest::getBool('ContentbuilderHelper::cbinternalCheck', 1)) {
+                if (!Factory::getApplication()->input->getBool('ContentbuilderHelper::cbinternalCheck', 1)) {
                     Factory::getApplication()->enqueueMessage($msg, 'warning');
                     Factory::getApplication()->redirect($return);
                 }
@@ -118,12 +118,12 @@ class EditController extends BaseController
             $type = 'error';
         }
 
-        if (CBRequest::getVar('cb_controller') == 'Edit') {
-            $link = Route::_('index.php?option=com_contentbuilder&title=' . CBRequest::getVar('title', '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&task=edit.display&return=' . CBRequest::getVar('return', '') . '&Itemid=' . CBRequest::getInt('Itemid', 0), false);
+        if (Factory::getApplication()->input->getString('cb_controller', '') == 'edit') {
+            $link = Route::_('index.php?option=com_contentbuilder&title=' . Factory::getApplication()->input->get('title', '', 'string') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&task=edit.display&return=' . Factory::getApplication()->input->get('return', '', 'string') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false);
         } else if ($apply) {
-            $link = Route::_('index.php?option=com_contentbuilder&title=' . CBRequest::getVar('title', '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&task=edit.display&return=' . CBRequest::getVar('return', '') . '&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . CBRequest::getInt('id', 0) . '&record_id=' . $id . '&Itemid=' . CBRequest::getInt('Itemid', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'), false);
+            $link = Route::_('index.php?option=com_contentbuilder&title=' . Factory::getApplication()->input->get('title', '', 'string') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&task=edit.display&return=' . Factory::getApplication()->input->get('return', '', 'string') . '&backtolist=' . Factory::getApplication()->input->getInt('backtolist', 0) . '&id=' . Factory::getApplication()->input->getInt('id', 0) . '&record_id=' . $id . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order'), false);
         } else {
-            $link = Route::_('index.php?option=com_contentbuilder&title=' . CBRequest::getVar('title', '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&task=list.display&id=' . CBRequest::getInt('id', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order') . '&Itemid=' . CBRequest::getInt('Itemid', 0), false);
+            $link = Route::_('index.php?option=com_contentbuilder&title=' . Factory::getApplication()->input->get('title', '', 'string') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&task=list.display&id=' . Factory::getApplication()->input->getInt('id', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false);
         }
         $this->setRedirect($link, $msg, $type);
     }
@@ -140,7 +140,7 @@ class EditController extends BaseController
         $model = $this->getModel('Edit', 'Contentbuilder');
         $id = $model->delete();
         $msg = Text::_('COM_CONTENTBUILDER_ENTRIES_DELETED');
-        $link = Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order') . '&Itemid=' . CBRequest::getInt('Itemid', 0), false);
+        $link = Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . Factory::getApplication()->input->getInt('id', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false);
         $this->setRedirect($link, $msg, 'message');
     }
 
@@ -151,7 +151,7 @@ class EditController extends BaseController
         $model = $this->getModel('Edit', 'Contentbuilder');
         $model->change_list_states();
         $msg = Text::_('COM_CONTENTBUILDER_STATES_CHANGED');
-        $link = Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order') . '&Itemid=' . CBRequest::getInt('Itemid', 0), false);
+        $link = Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . Factory::getApplication()->input->getInt('id', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false);
         $this->setRedirect($link, $msg, 'message');
     }
 
@@ -168,15 +168,15 @@ class EditController extends BaseController
             throw new \RuntimeException('EditModel introuvable');
         }
         if (method_exists($model, 'setIds')) {
-            $model->setIds(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', 0));
+            $model->setIds(Factory::getApplication()->input->getInt('id', 0), Factory::getApplication()->input->getCmd('record_id', 0));
         }
         $model->change_list_publish();
-        if (CBRequest::getInt('list_publish', 0)) {
+        if (Factory::getApplication()->input->getInt('list_publish', 0)) {
             $msg = Text::_('COM_CONTENTBUILDER_PUBLISHED');
         } else {
             $msg = Text::_('COM_CONTENTBUILDER_PUNPUBLISHED');
         }
-        $link = Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . CBRequest::getInt('id', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&Itemid=' . CBRequest::getInt('Itemid', 0), false);
+        $link = Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . Factory::getApplication()->input->getInt('id', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false);
         $this->setRedirect($link, $msg, 'message');
     }
 
@@ -188,7 +188,7 @@ class EditController extends BaseController
         $model = $this->getModel('Edit', 'Contentbuilder');
         $model->change_list_language();
         $msg = Text::_('COM_CONTENTBUILDER_LANGUAGE_CHANGED');
-        $link = Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . CBRequest::getInt('id', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&Itemid=' . CBRequest::getInt('Itemid', 0), false);
+        $link = Route::_('index.php?option=com_contentbuilder&task=list.display&id=' . Factory::getApplication()->input->getInt('id', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false);
         $this->setRedirect($link, $msg, 'message');
     }
 
@@ -214,29 +214,29 @@ class EditController extends BaseController
 
         // Synchroniser Joomla Input + CBRequest (legacy)
         $this->input->set('id', $formId);
-        CBRequest::setVar('id', $formId);
+        Factory::getApplication()->input->set('id', $formId);
         $this->input->set('view', 'edit');
 
         if ($recordId) {
             $this->input->set('record_id', $recordId);
-            CBRequest::setVar('record_id', $recordId);
+            Factory::getApplication()->input->set('record_id', $recordId);
         }
 
         // Contexte CB correct pour cette page
-        CBRequest::setVar('view', 'list');
+        Factory::getApplication()->input->set('view', 'list');
 
         // Permissions
         ContentbuilderLegacyHelper::setPermissions($formId, $recordId, $suffix);
         
-        if (CBRequest::getCmd('record_id', '')) {
-            ContentbuilderLegacyHelper::checkPermissions('Edit', Text::_('COM_CONTENTBUILDER_PERMISSIONS_EDIT_NOT_ALLOWED'), $this->frontend ? '_fe' : '');
+        if (Factory::getApplication()->input->getCmd('record_id', '')) {
+            ContentbuilderLegacyHelper::checkPermissions('edit', Text::_('COM_CONTENTBUILDER_PERMISSIONS_EDIT_NOT_ALLOWED'), $this->frontend ? '_fe' : '');
         } else {
             ContentbuilderLegacyHelper::checkPermissions('new', Text::_('COM_CONTENTBUILDER_PERMISSIONS_NEW_NOT_ALLOWED'), $this->frontend ? '_fe' : '');
         }
 
-        CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));
-        CBRequest::setVar('layout', CBRequest::getWord('layout', null) == 'latest' ? null : CBRequest::getWord('layout', null));
-        CBRequest::setVar('view', 'Edit');
+        Factory::getApplication()->input->set('tmpl', Factory::getApplication()->input->getWord('tmpl', null));
+        Factory::getApplication()->input->set('layout', Factory::getApplication()->input->getWord('layout', null) == 'latest' ? null : Factory::getApplication()->input->getWord('layout', null));
+        Factory::getApplication()->input->set('view', 'Edit');
 
         parent::display();
     }

@@ -33,7 +33,7 @@ Factory::getApplication()->getDocument()->addScriptDeclaration($this->theme_js);
 </h1>
 <?php echo $this->event->afterDisplayTitle; ?>
 <?php
-if (CBRequest::getInt('cb_show_author', 1)) {
+if (Factory::getApplication()->input->getInt('cb_show_author', 1)) {
     ?>
 
     <?php if ($this->created): ?>
@@ -64,7 +64,7 @@ if (CBRequest::getInt('cb_show_author', 1)) {
 
 
 <?php
-if (CBRequest::getInt('cb_show_author', 1)) {
+if (Factory::getApplication()->input->getInt('cb_show_author', 1)) {
     ?>
 
     <?php if ($this->modified_by): ?>

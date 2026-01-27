@@ -33,8 +33,27 @@ $n = is_countable($this->items) ? count($this->items) : 0;
 // limitstart courant (évite CBRequest/eval)
 $app = Factory::getApplication();
 $limitstart = $app->input->getInt('limitstart', 0);
+$limitValue = (int) ($this->pagination->limit ?? 0);
 
-$sortLink = function (string $label, string $field) use ($order, $orderDir): string {
+$limitOptions = [];
+for ($i = 5; $i <= 30; $i += 5) {
+    $limitOptions[] = HTMLHelper::_('select.option', (string) $i);
+}
+$limitOptions[] = HTMLHelper::_('select.option', '50', Text::_('J50'));
+$limitOptions[] = HTMLHelper::_('select.option', '100', Text::_('J100'));
+$limitOptions[] = HTMLHelper::_('select.option', '0', Text::_('JALL'));
+
+$limitSelect = HTMLHelper::_(
+    'select.genericlist',
+    $limitOptions,
+    'list[limit]',
+    'class="form-select js-select-submit-on-change active" id="list_limit" onchange="document.adminForm.submit();"',
+    'value',
+    'text',
+    $limitValue
+);
+
+$sortLink = function (string $label, string $field) use ($order, $orderDir, $limitValue): string {
     $isActive = ($order === $field);
     $nextDir = ($isActive && $orderDir === 'asc') ? 'desc' : 'asc';
     $indicator = $isActive
@@ -44,7 +63,7 @@ $sortLink = function (string $label, string $field) use ($order, $orderDir): str
         : '';
     $url = Route::_(
         'index.php?option=com_contentbuilder&view=storages&limitstart=0&list[ordering]='
-        . $field . '&list[direction]=' . $nextDir
+        . $field . '&list[direction]=' . $nextDir . '&list[limit]=' . $limitValue
     );
 
     return '<a href="' . $url . '">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . $indicator . '</a>';
@@ -151,7 +170,7 @@ $sortLink = function (string $label, string $field) use ($order, $orderDir): str
                             <div class="d-flex flex-wrap align-items-center gap-2">
                                 <?php echo $this->pagination->getPagesCounter(); ?>
                                 <span><?php echo Text::_('COM_CONTENTBUILDER_DISPLAY_NUM'); ?></span>
-                                <span class="d-inline-block"><?php echo $this->pagination->getLimitBox(); ?></span>
+                                <span class="d-inline-block"><?php echo $limitSelect; ?></span>
                                 <span><?php echo Text::_('COM_CONTENTBUILDER_OF'); ?></span>
                                 <span><?php echo (int) ($this->pagination->total ?? 0); ?></span>
                             </div>

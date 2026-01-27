@@ -241,8 +241,8 @@ final class ContentbuilderLegacyHelper
         $rating_link = '';
         if ($rating_allowed) {
             if (Factory::getApplication()->isClient('site')) {
-                $rating_link = Uri::root(true) . (Factory::getApplication()->isClient('administrator') ? '/administrator' : (CBRequest::getCmd('lang', '') && 
-                Factory::getConfig()->get('sef') && Factory::getConfig()->get('sef_rewrite') ? '/' . CBRequest::getCmd('lang', '') : '')) . '/?option=com_contentbuilder&lang=' . $lang . '&view=ajax&format=raw&subject=rating&id=' . $form_id . '&record_id=' . $record_id;
+                $rating_link = Uri::root(true) . (Factory::getApplication()->isClient('administrator') ? '/administrator' : (Factory::getApplication()->input->getCmd('lang', '') && 
+                Factory::getConfig()->get('sef') && Factory::getConfig()->get('sef_rewrite') ? '/' . Factory::getApplication()->input->getCmd('lang', '') : '')) . '/?option=com_contentbuilder&lang=' . $lang . '&view=ajax&format=raw&subject=rating&id=' . $form_id . '&record_id=' . $record_id;
             } else {
                 $rating_link = 'index.php?option=com_contentbuilder&lang=' . $lang . '&view=ajax&format=raw&subject=rating&id=' . $form_id . '&record_id=' . $record_id;
             }
@@ -1958,7 +1958,7 @@ final class ContentbuilderLegacyHelper
 
         $ignore_lang_code = '*';
         if ($form['default_lang_code_ignore']) {
-            $db->setQuery("Select lang_code From #__languages Where published = 1 And sef = " . $db->Quote(CBRequest::getCmd('lang', '')));
+            $db->setQuery("Select lang_code From #__languages Where published = 1 And sef = " . $db->Quote(Factory::getApplication()->input->getCmd('lang', '')));
             $ignore_lang_code = $db->loadResult();
             if (!$ignore_lang_code) {
                 $ignore_lang_code = '*';
@@ -2877,8 +2877,21 @@ final class ContentbuilderLegacyHelper
 
         if (!$allowed) {
             if (!$auth) {
-                Factory::getApplication()->enqueueMessage('Not autorized', 'error');
-                throw new NotAllowed($error_msg, 403);
+                $actionLabel = $action ?: 'action';
+                $recordId = Factory::getApplication()->input->getInt('record_id', 0);
+                $formId = Factory::getApplication()->input->getInt('id', 0);
+                $details = [];
+                if ($formId) {
+                    $details[] = 'formulaire #' . $formId;
+                }
+                if ($recordId) {
+                    $details[] = 'enregistrement #' . $recordId;
+                }
+                $context = $details ? ' (' . implode(', ', $details) . ')' : '';
+                $fallbackMsg = 'Accès refusé : vous n’avez pas l’autorisation pour l’action "' . $actionLabel . '"' . $context . '.';
+                $msg = trim((string) $error_msg) !== '' ? $error_msg : $fallbackMsg;
+                Factory::getApplication()->enqueueMessage($msg, 'error');
+                throw new NotAllowed($msg, 403);
             } else {
                 return false;
             }

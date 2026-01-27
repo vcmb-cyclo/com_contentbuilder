@@ -96,11 +96,8 @@ class EditModel extends BaseDatabaseModel
         $path = str_replace('|', '/', $path);
 
         foreach ($names as $id => $name) {
-            $is_array = 'STRING';
-            if (is_array(CBRequest::getVar('cb_' . $id, ''))) {
-                $is_array = 'ARRAY';
-            }
-            $value = CBRequest::getVar('cb_' . $id, '', 'POST', $is_array, CBREQUEST_ALLOWRAW);
+            $value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'raw');
+            $is_array = is_array($value) ? 'ARRAY' : 'STRING';
             if ($is_array == 'ARRAY' && count($value)) {
                 $arrvals = array();
                 foreach ($value as $val) {
@@ -155,11 +152,11 @@ class EditModel extends BaseDatabaseModel
         $this->is16 = false;
         $this->is30 = true;
 
-        CBRequest::setVar('cb_category_id', null);
+        Factory::getApplication()->input->set('cb_category_id', null);
 
         $this->frontend = Factory::getApplication()->isClient('site');
 
-        if ($this->frontend && CBRequest::getInt('Itemid', 0)) {
+        if ($this->frontend && Factory::getApplication()->input->getInt('Itemid', 0)) {
             $this->_menu_item = true;
 
             // try menu item
@@ -167,9 +164,9 @@ class EditModel extends BaseDatabaseModel
             $item = $menu->getActive();
 
             if (is_object($item)) {
-                CBRequest::setVar('cb_category_id', $item->getParams()->get('cb_category_id', null));
+                Factory::getApplication()->input->set('cb_category_id', $item->getParams()->get('cb_category_id', null));
 
-                if (CBRequest::getVar('cb_controller') == 'edit') {
+                if (Factory::getApplication()->input->getString('cb_controller', '') == 'edit') {
                     $this->_show_back_button = $item->getParams()->get('show_back_button', null);
                 }
 
@@ -191,7 +188,7 @@ class EditModel extends BaseDatabaseModel
             }
         }
 
-        $menu_filter = CBRequest::getVar('cb_list_filterhidden', null);
+        $menu_filter = Factory::getApplication()->input->get('cb_list_filterhidden', null, 'string');
 
         if ($menu_filter !== null) {
             $lines = explode("\n", $menu_filter);
@@ -207,7 +204,7 @@ class EditModel extends BaseDatabaseModel
             }
         }
 
-        $menu_filter_order = CBRequest::getVar('cb_list_orderhidden', null);
+        $menu_filter_order = Factory::getApplication()->input->get('cb_list_orderhidden', null, 'string');
 
         if ($menu_filter_order !== null) {
             $lines = explode("\n", $menu_filter_order);
@@ -224,7 +221,7 @@ class EditModel extends BaseDatabaseModel
 
         @natsort($this->_menu_filter_order);
 
-        $this->setIds(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', 0));
+        $this->setIds(Factory::getApplication()->input->getInt('id', 0), Factory::getApplication()->input->getCmd('record_id', 0));
 
         if (!$this->frontend) {
             Factory::getApplication()->getLanguage()->load('com_content');
@@ -368,7 +365,7 @@ class EditModel extends BaseDatabaseModel
                         $data->article_options = $form;
                     }
 
-                    $data->back_button = CBRequest::getBool('latest', 0) && !CBRequest::getCmd('record_id', 0) ? false : $this->_show_back_button;
+                    $data->back_button = Factory::getApplication()->input->getBool('latest', 0) && !Factory::getApplication()->input->getCmd('record_id', 0) ? false : $this->_show_back_button;
                     $data->latest = $this->_latest;
                     $data->is15 = $this->is15;
                     $data->frontend = $this->frontend;
@@ -377,7 +374,7 @@ class EditModel extends BaseDatabaseModel
                         throw new \Exception(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 404);
                     }
                     $data->page_title = '';
-                    if (CBRequest::getInt('cb_prefix_in_title', 1)) {
+                    if (Factory::getApplication()->input->getInt('cb_prefix_in_title', 1)) {
                         if (!$this->_menu_item) {
                             $data->page_title = $data->use_view_name_as_title ? $data->name : $data->form->getPageTitle();
                         } else {
@@ -609,11 +606,11 @@ var contentbuilder = new function(){
     function store()
     {
 
-        CBRequest::checkToken('default') or jexit(Text::_('JInvalid_Token'));
+        \Joomla\CMS\Session\Session::checkToken('post') or jexit(Text::_('JInvalid_Token'));
 
         PluginHelper::importPlugin('contentbuilder_submit');
         Factory::getApplication()->getSession()->clear('cb_failed_values', 'com_contentbuilder.' . $this->_id);
-        CBRequest::setVar('cb_submission_failed', 0);
+        Factory::getApplication()->input->set('cb_submission_failed', 0);
 
         $query = $this->_buildQuery();
         $this->_data = $this->_getList($query, 0, 1);
@@ -714,9 +711,9 @@ var contentbuilder = new function(){
                         }
 
                         $securimage = new Securimage();
-                        $cap_value = CBRequest::getVar('cb_' . $the_captcha_field['reference_id'], null, 'POST');
+                        $cap_value = Factory::getApplication()->input->post->get('cb_' . $the_captcha_field['reference_id'], null, 'raw');
                         if ($securimage->check($cap_value) == false) {
-                            CBRequest::setVar('cb_submission_failed', 1);
+                            Factory::getApplication()->input->set('cb_submission_failed', 1);
                             Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_CAPTCHA_FAILED'), 'error');
                         }
                         $values[$the_captcha_field['reference_id']] = $cap_value;
@@ -727,36 +724,36 @@ var contentbuilder = new function(){
                     // make sure to wait for previous errors
                     if ($data->act_as_registration && $the_name_field !== null && $the_email_field !== null && $the_email_repeat_field !== null && $the_password_field !== null && $the_password_repeat_field !== null && $the_username_field !== null) {
 
-                        $pw1 = CBRequest::getVar('cb_' . $the_password_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-                        $pw2 = CBRequest::getVar('cb_' . $the_password_repeat_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-                        $email = CBRequest::getVar('cb_' . $the_email_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-                        $email2 = CBRequest::getVar('cb_' . $the_email_repeat_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-                        $name = CBRequest::getVar('cb_' . $the_name_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-                        $username = CBRequest::getVar('cb_' . $the_username_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
+                        $pw1 = Factory::getApplication()->input->post->get('cb_' . $the_password_field['reference_id'], '', 'raw');
+                        $pw2 = Factory::getApplication()->input->post->get('cb_' . $the_password_repeat_field['reference_id'], '', 'raw');
+                        $email = Factory::getApplication()->input->post->get('cb_' . $the_email_field['reference_id'], '', 'raw');
+                        $email2 = Factory::getApplication()->input->post->get('cb_' . $the_email_repeat_field['reference_id'], '', 'raw');
+                        $name = Factory::getApplication()->input->post->get('cb_' . $the_name_field['reference_id'], '', 'raw');
+                        $username = Factory::getApplication()->input->post->get('cb_' . $the_username_field['reference_id'], '', 'raw');
 
-                        if (!CBRequest::getVar('cb_submission_failed', 0)) {
+                        if (!Factory::getApplication()->input->get('cb_submission_failed', 0, 'string')) {
 
                             if (!trim($name)) {
-                                CBRequest::setVar('cb_submission_failed', 1);
+                                Factory::getApplication()->input->set('cb_submission_failed', 1);
                                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_NAME_EMPTY'), 'error');
                             }
 
                             if (!trim($username)) {
-                                CBRequest::setVar('cb_submission_failed', 1);
+                                Factory::getApplication()->input->set('cb_submission_failed', 1);
                                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_USERNAME_EMPTY'), 'error');
                             } else if (preg_match("#[<>\"'%;()&]#i", $username) || strlen(utf8_decode($username)) < 2) {
-                                CBRequest::setVar('cb_submission_failed', 1);
+                                Factory::getApplication()->input->set('cb_submission_failed', 1);
                                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_USERNAME_INVALID'), 'error');
                             }
 
                             if (!trim($email)) {
-                                CBRequest::setVar('cb_submission_failed', 1);
+                                Factory::getApplication()->input->set('cb_submission_failed', 1);
                                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_EMAIL_EMPTY'), 'error');
                             } else if (!ContentbuilderHelper::isEmail($email)) {
-                                CBRequest::setVar('cb_submission_failed', 1);
+                                Factory::getApplication()->input->set('cb_submission_failed', 1);
                                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_EMAIL_INVALID'), 'error');
                             } else if ($email != $email2) {
-                                CBRequest::setVar('cb_submission_failed', 1);
+                                Factory::getApplication()->input->set('cb_submission_failed', 1);
                                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_EMAIL_MISMATCH'), 'error');
                             }
 
@@ -764,52 +761,52 @@ var contentbuilder = new function(){
 
                                 $this->getDatabase()->setQuery("Select count(id) From #__users Where `username` = " . $this->getDatabase()->Quote($username));
                                 if ($this->getDatabase()->loadResult()) {
-                                    CBRequest::setVar('cb_submission_failed', 1);
+                                    Factory::getApplication()->input->set('cb_submission_failed', 1);
                                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_USERNAME_NOT_AVAILABLE'), 'error');
                                 }
 
                                 $this->getDatabase()->setQuery("Select count(id) From #__users Where `email` = " . $this->getDatabase()->Quote($email));
                                 if ($this->getDatabase()->loadResult()) {
-                                    CBRequest::setVar('cb_submission_failed', 1);
+                                    Factory::getApplication()->input->set('cb_submission_failed', 1);
                                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_EMAIL_NOT_AVAILABLE'), 'error');
                                 }
 
                                 if ($pw1 != $pw2) {
-                                    CBRequest::setVar('cb_submission_failed', 1);
+                                    Factory::getApplication()->input->set('cb_submission_failed', 1);
                                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_PASSWORD_MISMATCH'), 'error');
 
-                                    CBRequest::setVar('cb_' . $the_password_field['reference_id'], '');
-                                    CBRequest::setVar('cb_' . $the_password_repeat_field['reference_id'], '');
+                                    Factory::getApplication()->input->set('cb_' . $the_password_field['reference_id'], '');
+                                    Factory::getApplication()->input->set('cb_' . $the_password_repeat_field['reference_id'], '');
                                 } else if (!trim($pw1)) {
-                                    CBRequest::setVar('cb_submission_failed', 1);
+                                    Factory::getApplication()->input->set('cb_submission_failed', 1);
                                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_PASSWORD_EMPTY'), 'error');
 
-                                    CBRequest::setVar('cb_' . $the_password_field['reference_id'], '');
-                                    CBRequest::setVar('cb_' . $the_password_repeat_field['reference_id'], '');
+                                    Factory::getApplication()->input->set('cb_' . $the_password_field['reference_id'], '');
+                                    Factory::getApplication()->input->set('cb_' . $the_password_repeat_field['reference_id'], '');
                                 }
                             } else {
                                 if ($meta->created_id && $meta->created_id != Factory::getApplication()->getIdentity()->get('id', 0)) {
                                     $this->getDatabase()->setQuery("Select count(id) From #__users Where id <> " . $this->getDatabase()->Quote($meta->created_id) . " And `username` = " . $this->getDatabase()->Quote($username));
                                     if ($this->getDatabase()->loadResult()) {
-                                        CBRequest::setVar('cb_submission_failed', 1);
+                                        Factory::getApplication()->input->set('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_USERNAME_NOT_AVAILABLE'), 'error');
                                     }
 
                                     $this->getDatabase()->setQuery("Select count(id) From #__users Where id <> " . $this->getDatabase()->Quote($meta->created_id) . " And `email` = " . $this->getDatabase()->Quote($email));
                                     if ($this->getDatabase()->loadResult()) {
-                                        CBRequest::setVar('cb_submission_failed', 1);
+                                        Factory::getApplication()->input->set('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_EMAIL_NOT_AVAILABLE'), 'error');
                                     }
                                 } else {
                                     $this->getDatabase()->setQuery("Select count(id) From #__users Where id <> " . $this->getDatabase()->Quote(Factory::getApplication()->getIdentity()->get('id', 0)) . " And `username` = " . $this->getDatabase()->Quote($username));
                                     if ($this->getDatabase()->loadResult()) {
-                                        CBRequest::setVar('cb_submission_failed', 1);
+                                        Factory::getApplication()->input->set('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_USERNAME_NOT_AVAILABLE'), 'error');
                                     }
 
                                     $this->getDatabase()->setQuery("Select count(id) From #__users Where id <> " . $this->getDatabase()->Quote(Factory::getApplication()->getIdentity()->get('id', 0)) . " And `email` = " . $this->getDatabase()->Quote($email));
                                     if ($this->getDatabase()->loadResult()) {
-                                        CBRequest::setVar('cb_submission_failed', 1);
+                                        Factory::getApplication()->input->set('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_EMAIL_NOT_AVAILABLE'), 'error');
                                     }
                                 }
@@ -817,22 +814,22 @@ var contentbuilder = new function(){
                                 if (trim($pw1) != '' || trim($pw2) != '') {
 
                                     if ($pw1 != $pw2) {
-                                        CBRequest::setVar('cb_submission_failed', 1);
+                                        Factory::getApplication()->input->set('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_PASSWORD_MISMATCH'), 'error');
 
-                                        CBRequest::setVar('cb_' . $the_password_field['reference_id'], '');
-                                        CBRequest::setVar('cb_' . $the_password_repeat_field['reference_id'], '');
+                                        Factory::getApplication()->input->set('cb_' . $the_password_field['reference_id'], '');
+                                        Factory::getApplication()->input->set('cb_' . $the_password_repeat_field['reference_id'], '');
                                     } else if (!trim($pw1)) {
-                                        CBRequest::setVar('cb_submission_failed', 1);
+                                        Factory::getApplication()->input->set('cb_submission_failed', 1);
                                         Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_PASSWORD_EMPTY'), 'error');
 
-                                        CBRequest::setVar('cb_' . $the_password_field['reference_id'], '');
-                                        CBRequest::setVar('cb_' . $the_password_repeat_field['reference_id'], '');
+                                        Factory::getApplication()->input->set('cb_' . $the_password_field['reference_id'], '');
+                                        Factory::getApplication()->input->set('cb_' . $the_password_repeat_field['reference_id'], '');
                                     }
                                 }
                             }
 
-                            if (!CBRequest::getVar('cb_submission_failed', 0)) {
+                            if (!Factory::getApplication()->input->get('cb_submission_failed', 0, 'string')) {
 
                                 //$noneditable_fields[] = $the_name_field['reference_id'];
                                 $noneditable_fields[] = $the_password_field['reference_id'];
@@ -869,16 +866,14 @@ var contentbuilder = new function(){
 
                         if ($noneditable_fields == null || !in_array($id, $noneditable_fields)) {
                             $value = '';
-                            $is_array = 'STRING';
-                            if (is_array(CBRequest::getVar('cb_' . $id, ''))) {
-                                $is_array = 'ARRAY';
-                            }
+                            $raw_value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'raw');
+                            $is_array = is_array($raw_value) ? 'ARRAY' : 'STRING';
                             if (isset($the_fields[$id]['options']->allow_raw) && $the_fields[$id]['options']->allow_raw) {
-                                $value = CBRequest::getVar('cb_' . $id, '', 'POST', $is_array, CBREQUEST_ALLOWRAW);
+                                $value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'raw');
                             } else if (isset($the_fields[$id]['options']->allow_html) && $the_fields[$id]['options']->allow_html) {
-                                $value = CBRequest::getVar('cb_' . $id, '', 'POST', $is_array, CBREQUEST_ALLOWHTML);
+                                $value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'html');
                             } else {
-                                $value = CBRequest::getVar('cb_' . $id, '', 'POST', $is_array);
+                                $value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'raw');
                             }
                             if (isset($the_fields[$id]['options']->transfer_format)) {
                                 $value = ContentbuilderHelper::convertDate($value, $the_fields[$id]['options']->format, $the_fields[$id]['options']->transfer_format);
@@ -898,7 +893,7 @@ var contentbuilder = new function(){
                                 if ($id == $the_upload_fields[$id]['reference_id']) {
 
                                     // delete if triggered
-                                    if (CBRequest::getInt('cb_delete_' . $id, 0) == 1 && isset($the_upload_fields[$id]['validations']) && $the_upload_fields[$id]['validations'] == '') {
+                                    if (Factory::getApplication()->input->getInt('cb_delete_' . $id, 0) == 1 && isset($the_upload_fields[$id]['validations']) && $the_upload_fields[$id]['validations'] == '') {
                                         if (count($_items)) {
                                             foreach ($_items as $_item) {
                                                 if ($_item->recElementId == $the_upload_fields[$id]['reference_id']) {
@@ -918,7 +913,7 @@ var contentbuilder = new function(){
                                         }
                                     }
 
-                                    $file = CBRequest::getVar('cb_' . $id, null, 'files', 'array');
+                                    $file = Factory::getApplication()->input->files->get('cb_' . $id, null, 'array');
 
                                     if (trim(File::makeSafe($file['name'])) != '' && $file['size'] > 0) {
 
@@ -1050,7 +1045,7 @@ var contentbuilder = new function(){
                                         }
 
                                         if ($dest == '' || $uploaded !== true) {
-                                            CBRequest::setVar('cb_submission_failed', 1);
+                                            Factory::getApplication()->input->set('cb_submission_failed', 1);
                                             Factory::getApplication()->enqueueMessage($msg . ' (' . $infile . ')', 'error');
                                             $the_upload_fields[$id]['value'] = '';
                                         } else {
@@ -1065,10 +1060,10 @@ var contentbuilder = new function(){
                                     }
 
                                     if (trim($the_upload_fields[$id]['custom_validation_script'])) {
-                                        $msg = self::customValidate(trim($the_upload_fields[$id]['custom_validation_script']), $the_upload_fields[$id], array_merge($the_upload_fields, $the_fields, $the_html_fields), CBRequest::getCmd('record_id', 0), $data->form, isset($values[$id]) ? $values[$id] : '');
+                                        $msg = self::customValidate(trim($the_upload_fields[$id]['custom_validation_script']), $the_upload_fields[$id], array_merge($the_upload_fields, $the_fields, $the_html_fields), Factory::getApplication()->input->getCmd('record_id', 0), $data->form, isset($values[$id]) ? $values[$id] : '');
                                         $msg = trim($msg);
                                         if (!empty($msg)) {
-                                            CBRequest::setVar('cb_submission_failed', 1);
+                                            Factory::getApplication()->input->set('cb_submission_failed', 1);
                                             Factory::getApplication()->enqueueMessage(trim($msg), 'error');
                                         }
                                     }
@@ -1080,7 +1075,7 @@ var contentbuilder = new function(){
                                     }
 
                                     $dispatcher = Factory::getApplication()->getDispatcher();
-                                    $eventResult = $dispatcher->dispatch('onValidate', new \Joomla\Event\Event('onValidate', array($the_upload_fields[$id], array_merge($the_upload_fields, $the_fields, $the_html_fields), CBRequest::getCmd('record_id', 0), $data->form, isset($values[$id]) ? $values[$id] : '')));
+                                    $eventResult = $dispatcher->dispatch('onValidate', new \Joomla\Event\Event('onValidate', array($the_upload_fields[$id], array_merge($the_upload_fields, $the_fields, $the_html_fields), Factory::getApplication()->input->getCmd('record_id', 0), $data->form, isset($values[$id]) ? $values[$id] : '')));
                                     $results = $eventResult->getArgument('result') ?: [];
                                     $dispatcher->clearListeners('onValidate');
 
@@ -1089,7 +1084,7 @@ var contentbuilder = new function(){
                                         if (isset($values[$id]) && file_exists($values[$id])) {
                                             File::delete($values[$id]);
                                         }
-                                        CBRequest::setVar('cb_submission_failed', 1);
+                                        Factory::getApplication()->input->set('cb_submission_failed', 1);
                                         foreach ($results as $result) {
                                             $result = trim($result);
                                             if (!empty($result)) {
@@ -1115,28 +1110,26 @@ var contentbuilder = new function(){
                                 $f = null;
 
                                 if (isset($the_html_fields[$id])) {
-                                    $value = CBRequest::getVar('cb_' . $id, '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
+                                    $value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'html');
                                     $f = $the_html_fields[$id];
                                     $the_html_fields[$id]['value'] = $value;
                                 }
 
                                 if (isset($the_failed_registration_fields[$id])) {
-                                    $value = CBRequest::getVar('cb_' . $id, '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
+                                    $value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'raw');
                                     $f = $the_failed_registration_fields[$id];
                                     $the_failed_registration_fields[$id]['value'] = $value;
                                 }
 
                                 if (isset($the_fields[$id])) {
-                                    $is_array = 'STRING';
-                                    if (is_array(CBRequest::getVar('cb_' . $id, ''))) {
-                                        $is_array = 'ARRAY';
-                                    }
+                                    $raw_value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'raw');
+                                    $is_array = is_array($raw_value) ? 'ARRAY' : 'STRING';
                                     if (isset($the_fields[$id]['options']->allow_raw) && $the_fields[$id]['options']->allow_raw) {
-                                        $value = CBRequest::getVar('cb_' . $id, '', 'POST', $is_array, CBREQUEST_ALLOWRAW);
+                                        $value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'raw');
                                     } else if (isset($the_fields[$id]['options']->allow_html) && $the_fields[$id]['options']->allow_html) {
-                                        $value = CBRequest::getVar('cb_' . $id, '', 'POST', $is_array, CBREQUEST_ALLOWHTML);
+                                        $value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'html');
                                     } else {
-                                        $value = CBRequest::getVar('cb_' . $id, '', 'POST', $is_array);
+                                        $value = Factory::getApplication()->input->post->get('cb_' . $id, '', 'raw');
                                     }
                                     if (isset($the_fields[$id]['options']->transfer_format)) {
                                         $value = ContentbuilderHelper::convertDate($value, $the_fields[$id]['options']->format, $the_fields[$id]['options']->transfer_format);
@@ -1148,10 +1141,10 @@ var contentbuilder = new function(){
                                 if ($f !== null) {
 
                                     if (trim($f['custom_validation_script'] ?? '')) {
-                                        $msg = self::customValidate(trim($f['custom_validation_script']), $f, array_merge($the_upload_fields, $the_fields, $the_html_fields), CBRequest::getCmd('record_id', 0), $data->form, $value);
+                                        $msg = self::customValidate(trim($f['custom_validation_script']), $f, array_merge($the_upload_fields, $the_fields, $the_html_fields), Factory::getApplication()->input->getCmd('record_id', 0), $data->form, $value);
                                         $msg = trim($msg);
                                         if (!empty($msg)) {
-                                            CBRequest::setVar('cb_submission_failed', 1);
+                                            Factory::getApplication()->input->set('cb_submission_failed', 1);
                                             Factory::getApplication()->enqueueMessage(trim($msg), 'error');
                                         }
                                     }
@@ -1163,14 +1156,14 @@ var contentbuilder = new function(){
                                     }
 
                                     $dispatcher = Factory::getApplication()->getDispatcher();
-                                    $eventResult = $dispatcher->dispatch('onValidate', new \Joomla\Event\Event('onValidate', array($f, array_merge($the_upload_fields, $the_fields, $the_html_fields), CBRequest::getCmd('record_id', 0), $data->form, $value)));
+                                    $eventResult = $dispatcher->dispatch('onValidate', new \Joomla\Event\Event('onValidate', array($f, array_merge($the_upload_fields, $the_fields, $the_html_fields), Factory::getApplication()->input->getCmd('record_id', 0), $data->form, $value)));
                                     $results = $eventResult->getArgument('result') ?: [];
                                     $dispatcher->clearListeners('onValidate');
 
                                     $all_errors = implode('', $results);
                                     $values[$id] = $value;
                                     if (!empty($all_errors)) {
-                                        CBRequest::setVar('cb_submission_failed', 1);
+                                        Factory::getApplication()->input->set('cb_submission_failed', 1);
                                         foreach ($results as $result) {
                                             $result = trim($result);
                                             if (!empty($result)) {
@@ -1186,7 +1179,7 @@ var contentbuilder = new function(){
                                             'onAfterValidationSuccess',
                                             new \Joomla\Event\Event(
                                                 'onAfterValidationSuccess',
-                                                array($f, $m = array_merge($the_upload_fields, $the_fields, $the_html_fields), CBRequest::getCmd('record_id', 0), $data->form, $value)
+                                                array($f, $m = array_merge($the_upload_fields, $the_fields, $the_html_fields), Factory::getApplication()->input->getCmd('record_id', 0), $data->form, $value)
                                             )
                                         );
                                         $dispatcher->clearListeners('onAfterValidationSuccess');
@@ -1201,14 +1194,14 @@ var contentbuilder = new function(){
                     }
 
                     $dispatcher = Factory::getApplication()->getDispatcher();
-                    $submit_before_result = $dispatcher->dispatch('onBeforeSubmit', new \Joomla\Event\Event('onBeforeSubmit', array(CBRequest::getCmd('record_id', 0), $data->form, $values)));
+                    $submit_before_result = $dispatcher->dispatch('onBeforeSubmit', new \Joomla\Event\Event('onBeforeSubmit', array(Factory::getApplication()->input->getCmd('record_id', 0), $data->form, $values)));
 
-                    if (CBRequest::getVar('cb_submission_failed', 0)) {
+                    if (Factory::getApplication()->input->get('cb_submission_failed', 0, 'string')) {
                         Factory::getApplication()->getSession()->set('cb_failed_values', $values, 'com_contentbuilder.' . $this->_id);
-                        return CBRequest::getCmd('record_id', 0);
+                        return Factory::getApplication()->input->getCmd('record_id', 0);
                     }
 
-                    $record_return = $data->form->saveRecord(CBRequest::getCmd('record_id', 0), $values);
+                    $record_return = $data->form->saveRecord(Factory::getApplication()->input->getCmd('record_id', 0), $values);
 
                     foreach ($form_elements_objects as $form_elements_object) {
                         if ($form_elements_object instanceof CBFormElementAfterValidation) {
@@ -1228,10 +1221,10 @@ var contentbuilder = new function(){
                                 '',
                                 '',
                                 $meta->created_id,
-                                CBRequest::getVar('cb_' . $the_name_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW),
-                                CBRequest::getVar('cb_' . $the_username_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW),
-                                CBRequest::getVar('cb_' . $the_email_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW),
-                                CBRequest::getVar('cb_' . $the_password_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW)
+                                Factory::getApplication()->input->post->get('cb_' . $the_name_field['reference_id'], '', 'raw'),
+                                Factory::getApplication()->input->post->get('cb_' . $the_username_field['reference_id'], '', 'raw'),
+                                Factory::getApplication()->input->post->get('cb_' . $the_email_field['reference_id'], '', 'raw'),
+                                Factory::getApplication()->input->post->get('cb_' . $the_password_field['reference_id'], '', 'raw')
                             );
 
                             if (intval($user_id) > 0) {
@@ -1241,8 +1234,8 @@ var contentbuilder = new function(){
                                 $data->form->saveRecordUserData(
                                     $record_return,
                                     $user_id,
-                                    CBRequest::getVar('cb_' . $the_name_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW),
-                                    CBRequest::getVar('cb_' . $the_username_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW)
+                                    Factory::getApplication()->input->post->get('cb_' . $the_name_field['reference_id'], '', 'raw'),
+                                    Factory::getApplication()->input->post->get('cb_' . $the_username_field['reference_id'], '', 'raw')
                                 );
                             } else {
 
@@ -1277,10 +1270,10 @@ var contentbuilder = new function(){
                                     $verification_name,
                                     $verification_id,
                                     $meta->created_id,
-                                    CBRequest::getVar('cb_' . $the_name_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW),
-                                    CBRequest::getVar('cb_' . $the_username_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW),
-                                    CBRequest::getVar('cb_' . $the_email_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW),
-                                    CBRequest::getVar('cb_' . $the_password_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW)
+                                    Factory::getApplication()->input->post->get('cb_' . $the_name_field['reference_id'], '', 'raw'),
+                                    Factory::getApplication()->input->post->get('cb_' . $the_username_field['reference_id'], '', 'raw'),
+                                    Factory::getApplication()->input->post->get('cb_' . $the_email_field['reference_id'], '', 'raw'),
+                                    Factory::getApplication()->input->post->get('cb_' . $the_password_field['reference_id'], '', 'raw')
                                 );
 
                                 if (intval($user_id) > 0) {
@@ -1290,8 +1283,8 @@ var contentbuilder = new function(){
                                     $data->form->saveRecordUserData(
                                         $record_return,
                                         $user_id,
-                                        CBRequest::getVar('cb_' . $the_name_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW),
-                                        CBRequest::getVar('cb_' . $the_username_field['reference_id'], '', 'POST', 'STRING', CBREQUEST_ALLOWRAW)
+                                        Factory::getApplication()->input->post->get('cb_' . $the_name_field['reference_id'], '', 'raw'),
+                                        Factory::getApplication()->input->post->get('cb_' . $the_username_field['reference_id'], '', 'raw')
                                     );
                                 } else {
 
@@ -1339,26 +1332,26 @@ var contentbuilder = new function(){
                         }
                     }
 
-                    if ($this->frontend && !CBRequest::getCmd('record_id', 0) && $record_return && !CBRequest::getVar('return', '')) {
+                    if ($this->frontend && !Factory::getApplication()->input->getCmd('record_id', 0) && $record_return && !Factory::getApplication()->input->get('return', '', 'string')) {
 
                         if ($data->force_login) {
                             if (!Factory::getApplication()->getIdentity()->get('id', 0)) {
                                 if (!$this->is15) {
-                                    CBRequest::setVar('return', base64_decode(Route::_('index.php?option=com_users&view=login&Itemid=' . CBRequest::getInt('Itemid', 0), false)));
+                                    Factory::getApplication()->input->set('return', base64_decode(Route::_('index.php?option=com_users&view=login&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false)));
                                 } else {
-                                    CBRequest::setVar('return', base64_decode(Route::_('index.php?option=com_user&view=login&Itemid=' . CBRequest::getInt('Itemid', 0), false)));
+                                    Factory::getApplication()->input->set('return', base64_decode(Route::_('index.php?option=com_user&view=login&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false)));
                                 }
                             } else {
 
                                 if (!$this->is15) {
-                                    CBRequest::setVar('return', base64_decode(Route::_('index.php?option=com_users&view=profile&Itemid=' . CBRequest::getInt('Itemid', 0), false)));
+                                    Factory::getApplication()->input->set('return', base64_decode(Route::_('index.php?option=com_users&view=profile&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false)));
                                 } else {
-                                    CBRequest::setVar('return', base64_decode(Route::_('index.php?option=com_user&view=user&Itemid=' . CBRequest::getInt('Itemid', 0), false)));
+                                    Factory::getApplication()->input->set('return', base64_decode(Route::_('index.php?option=com_user&view=user&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0), false)));
                                 }
                             }
                         } else if (trim($data->force_url)) {
-                            CBRequest::setVar('ContentbuilderHelper::cbinternalCheck', 0);
-                            CBRequest::setVar('return', base64_decode(trim($data->force_url)));
+                            Factory::getApplication()->input->set('ContentbuilderHelper::cbinternalCheck', 0);
+                            Factory::getApplication()->input->set('return', base64_decode(trim($data->force_url)));
                         }
                     }
 
@@ -1367,13 +1360,13 @@ var contentbuilder = new function(){
                         $sef = '';
                         $ignore_lang_code = '*';
                         if ($data->default_lang_code_ignore) {
-                            $this->getDatabase()->setQuery("Select lang_code From #__languages Where published = 1 And sef = " . $this->getDatabase()->Quote(trim(CBRequest::getCmd('lang', ''))));
+                            $this->getDatabase()->setQuery("Select lang_code From #__languages Where published = 1 And sef = " . $this->getDatabase()->Quote(trim(Factory::getApplication()->input->getCmd('lang', ''))));
                             $ignore_lang_code = $this->getDatabase()->loadResult();
                             if (!$ignore_lang_code) {
                                 $ignore_lang_code = '*';
                             }
 
-                            $sef = trim(CBRequest::getCmd('lang', ''));
+                            $sef = trim(Factory::getApplication()->input->getCmd('lang', ''));
                             if ($ignore_lang_code == '*') {
                                 $sef = '';
                             }
@@ -1414,7 +1407,7 @@ var contentbuilder = new function(){
                     }
                 } else {
 
-                    $record_return = CBRequest::getCmd('record_id', 0);
+                    $record_return = Factory::getApplication()->input->getCmd('record_id', 0);
                 }
 
                 $data->items = $data->form->getRecord($record_return, $data->published_only, $this->frontend ? ($data->own_only_fe ? Factory::getApplication()->getIdentity()->get('id', 0) : -1) : ($data->own_only ? Factory::getApplication()->getIdentity()->get('id', 0) : -1), true);
@@ -1454,11 +1447,11 @@ var contentbuilder = new function(){
 
                     $config = array();
                     if ($article) {
-                        $config = CBRequest::getVar('Form', array());
+                        $config = Factory::getApplication()->input->post->get('Form', [], 'array');
                     }
 
                     $full = $this->frontend ? ContentbuilderLegacyHelper::authorizeFe('fullarticle') : ContentbuilderLegacyHelper::authorize('fullarticle');
-                    $article_id = ContentbuilderLegacyHelper::createArticle($this->_id, $record_return, $data->items, $ids, $data->title_field, $data->form->getRecordMetadata($record_return), $config, $full, $this->frontend ? $data->limited_article_options_fe : $data->limited_article_options, CBRequest::getVar('cb_category_id', null));
+                    $article_id = ContentbuilderLegacyHelper::createArticle($this->_id, $record_return, $data->items, $ids, $data->title_field, $data->form->getRecordMetadata($record_return), $config, $full, $this->frontend ? $data->limited_article_options_fe : $data->limited_article_options, Factory::getApplication()->input->get('cb_category_id', null, 'string'));
 
                     if (isset($form_elements_objects)) {
                         foreach ($form_elements_objects as $form_elements_object) {
@@ -1500,7 +1493,7 @@ var contentbuilder = new function(){
                         }
                     }
 
-                    if ((!CBRequest::getCmd('record_id', 0) && $data->email_notifications) || (CBRequest::getCmd('record_id', 0) && $data->email_update_notifications)) {
+                    if ((!Factory::getApplication()->input->getCmd('record_id', 0) && $data->email_notifications) || (Factory::getApplication()->input->getCmd('record_id', 0) && $data->email_update_notifications)) {
                         $from = $MailFrom = Factory::getConfig()->get('mailfrom');
                         $fromname = Factory::getConfig()->get('fromname');
 
@@ -2035,7 +2028,7 @@ var contentbuilder = new function(){
 
     function delete()
     {
-        $items = CBRequest::getVar('cid', array(), 'request', 'array');
+        $items = Factory::getApplication()->input->get('cid', [], 'array');
         if (empty($this->_data)) {
             $query = $this->_buildQuery();
             $this->_data = $this->_getList($query, 0, 1);
@@ -2130,14 +2123,14 @@ var contentbuilder = new function(){
         }
 
         // prevent from changing to an unpublished state
-        $this->getDatabase()->setQuery("Select id, action From #__contentbuilder_list_states Where published = 1 And id = " . CBRequest::getInt('list_state', 0) . " And form_id = " . $this->_id);
+        $this->getDatabase()->setQuery("Select id, action From #__contentbuilder_list_states Where published = 1 And id = " . Factory::getApplication()->input->getInt('list_state', 0) . " And form_id = " . $this->_id);
         $res = $this->getDatabase()->loadAssoc();
         if (!is_array($res)) {
             return;
         }
 
         PluginHelper::importPlugin('contentbuilder_listaction', $res['action']);
-        $items = CBRequest::getVar('cid', array(), 'request', 'array');
+        $items = Factory::getApplication()->input->get('cid', [], 'array');
 
         $dispatcher = Factory::getApplication()->getDispatcher();
         $dispatcher->dispatch('onBeforeAction', new \Joomla\Event\Event('onBeforeAction', array($this->_id, $items)));
@@ -2152,10 +2145,10 @@ var contentbuilder = new function(){
             $this->getDatabase()->setQuery("Select id From #__contentbuilder_list_records Where form_id = " . $this->_id . " And record_id = " . $this->getDatabase()->Quote($item));
             $res = $this->getDatabase()->loadResult();
             if (!$res) {
-                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_list_records (state_id, form_id, record_id, reference_id) Values (" . CBRequest::getInt('list_state', 0) . ", " . $this->_id . ", " . $this->getDatabase()->Quote($item) . ", " . $this->getDatabase()->Quote($reference_id) . ")");
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_list_records (state_id, form_id, record_id, reference_id) Values (" . Factory::getApplication()->input->getInt('list_state', 0) . ", " . $this->_id . ", " . $this->getDatabase()->Quote($item) . ", " . $this->getDatabase()->Quote($reference_id) . ")");
                 $this->getDatabase()->execute();
             } else {
-                $this->getDatabase()->setQuery("Update #__contentbuilder_list_records Set state_id = " . CBRequest::getInt('list_state', 0) . " Where form_id = " . $this->_id . " And record_id = " . $this->getDatabase()->Quote($item));
+                $this->getDatabase()->setQuery("Update #__contentbuilder_list_records Set state_id = " . Factory::getApplication()->input->getInt('list_state', 0) . " Where form_id = " . $this->_id . " And record_id = " . $this->getDatabase()->Quote($item));
                 $this->getDatabase()->execute();
             }
         }
@@ -2182,24 +2175,24 @@ var contentbuilder = new function(){
         $reference_id = $typeref['reference_id'];
         $type = $typeref['type'];
 
-        $items = CBRequest::getVar('cid', array(), 'request', 'array');
+        $items = Factory::getApplication()->input->get('cid', [], 'array');
 
         $sef = '';
-        $this->getDatabase()->setQuery("Select sef From #__languages Where published = 1 And lang_code = " . $this->getDatabase()->Quote(CBRequest::getVar('list_language', '*')));
+        $this->getDatabase()->setQuery("Select sef From #__languages Where published = 1 And lang_code = " . $this->getDatabase()->Quote(Factory::getApplication()->input->get('list_language', '*', 'string')));
         $sef = $this->getDatabase()->loadResult();
 
         foreach ($items as $item) {
             $this->getDatabase()->setQuery("Select id From #__contentbuilder_records Where `type` = " . $this->getDatabase()->Quote($type) . " And `reference_id` = " . $this->getDatabase()->Quote($reference_id) . " And record_id = " . $this->getDatabase()->Quote($item));
             $res = $this->getDatabase()->loadResult();
             if (!$res) {
-                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (`type`,lang_code, sef, record_id, reference_id) Values (" . $this->getDatabase()->Quote($type) . "," . $this->getDatabase()->Quote(CBRequest::getVar('list_language', '*')) . ", " . $this->getDatabase()->Quote($sef) . ", " . $this->getDatabase()->Quote($item) . ", " . $this->getDatabase()->Quote($reference_id) . ")");
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (`type`,lang_code, sef, record_id, reference_id) Values (" . $this->getDatabase()->Quote($type) . "," . $this->getDatabase()->Quote(Factory::getApplication()->input->get('list_language', '*', 'string')) . ", " . $this->getDatabase()->Quote($sef) . ", " . $this->getDatabase()->Quote($item) . ", " . $this->getDatabase()->Quote($reference_id) . ")");
                 $this->getDatabase()->execute();
             } else {
-                $this->getDatabase()->setQuery("Update #__contentbuilder_records Set sef = " . $this->getDatabase()->Quote($sef) . ", lang_code = " . $this->getDatabase()->Quote(CBRequest::getVar('list_language', '*')) . " Where `type` = " . $this->getDatabase()->Quote($type) . " And `reference_id` = " . $this->getDatabase()->Quote($reference_id) . " And record_id = " . $this->getDatabase()->Quote($item));
+                $this->getDatabase()->setQuery("Update #__contentbuilder_records Set sef = " . $this->getDatabase()->Quote($sef) . ", lang_code = " . $this->getDatabase()->Quote(Factory::getApplication()->input->get('list_language', '*', 'string')) . " Where `type` = " . $this->getDatabase()->Quote($type) . " And `reference_id` = " . $this->getDatabase()->Quote($reference_id) . " And record_id = " . $this->getDatabase()->Quote($item));
                 $this->getDatabase()->execute();
             }
 
-            $this->getDatabase()->setQuery("Update #__contentbuilder_articles As articles, #__content As content Set content.language = " . $this->getDatabase()->Quote(CBRequest::getVar('list_language', '*')) . " Where ( content.state = 1 Or content.state = 0 ) And content.id = articles.article_id And articles.`type` = " . intval($type) . " And articles.reference_id = " . $this->getDatabase()->Quote($reference_id) . " And articles.record_id = " . $this->getDatabase()->Quote($item));
+            $this->getDatabase()->setQuery("Update #__contentbuilder_articles As articles, #__content As content Set content.language = " . $this->getDatabase()->Quote(Factory::getApplication()->input->get('list_language', '*', 'string')) . " Where ( content.state = 1 Or content.state = 0 ) And content.id = articles.article_id And articles.`type` = " . intval($type) . " And articles.reference_id = " . $this->getDatabase()->Quote($reference_id) . " And articles.record_id = " . $this->getDatabase()->Quote($item));
             $this->getDatabase()->execute();
         }
 
@@ -2221,7 +2214,7 @@ var contentbuilder = new function(){
         $reference_id = $typeref['reference_id'];
         $type = $typeref['type'];
 
-        $items = CBRequest::getVar('cid', array(), 'request', 'array');
+        $items = Factory::getApplication()->input->get('cid', [], 'array');
 
         $this->getDatabase()->setQuery("SET @ids := null");
         $this->getDatabase()->execute();
@@ -2234,10 +2227,10 @@ var contentbuilder = new function(){
             $res = $this->getDatabase()->loadAssoc();
 
             if (!is_array($res)) {
-                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (`type`,published, record_id, reference_id) Values (" . $this->getDatabase()->Quote($type) . "," . (CBRequest::getInt('list_publish', 0) ? 1 : 0) . ", " . $this->getDatabase()->Quote($item) . ", " . $this->getDatabase()->Quote($reference_id) . ")");
+                $this->getDatabase()->setQuery("Insert Into #__contentbuilder_records (`type`,published, record_id, reference_id) Values (" . $this->getDatabase()->Quote($type) . "," . (Factory::getApplication()->input->getInt('list_publish', 0) ? 1 : 0) . ", " . $this->getDatabase()->Quote($item) . ", " . $this->getDatabase()->Quote($reference_id) . ")");
                 $this->getDatabase()->execute();
             } else {
-                $publish = CBRequest::getInt('list_publish', 0);
+                $publish = Factory::getApplication()->input->getInt('list_publish', 0);
 
                 $this->getDatabase()->setQuery(
                     "UPDATE #__contentbuilder_records 
@@ -2253,7 +2246,7 @@ var contentbuilder = new function(){
                 $this->getDatabase()->execute();
             }
 
-            $publish = CBRequest::getInt('list_publish', 0);
+            $publish = Factory::getApplication()->input->getInt('list_publish', 0);
             $publishUpValue = $publish
                 ? $this->getDatabase()->Quote($created_up)
                 : $this->getDatabase()->Quote(is_array($res) ? $res['publish_up'] : $created_up);
@@ -2286,7 +2279,7 @@ var contentbuilder = new function(){
         // Trigger the onContentChangeState event.
         $dispatcher = Factory::getApplication()->getDispatcher();
         $context = 'com_content.article';
-        $value = CBRequest::getInt('list_publish', 0);
+        $value = Factory::getApplication()->input->getInt('list_publish', 0);
         if (class_exists(\Joomla\CMS\Event\Model\AfterChangeStateEvent::class)) {
             $event = new \Joomla\CMS\Event\Model\AfterChangeStateEvent('onContentChangeState', [
                 'context' => $context,

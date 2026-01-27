@@ -77,7 +77,10 @@ class HtmlView extends BaseHtmlView
 
         ToolbarHelper::addNew('storage.add');
         ToolbarHelper::editList('storage.edit');
-        ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'storage.delete');        
+        ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'storage.delete');
+        ToolbarHelper::publish('storages.publish');
+        ToolbarHelper::unpublish('storages.unpublish');
+
         ToolbarHelper::preferences('com_contentbuilder');
     }
 

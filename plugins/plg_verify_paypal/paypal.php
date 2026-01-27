@@ -161,7 +161,7 @@ class plgContentbuilder_verifyPaypal extends CMSPlugin implements SubscriberInte
 
         // the paypal_ipn parameter has been attached in onForward
         // so if PayPal returns with this parameter we should use verification through IPN
-        if ($this->ipn && CBRequest::getVar('paypal_ipn', '') == 'true') {
+        if ($this->ipn && Factory::getApplication()->input->get('paypal_ipn', '', 'string') == 'true') {
             return $this->verifyIpn($return_url, $options);
         }
 
@@ -174,7 +174,7 @@ class plgContentbuilder_verifyPaypal extends CMSPlugin implements SubscriberInte
 
         $req = 'cmd=_notify-synch';
 
-        $tx_token = CBRequest::getVar('tx', 0);
+        $tx_token = Factory::getApplication()->input->get('tx', 0, 'string');
         $req .= "&tx=" . urlencode($tx_token) . "&at=" . urlencode($auth_token);
 
         $header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
@@ -262,7 +262,7 @@ class plgContentbuilder_verifyPaypal extends CMSPlugin implements SubscriberInte
 
         $req = 'cmd=_notify-validate';
 
-        $tx_token = CBRequest::getVar('txn_id', 0);
+        $tx_token = Factory::getApplication()->input->get('txn_id', 0, 'string');
 
         $keyarray = array();
         $postback = $_REQUEST;

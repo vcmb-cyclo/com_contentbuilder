@@ -42,7 +42,7 @@ class ElementoptionModel extends BaseDatabaseModel
         $app = Factory::getApplication();
         $option = 'com_contentbuilder';
 
-        $this->setIds(CBRequest::getInt('id', 0), CBRequest::getInt('element_id', ''));
+        $this->setIds(Factory::getApplication()->input->getInt('id', 0), Factory::getApplication()->input->getInt('element_id', ''));
     }
 
     /*
@@ -104,20 +104,20 @@ class ElementoptionModel extends BaseDatabaseModel
 
     function store()
     {
-        if (CBRequest::getInt('type_change', 0)) {
-            $this->getDatabase()->setQuery("Update #__contentbuilder_elements Set `type`=" . $this->getDatabase()->Quote(CBRequest::getCmd('type_selection', '')) . " Where id = " . $this->_element_id);
+        if (Factory::getApplication()->input->getInt('type_change', 0)) {
+            $this->getDatabase()->setQuery("Update #__contentbuilder_elements Set `type`=" . $this->getDatabase()->Quote(Factory::getApplication()->input->getCmd('type_selection', '')) . " Where id = " . $this->_element_id);
             $this->getDatabase()->execute();
             return 1;
         }
         $query = '';
         $plugins = ContentbuilderLegacyHelper::getFormElementsPlugins();
-        $type = CBRequest::getCmd('field_type', '');
+        $type = Factory::getApplication()->input->getCmd('field_type', '');
         switch ($type) {
-            case in_array(CBRequest::getCmd('field_type', ''), ContentbuilderLegacyHelper::getFormElementsPlugins()):
+            case in_array(Factory::getApplication()->input->getCmd('field_type', ''), ContentbuilderLegacyHelper::getFormElementsPlugins()):
 
-                $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
+                $hint = Factory::getApplication()->input->post->get('hint', '', 'html');
 
-                \Joomla\CMS\Plugin\PluginHelper::importPlugin('contentbuilder_form_elements', CBRequest::getCmd('field_type', ''));
+                \Joomla\CMS\Plugin\PluginHelper::importPlugin('contentbuilder_form_elements', Factory::getApplication()->input->getCmd('field_type', ''));
 
                 $dispatcher = Factory::getApplication()->getDispatcher();
                 $eventResult = $dispatcher->dispatch('onSettingsStore', new \Joomla\Event\Event('onSettingsStore', array()));
@@ -130,20 +130,20 @@ class ElementoptionModel extends BaseDatabaseModel
 
                 $the_item = $results;
 
-                $query = " `options`='" . base64_encode(serialize($the_item['options'])) . "', `type`=" . $this->getDatabase()->Quote(CBRequest::getCmd('field_type', '')) . ", `change_type`=" . $this->getDatabase()->Quote(CBRequest::getCmd('field_type', '')) . ", `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($the_item['default_value']) . " ";
+                $query = " `options`='" . base64_encode(serialize($the_item['options'])) . "', `type`=" . $this->getDatabase()->Quote(Factory::getApplication()->input->getCmd('field_type', '')) . ", `change_type`=" . $this->getDatabase()->Quote(Factory::getApplication()->input->getCmd('field_type', '')) . ", `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($the_item['default_value']) . " ";
 
                 break;
             case '':
             case 'text':
-                $length = CBRequest::getVar('length', '');
-                $maxlength = CBRequest::getInt('maxlength', '');
-                $password = CBRequest::getInt('password', 0);
-                $readonly = CBRequest::getInt('readonly', 0);
-                $default_value = CBRequest::getVar('default_value', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-                $class = CBRequest::getVar('class', '');
-                $allow_raw = CBRequest::getInt('allow_encoding', 0) == 2 ? true : false; // 0 = filter on, 1 = allow html, 2 = allow raw
-                $allow_html = CBRequest::getInt('allow_encoding', 0) == 1 ? true : false;
-                $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
+                $length = Factory::getApplication()->input->get('length', '', 'string');
+                $maxlength = Factory::getApplication()->input->getInt('maxlength', '');
+                $password = Factory::getApplication()->input->getInt('password', 0);
+                $readonly = Factory::getApplication()->input->getInt('readonly', 0);
+                $default_value = Factory::getApplication()->input->post->get('default_value', '', 'raw');
+                $class = Factory::getApplication()->input->get('class', '', 'string');
+                $allow_raw = Factory::getApplication()->input->getInt('allow_encoding', 0) == 2 ? true : false; // 0 = filter on, 1 = allow html, 2 = allow raw
+                $allow_html = Factory::getApplication()->input->getInt('allow_encoding', 0) == 1 ? true : false;
+                $hint = Factory::getApplication()->input->post->get('hint', '', 'html');
 
                 $options = new \stdClass();
                 $options->length = $length;
@@ -158,15 +158,15 @@ class ElementoptionModel extends BaseDatabaseModel
 
                 break;
             case 'textarea':
-                $maxlength = CBRequest::getInt('maxlength', '');
-                $width = CBRequest::getVar('width', '');
-                $height = CBRequest::getVar('height', '');
-                $default_value = CBRequest::getVar('default_value', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-                $class = CBRequest::getVar('class', '');
-                $readonly = CBRequest::getInt('readonly', 0);
-                $allow_raw = CBRequest::getInt('allow_encoding', 0) == 2 ? true : false; // 0 = filter on, 1 = allow html, 2 = allow raw
-                $allow_html = CBRequest::getInt('allow_encoding', 0) == 1 ? true : false;
-                $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
+                $maxlength = Factory::getApplication()->input->getInt('maxlength', '');
+                $width = Factory::getApplication()->input->get('width', '', 'string');
+                $height = Factory::getApplication()->input->get('height', '', 'string');
+                $default_value = Factory::getApplication()->input->post->get('default_value', '', 'raw');
+                $class = Factory::getApplication()->input->get('class', '', 'string');
+                $readonly = Factory::getApplication()->input->getInt('readonly', 0);
+                $allow_raw = Factory::getApplication()->input->getInt('allow_encoding', 0) == 2 ? true : false; // 0 = filter on, 1 = allow html, 2 = allow raw
+                $allow_html = Factory::getApplication()->input->getInt('allow_encoding', 0) == 1 ? true : false;
+                $hint = Factory::getApplication()->input->post->get('hint', '', 'html');
 
                 $options = new \stdClass();
                 $options->class = $class;
@@ -182,17 +182,18 @@ class ElementoptionModel extends BaseDatabaseModel
             case 'checkboxgroup':
             case 'radiogroup':
             case 'select':
-                $seperator = CBRequest::getVar('seperator', ',', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
+                $seperator = Factory::getApplication()->input->post->get('seperator', ',', 'raw');
 
                 if ($seperator == '\n') {
                     $seperator = "\n";
                 }
 
-                $default_value = implode($seperator, CBRequest::getVar('default_value', array()));
-                $class = CBRequest::getVar('class', '');
-                $allow_raw = CBRequest::getInt('allow_encoding', 0) == 2 ? true : false; // 0 = filter on, 1 = allow html, 2 = allow raw
-                $allow_html = CBRequest::getInt('allow_encoding', 0) == 1 ? true : false;
-                $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
+                $defaultValues = Factory::getApplication()->input->post->get('default_value', [], 'array');
+                $default_value = implode($seperator, $defaultValues);
+                $class = Factory::getApplication()->input->get('class', '', 'string');
+                $allow_raw = Factory::getApplication()->input->getInt('allow_encoding', 0) == 2 ? true : false; // 0 = filter on, 1 = allow html, 2 = allow raw
+                $allow_html = Factory::getApplication()->input->getInt('allow_encoding', 0) == 1 ? true : false;
+                $hint = Factory::getApplication()->input->post->get('hint', '', 'html');
 
                 $options = new \stdClass();
                 $options->class = $class;
@@ -201,14 +202,14 @@ class ElementoptionModel extends BaseDatabaseModel
                 $options->allow_html = $allow_html;
 
                 if ($type == 'select') {
-                    $multi = CBRequest::getInt('multiple', 0);
+                    $multi = Factory::getApplication()->input->getInt('multiple', 0);
                     $options->multiple = $multi;
-                    $options->length = CBRequest::getVar('length', '');
+                    $options->length = Factory::getApplication()->input->get('length', '', 'string');
                 }
 
                 if ($type == 'checkboxgroup' || $type == 'radiogroup') {
-                    $options->horizontal = CBRequest::getBool('horizontal', 0);
-                    $options->horizontal_length = CBRequest::getVar('horizontal_length', '');
+                    $options->horizontal = Factory::getApplication()->input->getBool('horizontal', 0);
+                    $options->horizontal_length = Factory::getApplication()->input->get('horizontal_length', '', 'string');
                 }
 
                 $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
@@ -224,23 +225,23 @@ class ElementoptionModel extends BaseDatabaseModel
                 $upl_ex = explode('|', $setup['upload_directory']);
                 $setup['upload_directory'] = $upl_ex[0];
 
-                $upl_ex2 = explode('|', trim(CBRequest::getVar('upload_directory', '')));
+                $upl_ex2 = explode('|', trim(Factory::getApplication()->input->get('upload_directory', '', 'string')));
 
-                CBRequest::setVar('upload_directory', $upl_ex2[0]);
+                Factory::getApplication()->input->set('upload_directory', $upl_ex2[0]);
 
                 $is_relative = strpos(strtolower($setup['upload_directory']), '{cbsite}') === 0;
                 $tmp_upload_directory = $setup['upload_directory'];
                 $upload_directory = $is_relative ? str_replace(array('{CBSite}', '{cbsite}'), JPATH_SITE, $setup['upload_directory']) : $setup['upload_directory'];
 
                 // rel check for element options
-                $is_opt_relative = strpos(strtolower(trim(CBRequest::getVar('upload_directory', ''))), '{cbsite}') === 0;
-                $tmp_opt_upload_directory = trim(CBRequest::getVar('upload_directory', ''));
-                CBRequest::setVar('upload_directory', $is_relative ? str_replace(array('{CBSite}', '{cbsite}'), JPATH_SITE, trim(CBRequest::getVar('upload_directory', ''))) : trim(CBRequest::getVar('upload_directory', '')));
+                $is_opt_relative = strpos(strtolower(trim(Factory::getApplication()->input->get('upload_directory', '', 'string'))), '{cbsite}') === 0;
+                $tmp_opt_upload_directory = trim(Factory::getApplication()->input->get('upload_directory', '', 'string'));
+                Factory::getApplication()->input->set('upload_directory', $is_relative ? str_replace(array('{CBSite}', '{cbsite}'), JPATH_SITE, trim(Factory::getApplication()->input->get('upload_directory', '', 'string'))) : trim(Factory::getApplication()->input->get('upload_directory', '', 'string')));
 
 
                 $protect = $setup['protect_upload_directory'];
 
-                if (!trim(CBRequest::getVar('upload_directory', '')) && !is_dir($upload_directory)) {
+                if (!trim(Factory::getApplication()->input->get('upload_directory', '', 'string')) && !is_dir($upload_directory)) {
 
                     if (!is_dir(JPATH_SITE .'/media/contentbuilder')) {
                         Folder::create(JPATH_SITE .'/media/contentbuilder');
@@ -265,9 +266,9 @@ class ElementoptionModel extends BaseDatabaseModel
 
                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' (/media/contentbuilder/upload' . ')', 'warning');
 
-                } else if (trim(CBRequest::getVar('upload_directory', '')) != '' && !is_dir(ContentbuilderLegacyHelper::makeSafeFolder(CBRequest::getVar('upload_directory', '')))) {
+                } else if (trim(Factory::getApplication()->input->get('upload_directory', '', 'string')) != '' && !is_dir(ContentbuilderLegacyHelper::makeSafeFolder(Factory::getApplication()->input->get('upload_directory', '', 'string')))) {
 
-                    $upload_directory = ContentbuilderLegacyHelper::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
+                    $upload_directory = ContentbuilderLegacyHelper::makeSafeFolder(Factory::getApplication()->input->get('upload_directory', '', 'string'));
 
                     Folder::create($upload_directory);
                     File::write($upload_directory .'/index.html', $def = '');
@@ -283,9 +284,9 @@ class ElementoptionModel extends BaseDatabaseModel
 
                     Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_FALLBACK_UPLOAD_CREATED') . ' (' . $upload_directory . ')', 'warning');
 
-                } else if (trim(CBRequest::getVar('upload_directory', '')) != '' && is_dir(ContentbuilderLegacyHelper::makeSafeFolder(CBRequest::getVar('upload_directory', '')))) {
+                } else if (trim(Factory::getApplication()->input->get('upload_directory', '', 'string')) != '' && is_dir(ContentbuilderLegacyHelper::makeSafeFolder(Factory::getApplication()->input->get('upload_directory', '', 'string')))) {
 
-                    $upload_directory = ContentbuilderLegacyHelper::makeSafeFolder(CBRequest::getVar('upload_directory', ''));
+                    $upload_directory = ContentbuilderLegacyHelper::makeSafeFolder(Factory::getApplication()->input->get('upload_directory', '', 'string'));
 
                     if ($is_opt_relative) {
                         $is_relative = 1;
@@ -313,32 +314,32 @@ class ElementoptionModel extends BaseDatabaseModel
 
                 }
 
-                $default_value = CBRequest::getVar('default_value', '');
-                $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
+                $default_value = Factory::getApplication()->input->get('default_value', '', 'string');
+                $hint = Factory::getApplication()->input->post->get('hint', '', 'html');
 
                 $options = new \stdClass();
                 $options->upload_directory = is_dir($upload_directory) ? ($is_relative ? $tmp_upload_directory : $upload_directory) . $tokens : '';
-                $options->allowed_file_extensions = CBRequest::getVar('allowed_file_extensions', '');
-                $options->max_filesize = CBRequest::getVar('max_filesize', '');
+                $options->allowed_file_extensions = Factory::getApplication()->input->get('allowed_file_extensions', '', 'string');
+                $options->max_filesize = Factory::getApplication()->input->get('max_filesize', '', 'string');
 
                 $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
                 break;
             case 'captcha':
-                $default_value = CBRequest::getVar('default_value', '');
-                $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
+                $default_value = Factory::getApplication()->input->get('default_value', '', 'string');
+                $hint = Factory::getApplication()->input->post->get('hint', '', 'html');
 
                 $options = new \stdClass();
 
                 $query = " `options`='" . base64_encode(serialize($options)) . "', `type`='" . $type . "', `change_type`='" . $type . "', `hint`=" . $this->getDatabase()->Quote($hint) . ", `default_value`=" . $this->getDatabase()->Quote($default_value) . " ";
                 break;
             case 'calendar':
-                $length = CBRequest::getVar('length', '');
-                $format = CBRequest::getVar('format', '');
-                $transfer_format = CBRequest::getVar('transfer_format', '');
-                $maxlength = CBRequest::getInt('maxlength', '');
-                $readonly = CBRequest::getInt('readonly', 0);
-                $default_value = CBRequest::getVar('default_value', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-                $hint = CBRequest::getVar('hint', '', 'POST', 'STRING', CBREQUEST_ALLOWHTML);
+                $length = Factory::getApplication()->input->get('length', '', 'string');
+                $format = Factory::getApplication()->input->get('format', '', 'string');
+                $transfer_format = Factory::getApplication()->input->get('transfer_format', '', 'string');
+                $maxlength = Factory::getApplication()->input->getInt('maxlength', '');
+                $readonly = Factory::getApplication()->input->getInt('readonly', 0);
+                $default_value = Factory::getApplication()->input->post->get('default_value', '', 'raw');
+                $hint = Factory::getApplication()->input->post->get('hint', '', 'html');
 
                 $options = new \stdClass();
                 $options->length = $length;
@@ -351,9 +352,9 @@ class ElementoptionModel extends BaseDatabaseModel
 
                 break;
             case 'hidden':
-                $allow_raw = CBRequest::getInt('allow_encoding', 0) == 2 ? true : false; // 0 = filter on, 1 = allow html, 2 = allow raw
-                $allow_html = CBRequest::getInt('allow_encoding', 0) == 1 ? true : false;
-                $default_value = CBRequest::getVar('default_value', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
+                $allow_raw = Factory::getApplication()->input->getInt('allow_encoding', 0) == 2 ? true : false; // 0 = filter on, 1 = allow html, 2 = allow raw
+                $allow_html = Factory::getApplication()->input->getInt('allow_encoding', 0) == 1 ? true : false;
+                $default_value = Factory::getApplication()->input->post->get('default_value', '', 'raw');
                 $hint = '';
 
                 $options = new \stdClass();
@@ -365,11 +366,12 @@ class ElementoptionModel extends BaseDatabaseModel
         }
         if ($query) {
 
-            $custom_init_script = CBRequest::getVar('custom_init_script', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-            $custom_action_script = CBRequest::getVar('custom_action_script', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-            $custom_validation_script = CBRequest::getVar('custom_validation_script', '', 'POST', 'STRING', CBREQUEST_ALLOWRAW);
-            $validation_message = CBRequest::getVar('validation_message', '');
-            $validations = CBRequest::getVar('validations', array());
+            $custom_init_script = Factory::getApplication()->input->post->get('custom_init_script', '', 'raw');
+            $custom_action_script = Factory::getApplication()->input->post->get('custom_action_script', '', 'raw');
+            $custom_validation_script = Factory::getApplication()->input->post->get('custom_validation_script', '', 'raw');
+            $validation_message = Factory::getApplication()->input->get('validation_message', '', 'string');
+            $validations = Factory::getApplication()->input->get('validations', [], 'array');
+            $validations = is_array($validations) ? $validations : [];
 
             $other = " `validations`=" . $this->getDatabase()->Quote(implode(',', $validations)) . ", ";
             $other .= " `custom_init_script`=" . $this->getDatabase()->Quote($custom_init_script) . ", ";

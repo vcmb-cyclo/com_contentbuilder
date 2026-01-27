@@ -22,9 +22,9 @@ class ElementoptionsController extends AdminController
 
     function display($cachable = false, $urlparams = array())
     {
-        CBRequest::setVar('tmpl', CBRequest::getWord('tmpl', null));
-        CBRequest::setVar('layout', CBRequest::getWord('layout', null));
-        CBRequest::setVar('view', 'elementoptions');
+        Factory::getApplication()->input->set('tmpl', Factory::getApplication()->input->getWord('tmpl', null));
+        Factory::getApplication()->input->set('layout', Factory::getApplication()->input->getWord('layout', null));
+        Factory::getApplication()->input->set('view', 'elementoptions');
 
         parent::display();
     }
@@ -42,13 +42,13 @@ class ElementoptionsController extends AdminController
 
 
         $type_change_url = '';
-        $type_change = CBRequest::getInt('type_change', 0);
+        $type_change = Factory::getApplication()->input->getInt('type_change', 0);
         if ($type_change) {
-            $type_change_url = '&type_change=1&type_selection=' . CBRequest::getCmd('type_selection', '');
+            $type_change_url = '&type_change=1&type_selection=' . Factory::getApplication()->input->getCmd('type_selection', '');
         }
 
         // Check the table in so it can be edited.... we are done with it anyway
-        $link = Route::_('index.php?option=com_contentbuilder&view=elementoptions&tabStartOffset=' . CBRequest::getInt('tabStartOffset', 0) . '&tmpl=component&element_id=' . CBRequest::getInt('element_id', 0) . '&id=' . CBRequest::getInt('id', 0) . $type_change_url, false);
+        $link = Route::_('index.php?option=com_contentbuilder&view=elementoptions&tabStartOffset=' . Factory::getApplication()->input->getInt('tabStartOffset', 0) . '&tmpl=component&element_id=' . Factory::getApplication()->input->getInt('element_id', 0) . '&id=' . Factory::getApplication()->input->getInt('id', 0) . $type_change_url, false);
         $this->setRedirect($link, $msg);
     }
 }

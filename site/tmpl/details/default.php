@@ -52,7 +52,7 @@ $wa->useScript('com_contentbuilder.contentbuilder');
     function contentbuilder_delete() {
         var confirmed = confirm('<?php echo Text::_('COM_CONTENTBUILDER_CONFIRM_DELETE_MESSAGE'); ?>');
         if (confirmed) {
-            location.href = '<?php echo 'index.php?option=com_contentbuilder&title=' . CBRequest::getVar('title', '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&task=detail.delete&task=edit.display&id=' . CBRequest::getInt('id', 0) . '&cid[]=' . CBRequest::getCmd('record_id', 0) . '&Itemid=' . CBRequest::getInt('Itemid', 0) . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order'); ?>';
+            location.href = '<?php echo 'index.php?option=com_contentbuilder&title=' . Factory::getApplication()->input->get('title', '', 'string') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&task=detail.delete&task=edit.display&id=' . Factory::getApplication()->input->getInt('id', 0) . '&cid[]=' . Factory::getApplication()->input->getCmd('record_id', 0) . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order'); ?>';
         }
     }
     //
@@ -64,7 +64,7 @@ if ($this->print_button):
     <div class="hidden-phone cbPrintBar d-flex justify-content-end mb-2">
         <a
             class="btn btn-sm btn-outline-secondary"
-            href="javascript:window.open('<?php echo Route::_('index.php?option=com_contentbuilder&title=' . CBRequest::getVar('title', '') . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&task=details.display&layout=print&tmpl=component&id=' . CBRequest::getInt('id', 0) . '&record_id=' . CBRequest::getCmd('record_id', 0)) ?>','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');void(0);"><i
+            href="javascript:window.open('<?php echo Route::_('index.php?option=com_contentbuilder&title=' . Factory::getApplication()->input->get('title', '', 'string') . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&task=details.display&layout=print&tmpl=component&id=' . Factory::getApplication()->input->getInt('id', 0) . '&record_id=' . Factory::getApplication()->input->getCmd('record_id', 0)) ?>','win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');void(0);"><i
                 class="fa fa-print" aria-hidden="true"></i> <?php echo Text::_('JGLOBAL_PRINT'); ?></a>
     </div>
 <?php
@@ -87,7 +87,7 @@ ob_start();
 ?>
 
 <?php
-if ((CBRequest::getInt('cb_show_details_back_button', 1) && $this->show_back_button) || $delete_allowed || $edit_allowed) {
+if ((Factory::getApplication()->input->getInt('cb_show_details_back_button', 1) && $this->show_back_button) || $delete_allowed || $edit_allowed) {
 ?>
 
     <div class="cbToolBar d-flex justify-content-end gap-2 flex-wrap mb-3">
@@ -97,7 +97,7 @@ if ((CBRequest::getInt('cb_show_details_back_button', 1) && $this->show_back_but
 
     <?php if ($edit_allowed) { ?>
         <a class="btn btn-sm btn-primary cbButton cbEditButton"
-            href="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display&id=' . CBRequest::getInt('id', 0) . '&record_id=' . CBRequest::getCmd('record_id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . '&Itemid=' . CBRequest::getInt('Itemid', 0) . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order')); ?>">
+            href="<?php echo Route::_('index.php?option=com_contentbuilder&task=edit.display&id=' . Factory::getApplication()->input->getInt('id', 0) . '&record_id=' . Factory::getApplication()->input->getCmd('record_id', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0) . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order')); ?>">
             <?php echo Text::_('COM_CONTENTBUILDER_EDIT') ?>
         </a>
     <?php
@@ -111,15 +111,15 @@ if ((CBRequest::getInt('cb_show_details_back_button', 1) && $this->show_back_but
     <?php
     }
     ?>
-    <?php if ($this->show_back_button && CBRequest::getBool('cb_show_details_back_button', 1)): ?>
+    <?php if ($this->show_back_button && Factory::getApplication()->input->getBool('cb_show_details_back_button', 1)): ?>
         <a class="btn btn-sm btn-outline-secondary cbButton cbBackButton"
-            href="<?php echo Route::_('index.php?option=com_contentbuilder&title=' . CBRequest::getVar('title', '') . '&task=list.display&id=' . CBRequest::getInt('id', 0) . (CBRequest::getVar('tmpl', '') != '' ? '&tmpl=' . CBRequest::getVar('tmpl', '') : '') . (CBRequest::getVar('layout', '') != '' ? '&layout=' . CBRequest::getVar('layout', '') : '') . '&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getCmd('filter_order') . '&Itemid=' . CBRequest::getInt('Itemid', 0)); ?>">
+            href="<?php echo Route::_('index.php?option=com_contentbuilder&title=' . Factory::getApplication()->input->get('title', '', 'string') . '&task=list.display&id=' . Factory::getApplication()->input->getInt('id', 0) . (Factory::getApplication()->input->get('tmpl', '', 'string') != '' ? '&tmpl=' . Factory::getApplication()->input->get('tmpl', '', 'string') : '') . (Factory::getApplication()->input->get('layout', '', 'string') != '' ? '&layout=' . Factory::getApplication()->input->get('layout', '', 'string') : '') . '&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->getCmd('filter_order') . '&Itemid=' . Factory::getApplication()->input->getInt('Itemid', 0)); ?>">
             <?php echo Text::_('COM_CONTENTBUILDER_BACK') ?>
         </a>
     <?php endif; ?>
 
     <?php
-    if ((CBRequest::getInt('cb_show_details_back_button', 1) && $this->show_back_button) || $delete_allowed || $edit_allowed) {
+    if ((Factory::getApplication()->input->getInt('cb_show_details_back_button', 1) && $this->show_back_button) || $delete_allowed || $edit_allowed) {
     ?>
 
     </div>
@@ -132,7 +132,7 @@ if ((CBRequest::getInt('cb_show_details_back_button', 1) && $this->show_back_but
 $buttons = ob_get_contents();
 ob_end_clean();
 
-if (CBRequest::getInt('cb_show_details_top_bar', 1)) {
+if (Factory::getApplication()->input->getInt('cb_show_details_top_bar', 1)) {
 ?>
     <div style="clear:right;"></div>
 <?php
@@ -141,7 +141,7 @@ if (CBRequest::getInt('cb_show_details_top_bar', 1)) {
 ?>
 
 <?php
-if (CBRequest::getInt('cb_show_author', 1)) {
+if (Factory::getApplication()->input->getInt('cb_show_author', 1)) {
 ?>
 
     <?php if ($this->created): ?>
@@ -163,7 +163,7 @@ if (CBRequest::getInt('cb_show_author', 1)) {
 ?>
 
 <?php
-if (CBRequest::getInt('cb_show_details_top_bar', 1) && ((CBRequest::getInt('cb_show_details_back_button', 1) && $this->show_back_button) || $delete_allowed || $edit_allowed)) {
+if (Factory::getApplication()->input->getInt('cb_show_details_top_bar', 1) && ((Factory::getApplication()->input->getInt('cb_show_details_back_button', 1) && $this->show_back_button) || $delete_allowed || $edit_allowed)) {
 ?>
     <br />
     <br />
@@ -178,7 +178,7 @@ if (CBRequest::getInt('cb_show_details_top_bar', 1) && ((CBRequest::getInt('cb_s
 
 
 <?php
-if (CBRequest::getInt('cb_show_author', 1)) {
+if (Factory::getApplication()->input->getInt('cb_show_author', 1)) {
 ?>
 
     <?php if ($this->modified_by): ?>
@@ -205,7 +205,7 @@ if (CBRequest::getInt('cb_show_author', 1)) {
 <br />
 
 <?php
-if (CBRequest::getInt('cb_show_details_bottom_bar', 1)) {
+if (Factory::getApplication()->input->getInt('cb_show_details_bottom_bar', 1)) {
     echo $buttons;
 ?>
     <div style="clear:right;"></div>

@@ -553,7 +553,7 @@ if (!class_exists(__NAMESPACE__ . '\\CBRequest'))
 
 		if (is_array($cb_request)) {
 			foreach ($cb_request as $k => $v) {
-				CBRequest::setVar($k, $v);
+				Factory::getApplication()->input->set($k, $v);
 			}
 		}
 	}

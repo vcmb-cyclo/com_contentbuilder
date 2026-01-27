@@ -187,7 +187,7 @@ class plgContentContentbuilder_rating extends CMSPlugin implements SubscriberInt
                         }
                     }
 
-                    $out = ContentbuilderLegacyHelper::getRating($form_id, $record_id, $rating, $rating_slots, CBRequest::getCmd('lang', ''), $rating_allowed, $rating_count, $rating_sum);
+                    $out = ContentbuilderLegacyHelper::getRating($form_id, $record_id, $rating, $rating_slots, Factory::getApplication()->input->getCmd('lang', ''), $rating_allowed, $rating_count, $rating_sum);
 
                     $article->text = str_replace($matches[0][$i], $out, $article->text);
 

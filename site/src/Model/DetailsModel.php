@@ -55,7 +55,7 @@ class DetailsModel extends ListModel
         $this->frontend = Factory::getApplication()->isClient('site');
 
         // ATTTENTION: ALSO DEFINED IN DETAILS CONTROLLER!
-        if ($this->frontend && CBRequest::getInt('Itemid', 0)) {
+        if ($this->frontend && Factory::getApplication()->input->getInt('Itemid', 0)) {
             $this->_menu_item = true;
 
             // try menu item
@@ -64,7 +64,7 @@ class DetailsModel extends ListModel
             $item = $menu->getActive();
             if (is_object($item)) {
                 if ($item->getParams()->get('record_id', null) !== null) {
-                    CBRequest::setVar('record_id', $item->getParams()->get('record_id', null));
+                    Factory::getApplication()->input->set('record_id', $item->getParams()->get('record_id', null));
                     $this->_show_back_button = $item->getParams()->get('show_back_button', null);
                 }
 
@@ -84,7 +84,7 @@ class DetailsModel extends ListModel
             }
         }
 
-        $menu_filter = CBRequest::getVar('cb_list_filterhidden', null);
+        $menu_filter = Factory::getApplication()->input->get('cb_list_filterhidden', null, 'string');
 
         if ($menu_filter !== null) {
             $lines = explode("\n", $menu_filter);
@@ -100,7 +100,7 @@ class DetailsModel extends ListModel
             }
         }
 
-        $menu_filter_order = CBRequest::getVar('cb_list_orderhidden', null);
+        $menu_filter_order = Factory::getApplication()->input->get('cb_list_orderhidden', null, 'string');
 
         if ($menu_filter_order !== null) {
             $lines = explode("\n", $menu_filter_order);
@@ -117,7 +117,7 @@ class DetailsModel extends ListModel
 
         @natsort($this->_menu_filter_order);
 
-        $this->setIds(CBRequest::getInt('id', 0), CBRequest::getCmd('record_id', ''));
+        $this->setIds(Factory::getApplication()->input->getInt('id', 0), Factory::getApplication()->input->getCmd('record_id', ''));
     }
 
     /*
@@ -195,15 +195,15 @@ class DetailsModel extends ListModel
                             $rec2 = $data->form->getRecord($rec->colRecord, false, -1, true);
 
                             $data->record_id = $rec->colRecord;
-                            CBRequest::setVar('record_id', $data->record_id);
+                            Factory::getApplication()->input->set('record_id', $data->record_id);
                             $this->_record_id = $data->record_id;
                         } else {
-                            CBRequest::setVar('cbIsNew', 1);
-                            ContentbuilderLegacyHelper::setPermissions(CBRequest::getInt('id', 0), 0, $this->frontend ? '_fe' : '');
+                            Factory::getApplication()->input->set('cbIsNew', 1);
+                            ContentbuilderLegacyHelper::setPermissions(Factory::getApplication()->input->getInt('id', 0), 0, $this->frontend ? '_fe' : '');
                             $auth = $this->frontend ? ContentbuilderLegacyHelper::authorizeFe('new') : ContentbuilderLegacyHelper::authorize('new');
 
                             if ($auth) {
-                                Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&task=edit.display&latest=1&backtolist=' . CBRequest::getInt('backtolist', 0) . '&id=' . $this->_id . '&record_id=&limitstart=' . CBRequest::getInt('limitstart', 0) . '&filter_order=' . CBRequest::getVar('filter_order', ''), false));
+                                Factory::getApplication()->redirect(Route::_('index.php?option=com_contentbuilder&task=edit.display&latest=1&backtolist=' . Factory::getApplication()->input->getInt('backtolist', 0) . '&id=' . $this->_id . '&record_id=&limitstart=' . Factory::getApplication()->input->getInt('limitstart', 0) . '&filter_order=' . Factory::getApplication()->input->get('filter_order', '', 'string'), false));
                             } else {
                                 Factory::getApplication()->enqueueMessage(Text::_('COM_CONTENTBUILDER_ADD_ENTRY_FIRST'));
                                 Factory::getApplication()->redirect('index.php');
@@ -216,7 +216,7 @@ class DetailsModel extends ListModel
                         throw new \Exception(Text::_('COM_CONTENTBUILDER_FORM_NOT_FOUND'), 404);
                     }
                     $data->page_title = '';
-                    if (CBRequest::getInt('cb_prefix_in_title', 1)) {
+                    if (Factory::getApplication()->input->getInt('cb_prefix_in_title', 1)) {
                         if (!$this->_menu_item) {
                             $data->page_title = $data->use_view_name_as_title ? $data->name : $data->form->getPageTitle();
                         } else {

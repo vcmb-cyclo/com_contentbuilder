@@ -129,9 +129,9 @@ function ContentbuilderParseRoute(&$segments) {
                     $vars['title'] = '';
                 }
 
-		        CBRequest::setVar('controller', $controller);
-		        CBRequest::setVar('id', $vars['id']);
-		        CBRequest::setVar('title', $vars['title']);
+		        Factory::getApplication()->input->set('controller', $controller);
+		        Factory::getApplication()->input->set('id', $vars['id']);
+		        Factory::getApplication()->input->set('title', $vars['title']);
 
                 break;
 
@@ -143,11 +143,11 @@ function ContentbuilderParseRoute(&$segments) {
 	            $vars['title']        = isset($segments[3]) ? $segments[3] : '';
 	            $vars['view']         =  'details';
 
-	            CBRequest::setVar('controller', $controller);
-	            CBRequest::setVar('id', $vars['id']);
-	            CBRequest::setVar('record_id', $vars['record_id']);
-	            CBRequest::setVar('title', $vars['title']);
-	            CBRequest::setVar('view', 'details');
+	            Factory::getApplication()->input->set('controller', $controller);
+	            Factory::getApplication()->input->set('id', $vars['id']);
+	            Factory::getApplication()->input->set('record_id', $vars['record_id']);
+	            Factory::getApplication()->input->set('title', $vars['title']);
+	            Factory::getApplication()->input->set('view', 'details');
 
             case 'edit':
 
@@ -157,11 +157,11 @@ function ContentbuilderParseRoute(&$segments) {
                 $vars['title']        = isset($segments[3]) ? $segments[3] : '';
 	            $vars['view']         =  'edit';
 
-		        CBRequest::setVar('controller', $controller);
-	            CBRequest::setVar('id', $vars['id']);
-		        CBRequest::setVar('record_id', $vars['record_id']);
-	            CBRequest::setVar('title', $vars['title']);
-	            CBRequest::setVar('view', 'edit');
+		        Factory::getApplication()->input->set('controller', $controller);
+	            Factory::getApplication()->input->set('id', $vars['id']);
+		        Factory::getApplication()->input->set('record_id', $vars['record_id']);
+	            Factory::getApplication()->input->set('title', $vars['title']);
+	            Factory::getApplication()->input->set('view', 'edit');
 
 	        break;
         }

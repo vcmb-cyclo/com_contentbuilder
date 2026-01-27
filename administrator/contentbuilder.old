@@ -19,17 +19,17 @@ use Joomla\CMS\Language\Text;
 use CB\Component\Contentbuilder\Administrator\CBRequest;
 use CB\Component\Contentbuilder\Administrator\Controller\TestController;
 
-if ((CBRequest::getCmd('controller', '') == 'elementoptions' || 
-    CBRequest::getCmd('controller', '') == 'storages' || 
-    CBRequest::getCmd('controller', '') == 'forms' || 
-    CBRequest::getCmd('controller', '') == 'users') && !Factory::getApplication()->getIdentity()->authorise('contentbuilder.manage', 'com_contentbuilder')) {
+if ((Factory::getApplication()->input->getCmd('controller', '') == 'elementoptions' || 
+    Factory::getApplication()->input->getCmd('controller', '') == 'storages' || 
+    Factory::getApplication()->input->getCmd('controller', '') == 'forms' || 
+    Factory::getApplication()->input->getCmd('controller', '') == 'users') && !Factory::getApplication()->getIdentity()->authorise('contentbuilder.manage', 'com_contentbuilder')) {
     Factory::getApplication()->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'warning');
 }
 
-if (!(CBRequest::getCmd('controller', '') == 'elementoptions' ||
-    CBRequest::getCmd('controller', '') == 'storages' ||
-    CBRequest::getCmd('controller', '') == 'forms' ||
-    CBRequest::getCmd('controller', '') == 'users') && !Factory::getApplication()->getIdentity()->authorise('contentbuilder.admin', 'com_contentbuilder')) {
+if (!(Factory::getApplication()->input->getCmd('controller', '') == 'elementoptions' ||
+    Factory::getApplication()->input->getCmd('controller', '') == 'storages' ||
+    Factory::getApplication()->input->getCmd('controller', '') == 'forms' ||
+    Factory::getApplication()->input->getCmd('controller', '') == 'users') && !Factory::getApplication()->getIdentity()->authorise('contentbuilder.admin', 'com_contentbuilder')) {
     Factory::getApplication()->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'), 'warning');
 }
 
@@ -48,7 +48,7 @@ foreach($forms As $form){
 // Require the base controller
 require_once(JPATH_COMPONENT_ADMINISTRATOR . '/controller.php');
 
-if (CBRequest::getWord('task') === 'test') {
+if (Factory::getApplication()->input->getWord('task') === 'test') {
 
     // Charger les classes modernes
     require_once JPATH_COMPONENT_ADMINISTRATOR . '/src/Controller/TestController.php';
@@ -68,10 +68,10 @@ if (CBRequest::getWord('task') === 'test') {
 }
 
 // Require specific controller if requested
-$controller = trim(CBRequest::getWord('controller'));
+$controller = trim(Factory::getApplication()->input->getWord('controller'));
 
 // Vérifier si c'est la task "test" pour le MVC moderne
-if (CBRequest::getWord('task') === 'test') {
+if (Factory::getApplication()->input->getWord('task') === 'test') {
 
     // Charger les classes nécessaires si besoin
     require_once JPATH_COMPONENT_ADMINISTRATOR . '/src/Controller/TestController.php';
@@ -106,7 +106,7 @@ $classname    = 'ContentbuilderController' . ucfirst($controller);
 $controller   = new $classname();
 
 // Perform the Request task
-$controller->execute(CBRequest::getWord('task'));
+$controller->execute(Factory::getApplication()->input->getWord('task'));
 
 // Redirect if set by the controller
 $controller->redirect();

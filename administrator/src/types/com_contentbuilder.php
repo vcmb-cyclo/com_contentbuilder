@@ -228,7 +228,7 @@ class contentbuilder_com_contentbuilder
             Where
                 r.id = " . $db->Quote(intval($record_id)) . " And
                 joined_records.`type` = 'com_contentbuilder'
-                " . (!$show_all_languages ? " And ( joined_records.sef = " . $db->Quote(CBRequest::getCmd('lang', '')) . " Or joined_records.sef = '' Or joined_records.sef is Null ) " : '') . "
+                " . (!$show_all_languages ? " And ( joined_records.sef = " . $db->Quote(Factory::getApplication()->input->getCmd('lang', '')) . " Or joined_records.sef = '' Or joined_records.sef is Null ) " : '') . "
                 " . ($show_all_languages ? " And ( joined_records.id is Null Or joined_records.id Is Not Null ) " : '') . "
                 " . (intval($own_only) > -1 ? ' And r.user_id=' . intval($own_only) . ' ' : '') . "
                 " . ($published_only ? " And joined_records.published = 1 " : '') . "
@@ -557,7 +557,7 @@ class contentbuilder_com_contentbuilder
                 joined_records.reference_id = r.storage_id And
                 joined_records.record_id = r.id And
                 joined_records.`type` = 'com_contentbuilder'
-                " . (!$show_all_languages ? " And ( joined_records.sef = " . $db->Quote(CBRequest::getCmd('lang', '')) . " Or joined_records.sef = '' Or joined_records.sef is Null ) " : '') . "
+                " . (!$show_all_languages ? " And ( joined_records.sef = " . $db->Quote(Factory::getApplication()->input->getCmd('lang', '')) . " Or joined_records.sef = '' Or joined_records.sef is Null ) " : '') . "
                 " . ($show_all_languages ? " And ( joined_records.id is Null Or joined_records.id Is Not Null ) " : '') . "
                 " . ($lang_code !== null ? " And joined_records.lang_code = " . $db->Quote($lang_code) : '') . "
                 " . (intval($own_only) > -1 ? ' And r.user_id=' . intval($own_only) . ' ' : '') . "
