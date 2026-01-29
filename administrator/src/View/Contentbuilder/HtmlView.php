@@ -11,9 +11,7 @@ namespace CB\Component\Contentbuilder\Administrator\View\Contentbuilder;
 
 \defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\MVC\View\HtmlView  as BaseHtmlView;
-use Joomla\CMS\Toolbar\ToolbarHelper;
 use Joomla\CMS\Uri\Uri;
 
 class HtmlView extends BaseHtmlView
@@ -45,11 +43,11 @@ class HtmlView extends BaseHtmlView
             }'
         );
 
-
+/*
         ToolbarHelper::title(
             'ContentBuilder :: ' . Text::_('COM_CONTENTBUILDER'),
             'logo_icon_cb'
-        );
+        );*/
 
 
         // 3️⃣ Affichage du layout

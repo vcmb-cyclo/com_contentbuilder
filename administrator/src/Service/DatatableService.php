@@ -23,10 +23,7 @@ class DatatableService
     /** Valide un identifiant SQL simple (table/col) */
     private function assertSafeIdentifier(string $value, string $label): string
     {
-        $value = trim($value);
-
-        // Tu peux décider de forcer en lowercase
-        $value = strtolower($value);
+        $value = strtolower(trim($value));
 
         if ($value === '' || !preg_match('/^[a-z0-9_]+$/', $value)) {
             throw new \RuntimeException("$label invalide: " . $value);
@@ -69,7 +66,7 @@ class DatatableService
         }
     }
 
-    public function createForStorage(int $storageId): void
+    public function createForStorage(int $storageId): bool
     {
         Logger::info("Demande de création de la table dont l'ID STORAGE vaut $storageId.");
         $db = Factory::getContainer()->get(DatabaseInterface::class);
@@ -85,8 +82,8 @@ class DatatableService
 
         // Idempotent : si existe, on ne fait rien
         if ($this->tableExists($prefixed)) {
-            Logger::info("La table '$name' existe déjà dont l'ID STORAGE vaut $storageId.");
-            return;
+            Logger::info("La table '$prefixed' existe déjà dont l'ID STORAGE vaut $storageId.");
+            return false;
         }
 
         $now = Factory::getDate()->toSql();
@@ -121,6 +118,7 @@ class DatatableService
         $db->execute();
         $db->setQuery("ALTER TABLE $tableQN ADD INDEX (" . $db->quoteName('modified') . ")");
         $db->execute();
+        return true;
     }
 
     /**
@@ -165,7 +163,14 @@ class DatatableService
         }
 
         // Colonnes existantes
-        $cols = $db->getTableColumns($prefixed, true);
+        $rawCols = $db->getTableColumns($prefixed, true);
+        $cols = [];
+
+        foreach ($rawCols as $colName => $colDef) {
+            $safeColName = $this->assertSafeIdentifier((string) $colName, 'Nom de champ');
+            $cols[$safeColName] = $colDef;
+        }
+
         $tableQN = $db->quoteName('#__' . $tableName);
 
         foreach ($fieldNames as $field) {

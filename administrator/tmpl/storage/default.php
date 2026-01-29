@@ -19,8 +19,9 @@ $listOrder = $this->state ? (string) $this->state->get('list.ordering', 'orderin
 $listDirn  = $this->state ? (string) $this->state->get('list.direction', 'asc') : 'asc';
 $listDirn  = strtolower($listDirn) === 'desc' ? 'desc' : 'asc';
 $storageId = (int) ($this->item->id ?? 0);
+$limitValue = (int) $this->state?->get('list.limit', 0);
 
-$sortLink = function (string $label, string $field) use ($listOrder, $listDirn, $storageId): string {
+$sortLink = function (string $label, string $field) use ($listOrder, $listDirn, $storageId, $limitValue): string {
     $isActive = ($listOrder === $field);
     $nextDir = ($isActive && $listDirn === 'asc') ? 'desc' : 'asc';
     $indicator = $isActive
@@ -29,51 +30,57 @@ $sortLink = function (string $label, string $field) use ($listOrder, $listDirn, 
             : ' <span class="ms-1 icon-sort icon-sort-desc" aria-hidden="true"></span>')
         : '';
     $url = \Joomla\CMS\Router\Route::_(
-        'index.php?option=com_contentbuilder&task=storage.edit&id=' . $storageId
-        . '&list[ordering]=' . $field . '&list[direction]=' . $nextDir
+        'index.php?option=com_contentbuilder&task=storage.edit&id='
+        . $storageId
+        . '&list[start]=0'
+        . '&list[ordering]=' . $field
+        . '&list[direction]=' . $nextDir
+        . '&list[limit]=' . max(0, $limitValue)
     );
 
-    return '<a href="' . $url . '">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . $indicator . '</a>';
+    return '<a href="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . $indicator . '</a>';
 };
+
 ?>
 
 <script>
-    function listItemTask(id, task) {
-        const form = document.getElementById('adminForm');
-        if (!form) return false;
+function listItemTask(id, task) {
+    var form = document.getElementById('adminForm');
+    if (!form) return false;
 
-        // décocher tous les cb*
-        form.querySelectorAll('input[type="checkbox"][name^="cb"]').forEach(cb => cb.checked = false);
+    form.querySelectorAll('input[type="checkbox"][name^="cb"]').forEach(function (cb) {
+        cb.checked = false;
+    });
 
-        const target = form.querySelector('#' + CSS.escape(id)) || form.elements[id];
-        if (!target) return false;
+    var target = form.querySelector('#' + CSS.escape(id)) || form.elements[id];
+    if (!target) return false;
 
-        target.checked = true;
-        const boxchecked = form.querySelector('input[name="boxchecked"]');
-        if (boxchecked) boxchecked.value = 1;
-
-        Joomla.submitform(task, form);
-        return false;
+    target.checked = true;
+    var boxchecked = form.querySelector('input[name="boxchecked"]');
+    if (boxchecked) {
+        boxchecked.value = 1;
     }
 
-    // Joomla utilise souvent Joomla.listItemTask
-    if (typeof Joomla !== 'undefined') {
-        Joomla.listItemTask = listItemTask;
-    }
+    Joomla.submitform(task, form);
+    return false;
+}
+
+if (typeof Joomla !== 'undefined') {
+    Joomla.listItemTask = listItemTask;
+}
 </script>
-
 
 <form action="<?php echo \Joomla\CMS\Router\Route::_('index.php?option=com_contentbuilder&task=storage.edit&id=' . (int) $this->item->id); ?>"
     method="post" name="adminForm" id="adminForm" enctype="multipart/form-data">
 
-    <?php
-    // Démarrer les onglets
-    echo HTMLHelper::_('uitab.startTabSet', 'view-pane', ['active' => 'tab0']);
-    // Premier onglet
-    echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab0', Text::_('COM_CONTENTBUILDER_STORAGE'));
-    ?>
+<?php
+// Démarrer les onglets
+echo HTMLHelper::_('uitab.startTabSet', 'view-pane', ['active' => 'tab0']);
+// Premier onglet
+echo HTMLHelper::_('uitab.addTab', 'view-pane', 'tab0', Text::_('COM_CONTENTBUILDER_STORAGE'));
+?>
 
-    <table width="100%">
+<table width="100%">
         <tr>
             <td width="200" valign="top">
 
@@ -281,9 +288,10 @@ $sortLink = function (string $label, string $field) use ($listOrder, $listDirn, 
                     </div>
                     <button class="btn btn-success" disabled>Ajouter le champ</button>
                     <?php else : ?>
-                    <button type="button" class="btn btn-success"
-                            onclick="Joomla.submitbutton('storage.addfield');">
-                            <?php echo Text::_('COM_CONTENTBUILDER_STORAGE_NEW_FIELD'); ?>
+                    <button type="button"
+                        class="btn btn-success"
+                        onclick="Joomla.submitbutton('storage.addfield');">
+                        <?php echo Text::_('COM_CONTENTBUILDER_STORAGE_NEW_FIELD'); ?>
                     </button>
                         <table class="admintable" width="100%">
                             <tr>
@@ -367,26 +375,26 @@ $sortLink = function (string $label, string $field) use ($listOrder, $listDirn, 
                     <thead>
                         <tr>
                             <th width="5">
-                                <?php echo Text::_('COM_CONTENTBUILDER_ID'); ?>
+                                <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ID'), 'id', $listDirn, $listOrder); ?>
                             </th>
                             <th width="20">
                                 <input class="form-check-input" type="checkbox" name="toggle" value=""
                                     onclick="Joomla.checkAll(this);" />
                             </th>
                             <th>
-                                <?php echo Text::_('COM_CONTENTBUILDER_NAME'); ?>
+                                <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_NAME'), 'name', $listDirn, $listOrder); ?>
                             </th>
                             <th>
-                                <?php echo Text::_('COM_CONTENTBUILDER_STORAGE_TITLE'); ?>
+                                <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_STORAGE_TITLE'), 'title', $listDirn, $listOrder); ?>
                             </th>
                             <th>
-                                <?php echo Text::_('COM_CONTENTBUILDER_STORAGE_GROUP'); ?>
+                                <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_STORAGE_GROUP'), 'group_definition', $listDirn, $listOrder); ?>
                             </th>
                             <th>
-                                <?php echo $sortLink(Text::_('COM_CONTENTBUILDER_ORDERBY'), 'ordering'); ?>
+                                <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'ordering', $listDirn, $listOrder); ?>
                             </th>
                             <th>
-                                <?php echo Text::_('COM_CONTENTBUILDER_PUBLISHED'); ?>
+                                <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_PUBLISHED'), 'published', $listDirn, $listOrder); ?>
                             </th>
                         </tr>
                     </thead>
@@ -467,12 +475,15 @@ $sortLink = function (string $label, string $field) use ($listOrder, $listDirn, 
 
     <input type="hidden" name="option" value="com_contentbuilder" />
     <input type="hidden" name="id" value="<?php echo (int) $this->item->id; ?>">
-    <input type="hidden" name="task" value="">
+    <input type="hidden" name="task" value="storage.edit">
     <input type="hidden" name="jform[id]" value="<?php echo (int) $this->item->id; ?>" />
     <input type="hidden" name="jform[ordering]" value="<?php echo $this->item->ordering; ?>" />
     <input type="hidden" name="jform[published]" value="<?php echo $this->item->published; ?>" />
+    <input type="hidden" name="filter_order" value="<?php echo htmlspecialchars($listOrder, ENT_QUOTES, 'UTF-8'); ?>" />
+    <input type="hidden" name="filter_order_Dir" value="<?php echo htmlspecialchars($listDirn, ENT_QUOTES, 'UTF-8'); ?>" />
     <input type="hidden" name="list[ordering]" value="<?php echo htmlspecialchars($listOrder, ENT_QUOTES, 'UTF-8'); ?>" />
     <input type="hidden" name="list[direction]" value="<?php echo htmlspecialchars($listDirn, ENT_QUOTES, 'UTF-8'); ?>" />
+    <input type="hidden" name="list[start]" value="<?php echo (int) $this->state?->get('list.start', 0); ?>" />
     <input type="hidden" name="boxchecked" value="0" />
     <input type="hidden" name="tabStartOffset" value="<?php echo Factory::getApplication()->getSession()->get('tabStartOffset', 0); ?>" />
     <?php echo HTMLHelper::_('form.token'); ?>

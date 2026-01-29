@@ -11,7 +11,6 @@
 // No direct access
 \defined('_JEXEC') or die('Restricted access');
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Router\Route;
 use Joomla\CMS\HTML\HTMLHelper;
@@ -21,20 +20,15 @@ HTMLHelper::_('behavior.core');
 HTMLHelper::_('behavior.multiselect');
 
 // Sécurité: valeurs par défaut
-$order     = $this->lists['order'] ?? 'a.ordering';
-$orderDir  = $this->lists['order_Dir'] ?? 'asc';
-$orderDir  = strtolower($orderDir) === 'desc' ? 'desc' : 'asc';
+$listOrder = (string) $this->state->get('list.ordering', 'a.ordering');
+$listDirn  = strtolower((string) $this->state->get('list.direction', 'asc'));
+$listDirn  = ($listDirn === 'desc') ? 'desc' : 'asc';
 
-// Les flèches d'ordering ne doivent être actives QUE si on est trié sur ordering
-$saveOrder = ($order === 'a.ordering');
+$saveOrder = ($listOrder === 'a.ordering');
 
 $n = is_countable($this->items) ? count($this->items) : 0;
-
-// Joomla 6 native list start
-$app = Factory::getApplication();
-$list = (array) $app->input->get('list', [], 'array');
-$listStart = isset($list['start']) ? (int) $list['start'] : 0;
-$limitValue = (int) ($this->pagination->limit ?? 0);
+$limitValue = (int) $this->state->get('list.limit', (int) ($this->pagination->limit ?? 0));
+$listStart = (int) $this->state->get('list.start', 0);
 
 $limitOptions = [];
 for ($i = 5; $i <= 30; $i += 5) {
@@ -54,22 +48,34 @@ $limitSelect = HTMLHelper::_(
     $limitValue
 );
 
-$sortLink = function (string $label, string $field) use ($order, $orderDir, $limitValue): string {
-    $isActive = ($order === $field);
-    $nextDir = ($isActive && $orderDir === 'asc') ? 'desc' : 'asc';
-    $indicator = $isActive
-        ? ($orderDir === 'asc'
-            ? ' <span class="ms-1 icon-sort icon-sort-asc" aria-hidden="true"></span>'
-            : ' <span class="ms-1 icon-sort icon-sort-desc" aria-hidden="true"></span>')
-        : '';
-    $url = Route::_(
-        'index.php?option=com_contentbuilder&view=storages&list[start]=0&list[ordering]='
-        . $field . '&list[direction]=' . $nextDir . '&list[limit]=' . $limitValue
-    );
-
-    return '<a href="' . $url . '">' . htmlspecialchars($label, ENT_QUOTES, 'UTF-8') . $indicator . '</a>';
-};
+$___tableOrdering = "Joomla.tableOrdering = function";
 ?>
+<script type="text/javascript">
+<?php echo $___tableOrdering; ?>(order, dir, task) {
+    var form = document.adminForm;
+    if (!form) {
+        return;
+    }
+
+    task = task || 'storages.display';
+
+    var setValue = function(name, value) {
+        var element = form.elements[name];
+        if (element) {
+            element.value = value;
+        }
+    };
+
+    setValue('filter_order', order);
+    setValue('filter_order_Dir', dir);
+    setValue('list[ordering]', order);
+    setValue('list[direction]', dir);
+    setValue('list[start]', 0);
+    setValue('task', task);
+
+    form.submit();
+};
+</script>
 
 <form action="<?php echo Route::_('index.php?option=com_contentbuilder&task=storages.display'); ?>"
     method="post"
@@ -80,38 +86,28 @@ $sortLink = function (string $label, string $field) use ($order, $orderDir, $lim
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="w-1 text-nowrap"><?php echo $sortLink(Text::_('COM_CONTENTBUILDER_ID'), 'a.id'); ?></th>
+                    <th class="w-1 text-nowrap">
+                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ID'), 'a.id', $listDirn, $listOrder); ?>
+                    </th>
 
                     <th class="w-1 text-center">
                         <?php echo HTMLHelper::_('grid.checkall'); ?>
                     </th>
 
                     <th>
-                        <?php echo $sortLink(
-                            Text::_('COM_CONTENTBUILDER_NAME'),
-                            'a.name'
-                        ); ?>
+                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_NAME'), 'a.name', $listDirn, $listOrder); ?>
                     </th>
 
                     <th>
-                        <?php echo $sortLink(
-                            Text::_('COM_CONTENTBUILDER_STORAGE_TITLE'),
-                            'a.title'
-                        ); ?>
+                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_STORAGE_TITLE'), 'a.title', $listDirn, $listOrder); ?>
                     </th>
 
                     <th class="w-10 text-nowrap">
-                        <?php echo $sortLink(
-                            Text::_('COM_CONTENTBUILDER_ORDERBY'),
-                            'a.ordering'
-                        ); ?>
+                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_ORDERBY'), 'a.ordering', $listDirn, $listOrder); ?>
                     </th>
 
                     <th class="w-1 text-center">
-                        <?php echo $sortLink(
-                            Text::_('COM_CONTENTBUILDER_PUBLISHED'),
-                            'a.published'
-                        ); ?>
+                        <?php echo HTMLHelper::_('grid.sort', Text::_('COM_CONTENTBUILDER_PUBLISHED'), 'a.published', $listDirn, $listOrder); ?>
                     </th>
                 </tr>
             </thead>
@@ -188,11 +184,13 @@ $sortLink = function (string $label, string $field) use ($order, $orderDir, $lim
     </div>
 
     <input type="hidden" name="option" value="com_contentbuilder">
-    <input type="hidden" name="task" value="">
+    <input type="hidden" name="task" value="storages.display">
     <input type="hidden" name="list[start]" value="<?php echo (int) $listStart; ?>">
     <input type="hidden" name="boxchecked" value="0">
-    <input type="hidden" name="list[ordering]" value="<?php echo htmlspecialchars($order, ENT_QUOTES, 'UTF-8'); ?>">
-    <input type="hidden" name="list[direction]" value="<?php echo htmlspecialchars($orderDir, ENT_QUOTES, 'UTF-8'); ?>">
+    <input type="hidden" name="filter_order" value="<?php echo htmlspecialchars($listOrder, ENT_QUOTES, 'UTF-8'); ?>">
+    <input type="hidden" name="filter_order_Dir" value="<?php echo htmlspecialchars($listDirn, ENT_QUOTES, 'UTF-8'); ?>">
+    <input type="hidden" name="list[ordering]" value="<?php echo htmlspecialchars($listOrder, ENT_QUOTES, 'UTF-8'); ?>">
+    <input type="hidden" name="list[direction]" value="<?php echo htmlspecialchars($listDirn, ENT_QUOTES, 'UTF-8'); ?>">
 
     <?php echo HTMLHelper::_('form.token'); ?>
 </form>

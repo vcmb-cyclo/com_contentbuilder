@@ -105,8 +105,26 @@ class StoragefieldsModel extends ListModel
             $query->where($db->quoteName('published') . ' = ' . (int) $published);
         }
 
-        $orderCol  = $this->getState('list.ordering', 'ordering');
-        $orderDirn = $this->getState('list.direction', 'asc');
+        $orderCol  = (string) $this->getState('list.ordering', '');
+        $orderDirn = strtolower((string) $this->getState('list.direction', ''));
+
+        $input = Factory::getApplication()->input;
+        $list = (array) $input->get('list', [], 'array');
+        $requestedOrder = isset($list['ordering']) ? preg_replace('/[^a-zA-Z0-9_\\.]/', '', (string) $list['ordering']) : '';
+        $requestedDir = strtolower((string) ($list['direction'] ?? ''));
+
+        if ($requestedOrder !== '') {
+            $orderCol = $requestedOrder;
+            $this->setState('list.ordering', $orderCol);
+        }
+
+        if ($requestedDir === 'asc' || $requestedDir === 'desc') {
+            $orderDirn = $requestedDir;
+            $this->setState('list.direction', $orderDirn);
+        }
+
+        $orderCol  = $orderCol ?: 'ordering';
+        $orderDirn = $orderDirn ?: 'asc';
 
         $query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
 

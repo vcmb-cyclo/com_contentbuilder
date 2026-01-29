@@ -282,6 +282,7 @@
     </field>
 
     <field name="email_template" type="editor"
+           hiddenLabel="true"
            label="COM_CONTENTBUILDER_FIELD_EMAIL_TEMPLATE"
            filter="raw" 
            width="100%"
